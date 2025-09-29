@@ -20,6 +20,10 @@ namespace trview
 
     Vector3 ISector::Portal::ceiling(Corner corner) const
     {
+        if (has_flag(direct->flags(), SectorFlag::Portal) && target)
+        {
+            return target->ceiling(corner) + offset;
+        }
         return direct->ceiling(corner);
     }
 
@@ -56,8 +60,9 @@ namespace trview
     ISector::Triangle::Triangle(const Vector3& v0, const Vector3& v1, const Vector3& v2,
         const Vector2& uv0, const Vector2& uv1, const Vector2& uv2,
         SectorFlag type, uint32_t room)
-        : v0(v0), v1(v1), v2(v2), uv0(uv0), uv1(uv1), uv2(uv2), type(type), room(room)
+        : v0(v0), v1(v1), v2(v2), uv0(uv0), uv1(uv1), uv2(uv2), type(type), room(room), normal((v2 - v1).Cross(v1 - v0))
     {
+        normal.Normalize();
     }
 
     ISector::Triangle::Triangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, SectorFlag type, uint32_t room)

@@ -5,7 +5,9 @@
 #include <trview.common/Algorithms.h>
 #include <format>
 #include <trview.common/Logs/Activity.h>
+#include <ranges>
 
+using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 namespace trview
@@ -31,6 +33,24 @@ namespace trview
             uint32_t x = (sector.x() + info.x / 1024) % 2;
             uint32_t z = info.z / 1024 + sector.z();
             return (x + z) % 2 ? Unmatched_Colour : Unmatched_Colour + Color(0, 0.05f, 0.05f);
+        }
+
+        // Follow portals until we hit a non portal sector
+        void follow_portal(ISector::Portal& portal, const std::shared_ptr<ILevel>& level, const IRoom& room, uint16_t target_room, int x, int z)
+        {
+            const auto other_room = level->room(target_room).lock();
+            const auto diff = (room.position() - other_room->position()) + Vector3(static_cast<float>(x), 0, static_cast<float>(z));
+            const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
+            const auto sectors = other_room->sectors();
+            if (other_id >= 0 && other_id < std::ssize(sectors))
+            {
+                portal.target = sectors[other_id];
+                portal.offset += Vector3(static_cast<float>(x), 0, static_cast<float>(z)) - diff;
+                if (portal.target->is_portal())
+                {
+                    follow_portal(portal, level, *other_room, portal.target->portals()[0], portal.target->x(), portal.target->z());
+                }
+            }
         }
     }
 
@@ -406,7 +426,6 @@ namespace trview
     void Room::generate_adjacency()
     {
         _neighbours.clear(); 
-
         std::for_each(_sectors.begin(), _sectors.end(),
             [&] (const auto& sector)
         {
@@ -1070,24 +1089,63 @@ namespace trview
             }
         }
 
-        const auto id = get_sector_id(x2, z2);
+        if (sector->room_below() != 0xff)
+        {
+            const auto other_room = level->room(sector->room_below()).lock();
+            const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x1), 0, static_cast<float>(z1));
+            const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
+            const auto sectors = other_room->sectors();
+            if (other_id >= 0 && other_id < std::ssize(sectors))
+            {
+                portal.sector_below = other_room->sectors()[other_id];
+                portal.below_offset = Vector3(static_cast<float>(x1), 0, static_cast<float>(z1)) - diff;
+                portal.room_below = other_room;
+            }
+        }
+
         if (x2 >= _num_x_sectors || x2 < 0 || z2 >= _num_z_sectors || z2 < 0)
         {
             return portal;
         }
 
+        const auto id = get_sector_id(x2, z2);
         portal.direct = _sectors[id];
         portal.direct_room = std::const_pointer_cast<IRoom>(shared_from_this());
-        if (has_flag(portal.direct->flags(), SectorFlag::Portal) && !portal.direct->portals().empty())
+
+        if (x1 == x2 && z1 == z2)
         {
-            const auto other_room = level->room(portal.direct->portals()[0]).lock();
-            const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x2), 0, static_cast<float>(z2));
-            const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
-            const auto sectors = other_room->sectors();
-            if (other_id >= 0 && other_id < std::ssize(sectors))
+            return portal;
+        }
+
+        if (!portal.direct->is_portal() || sector->is_wall())
+        {
+            return portal;
+        }
+
+        const auto box = bounding_box();
+        for (const auto& p : portal.direct->portals())
+        {
+            if (const auto target_room = level->room(p).lock())
             {
-                portal.target = sectors[other_id];
-                portal.offset = Vector3(static_cast<float>(x2), 0, static_cast<float>(z2)) - diff;
+                const auto target_room_box = target_room->bounding_box();
+                const float top = box.Center.y - box.Extents.y;
+                const auto diff = (position() - target_room->position()) + Vector3(static_cast<float>(x2), 0, static_cast<float>(z2));
+                const int other_id = static_cast<int>(diff.x * target_room->num_z_sectors() + diff.z);
+                const auto target_sectors = target_room->sectors();
+                if (other_id >= 0 && other_id < std::ssize(target_sectors))
+                {
+                    const auto target_sector = target_sectors[other_id];
+                    const float target_bottom = target_sector->corner(ISector::Corner::NE).y;
+                    const float target_top = target_sector->ceiling(ISector::Corner::NE).y;
+                    const bool above = target_top < top && target_bottom <= top;
+
+                    // Only include rooms that overlap and aren't completely above.
+                    if (box.Intersects(target_room_box) && !above)
+                    {
+                        follow_portal(portal, level, *this, portal.direct->portals()[0], x2, z2);
+                        return portal;
+                    }
+                }
             }
         }
         return portal;

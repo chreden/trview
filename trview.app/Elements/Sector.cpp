@@ -2,11 +2,80 @@
 #include "IRoom.h"
 #include "Floordata.h"
 #include <trview.common/Algorithms.h>
+#include <ranges>
+#include "ILevel.h"
 
 using namespace DirectX::SimpleMath;
 
 namespace trview
 {
+    namespace
+    {
+        void add_quad_remote(const ISector::Portal& self, const ISector::Portal& target, ISector::Quad quad, SectorFlag remote_filter, const Vector3& away)
+        {
+            if (target.is_portal() && target.target)
+            {
+                const auto target_room = target.target->room().lock();
+                const auto source_room_info = self.direct_room->info();
+                const auto target_room_info = target_room->info();
+                // Only add remote if the target ceiling is higher than ours
+                if (target_room_info.yTop < source_room_info.yTop)
+                {
+                    const auto target_portal = target_room->sector_portal(target.target->x(), target.target->z(), target.target->x(), target.target->z());
+                    quad.room = target_room->number();
+                    quad.type = (target.target->flags() & ~(SectorFlag::Death | SectorFlag::MonkeySwing)) & remote_filter;
+                    for (auto& v : quad.v)
+                    {
+                        v -= target.offset;
+                    }
+                    for (const auto& triangle : quad.triangles())
+                    {
+                        target.target->add_triangle(target_portal, triangle, {});
+                    }
+
+                    // If the remote is an alternate or has an alternate also add geometry to that room.
+                    if (target_room->alternate_mode() != IRoom::AlternateMode::None)
+                    {
+                        if (auto level = target_room->level().lock())
+                        {
+                            if (auto alternate_room = level->room(target_room->alternate_room()).lock())
+                            {
+                                const auto alternate_target_portal = alternate_room->sector_portal(target.target->x(), target.target->z(), target.target->x(), target.target->z());
+                                quad.room = alternate_room->number();
+                                const auto flag = alternate_target_portal.target ? alternate_target_portal.target->flags() : alternate_target_portal.direct->flags();
+                                quad.type = (flag & ~(SectorFlag::Death | SectorFlag::MonkeySwing)) & remote_filter;
+                                for (const auto& triangle : quad.triangles())
+                                {
+                                    alternate_target_portal.direct->add_triangle(alternate_target_portal, triangle, {});
+                                }
+                            }
+                        }
+                    }
+
+                    return;
+                }
+            }
+
+            auto triangles = quad.triangles();
+            if (triangles[0].normal == away)
+            {
+                for (auto& triangle : triangles)
+                {
+                    const auto flag = target.target ? target.target->flags() : target.direct->flags();
+                    triangle.type = (flag & ~(SectorFlag::Death | SectorFlag::MonkeySwing)) & remote_filter;
+                    target.direct->add_triangle(self, triangle, {});
+                }
+            }
+            else
+            {
+                for (auto& triangle : triangles)
+                {
+                    self.direct->add_triangle(self, triangle, {});
+                }
+            }
+        }
+    }
+
     Sector::Sector(const trlevel::ILevel& level, const trlevel::tr3_room& room, const trlevel::tr_room_sector& sector, int sector_id, const std::weak_ptr<IRoom>& room_ptr, uint32_t sector_number)
         : _sector(sector), _sector_id(static_cast<uint16_t>(sector_id)), _room_above(sector.room_above), _room_below(sector.room_below), _room(room_number(room_ptr)), _info(room.info), _room_ptr(room_ptr),
         _floordata_index(sector.floordata_index), _number(sector_number)
@@ -421,10 +490,14 @@ namespace trview
 
     void Sector::generate_triangles()
     {
-        auto& tris = _triangles;
-
         auto room = _room_ptr.lock();
         if (!room)
+        {
+            return;
+        }
+
+        const auto level = room->level().lock();
+        if (!level)
         {
             return;
         }
@@ -435,182 +508,15 @@ namespace trview
         const auto east = room->sector_portal(_x, _z, _x + 1, _z);
         const auto west = room->sector_portal(_x, _z, _x - 1, _z);
 
-        const SectorFlag ceiling_flags = _flags & ~(SectorFlag::Death | SectorFlag::Climbable);
-        const SectorFlag floor_flags = _flags & ~(SectorFlag::MonkeySwing | SectorFlag::Climbable);
-        const SectorFlag wall_flags = _flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
-
-        if (_floor_triangulation.has_value())
+        if (self.is_portal())
         {
-            const auto function = _floor_triangulation.value().function;
-            if (_triangulation_function == TriangulationDirection::NwSe)
-            {
-                if (function != 0x0B)
-                {
-                    tris.push_back(Triangle(corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
-                }
-                if (function != 0x0C)
-                {
-                    tris.push_back(Triangle(corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), floor_flags, _room));
-                }
-            }
-            else
-            {
-                if (function != 0x0D)
-                {
-                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
-                }
-                if (function != 0x0E)
-                {
-                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), floor_flags, _room));
-                }
-            }
-        }
-        else if (is_floor())
-        {
-            if (_triangulation_function == TriangulationDirection::NwSe)
-            {
-                tris.push_back(Triangle(corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
-                tris.push_back(Triangle(corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), floor_flags, _room));
-            }
-            else
-            {
-                tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
-                tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), floor_flags, _room));
-            }
+            return;
         }
 
-        if (_ceiling_triangulation.has_value())
-        {
-            const auto function = _ceiling_triangulation.value().function;
-            if (_ceiling_triangulation_function == TriangulationDirection::NwSe)
-            {
-                if (function != 0x0F)
-                {
-                    tris.push_back(Triangle(ceiling(Corner::NW), ceiling(Corner::SW), ceiling(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::SW), corner_uv(Corner::SE), ceiling_flags, _room));
-                }
-                if (function != 0x10)
-                {
-                    tris.push_back(Triangle(ceiling(Corner::SE), ceiling(Corner::NE), ceiling(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::NE), corner_uv(Corner::NW), ceiling_flags, _room));
-                }
-            }
-            else
-            {
-                if (function != 0x11)
-                {
-                    tris.push_back(Triangle(ceiling(Corner::NW), ceiling(Corner::SW), ceiling(Corner::NE), corner_uv(Corner::NW), corner_uv(Corner::SW), corner_uv(Corner::NE), ceiling_flags, _room));
-                }
-                if (function != 0x12)
-                {
-                    tris.push_back(Triangle(ceiling(Corner::SW), ceiling(Corner::SE), ceiling(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::SE), corner_uv(Corner::NE), ceiling_flags, _room));
-                }
-            }
-        }
-        else if (is_ceiling())
-        {
-            tris.push_back(Triangle(ceiling(Corner::NW), ceiling(Corner::SW), ceiling(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::SW), corner_uv(Corner::SE), ceiling_flags, _room));
-            tris.push_back(Triangle(ceiling(Corner::SE), ceiling(Corner::NE), ceiling(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::NE), corner_uv(Corner::NW), ceiling_flags, _room));
-
-            if (north && !north.is_wall() && (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
-            {
-                add_quad(self, Quad(ceiling(Corner::NW), north.ceiling(Corner::SE), north.ceiling(Corner::SW), ceiling(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), _room));
-            }
-
-            if (south && !south.is_wall() && (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
-            {
-                add_quad(self, Quad(south.ceiling(Corner::NW), ceiling(Corner::SE), ceiling(Corner::SW), south.ceiling(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), _room));
-            }
-
-            if (east && !east.is_wall() && (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
-            {
-                add_quad(self, Quad(east.ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::SE), east.ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest), _room));
-            }
-
-            if (west && !west.is_wall() && (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
-            {
-                add_quad(self, Quad(ceiling(Corner::SW), west.ceiling(Corner::NE), west.ceiling(Corner::SE), ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast), _room));
-            }
-        }
-
-        if (is_wall() && !is_portal())
-        { 
-            if (north && !north.is_wall() && !north.is_portal())
-            {
-                add_quad(self, Quad(north.ceiling(Corner::SE), north.corner(Corner::SW), north.corner(Corner::SE), north.ceiling(Corner::SW), (wall_flags & ~SectorFlag::Climbable) | (SectorFlag::ClimbableSouth & north.direct->flags()), _room));
-            }
-
-            if (south && !south.is_wall() && !south.is_portal())
-            {
-                add_quad(self, Quad(south.ceiling(Corner::NW), south.corner(Corner::NE), south.corner(Corner::NW), south.ceiling(Corner::NE), (wall_flags & ~SectorFlag::Climbable) | (SectorFlag::ClimbableNorth & south.direct->flags()), _room));
-            }
-
-            if (east && !east.is_wall() && !east.is_portal())
-            {
-                add_quad(self, Quad(east.ceiling(Corner::SW), east.corner(Corner::NW), east.corner(Corner::SW), east.ceiling(Corner::NW), (wall_flags & ~SectorFlag::Climbable) | (SectorFlag::ClimbableWest & east.direct->flags()), _room));
-            }
-
-            if (west && !west.is_wall() && !west.is_portal())
-            {
-                add_quad(self, Quad(west.ceiling(Corner::NE), west.corner(Corner::SE), west.corner(Corner::NE), west.ceiling(Corner::SE), (wall_flags & ~SectorFlag::Climbable) | (SectorFlag::ClimbableEast & west.direct->flags()), _room));
-            }
-        }
-        else if (!is_portal())
-        {
-            if (north && !has_flag(north.flags(), SectorFlag::Wall))
-            {
-                if (corner(Corner::NW) != north.corner(Corner::SW) || corner(Corner::NE) != north.corner(Corner::SE))
-                {
-                    add_quad(self, Quad(north.corner(Corner::SW), corner(Corner::NE), corner(Corner::NW), north.corner(Corner::SE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), _room));
-                }
-
-                if (_room_above == 0xff && 
-                    (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
-                {
-                    add_quad(self, Quad(north.ceiling(Corner::SE), ceiling(Corner::NW), ceiling(Corner::NE), north.ceiling(Corner::SW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), _room));
-                }
-            }
-
-            if (south && !has_flag(south.flags(), SectorFlag::Wall))
-            {
-                if (corner(Corner::SW) != south.corner(Corner::NW) || corner(Corner::SE) != south.corner(Corner::NE))
-                {
-                    add_quad(self, Quad(corner(Corner::SW), south.corner(Corner::NE), south.corner(Corner::NW), corner(Corner::SE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), _room));
-                }
-
-                if (_room_above == 0xff && 
-                    (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
-                {
-                    add_quad(self, Quad(ceiling(Corner::SE), south.ceiling(Corner::NW), south.ceiling(Corner::NE), ceiling(Corner::SW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), _room));
-                }
-            }
-
-            if (east && !has_flag(east.flags(), SectorFlag::Wall))
-            {
-                if (corner(Corner::NE) != east.corner(Corner::NW) || corner(Corner::SE) != east.corner(Corner::SW))
-                {
-                    add_quad(self, Quad(corner(Corner::SE), east.corner(Corner::NW), east.corner(Corner::SW), corner(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast), _room));
-                }
-
-                if (_room_above == 0xff &&
-                    (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
-                {
-                    add_quad(self, Quad(ceiling(Corner::NE), east.ceiling(Corner::SW), east.ceiling(Corner::NW), ceiling(Corner::SE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast), _room));
-                }
-            }
-
-            if (west && !has_flag(west.flags(), SectorFlag::Wall))
-            {
-                if (corner(Corner::NW) != west.corner(Corner::NE) || corner(Corner::SW) != west.corner(Corner::SE))
-                {
-                    add_quad(self, Quad(west.corner(Corner::SE), corner(Corner::NW), corner(Corner::SW), west.corner(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest), _room));
-                }
-
-                if (_room_above == 0xff && 
-                    (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
-                {
-                    add_quad(self, Quad(west.ceiling(Corner::NE), ceiling(Corner::SW), ceiling(Corner::NW), west.ceiling(Corner::SE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest), _room));
-                }
-            }
-        }
+        generate_floor();
+        generate_ceiling();
+        generate_ceiling_steps(self, north, east, south, west);
+        generate_outsides(self, north, east, south, west);
     }
 
     void Sector::add_triangle(const ISector::Portal& portal, const Triangle& triangle, std::unordered_set<uint32_t> visited_rooms)
@@ -736,6 +642,252 @@ namespace trview
     uint32_t Sector::number() const
     {
         return _number;
+    }
+
+    void Sector::generate_floor()
+    {
+        if (is_wall())
+        {
+            return;
+        }
+
+        const SectorFlag floor_flags = _flags & ~(SectorFlag::MonkeySwing | SectorFlag::Climbable);
+        auto& tris = _triangles;
+        if (_floor_triangulation.has_value())
+        {
+            const auto function = _floor_triangulation.value().function;
+            if (_triangulation_function == TriangulationDirection::NwSe)
+            {
+                if (function != 0x0B)
+                {
+                    tris.push_back(Triangle(corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
+                }
+                if (function != 0x0C)
+                {
+                    tris.push_back(Triangle(corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), floor_flags, _room));
+                }
+            }
+            else
+            {
+                if (function != 0x0D)
+                {
+                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
+                }
+                if (function != 0x0E)
+                {
+                    tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), floor_flags, _room));
+                }
+            }
+        }
+        else if (is_floor())
+        {
+            if (_triangulation_function == TriangulationDirection::NwSe)
+            {
+                tris.push_back(Triangle(corner(Corner::SE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
+                tris.push_back(Triangle(corner(Corner::NW), corner(Corner::NE), corner(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SE), floor_flags, _room));
+            }
+            else
+            {
+                tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SW), corner(Corner::NW), corner_uv(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::NW), floor_flags, _room));
+                tris.push_back(Triangle(corner(Corner::NE), corner(Corner::SE), corner(Corner::SW), corner_uv(Corner::NE), corner_uv(Corner::SE), corner_uv(Corner::SW), floor_flags, _room));
+            }
+        }
+    }
+
+    void Sector::generate_ceiling()
+    {
+        if (is_wall())
+        {
+            return;
+        }
+
+        auto& tris = _triangles;
+        const SectorFlag ceiling_flags = _flags & ~(SectorFlag::Death | SectorFlag::Climbable);
+        if (_ceiling_triangulation.has_value())
+        {
+            const auto function = _ceiling_triangulation.value().function;
+            if (_ceiling_triangulation_function == TriangulationDirection::NwSe)
+            {
+                if (function != 0x0F)
+                {
+                    tris.push_back(Triangle(ceiling(Corner::NW), ceiling(Corner::SW), ceiling(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::SW), corner_uv(Corner::SE), ceiling_flags, _room));
+                }
+                if (function != 0x10)
+                {
+                    tris.push_back(Triangle(ceiling(Corner::SE), ceiling(Corner::NE), ceiling(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::NE), corner_uv(Corner::NW), ceiling_flags, _room));
+                }
+            }
+            else
+            {
+                if (function != 0x11)
+                {
+                    tris.push_back(Triangle(ceiling(Corner::NW), ceiling(Corner::SW), ceiling(Corner::NE), corner_uv(Corner::NW), corner_uv(Corner::SW), corner_uv(Corner::NE), ceiling_flags, _room));
+                }
+                if (function != 0x12)
+                {
+                    tris.push_back(Triangle(ceiling(Corner::SW), ceiling(Corner::SE), ceiling(Corner::NE), corner_uv(Corner::SW), corner_uv(Corner::SE), corner_uv(Corner::NE), ceiling_flags, _room));
+                }
+            }
+        }
+        else if (is_ceiling())
+        {
+            tris.push_back(Triangle(ceiling(Corner::NW), ceiling(Corner::SW), ceiling(Corner::SE), corner_uv(Corner::NW), corner_uv(Corner::SW), corner_uv(Corner::SE), ceiling_flags, _room));
+            tris.push_back(Triangle(ceiling(Corner::SE), ceiling(Corner::NE), ceiling(Corner::NW), corner_uv(Corner::SE), corner_uv(Corner::NE), corner_uv(Corner::NW), ceiling_flags, _room));
+        }
+    }
+
+    void Sector::generate_ceiling_steps(const Portal& self, const Portal& north, const Portal& east, const Portal& south, const Portal& west)
+    {
+        if (!is_ceiling())
+        {
+            return;
+        }
+
+        const SectorFlag wall_flags = _flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
+        if (north && (north.is_portal() || !north.is_wall()) && (ceiling(Corner::NW) != north.ceiling(Corner::SW) || ceiling(Corner::NE) != north.ceiling(Corner::SE)))
+        {
+            add_quad_remote(self, north, Quad{ ceiling(Corner::NW), north.ceiling(Corner::SE), north.ceiling(Corner::SW), ceiling(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), _room }, (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), Vector3::Backward);
+        }
+
+        if (south && (south.is_portal() || !south.is_wall()) && (ceiling(Corner::SW) != south.ceiling(Corner::NW) || ceiling(Corner::SE) != south.ceiling(Corner::NE)))
+        {
+            add_quad_remote(self, south, Quad{ south.ceiling(Corner::NW), ceiling(Corner::SE), ceiling(Corner::SW), south.ceiling(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), _room }, (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), Vector3::Forward);
+        }
+
+        if (east && (east.is_portal() || !east.is_wall()) && (ceiling(Corner::NE) != east.ceiling(Corner::NW) || ceiling(Corner::SE) != east.ceiling(Corner::SW)))
+        {
+            add_quad_remote(self, east, Quad{ east.ceiling(Corner::SW), ceiling(Corner::NE), ceiling(Corner::SE), east.ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast), _room }, (~SectorFlag::Climbable | SectorFlag::ClimbableWest), Vector3::Right);
+        }
+
+        if (west && (west.is_portal() || !west.is_wall()) && (ceiling(Corner::NW) != west.ceiling(Corner::NE) || ceiling(Corner::SW) != west.ceiling(Corner::SE)))
+        {
+            add_quad_remote(self, west, Quad{ ceiling(Corner::SW), west.ceiling(Corner::NE), west.ceiling(Corner::SE), ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest), _room }, (~SectorFlag::Climbable | SectorFlag::ClimbableEast), Vector3::Left);
+        }
+    }
+
+    void Sector::generate_outsides(const Portal& self, const Portal& north, const Portal& east, const Portal& south, const Portal& west)
+    {
+        const SectorFlag wall_flags = _flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
+        if (is_wall())
+        {
+            if (north && !north.is_wall() && !north.is_portal())
+            {
+                add_quad(self, Quad(north.ceiling(Corner::SE), north.corner(Corner::SW), north.corner(Corner::SE), north.ceiling(Corner::SW), (wall_flags & ~SectorFlag::Climbable) | (SectorFlag::ClimbableSouth & north.direct->flags()), _room));
+            }
+
+            if (south && !south.is_wall() && !south.is_portal())
+            {
+                add_quad(self, Quad(south.ceiling(Corner::NW), south.corner(Corner::NE), south.corner(Corner::NW), south.ceiling(Corner::NE), (wall_flags & ~SectorFlag::Climbable) | (SectorFlag::ClimbableNorth & south.direct->flags()), _room));
+            }
+
+            if (east && !east.is_wall() && !east.is_portal())
+            {
+                add_quad(self, Quad(east.ceiling(Corner::SW), east.corner(Corner::NW), east.corner(Corner::SW), east.ceiling(Corner::NW), (wall_flags & ~SectorFlag::Climbable) | (SectorFlag::ClimbableWest & east.direct->flags()), _room));
+            }
+
+            if (west && !west.is_wall() && !west.is_portal())
+            {
+                add_quad(self, Quad(west.ceiling(Corner::NE), west.corner(Corner::SE), west.corner(Corner::NE), west.ceiling(Corner::SE), (wall_flags & ~SectorFlag::Climbable) | (SectorFlag::ClimbableEast & west.direct->flags()), _room));
+            }
+        }
+        else
+        {
+            if (north && (north.is_portal() || !has_flag(north.flags(), SectorFlag::Wall)))
+            {
+                if (north.is_portal() && !north.target)
+                {
+                    add_quad(self, Quad(ceiling(Corner::NW), corner(Corner::NE), corner(Corner::NW), ceiling(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth), _room));
+                }
+                else if (corner(Corner::NW) != north.corner(Corner::SW) || corner(Corner::NE) != north.corner(Corner::SE))
+                {
+                    Quad quad{ north.corner(Corner::SW), corner(Corner::NE), corner(Corner::NW), north.corner(Corner::SE), wall_flags, _room };
+                    if (quad.triangles()[0].normal == Vector3::Backward)
+                    {
+                        const auto flags = north.target ? north.target->flags() : north.flags();
+                        const SectorFlag north_wall_flags = flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
+                        quad.type = north_wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth);
+                        add_quad(north, quad);
+                    }
+                    else
+                    {
+                        quad.type = wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth);
+                        add_quad(self, quad);
+                    }
+                }
+            }
+
+            if (south && (south.is_portal() || !has_flag(south.flags(), SectorFlag::Wall)))
+            {
+                if (south.is_portal() && !south.target)
+                {
+                    add_quad(self, Quad(corner(Corner::SW), ceiling(Corner::SE), ceiling(Corner::SW), corner(Corner::SE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth), _room));
+                }
+                else if (corner(Corner::SW) != south.corner(Corner::NW) || corner(Corner::SE) != south.corner(Corner::NE))
+                {
+                    Quad quad{ corner(Corner::SW), south.corner(Corner::NE), south.corner(Corner::NW), corner(Corner::SE), wall_flags, _room };
+                    if (quad.triangles()[0].normal == Vector3::Forward)
+                    {
+                        const auto flags = south.target ? south.target->flags() : south.flags();
+                        const SectorFlag south_wall_flags = flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
+                        quad.type = south_wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableNorth);
+                        add_quad(south, quad);
+                    }
+                    else
+                    {
+                        quad.type = wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableSouth);
+                        add_quad(self, quad);
+                    }
+                }
+            }
+
+            if (east && (east.is_portal() || !has_flag(east.flags(), SectorFlag::Wall)))
+            {
+                if (east.is_portal() && !east.target)
+                {
+                    add_quad(self, Quad(corner(Corner::SE), ceiling(Corner::NE), ceiling(Corner::SE), corner(Corner::NE), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast), _room));
+                }
+                else if (corner(Corner::NE) != east.corner(Corner::NW) || corner(Corner::SE) != east.corner(Corner::SW))
+                {
+                    Quad quad{ corner(Corner::SE), east.corner(Corner::NW), east.corner(Corner::SW), corner(Corner::NE), wall_flags, _room };
+                    if (quad.triangles()[0].normal == Vector3::Right)
+                    {
+                        const auto flags = east.target ? east.target->flags() : east.flags();
+                        const SectorFlag east_wall_flags = flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
+                        quad.type = east_wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest);
+                        add_quad(east, quad);
+                    }
+                    else
+                    {
+                        quad.type = wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast);
+                        add_quad(self, quad);
+                    }
+                }
+            }
+
+            if (west && (west.is_portal() || !has_flag(west.flags(), SectorFlag::Wall)))
+            {
+                if (west.is_portal() && !west.target)
+                {
+                    add_quad(self, Quad(ceiling(Corner::SW), corner(Corner::NW), corner(Corner::SW), ceiling(Corner::NW), wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest), _room));
+                }
+                else if (corner(Corner::NW) != west.corner(Corner::NE) || corner(Corner::SW) != west.corner(Corner::SE))
+                {
+                    Quad quad{ west.corner(Corner::SE), corner(Corner::NW), corner(Corner::SW), west.corner(Corner::NE), wall_flags, _room };
+                    if (quad.triangles()[0].normal == Vector3::Left)
+                    {
+                        const auto flags = west.target ? west.target->flags() : west.flags();
+                        const SectorFlag west_wall_flags = flags & ~(SectorFlag::Death | SectorFlag::MonkeySwing);
+                        quad.type = west_wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableEast);
+                        add_quad(west, quad);
+                    }
+                    else
+                    {
+                        quad.type = wall_flags & (~SectorFlag::Climbable | SectorFlag::ClimbableWest);
+                        add_quad(self, quad);
+                    }
+                }
+            }
+        }
     }
 }
 

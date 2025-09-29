@@ -157,7 +157,6 @@ namespace trview
         std::vector<std::weak_ptr<ILight>> _lights;
         IMesh::Source _mesh_source;
         std::vector<uint32_t> _all_geometry_sector_rooms;
-        std::function<std::shared_ptr<IMesh>()> _unmatched_mesh_generator;
 
         bool _visible{ true };
 
