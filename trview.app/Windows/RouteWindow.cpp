@@ -241,7 +241,22 @@ namespace trview
                         };
 
                         add_stat("Type", waypoint_type_to_string(waypoint->type()));
-                        add_stat("Room", waypoint->room());
+                        
+                        ImGui::TableNextColumn();
+                        ImGui::Text("Room");
+                        ImGui::TableNextColumn();
+                        int32_t room = static_cast<int32_t>(waypoint->room());
+                        ImGui::SetNextItemWidth(-1);
+                        if (ImGui::InputInt("##room", &room))
+                        {
+                            if (const auto level = route->level().lock())
+                            {
+                                if (room >= 0 && static_cast<uint32_t>(room) < level->number_of_rooms())
+                                {
+                                    waypoint->set_room_number(static_cast<uint32_t>(room));
+                                }
+                            }
+                        }
 
                         add_stat("Room Position", position_text(get_room_pos()));
                         ImGui::EndTable();
