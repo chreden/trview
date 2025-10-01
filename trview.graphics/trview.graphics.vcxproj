@@ -15,30 +15,22 @@
     <ClInclude Include="DepthStencil.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="DeviceWindow.h" />
-    <ClInclude Include="Font.h" />
-    <ClInclude Include="FontFactory.h" />
     <ClInclude Include="IBuffer.h" />
     <ClInclude Include="IDevice.h" />
     <ClInclude Include="IDeviceWindow.h" />
-    <ClInclude Include="IFont.h" />
-    <ClInclude Include="IFontFactory.h" />
     <ClInclude Include="IRenderTarget.h" />
     <ClInclude Include="IShader.h" />
     <ClInclude Include="IShaderStorage.h" />
     <ClInclude Include="ISprite.h" />
-    <ClInclude Include="JsonSerializers.h" />
     <ClInclude Include="Mocks\D3D\ID3D11DeviceContext.h" />
     <ClInclude Include="mocks\IBuffer.h" />
     <ClInclude Include="Mocks\IDevice.h" />
     <ClInclude Include="mocks\IDeviceWindow.h" />
-    <ClInclude Include="mocks\IFont.h" />
-    <ClInclude Include="mocks\IFontFactory.h" />
     <ClInclude Include="mocks\IRenderTarget.h" />
     <ClInclude Include="Mocks\IShader.h" />
     <ClInclude Include="Mocks\IShaderStorage.h" />
     <ClInclude Include="Mocks\ISprite.h" />
     <ClInclude Include="Mocks\ISamplerState.h" />
-    <ClInclude Include="ParagraphAlignment.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="PixelShaderStore.h" />
     <ClInclude Include="RasterizerStateStore.h" />
@@ -50,7 +42,6 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteSizeStore.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="TextAlignment.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="VertexShaderStore.h" />
@@ -61,9 +52,6 @@
     <ClCompile Include="DepthStencil.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="DeviceWindow.cpp" />
-    <ClCompile Include="Font.cpp" />
-    <ClCompile Include="FontFactory.cpp" />
-    <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="Mocks\Mocks.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>

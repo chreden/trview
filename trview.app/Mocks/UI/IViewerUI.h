@@ -11,7 +11,6 @@ namespace trview
             MockViewerUI();
             virtual ~MockViewerUI();
             MOCK_METHOD(void, clear_minimap_highlight, (), (override));
-            MOCK_METHOD(std::shared_ptr<ISector>, current_minimap_sector, (), (const, override));
             MOCK_METHOD(bool, is_input_active, (), (const, override));
             MOCK_METHOD(bool, is_cursor_over, (), (const, override));
             MOCK_METHOD(void, render, (), (override));

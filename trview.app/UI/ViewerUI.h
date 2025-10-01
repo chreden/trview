@@ -31,7 +31,6 @@ namespace trview
             std::unique_ptr<IToolbar> toolbar);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
-        virtual std::shared_ptr<ISector> current_minimap_sector() const override;
         virtual bool is_input_active() const override;
         virtual bool is_cursor_over() const override;
         virtual void render() override;
@@ -92,7 +91,6 @@ namespace trview
         std::unique_ptr<ICameraControls> _camera_controls;
         std::unique_ptr<CameraPosition> _camera_position;
         std::unique_ptr<IMapRenderer> _map_renderer;
-        std::unique_ptr<Tooltip> _map_tooltip;
         std::unique_ptr<Tooltip> _tooltip;
         bool _show_tooltip{ true };
         bool _show_measure{ false };

@@ -28,8 +28,6 @@ namespace testing
 #include "D3D/ID3D11DeviceContext.h"
 #include "IDevice.h"
 #include "IDeviceWindow.h"
-#include "IFont.h"
-#include "IFontFactory.h"
 #include "IRenderTarget.h"
 #include "IShader.h"
 #include "IShaderStorage.h"
@@ -50,12 +48,6 @@ namespace trview
 
             MockDeviceWindow::MockDeviceWindow() {}
             MockDeviceWindow::~MockDeviceWindow() {}
-
-            MockFont::MockFont() {}
-            MockFont::~MockFont() {}
-
-            MockFontFactory::MockFontFactory() {}
-            MockFontFactory::~MockFontFactory() {}
 
             MockRenderTarget::MockRenderTarget() {}
             MockRenderTarget::~MockRenderTarget() {}

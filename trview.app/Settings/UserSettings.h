@@ -11,6 +11,13 @@ namespace trview
 {
     struct UserSettings
     {
+        struct Fonts
+        {
+            static const inline FontSetting Default{ .name = "Arial", .filename = "arial.ttf", .size = 12 };
+            static const inline FontSetting Console{ .name = "Consolas", .filename = "consola.ttf", .size = 12 };
+            static const inline FontSetting Minimap{ .name = "Consolas", .filename = "consola.ttf", .size = 11 };
+        };
+
         void add_recent_file(const std::string& file);
         void add_recent_diff_file(const std::string& file);
 
@@ -62,8 +69,9 @@ namespace trview
         std::unordered_map<std::string, bool> toggles;
         std::unordered_map<std::string, FontSetting> fonts
         {
-            { "Default", {.name = "Arial", .filename = "arial.ttf", .size = 12 } },
-            { "Console", {.name = "Consolas", .filename = "consola.ttf", .size = 12 } }
+            { "Default", Fonts::Default },
+            { "Console", Fonts::Console },
+            { "Minimap", Fonts::Minimap }
         };
         bool statics_startup{ false };
         bool camera_position_window{ true };

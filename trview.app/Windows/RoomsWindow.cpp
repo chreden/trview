@@ -97,27 +97,10 @@ namespace trview
     RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard)
         : _map_renderer(map_renderer_source(Size(341, 341))), _clipboard(clipboard)
     {
-        _map_renderer->set_render_mode(IMapRenderer::RenderMode::Texture);
-        _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<ISector>& sector)
-        {
-            if (!sector)
-            {
-                _map_tooltip.set_visible(false);
-                return;
-            }
-
-            std::string text = std::format("X: {}, Z: {}\n", sector->x(), sector->z());
-            if (has_flag(sector->flags(), SectorFlag::RoomAbove))
-            {
-                text += std::format("Above: {}", sector->room_above());
-            }
-            if (has_flag(sector->flags(), SectorFlag::RoomBelow))
-            {
-                text += std::format("{}Below: {}", has_flag(sector->flags(), SectorFlag::RoomAbove) ? ", " : "", sector->room_below());
-            }
-            _map_tooltip.set_text(text);
-            _map_tooltip.set_visible(!text.empty());
-        };
+        _map_renderer->on_room_selected += on_room_selected;
+        _map_renderer->on_trigger_selected += on_trigger_selected;
+        _map_renderer->on_sector_hover += on_sector_hover;
+        _token_store += _map_renderer->on_sector_selected += [&](auto sector) { _local_selected_sector = sector; };
 
         generate_filters();
 
@@ -186,7 +169,7 @@ namespace trview
     void RoomsWindow::set_settings(const UserSettings& settings)
     {
         _settings = settings;
-        _map_renderer->set_colours(settings.map_colours);
+        _map_renderer->set_settings(settings);
         if (!_columns_set)
         {
             _filters.set_columns(_settings.rooms_window_columns);
@@ -300,8 +283,6 @@ namespace trview
         }
         ImGui::End();
         ImGui::PopStyleVar();
-
-        _map_tooltip.render();
         return stay_open;
     }
 
@@ -364,81 +345,11 @@ namespace trview
             {
                 if (_map_renderer->loaded())
                 {
-                    _map_renderer->render();
-                    _map_texture = _map_renderer->texture();
-                    if (!_map_texture.has_content())
-                    {
-                        return;
-                    }
-                    _map_renderer->set_window_size(_map_texture.size());
-
-                    float remainder = (341 - _map_texture.size().height) * 0.5f;
-                    ImGui::SetCursorPosX(std::round((ImGui::GetWindowSize().x - _map_texture.size().width) * 0.5f));
+                    const auto size = _map_renderer->size();
+                    float remainder = (341 - size.height) * 0.5f;
+                    ImGui::SetCursorPosX(std::round((ImGui::GetWindowSize().x - size.width) * 0.5f));
                     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::floor(remainder));
-
-                    const auto io = ImGui::GetIO();
-                    if (io.WantCaptureMouse && ImGui::IsWindowHovered(ImGuiHoveredFlags_None))
-                    {
-                        const auto mouse_pos = io.MousePos;
-                        auto top_left = ImGui::GetCursorScreenPos();
-                        auto adjusted = mouse_pos - top_left;
-                        _map_renderer->set_cursor_position(Point(adjusted.x, adjusted.y));
-
-                        auto sector = _map_renderer->sector_at_cursor();
-                        on_sector_hover(sector);
-                        if (sector)
-                        {
-                            if (io.MouseClicked[0])
-                            {
-                                if (_in_floordata_mode)
-                                {
-                                    _local_selected_sector = sector;
-                                    _map_renderer->set_selection(sector);
-                                }
-                                else
-                                {
-                                    if (has_flag(sector->flags(), SectorFlag::Portal))
-                                    {
-                                        if (auto level = room->level().lock())
-                                        {
-                                            on_room_selected(level->room(sector->portals()[0]));
-                                        }
-                                    }
-                                    else if (sector->room_below() != 0xff)
-                                    {
-                                        if (auto level = room->level().lock())
-                                        {
-                                            on_room_selected(level->room(sector->room_below()));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Select triggers
-                                        for (const auto& trigger : _triggers)
-                                        {
-                                            auto trigger_ptr = trigger.lock();
-                                            if (trigger_ptr && trigger_ptr->sector_id() == sector->id())
-                                            {
-                                                on_trigger_selected(trigger);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else if (io.MouseClicked[1] && !_in_floordata_mode)
-                            {
-                                if (sector->room_above() != 0xff)
-                                {
-                                    if (auto level = room->level().lock())
-                                    {
-                                        on_room_selected(level->room(sector->room_above()));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    ImGui::Image(_map_texture.view().Get(), ImVec2(_map_texture.size().width, _map_texture.size().height));
+                    _map_renderer->render(false);
                     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + std::ceil(remainder));
                     ImGui::Separator();
                 }
@@ -487,13 +398,13 @@ namespace trview
 
                     if (ImGui::BeginTabItem("Floordata"))
                     {
-                        _in_floordata_mode = true;
+                        _map_renderer->set_mode(IMapRenderer::Mode::Select);
                         render_floordata_tab(room);
                         ImGui::EndTabItem();
                     }
                     else
                     {
-                        _in_floordata_mode = false;
+                        _map_renderer->set_mode(IMapRenderer::Mode::Normal);
                     }
 
                     if (ImGui::BeginTabItem("Statics##Statics Tab"))

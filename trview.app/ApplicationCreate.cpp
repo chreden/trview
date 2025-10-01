@@ -9,8 +9,8 @@
 #include <trview.common/Windows/Dialogs.h>
 #include <trview.common/Windows/Shell.h>
 
+#include <trview.graphics/Sprite.h>
 #include <trview.graphics/ShaderStorage.h>
-#include <trview.graphics/FontFactory.h>
 #include <trview.graphics/DeviceWindow.h>
 #include <trview.graphics/RenderTarget.h>
 #include <trview.graphics/Buffer.h>
@@ -20,7 +20,6 @@
 #include "Resources/resource.h"
 #include "Resources/DefaultShaders.h"
 #include "Resources/DefaultTextures.h"
-#include "Resources/DefaultFonts.h"
 
 #include "Elements/TypeInfoLookup.h"
 #include "Elements/CameraSink/CameraSink.h"
@@ -176,7 +175,6 @@ namespace trview
         auto shortcuts = std::make_shared<Shortcuts>(window);
         auto texture_storage = std::make_shared<TextureStorage>(device);
         auto shader_storage = std::make_shared<graphics::ShaderStorage>();
-        auto font_factory = std::make_shared<graphics::FontFactory>();
 
         Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
         auto extra_type_info = files->load_file(files->appdata_directory() + "\\trview\\types.json");
@@ -185,7 +183,6 @@ namespace trview
             extra_type_info.has_value() ? std::optional<std::string>(extra_type_info.value() | std::ranges::to<std::string>()) : std::nullopt);
 
         load_default_shaders(device, shader_storage);
-        load_default_fonts(device, font_factory);
         load_default_textures(device, texture_storage);
 
         auto render_target_source = [=](auto&&... args) { return std::make_unique<graphics::RenderTarget>(device, args...); };
@@ -197,11 +194,6 @@ namespace trview
         auto sprite_source = [=](auto&& size)
         {
             return std::make_unique<graphics::Sprite>(device, shader_storage, size);
-        };
-
-        auto map_renderer_source = [=](auto&& size)
-        {
-            return std::make_unique<MapRenderer>(device, font_factory, size, sprite_source, render_target_source);
         };
 
         auto default_mesh_source = [=](auto&&... args) { return std::make_shared<Mesh>(device, args..., texture_storage); };
@@ -384,7 +376,7 @@ namespace trview
         auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell, dialogs); };
         auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
         auto fonts = std::make_shared<Fonts>(files, imgui_backend);
-
+        auto map_renderer_source = [=](auto&& size) { return std::make_unique<MapRenderer>(size, fonts); };
         auto clipboard = std::make_shared<Clipboard>(window);
         auto items_window_source = [=]() { return std::make_shared<ItemsWindow>(clipboard); };
         auto items_window_manager = std::make_shared<ItemsWindowManager>(window, shortcuts, items_window_source);

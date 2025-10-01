@@ -1,158 +1,204 @@
 #include "MapRenderer.h"
-#include <trview.graphics/RenderTargetStore.h>
-#include <trview.graphics/SpriteSizeStore.h>
-#include <trview.graphics/ViewportStore.h>
+#include "../Elements/ILevel.h"
 
 using namespace DirectX::SimpleMath;
 using namespace Microsoft::WRL;
 
 namespace trview
 {
+    namespace
+    {
+        constexpr float _DRAW_MARGIN = 30.0f;
+        constexpr float _DRAW_SCALE = 17.0f;
+    }
+
     IMapRenderer::~IMapRenderer()
     {
     }
 
-    MapRenderer::MapRenderer(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Size& window_size, const graphics::ISprite::Source& sprite_source,
-        const graphics::IRenderTarget::SizeSource& render_target_source)
-        : _device(device),
-        _window_width(static_cast<int>(window_size.width)),
-        _window_height(static_cast<int>(window_size.height)),
-        _sprite(sprite_source(window_size)),
-        _font(font_factory->create_font("Arial", 7, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre)),
-        _texture(create_texture(*device, Colour::White)),
-        _render_target_source(render_target_source)
+    MapRenderer::MapRenderer(const Size& window_size, const std::shared_ptr<IFonts>& fonts)
+        : _window_width(static_cast<int>(window_size.width)),
+          _window_height(static_cast<int>(window_size.height)),
+          _fonts(fonts)
     {
-        D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
-        memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
-        _depth_stencil_state = device->create_depth_stencil_state(ui_depth_stencil_desc);
     }
 
-    void
-    MapRenderer::render()
+    void MapRenderer::render(bool window)
     {
-        if (!_render_target || !_visible || !_loaded)
+        if (!_visible || !_loaded)
         {
             return;
         }
 
-        auto context = _device->context();
-        context->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
+        const float width = static_cast<float>(_DRAW_SCALE * _columns + 1);
+        const float height = static_cast<float>(_DRAW_SCALE * _rows + 1);
 
-        if (needs_redraw())
+        if (window)
         {
-            // Clear the render target to be transparent (as it may not be using the entire area).
-            _render_target->clear(Color(1, 1, 1, 1));
+            // First time sizing:
+            if (_last_padding.has_value() && _last_position.has_value() && _last_size.has_value() && !_last_client_size.has_value())
+            {
+                const auto new_size = *_last_padding + ImVec2(width, height);
+                ImGui::SetNextWindowSize(new_size, ImGuiCond_Always);
+                if (!_docked)
+                {
+                    ImGui::SetNextWindowPos(*_last_position + ImVec2(_last_size->x, 0), ImGuiCond_Always, ImVec2(1.0f, 0.0f));
+                }
+                _last_client_size = { width, height };
+            }
 
-            graphics::RenderTargetStore rs_store(context);
-            graphics::ViewportStore vp_store(context);
-            // Set the host size to match the render target as we will have adjusted the viewport.
-            graphics::SpriteSizeStore s_store(*_sprite, _render_target->size());
- 
-            _render_target->apply();
-            render_internal(context);
-            _force_redraw = false;
+            // Regular resizing:
+            if (_last_padding.has_value() && _last_client_size.has_value() && (_last_client_size->x != width || _last_client_size->y != height))
+            {
+                const auto new_size = *_last_padding + ImVec2(width, height);
+                ImGui::SetNextWindowSize(new_size, ImGuiCond_Always);
+                if (!_docked)
+                {
+                    ImGui::SetNextWindowPos(*_last_position + ImVec2(_last_padding->x + _last_client_size->x, 0), ImGuiCond_Always, ImVec2(1.0f, 0.0f));
+                }
+            }
+
+            if (!ImGui::Begin("Minimap", nullptr, ImGuiWindowFlags_NoResize))
+            {
+                ImGui::End();
+                return;
+            }
         }
 
-        if (_render_mode == RenderMode::Screen)
+        // Only set size if already set so first run can be detected and resized.
+        if (_last_client_size.has_value())
         {
-            // Now render the render target in the correct position.
-            auto p = Point(_first.x - 1, _first.y - 1);
-            _sprite->render(_render_target->texture(), p.x, p.y, static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height()));
+            _last_client_size = { width, height };
+        }
+        _last_position = ImGui::GetWindowPos();
+        auto list = ImGui::GetWindowDrawList();
+        const auto cursorPos = ImGui::GetCursorPos();
+        const auto pos = ImGui::GetWindowPos() + cursorPos;
+        _last_padding = ImVec2(cursorPos.x * 2, cursorPos.y + cursorPos.x);
+        _docked = ImGui::IsWindowDocked();
+
+        // Cursor hovering:
+        _cursor_was_over = ImGui::IsMouseHoveringRect(pos, pos + ImVec2(width, height));
+        const auto mouse_pos = ImGui::GetMousePos() - pos;
+        const auto sector = sector_at({ mouse_pos.x, mouse_pos.y });
+        if (sector != _previous_sector)
+        {
+            _previous_sector = sector;
+            on_sector_hover(sector);
+        }
+        tooltip();
+
+        ImGui::PushFont(_fonts->font("Minimap"));
+
+        // Background rectangle.
+        draw(list, Point(), Size(width, height), Color(0.0f, 0.0f, 0.0f));
+
+        std::for_each(_tiles.begin(), _tiles.end(), [&](const Tile& tile)
+            {
+                const ImVec2 tile_pos = ImVec2(tile.position.x, tile.position.y);
+                const ImVec2 tile_size = ImVec2(tile.size.width, tile.size.height);
+
+                Color text_color = Colour::White;
+                Color draw_color = _settings.map_colours.colour_from_flags_field(tile.sector->flags());
+
+                // Special case for special walls (and no space)
+                if (!is_no_space(tile.sector->flags()) &&
+                    has_flag(tile.sector->flags(), SectorFlag::Wall) &&
+                    has_flag(tile.sector->flags(), SectorFlag::SpecialWall))
+                {
+                    draw_color = _settings.map_colours.colour(SectorFlag::SpecialWall);
+                }
+
+                // If the cursor is over the tile, then negate colour 
+                if (tile.sector == _previous_sector ||
+                    (_highlighted_sector.has_value() &&
+                        _highlighted_sector.value().first == tile.sector->x() &&
+                        _highlighted_sector.value().second == tile.sector->z()))
+                {
+                    draw_color.Negate();
+                    text_color.Negate();
+                }
+
+                // Draw the base tile 
+                draw(list, tile.position, tile.size, draw_color);
+
+                // Draw climbable walls. This draws 4 separate lines - one per climbable edge. 
+                // In the future I'd like to just draw a hollow square instead.
+                const float thickness = _DRAW_SCALE / 4;
+
+                if (has_flag(tile.sector->flags(), SectorFlag::Wall) && (has_flag(tile.sector->flags(), SectorFlag::Portal) || is_no_space(tile.sector->flags())))
+                {
+                    const auto colour = _settings.map_colours.colour(has_flag(tile.sector->flags(), SectorFlag::SpecialWall) ? SectorFlag::SpecialWall : SectorFlag::Wall);
+                    draw(list, tile.position, tile.size / 4.0f, colour);
+                }
+
+                if (has_flag(tile.sector->flags(), SectorFlag::ClimbableNorth))
+                    draw(list, tile.position, Size(tile.size.width, thickness), _settings.map_colours.colour(SectorFlag::ClimbableNorth));
+                if (has_flag(tile.sector->flags(), SectorFlag::ClimbableEast))
+                    draw(list, Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), _settings.map_colours.colour(SectorFlag::ClimbableEast));
+                if (has_flag(tile.sector->flags(), SectorFlag::ClimbableSouth))
+                    draw(list, Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), _settings.map_colours.colour(SectorFlag::ClimbableSouth));
+                if (has_flag(tile.sector->flags(), SectorFlag::ClimbableWest))
+                    draw(list, tile.position, Size(thickness, tile.size.height), _settings.map_colours.colour(SectorFlag::ClimbableWest));
+
+                // If sector is a down portal, draw a transparent black square over it 
+                if (has_flag(tile.sector->flags(), SectorFlag::RoomBelow))
+                    draw(list, tile.position, tile.size, _settings.map_colours.colour(MapColours::Special::RoomBelow));
+
+                // If sector is an up portal, draw a small corner square in the top left to signify this 
+                if (has_flag(tile.sector->flags(), SectorFlag::RoomAbove))
+                    draw(list, tile.position, Size(tile.size.width / 4, tile.size.height / 4), _settings.map_colours.colour(MapColours::Special::RoomAbove));
+
+                if (has_flag(tile.sector->flags(), SectorFlag::Death) && has_flag(tile.sector->flags(), SectorFlag::Trigger))
+                {
+                    draw(list, tile.position + Point(tile.size.width * 0.75f, 0), tile.size / 4.0f, _settings.map_colours.colour(SectorFlag::Death));
+                }
+
+                if (has_flag(tile.sector->flags(), SectorFlag::Portal))
+                {
+                    const std::string text = std::format("{}{}", tile.sector->portals()[0], tile.sector->portals().size() > 1 ? "+" : "");
+                    auto text_size = ImGui::CalcTextSize(text.c_str());
+                    list->AddText(
+                        pos + 
+                        ImVec2(tile.position.x, tile.position.y) + 
+                        (ImVec2(tile.size.width, tile.size.height) - text_size) * 0.5f, ImColor(text_color.R(), text_color.G(), text_color.B()),
+                        text.c_str());
+                }
+
+                if (_selected_sector.lock() == tile.sector)
+                {
+                    draw(list, tile.position, { tile.size.width, 1.0f }, Colour::Yellow);
+                    draw(list, tile.position + Point(0, 1.0f), { 1.0f, tile.size.height - 2.0f }, Colour::Yellow);
+                    draw(list, tile.position + Point(0, tile.size.height - 1.0f), { tile.size.width, 1.0f }, Colour::Yellow);
+                    draw(list, tile.position + Point(tile.size.width - 1.0f, 1.0f), { 1.0f, tile.size.height - 2.0f }, Colour::Yellow);
+                }
+            });
+        ImGui::PopFont();
+        ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(width, height));
+
+        clicking();
+
+        if (window)
+        {
+            _last_size = ImGui::GetWindowSize();
+            ImGui::End();
         }
     }
 
-    void
-    MapRenderer::render_internal(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
+    void MapRenderer::draw(ImDrawList* list, Point p, Size s, DirectX::SimpleMath::Color c)
     {
-        // Draw base square, this is the backdrop for the map 
-        draw(Point(), Size(static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height())), Color(0.0f, 0.0f, 0.0f));
-
-        std::for_each(_tiles.begin(), _tiles.end(), [&](const Tile &tile)
-        {
-            Color text_color = Colour::White;
-            Color draw_color = _colours.colour_from_flags_field(tile.sector->flags());
-
-            // Special case for special walls (and no space)
-            if (!is_no_space(tile.sector->flags()) &&
-                has_flag(tile.sector->flags(), SectorFlag::Wall) &&
-                has_flag(tile.sector->flags(), SectorFlag::SpecialWall))
-            {
-                draw_color = _colours.colour(SectorFlag::SpecialWall);
-            }
-
-            // If the cursor is over the tile, then negate colour 
-            if (tile.sector == _previous_sector ||
-                 (_highlighted_sector.has_value() &&
-                     _highlighted_sector.value().first == tile.sector->x() &&
-                     _highlighted_sector.value().second == tile.sector->z()))
-            {
-                draw_color.Negate();
-                text_color.Negate();
-            }
-
-            // Draw the base tile 
-            draw(tile.position, tile.size, draw_color);
-
-            // Draw climbable walls. This draws 4 separate lines - one per climbable edge. 
-            // In the future I'd like to just draw a hollow square instead.
-            const float thickness = _DRAW_SCALE / 4;
-
-            if (has_flag(tile.sector->flags(), SectorFlag::Wall) && (has_flag(tile.sector->flags(), SectorFlag::Portal) || is_no_space(tile.sector->flags())))
-            {
-                const auto colour = _colours.colour(has_flag(tile.sector->flags(), SectorFlag::SpecialWall) ? SectorFlag::SpecialWall : SectorFlag::Wall);
-                draw(tile.position, tile.size / 4.0f, colour);
-            }
-
-            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableNorth))
-                draw(tile.position, Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableNorth));
-            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableEast))
-                draw(Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), _colours.colour(SectorFlag::ClimbableEast));
-            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableSouth))
-                draw(Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), _colours.colour(SectorFlag::ClimbableSouth));
-            if (has_flag(tile.sector->flags(), SectorFlag::ClimbableWest))
-                draw(tile.position, Size(thickness, tile.size.height), _colours.colour(SectorFlag::ClimbableWest));
-
-            // If sector is a down portal, draw a transparent black square over it 
-            if (has_flag(tile.sector->flags(), SectorFlag::RoomBelow))
-                draw(tile.position, tile.size, _colours.colour(MapColours::Special::RoomBelow));
-
-            // If sector is an up portal, draw a small corner square in the top left to signify this 
-            if (has_flag(tile.sector->flags(), SectorFlag::RoomAbove))
-                draw(tile.position, Size(tile.size.width / 4, tile.size.height / 4), _colours.colour(MapColours::Special::RoomAbove));
-
-            if (has_flag(tile.sector->flags(), SectorFlag::Death) && has_flag(tile.sector->flags(), SectorFlag::Trigger))
-            {
-                draw(tile.position + Point(tile.size.width * 0.75f, 0), tile.size / 4.0f, _colours.colour(SectorFlag::Death));
-            }
-
-            if (has_flag(tile.sector->flags(), SectorFlag::Portal))
-            {
-                const std::wstring text = std::format(L"{}{}", tile.sector->portals()[0], tile.sector->portals().size() > 1 ? L"+" : L"");
-                _font->render(context, text, tile.position.x - 1, tile.position.y, tile.size.width, tile.size.height, text_color);
-            }
-
-            if (_selected_sector.lock() == tile.sector)
-            {
-                draw(tile.position, { tile.size.width, 1.0f }, Colour::Yellow);
-                draw(tile.position + Point(0, 1.0f), { 1.0f, tile.size.height - 2.0f }, Colour::Yellow);
-                draw(tile.position + Point(0, tile.size.height - 1.0f), { tile.size.width, 1.0f }, Colour::Yellow);
-                draw(tile.position + Point(tile.size.width - 1.0f, 1.0f), { 1.0f, tile.size.height - 2.0f }, Colour::Yellow);
-            }
-        });
-    }
-
-    void 
-    MapRenderer::draw(Point p, Size s, Color c)
-    {
-        _sprite->render(_texture, p.x, p.y, s.width, s.height, c); 
+        const auto pos = ImGui::GetWindowPos() + ImGui::GetCursorPos();
+        list->AddRectFilled(
+            pos + ImVec2(p.x, p.y),
+            pos + ImVec2(p.x, p.y) + ImVec2(s.width, s.height),
+            ImColor(c.R(), c.G(), c.B(), c.A()));
     }
 
     void MapRenderer::load(const std::shared_ptr<trview::IRoom>& room)
     {
         _tiles.clear();
         _previous_sector.reset();
-        on_sector_hover(nullptr);
-        _force_redraw = true;
+        on_sector_hover({});
 
         if (!room)
         {
@@ -164,8 +210,6 @@ namespace trview
         _columns = room->num_x_sectors();
         _rows = room->num_z_sectors();
         _loaded = true; 
-        update_map_position(); 
-        update_map_render_target();
 
         const auto& sectors = room->sectors(); 
         std::for_each(sectors.begin(), sectors.end(), 
@@ -188,8 +232,7 @@ namespace trview
         return Size { _DRAW_SCALE - 1, _DRAW_SCALE - 1 };
     }
 
-    std::shared_ptr<ISector> 
-    MapRenderer::sector_at(const Point& p) const
+    std::shared_ptr<ISector> MapRenderer::sector_at(const Point& p) const
     {
         auto iter = std::find_if(_tiles.begin(), _tiles.end(), [&] (const Tile& tile) {
             // Get bottom-right point of the tile 
@@ -204,93 +247,15 @@ namespace trview
             return iter->sector;
     }
 
-    std::shared_ptr<ISector> 
-    MapRenderer::sector_at_cursor() const
+    bool MapRenderer::cursor_is_over_control() const
     {
-        if (!_visible)
-        {
-            return nullptr;
-        }
-        return sector_at(_cursor);
+        return _cursor_was_over;
     }
 
-    bool 
-    MapRenderer::cursor_is_over_control() const
-    {
-        return _render_target && _visible && _cursor.is_between(Point(), Point(static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height())));
-    }
-
-    void MapRenderer::set_cursor_position(const Point& cursor)
-    {
-        _cursor = cursor - _first;
-
-        auto sector = sector_at_cursor();
-        if(sector != _previous_sector)
-        {
-            _previous_sector = sector;
-            on_sector_hover(sector);
-        }
-    }
-
-    void 
-    MapRenderer::set_window_size(const Size& size)
+    void MapRenderer::set_window_size(const Size& size)
     {
         _window_width = static_cast<int>(size.width);
         _window_height = static_cast<int>(size.height);
-        _sprite->set_host_size(size);
-        update_map_position();
-    }
-
-    Point MapRenderer::first() const
-    {
-        return _first;
-    }
-
-    void 
-    MapRenderer::update_map_position()
-    {
-        const float margin = _render_mode == RenderMode::Screen ? _DRAW_MARGIN : 0;
-        // Location of the origin of the control 
-        _first = Point(_window_width - (_DRAW_SCALE * _columns) - margin, margin);
-        // Location of the last point of the control (bottom-right)
-        _last = _first + Point(_DRAW_SCALE * _columns, _DRAW_SCALE * _rows);
-    }
-
-    void
-    MapRenderer::update_map_render_target()
-    {
-        uint32_t width = static_cast<uint32_t>(_DRAW_SCALE * _columns + 1);
-        uint32_t height = static_cast<uint32_t>(_DRAW_SCALE * _rows + 1);
-
-        // Minor optimisation - don't recreate the render target if the room dimensions are the same.
-        if (!_render_target || (_render_target->width() != width || _render_target->height() != height))
-        {
-            _render_target = _render_target_source(width, height, graphics::IRenderTarget::DepthStencilMode::Disabled);
-        }
-        _force_redraw = true;
-    }
-
-    bool 
-    MapRenderer::needs_redraw()
-    {
-        if (_force_redraw)
-        {
-            return true;
-        }
-
-        if (cursor_is_over_control())
-        {
-            _cursor_was_over = true;
-            return true;
-        }
-
-        if (_cursor_was_over)
-        {
-            _cursor_was_over = false;
-            return true;
-        }
-
-        return false;
     }
 
     void MapRenderer::set_visible(bool visible)
@@ -303,7 +268,6 @@ namespace trview
         if (_highlighted_sector.has_value())
         {
             _highlighted_sector.reset();
-            _force_redraw = true;
         }
     }
 
@@ -316,35 +280,103 @@ namespace trview
         }
 
         _highlighted_sector = { x, z };
-        _force_redraw = true;
     }
 
-    graphics::Texture MapRenderer::texture() const
+    void MapRenderer::set_mode(Mode mode)
     {
-        return _render_target->texture();
+        _mode = mode;
     }
 
-    void MapRenderer::set_render_mode(RenderMode mode)
+    void MapRenderer::set_settings(const UserSettings& settings)
     {
-        _render_mode = mode;
-        update_map_position();
-    }
-
-    void MapRenderer::set_colours(const MapColours& colours)
-    {
-        _colours = colours;
-        _force_redraw = true;
+        _settings = settings;
     }
 
     void MapRenderer::set_selection(const std::shared_ptr<ISector>& sector)
     {
         _selected_sector = sector;
-        _force_redraw = true;
     }
 
-    void MapRenderer::clear_hovered_sector()
+    void MapRenderer::tooltip()
     {
-        _previous_sector.reset();
-        _force_redraw = true;
+        if (_show_tooltip && _previous_sector)
+        {
+            std::string text = std::format("X: {}, Z: {}\n", _previous_sector->x(), _previous_sector->z());
+            if (has_flag(_previous_sector->flags(), SectorFlag::RoomAbove))
+            {
+                text += std::format("Above: {}", _previous_sector->room_above());
+            }
+            if (has_flag(_previous_sector->flags(), SectorFlag::RoomBelow))
+            {
+                text += std::format("{}Below: {}", has_flag(_previous_sector->flags(), SectorFlag::RoomAbove) ? ", " : "", _previous_sector->room_below());
+            }
+            ImGui::SetTooltip(text.c_str());
+        }
     }
-};
+
+    void MapRenderer::set_show_tooltip(bool value)
+    {
+        _show_tooltip = value;
+    }
+
+    void MapRenderer::clicking()
+    {
+        if (_previous_sector)
+        {
+            if (const auto room = _previous_sector->room().lock())
+            {
+                if (const auto level = room->level().lock())
+                {
+                    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+                    {
+                        if (_mode == Mode::Select)
+                        {
+                            _selected_sector = _previous_sector;
+                            on_sector_selected(_selected_sector);
+                            return;
+                        }
+
+                        auto trigger = _previous_sector->trigger().lock();
+                        if (!trigger || (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)))
+                        {
+                            if (has_flag(_previous_sector->flags(), SectorFlag::Portal))
+                            {
+                                on_room_selected(level->room(_previous_sector->portals()[0]));
+                            }
+                            else if (!_settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomBelow))
+                            {
+                                on_room_selected(level->room(_previous_sector->room_below()));
+                            }
+                            else if (_settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomAbove))
+                            {
+                                on_room_selected(level->room(_previous_sector->room_above()));
+                            }
+                        }
+                        else
+                        {
+                            on_trigger_selected(trigger);
+                        }
+                    }
+                    else if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && _mode == Mode::Normal)
+                    {
+                        if (!_settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomAbove))
+                        {
+                            on_room_selected(level->room(_previous_sector->room_above()));
+                        }
+                        else if (_settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomBelow))
+                        {
+                            on_room_selected(level->room(_previous_sector->room_below()));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Size MapRenderer::size() const
+    {
+        const float width = static_cast<float>(_DRAW_SCALE * _columns + 1);
+        const float height = static_cast<float>(_DRAW_SCALE * _rows + 1);
+        return Size(width, height);
+    }
+}

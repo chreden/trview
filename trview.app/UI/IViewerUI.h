@@ -29,9 +29,6 @@ namespace trview
         /// Clear the highlighted minimap sector.
         virtual void clear_minimap_highlight() = 0;
 
-        /// Get the currently hovered minimap sector, if any.
-        virtual std::shared_ptr<ISector> current_minimap_sector() const = 0;
-
         /// Get whether there is any text input currently active.
         virtual bool is_input_active() const = 0;
 
@@ -72,7 +69,7 @@ namespace trview
         Event<> on_hide;
 
         /// Event raised when a minimap sector is hovered over.
-        Event<std::shared_ptr<ISector>> on_sector_hover;
+        Event<std::weak_ptr<ISector>> on_sector_hover;
 
         /// Event raised when an item is selected.
         Event<std::weak_ptr<IItem>> on_select_item;
