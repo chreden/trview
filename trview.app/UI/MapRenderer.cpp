@@ -31,14 +31,22 @@ namespace trview
         const float width = static_cast<float>(_DRAW_SCALE * _columns + 1);
         const float height = static_cast<float>(_DRAW_SCALE * _rows + 1);
 
+        bool is_reset = _reset_cycles > 0;
         if (window)
         {
+            if (is_reset)
+            {
+                --_reset_cycles;
+            }
+
             const auto vp = ImGui::GetMainViewport();
             ImGui::SetNextWindowPos(vp->Pos + ImVec2(vp->Size.x, 0) + ImVec2(-20, 20), 
-                _reset ? ImGuiCond_Always : ImGuiCond_Appearing, ImVec2(1, 0));
-            _reset = false;
+                is_reset ? ImGuiCond_Always : ImGuiCond_Appearing, ImVec2(1, 0));
 
-            _anchor.check_resize({ width, height });
+            if (!is_reset)
+            {
+                _anchor.check_resize({ width, height });
+            }
 
             if (!ImGui::Begin("Minimap", nullptr, ImGuiWindowFlags_NoResize))
             {
@@ -47,7 +55,10 @@ namespace trview
             }
         }
 
-        _anchor.record_position({ width, height });
+        if (!is_reset)
+        {
+            _anchor.record_position({ width, height });
+        }
         auto list = ImGui::GetWindowDrawList();
         const auto cursorPos = ImGui::GetCursorPos();
         const auto pos = ImGui::GetWindowPos() + cursorPos;
@@ -162,7 +173,7 @@ namespace trview
 
     void MapRenderer::reset()
     {
-        _reset = true;
+        _reset_cycles = 2;
     }
 
     void MapRenderer::draw(ImDrawList* list, Point p, Size s, DirectX::SimpleMath::Color c)

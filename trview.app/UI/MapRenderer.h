@@ -79,6 +79,7 @@ namespace trview
         std::shared_ptr<IFonts> _fonts;
         bool _show_tooltip{ true };
         ImGuiAnchor _anchor;
-        bool _reset{ true };
+
+        int _reset_cycles{ 2 };
     };
 };

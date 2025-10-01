@@ -44,7 +44,7 @@ namespace trview
         std::optional<ImVec2> last_client_size;
         std::optional<ImVec2> in_window_offset;
         bool docked{ false };
-        bool reposition{ true };
+        bool reposition{ false };
         Anchor anchor{ Anchor::TopRight };
 
         void check_resize(ImVec2 intended_client_size);

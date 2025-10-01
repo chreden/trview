@@ -15,7 +15,7 @@ namespace trview
         {
             static const inline FontSetting Default{ .name = "Arial", .filename = "arial.ttf", .size = 12 };
             static const inline FontSetting Console{ .name = "Consolas", .filename = "consola.ttf", .size = 12 };
-            static const inline FontSetting Minimap{ .name = "Consolas", .filename = "consola.ttf", .size = 11 };
+            static const inline FontSetting Minimap{ .name = "Consolas", .filename = "consola.ttf", .size = 9 };
         };
 
         void add_recent_file(const std::string& file);
