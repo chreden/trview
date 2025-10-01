@@ -44,7 +44,7 @@ namespace trview
         virtual void set_hide_enabled(bool value) override;
 
         /// Set the size of the host window.
-        void set_host_size(const Size& size) override;
+        void set_host_size_changed() override;
         void set_level(const std::weak_ptr<ILevel>& level) override;
         virtual void set_max_rooms(uint32_t rooms) override;
         virtual void set_measure_distance(float distance) override;

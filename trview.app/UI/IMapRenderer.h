@@ -26,6 +26,7 @@ namespace trview
 
         // Renders the map 
         virtual void render(bool window) = 0;
+        virtual void reset() = 0;
         // Changes the room to specified room, reloads map
         virtual void load(const std::shared_ptr<trview::IRoom>& room) = 0;
         // Returns true if cursor is on the control

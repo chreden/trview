@@ -38,6 +38,7 @@ namespace trview
         virtual ~MapRenderer() = default;
         // Renders the map 
         void render(bool window) override;
+        void reset() override;
         // Changes the room to specified room, reloads map
         void load(const std::shared_ptr<trview::IRoom>& room) override;
         // Returns true if cursor is on the control
@@ -78,5 +79,6 @@ namespace trview
         std::shared_ptr<IFonts> _fonts;
         bool _show_tooltip{ true };
         ImGuiAnchor _anchor;
+        bool _reset{ true };
     };
 };

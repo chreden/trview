@@ -1022,7 +1022,7 @@ namespace trview
 
         // Inform elements that need to know that the device has been resized.
         _camera->set_view_size(size);
-        _ui->set_host_size(size);
+        _ui->set_host_size_changed();
         _scene_target = _render_target_source(static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height), graphics::IRenderTarget::DepthStencilMode::Enabled);
         _scene_sprite->set_host_size(size);
     }

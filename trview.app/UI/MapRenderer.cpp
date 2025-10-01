@@ -33,7 +33,13 @@ namespace trview
 
         if (window)
         {
+            const auto vp = ImGui::GetMainViewport();
+            ImGui::SetNextWindowPos(vp->Pos + ImVec2(vp->Size.x, 0) + ImVec2(-20, 20), 
+                _reset ? ImGuiCond_Always : ImGuiCond_Appearing, ImVec2(1, 0));
+            _reset = false;
+
             _anchor.check_resize({ width, height });
+
             if (!ImGui::Begin("Minimap", nullptr, ImGuiWindowFlags_NoResize))
             {
                 ImGui::End();
@@ -152,6 +158,11 @@ namespace trview
             _anchor.record_size();
             ImGui::End();
         }
+    }
+
+    void MapRenderer::reset()
+    {
+        _reset = true;
     }
 
     void MapRenderer::draw(ImDrawList* list, Point p, Size s, DirectX::SimpleMath::Color c)

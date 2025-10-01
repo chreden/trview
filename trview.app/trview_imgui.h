@@ -30,12 +30,22 @@ namespace trview
 
     struct ImGuiAnchor
     {
+        enum class Anchor
+        {
+            TopLeft,
+            TopRight,
+            BottomLeft,
+            BottomRight
+        };
+
         std::optional<ImVec2> last_position;
         std::optional<ImVec2> last_padding;
         std::optional<ImVec2> last_size;
         std::optional<ImVec2> last_client_size;
+        std::optional<ImVec2> in_window_offset;
         bool docked{ false };
         bool reposition{ true };
+        Anchor anchor{ Anchor::TopRight };
 
         void check_resize(ImVec2 intended_client_size);
         void record_position(ImVec2 intended_client_size);

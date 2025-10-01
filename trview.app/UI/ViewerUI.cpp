@@ -280,7 +280,7 @@ namespace trview
         _context_menu->set_hide_enabled(value);
     }
 
-    void ViewerUI::set_host_size(const Size&)
+    void ViewerUI::set_host_size_changed()
     {
         _map_renderer->reposition();
         _camera_position->reposition();
@@ -560,6 +560,7 @@ namespace trview
 
     void ViewerUI::reset_layout()
     {
+        _map_renderer->reset();
         _camera_position->reset();
     }
 

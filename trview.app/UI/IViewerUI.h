@@ -148,7 +148,7 @@ namespace trview
         virtual void set_hide_enabled(bool value) = 0;
 
         /// Set the size of the host window.
-        virtual void set_host_size(const Size& size) = 0;
+        virtual void set_host_size_changed() = 0;
 
         /// Set the level name and version.
         /// @param version The version of the level.
