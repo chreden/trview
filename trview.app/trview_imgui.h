@@ -27,6 +27,20 @@ namespace trview
     private:
         ImVec2 _cursor_pos;
     };
+
+    struct ImGuiAnchor
+    {
+        std::optional<ImVec2> last_position;
+        std::optional<ImVec2> last_padding;
+        std::optional<ImVec2> last_size;
+        std::optional<ImVec2> last_client_size;
+        bool docked{ false };
+        bool reposition{ true };
+
+        void check_resize(ImVec2 intended_client_size);
+        void record_position(ImVec2 intended_client_size);
+        void record_size();
+    };
 }
 
 #include "trview_imgui.hpp"

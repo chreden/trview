@@ -121,7 +121,6 @@ namespace trview
         bool _force_sort{ false };
         std::vector<uint16_t> _floordata;
         bool _simple_mode{ true };
-        bool _in_floordata_mode{ false };
         uint32_t _selected_floordata{ 0 };
         Track<Type::Item, Type::Trigger, Type::Light, Type::CameraSink, Type::Sector> _track;
 

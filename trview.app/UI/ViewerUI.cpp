@@ -161,7 +161,7 @@ namespace trview
                 on_settings(_settings);
             };
 
-        _map_renderer = map_renderer_source(window.size());
+        _map_renderer = map_renderer_source();
         _map_renderer->on_sector_hover += on_sector_hover;
         _map_renderer->on_room_selected += on_select_room;
         _map_renderer->on_trigger_selected += on_select_trigger;
@@ -280,9 +280,9 @@ namespace trview
         _context_menu->set_hide_enabled(value);
     }
 
-    void ViewerUI::set_host_size(const Size& size)
+    void ViewerUI::set_host_size(const Size&)
     {
-        _map_renderer->set_window_size(size);
+        _map_renderer->reposition();
         _camera_position->reposition();
     }
 

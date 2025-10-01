@@ -95,7 +95,7 @@ namespace trview
     }
 
     RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard)
-        : _map_renderer(map_renderer_source(Size(341, 341))), _clipboard(clipboard)
+        : _map_renderer(map_renderer_source()), _clipboard(clipboard)
     {
         _map_renderer->on_room_selected += on_room_selected;
         _map_renderer->on_trigger_selected += on_trigger_selected;

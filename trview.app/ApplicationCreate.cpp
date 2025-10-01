@@ -376,7 +376,7 @@ namespace trview
         auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell, dialogs); };
         auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
         auto fonts = std::make_shared<Fonts>(files, imgui_backend);
-        auto map_renderer_source = [=](auto&& size) { return std::make_unique<MapRenderer>(size, fonts); };
+        auto map_renderer_source = [=]() { return std::make_unique<MapRenderer>(fonts); };
         auto clipboard = std::make_shared<Clipboard>(window);
         auto items_window_source = [=]() { return std::make_shared<ItemsWindow>(clipboard); };
         auto items_window_manager = std::make_shared<ItemsWindowManager>(window, shortcuts, items_window_source);

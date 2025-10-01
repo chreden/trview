@@ -14,7 +14,7 @@ namespace trview
             Select
         };
 
-        using Source = std::function<std::unique_ptr<IMapRenderer>(const Size&)>;
+        using Source = std::function<std::unique_ptr<IMapRenderer>()>;
 
         virtual ~IMapRenderer() = 0;
 
@@ -32,8 +32,6 @@ namespace trview
         virtual bool cursor_is_over_control() const = 0;
         // Returns whether the map is loaded
         virtual bool loaded() const = 0;
-        // Set the size of the host window.
-        virtual void set_window_size(const Size& size) = 0;
         /// Set whether the map is visible.
         virtual void set_visible(bool visible) = 0;
         virtual void clear_highlight() = 0;
@@ -43,5 +41,6 @@ namespace trview
         virtual void set_selection(const std::shared_ptr<ISector>& sector) = 0;
         virtual void set_show_tooltip(bool value) = 0;
         virtual Size size() const = 0;
+        virtual void reposition() = 0;
     };
 }

@@ -16,10 +16,8 @@ namespace trview
     {
     }
 
-    MapRenderer::MapRenderer(const Size& window_size, const std::shared_ptr<IFonts>& fonts)
-        : _window_width(static_cast<int>(window_size.width)),
-          _window_height(static_cast<int>(window_size.height)),
-          _fonts(fonts)
+    MapRenderer::MapRenderer(const std::shared_ptr<IFonts>& fonts)
+        : _fonts(fonts)
     {
     }
 
@@ -35,29 +33,7 @@ namespace trview
 
         if (window)
         {
-            // First time sizing:
-            if (_last_padding.has_value() && _last_position.has_value() && _last_size.has_value() && !_last_client_size.has_value())
-            {
-                const auto new_size = *_last_padding + ImVec2(width, height);
-                ImGui::SetNextWindowSize(new_size, ImGuiCond_Always);
-                if (!_docked)
-                {
-                    ImGui::SetNextWindowPos(*_last_position + ImVec2(_last_size->x, 0), ImGuiCond_Always, ImVec2(1.0f, 0.0f));
-                }
-                _last_client_size = { width, height };
-            }
-
-            // Regular resizing:
-            if (_last_padding.has_value() && _last_client_size.has_value() && (_last_client_size->x != width || _last_client_size->y != height))
-            {
-                const auto new_size = *_last_padding + ImVec2(width, height);
-                ImGui::SetNextWindowSize(new_size, ImGuiCond_Always);
-                if (!_docked)
-                {
-                    ImGui::SetNextWindowPos(*_last_position + ImVec2(_last_padding->x + _last_client_size->x, 0), ImGuiCond_Always, ImVec2(1.0f, 0.0f));
-                }
-            }
-
+            _anchor.check_resize({ width, height });
             if (!ImGui::Begin("Minimap", nullptr, ImGuiWindowFlags_NoResize))
             {
                 ImGui::End();
@@ -65,17 +41,10 @@ namespace trview
             }
         }
 
-        // Only set size if already set so first run can be detected and resized.
-        if (_last_client_size.has_value())
-        {
-            _last_client_size = { width, height };
-        }
-        _last_position = ImGui::GetWindowPos();
+        _anchor.record_position({ width, height });
         auto list = ImGui::GetWindowDrawList();
         const auto cursorPos = ImGui::GetCursorPos();
         const auto pos = ImGui::GetWindowPos() + cursorPos;
-        _last_padding = ImVec2(cursorPos.x * 2, cursorPos.y + cursorPos.x);
-        _docked = ImGui::IsWindowDocked();
 
         // Cursor hovering:
         _cursor_was_over = ImGui::IsMouseHoveringRect(pos, pos + ImVec2(width, height));
@@ -180,7 +149,7 @@ namespace trview
 
         if (window)
         {
-            _last_size = ImGui::GetWindowSize();
+            _anchor.record_size();
             ImGui::End();
         }
     }
@@ -250,12 +219,6 @@ namespace trview
     bool MapRenderer::cursor_is_over_control() const
     {
         return _cursor_was_over;
-    }
-
-    void MapRenderer::set_window_size(const Size& size)
-    {
-        _window_width = static_cast<int>(size.width);
-        _window_height = static_cast<int>(size.height);
     }
 
     void MapRenderer::set_visible(bool visible)
@@ -378,5 +341,10 @@ namespace trview
         const float width = static_cast<float>(_DRAW_SCALE * _columns + 1);
         const float height = static_cast<float>(_DRAW_SCALE * _rows + 1);
         return Size(width, height);
+    }
+
+    void MapRenderer::reposition()
+    {
+        _anchor.reposition = true;
     }
 }

@@ -58,4 +58,46 @@ namespace trview
             ImGui::SetScrollY(window->Scroll.y - ImGui::GetTextLineHeightWithSpacing());
         }
     }
+
+    void ImGuiAnchor::check_resize(ImVec2 intended_client_size)
+    {
+        if (last_padding.has_value() && last_position.has_value() && last_size.has_value() && !last_client_size.has_value())
+        {
+            const auto new_size = *last_padding + intended_client_size;
+            ImGui::SetNextWindowSize(new_size, ImGuiCond_Always);
+            if (!docked)
+            {
+                ImGui::SetNextWindowPos(*last_position + ImVec2(last_size->x, 0), ImGuiCond_Always, ImVec2(1.0f, 0.0f));
+            }
+            last_client_size = intended_client_size;
+        }
+
+        // Regular resizing:
+        if (last_padding.has_value() && last_client_size.has_value() && (*last_client_size != intended_client_size))
+        {
+            const auto new_size = *last_padding + intended_client_size;
+            ImGui::SetNextWindowSize(new_size, ImGuiCond_Always);
+            if (!docked)
+            {
+                ImGui::SetNextWindowPos(*last_position + ImVec2(last_padding->x + last_client_size->x, 0), ImGuiCond_Always, ImVec2(1.0f, 0.0f));
+            }
+        }
+    }
+
+    void ImGuiAnchor::record_position(ImVec2 intended_client_size)
+    {
+        if (last_client_size.has_value())
+        {
+            last_client_size = intended_client_size;
+        }
+        last_position = ImGui::GetWindowPos();
+        const auto cursorPos = ImGui::GetCursorPos();
+        last_padding = ImVec2(cursorPos.x * 2, cursorPos.y + cursorPos.x);
+        docked = ImGui::IsWindowDocked();
+    }
+
+    void ImGuiAnchor::record_size()
+    {
+        last_size = ImGui::GetWindowSize();
+    }
 }

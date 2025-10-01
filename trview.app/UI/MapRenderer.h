@@ -11,6 +11,7 @@
 #include <trview.common/Size.h>
 #include <trview.app/Elements/Room.h>
 #include "Fonts/IFonts.h"
+#include "../trview_imgui.h"
 
 #include "IMapRenderer.h"
 
@@ -33,7 +34,7 @@ namespace trview
     class MapRenderer final : public IMapRenderer
     {
     public:
-        MapRenderer(const Size& window_size, const std::shared_ptr<IFonts>& fonts);
+        MapRenderer(const std::shared_ptr<IFonts>& fonts);
         virtual ~MapRenderer() = default;
         // Renders the map 
         void render(bool window) override;
@@ -43,8 +44,6 @@ namespace trview
         bool cursor_is_over_control() const override;
         // Returns whether the map is loaded
         inline bool loaded() const override { return _loaded; }
-        // Set the size of the host window.
-        void set_window_size(const Size& size) override;
         /// Set whether the map is visible.
         void set_visible(bool visible) override;
         void clear_highlight() override;
@@ -54,6 +53,7 @@ namespace trview
         void set_selection(const std::shared_ptr<ISector>& sector) override;
         void set_show_tooltip(bool value) override;
         Size size() const override;
+        void reposition() override;
     private:
         std::shared_ptr<ISector> sector_at(const Point& p) const;
         // Determines the position (on screen) to draw a sector 
@@ -66,7 +66,6 @@ namespace trview
         void clicking();
 
         bool _visible{ true };
-        int _window_width, _window_height;
         std::vector<Tile> _tiles; 
         std::uint16_t _rows, _columns; 
         bool _loaded{ false };
@@ -78,12 +77,6 @@ namespace trview
         std::weak_ptr<ISector> _selected_sector;
         std::shared_ptr<IFonts> _fonts;
         bool _show_tooltip{ true };
-
-        // Position/size anchoring/tracking.
-        std::optional<ImVec2> _last_position;
-        std::optional<ImVec2> _last_padding;
-        std::optional<ImVec2> _last_size;
-        std::optional<ImVec2> _last_client_size;
-        bool _docked{ false };
+        ImGuiAnchor _anchor;
     };
 };
