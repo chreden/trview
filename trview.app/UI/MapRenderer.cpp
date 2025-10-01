@@ -1,5 +1,6 @@
 #include "MapRenderer.h"
 #include "../Elements/ILevel.h"
+#include <ranges>
 
 using namespace DirectX::SimpleMath;
 using namespace Microsoft::WRL;
@@ -202,12 +203,9 @@ namespace trview
         _rows = room->num_z_sectors();
         _loaded = true; 
 
-        const auto& sectors = room->sectors(); 
-        std::for_each(sectors.begin(), sectors.end(), 
-            [&] (const auto& sector) 
-        {
-            _tiles.emplace_back(sector, get_position(*sector), get_size());
-        });
+        _tiles = room->sectors() 
+            | std::views::transform([&](auto&& s) { return Tile(s, get_position(*s), get_size()); })
+            | std::ranges::to<std::vector>();
     }
 
     Point MapRenderer::get_position(const ISector& sector)

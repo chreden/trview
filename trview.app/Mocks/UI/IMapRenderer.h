@@ -23,6 +23,7 @@ namespace trview
             MOCK_METHOD(void, set_show_tooltip, (bool), (override));
             MOCK_METHOD(Size, size, (), (const, override));
             MOCK_METHOD(void, reposition, (), (override));
+            MOCK_METHOD(void, reset, (), (override));
         };
     }
 }

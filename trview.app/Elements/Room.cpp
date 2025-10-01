@@ -924,7 +924,7 @@ namespace trview
         return Vector3::Transform(centroid, _room_offset);
     }
 
-    const std::vector<std::shared_ptr<ISector>> Room::sectors() const
+    std::vector<std::shared_ptr<ISector>> Room::sectors() const
     {
         return _sectors; 
     }
