@@ -136,7 +136,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Menus\MenuDetector.cpp" />
     <ClCompile Include="Menus\UpdateChecker.cpp" />
     <ClCompile Include="Menus\ViewMenu.cpp" />
-    <ClCompile Include="Resources\DefaultFonts.cpp" />
     <ClCompile Include="Resources\DefaultShaders.cpp" />
     <ClCompile Include="Resources\DefaultTextures.cpp" />
     <ClCompile Include="Routing\Action.cpp" />
@@ -373,7 +372,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Windows\ITriggersWindow.h" />
     <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IViewer.h" />
-    <ClInclude Include="Resources\DefaultFonts.h" />
     <ClInclude Include="Resources\DefaultShaders.h" />
     <ClInclude Include="Resources\DefaultTextures.h" />
     <ClInclude Include="Resources\resource.h" />
@@ -499,7 +497,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <Text Include="Resources\Files\actions.json">
       <FileType>Document</FileType>
     </Text>
-    <None Include="Resources\Files\Fonts\arial7.bin" />
     <None Include="Resources\Generated\level_pixel_shader.cso" />
     <None Include="Resources\Generated\level_vertex_shader.cso" />
     <None Include="Resources\Generated\selection_pixel_shader.cso" />

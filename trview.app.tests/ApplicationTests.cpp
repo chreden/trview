@@ -464,6 +464,10 @@ TEST(Application, ResetFonts)
         testing::AllOf(testing::Field(&FontSetting::name, testing::Eq("Arial")),
             testing::Field(&FontSetting::filename, testing::Eq("arial.ttf")),
             testing::Field(&FontSetting::size, testing::Eq(12)))));
+    EXPECT_CALL(*fonts, add_font(std::string("Minimap"),
+        testing::AllOf(testing::Field(&FontSetting::name, testing::Eq("Consolas")),
+            testing::Field(&FontSetting::filename, testing::Eq("consola.ttf")),
+            testing::Field(&FontSetting::size, testing::Eq(9)))));
 
     auto application = register_test_module()
         .with_fonts(fonts)

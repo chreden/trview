@@ -16,8 +16,25 @@ namespace trview
     {
         void load_default_fonts(IFonts& fonts)
         {
-            fonts.add_font("Default", { .name = "Arial", .filename = "arial.ttf", .size = 12 });
-            fonts.add_font("Console", { .name = "Consolas", .filename = "consola.ttf", .size = 12 });
+            fonts.add_font("Default", UserSettings::Fonts::Default);
+            fonts.add_font("Console", UserSettings::Fonts::Console);
+            fonts.add_font("Minimap", UserSettings::Fonts::Minimap);
+        }
+
+        void add_missing_fonts(UserSettings& settings)
+        {
+            if (settings.fonts.find("Default") == settings.fonts.end())
+            {
+                settings.fonts["Default"] = UserSettings::Fonts::Default;
+            }
+            if (settings.fonts.find("Console") == settings.fonts.end())
+            {
+                settings.fonts["Console"] = UserSettings::Fonts::Console;
+            }
+            if (settings.fonts.find("Minimap") == settings.fonts.end())
+            {
+                settings.fonts["Minimap"] = UserSettings::Fonts::Minimap;
+            }
         }
 
         template <typename T>
@@ -63,6 +80,7 @@ namespace trview
 
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
+        add_missing_fonts(_settings);
         lua::set_settings(_settings);
 
         set_route(_settings.randomizer_tools ? randomizer_route_source(std::nullopt) : route_source(std::nullopt));
@@ -490,6 +508,7 @@ namespace trview
             io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
             io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
             io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+            io.ConfigWindowsMoveFromTitleBarOnly = true;
 
             _imgui_ini_filename = _files->appdata_directory() + "\\trview\\imgui.ini";
             io.IniFilename = _imgui_ini_filename.c_str();

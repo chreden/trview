@@ -13,19 +13,11 @@
     <ClInclude Include="SpriteSizeStore.h" Filter="Sprite" />
     <ClInclude Include="Texture.h" Filter="Texture" />
     <ClInclude Include="DepthStencil.h" Filter="DepthStencil" />
-    <ClInclude Include="Font.h" Filter="Font" />
-    <ClInclude Include="FontFactory.h" Filter="Font" />
     <ClInclude Include="Device.h" Filter="Device" />
-    <ClInclude Include="ParagraphAlignment.h" Filter="Font" />
-    <ClInclude Include="TextAlignment.h" Filter="Font" />
     <ClInclude Include="DeviceWindow.h" Filter="Device" />
     <ClInclude Include="VertexShaderStore.h" Filter="Shaders" />
     <ClInclude Include="PixelShaderStore.h" Filter="Shaders" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="IFontFactory.h" Filter="Font" />
-    <ClInclude Include="IFont.h" Filter="Font" />
-    <ClInclude Include="mocks\IFontFactory.h" Filter="Mocks" />
-    <ClInclude Include="mocks\IFont.h" Filter="Mocks" />
     <ClInclude Include="RasterizerStateStore.h" Filter="Rasterizer" />
     <ClInclude Include="Mocks\IShaderStorage.h" Filter="Mocks" />
     <ClInclude Include="IDevice.h" Filter="Device" />
@@ -38,7 +30,6 @@
     <ClInclude Include="mocks\IDeviceWindow.h" Filter="Mocks" />
     <ClInclude Include="Mocks\D3D\ID3D11DeviceContext.h" Filter="Mocks\D3D" />
     <ClInclude Include="Mocks\IShader.h" Filter="Mocks" />
-    <ClInclude Include="JsonSerializers.h" />
     <ClInclude Include="IBuffer.h" Filter="Buffer" />
     <ClInclude Include="Buffer.h" Filter="Buffer" />
     <ClInclude Include="mocks\IBuffer.h" Filter="Mocks" />
@@ -58,15 +49,12 @@
     <ClCompile Include="SpriteSizeStore.cpp" Filter="Sprite" />
     <ClCompile Include="Texture.cpp" Filter="Texture" />
     <ClCompile Include="DepthStencil.cpp" Filter="DepthStencil" />
-    <ClCompile Include="Font.cpp" Filter="Font" />
-    <ClCompile Include="FontFactory.cpp" Filter="Font" />
     <ClCompile Include="Device.cpp" Filter="Device" />
     <ClCompile Include="DeviceWindow.cpp" Filter="Device" />
     <ClCompile Include="VertexShaderStore.cpp" Filter="Shaders" />
     <ClCompile Include="PixelShaderStore.cpp" Filter="Shaders" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="RasterizerStateStore.cpp" Filter="Rasterizer" />
-    <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
     <ClCompile Include="Buffer.cpp" Filter="Buffer" />
     <ClCompile Include="Sampler\SamplerState.cpp" Filter="Sampler" />
@@ -86,9 +74,6 @@
     </Filter>
     <Filter Include="DepthStencil">
       <UniqueIdentifier>{cf20108a-97e4-44be-9ffe-b501414bf7f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Font">
-      <UniqueIdentifier>{c637d862-3e5c-4ef3-895f-190ad90bb456}</UniqueIdentifier>
     </Filter>
     <Filter Include="Device">
       <UniqueIdentifier>{45b46918-ce4b-4159-9455-6026761d8fc5}</UniqueIdentifier>

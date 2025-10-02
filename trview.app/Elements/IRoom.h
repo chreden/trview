@@ -262,7 +262,7 @@ namespace trview
         /// Gets all sectors in the room.
         /// </summary>
         /// <returns>The sectors in the room.</returns>
-        virtual const std::vector<std::shared_ptr<ISector>> sectors() const = 0;
+        virtual std::vector<std::shared_ptr<ISector>> sectors() const = 0;
         /// <summary>
         /// Set this room to be the alternate room of the room specified. This will change the alternate mode of this room to IsAlternate.
         /// </summary>

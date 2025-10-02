@@ -7,7 +7,6 @@
 
 #include "../Settings/UserSettings.h"
 
-#include "../UI/Tooltip.h"
 #include "../Elements/IItem.h"
 #include "../UI/IMapRenderer.h"
 #include "../Filters/Filters.h"
@@ -115,18 +114,13 @@ namespace trview
         std::shared_ptr<IClipboard> _clipboard;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb1 };
         std::string _id{ "Rooms 0" };
-        Tooltip _map_tooltip;
         bool _scroll_to_room{ false };
         std::optional<float> _tooltip_timer;
-
-        // Map texture saved so that it is guaranteed to survive until ImGui renders.
-        graphics::Texture _map_texture;
 
         Filters<IRoom> _filters;
         bool _force_sort{ false };
         std::vector<uint16_t> _floordata;
         bool _simple_mode{ true };
-        bool _in_floordata_mode{ false };
         uint32_t _selected_floordata{ 0 };
         Track<Type::Item, Type::Trigger, Type::Light, Type::CameraSink, Type::Sector> _track;
 

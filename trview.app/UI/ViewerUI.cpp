@@ -40,11 +40,6 @@ namespace trview
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _camera_controls(std::move(camera_controls)),
         _view_options(std::move(view_options)), _settings_window(std::move(settings_window)), _context_menu(std::move(context_menu)), _toolbar(std::move(toolbar))
     {
-        _token_store += _mouse.mouse_move += [&](long, long)
-        {
-            _map_renderer->set_cursor_position(client_cursor_position(_window));
-        };
-
         _token_store += shortcuts->add_shortcut(true, 'F') += [&]()
         {
             if (!is_input_active())
@@ -107,8 +102,6 @@ namespace trview
         };
 
         _tooltip = std::make_unique<Tooltip>();
-        _map_tooltip = std::make_unique<Tooltip>();
-
         _context_menu->on_add_waypoint += on_add_waypoint;
         _context_menu->on_add_mid_waypoint += on_add_mid_waypoint;
         _context_menu->on_remove_waypoint += on_remove_waypoint;
@@ -168,46 +161,16 @@ namespace trview
                 on_settings(_settings);
             };
 
-        _map_renderer = map_renderer_source(window.size());
-        _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<ISector>& sector)
-        {
-            if (ImGui::GetCurrentContext() && ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
-            {
-                _map_renderer->clear_hovered_sector();
-                return;
-            }
-
-            on_sector_hover(sector);
-
-            if (!sector)
-            {
-                _map_tooltip->set_visible(false);
-                return;
-            }
-
-            std::string text = std::format("X: {}, Z: {}\n", sector->x(), sector->z());
-            if (has_flag(sector->flags(), SectorFlag::RoomAbove))
-            {
-                text += std::format("Above: {}", sector->room_above());
-            }
-            if (has_flag(sector->flags(), SectorFlag::RoomBelow))
-            {
-                text += std::format("{}Below: {}", has_flag(sector->flags(), SectorFlag::RoomAbove) ? ", " : "", sector->room_below());
-            }
-            _map_tooltip->set_text(text);
-            _map_tooltip->set_visible(!text.empty());
-        };
+        _map_renderer = map_renderer_source();
+        _map_renderer->on_sector_hover += on_sector_hover;
+        _map_renderer->on_room_selected += on_select_room;
+        _map_renderer->on_trigger_selected += on_select_trigger;
     }
 #pragma warning(pop)
 
     void ViewerUI::clear_minimap_highlight()
     {
         _map_renderer->clear_highlight();
-    }
-
-    std::shared_ptr<ISector> ViewerUI::current_minimap_sector() const
-    {
-        return _map_renderer->sector_at_cursor();
     }
 
     bool ViewerUI::is_input_active() const
@@ -247,8 +210,7 @@ namespace trview
             return;
         }
 
-        _map_tooltip->render();
-        _map_renderer->render();
+        _map_renderer->render(true);
         _view_options->render();
         _room_navigator->render();
         _camera_controls->render();
@@ -318,9 +280,9 @@ namespace trview
         _context_menu->set_hide_enabled(value);
     }
 
-    void ViewerUI::set_host_size(const Size& size)
+    void ViewerUI::set_host_size_changed()
     {
-        _map_renderer->set_window_size(size);
+        _map_renderer->reposition();
         _camera_position->reposition();
     }
 
@@ -371,7 +333,6 @@ namespace trview
         _tooltip->set_visible(result.hit && _show_tooltip && !_context_menu->visible());
         if (result.hit)
         {
-            _map_tooltip->set_visible(false);
             _tooltip->set_text(result.text);
             _tooltip->set_text_colour(pick_to_colour(result));
         }
@@ -411,7 +372,7 @@ namespace trview
         _settings_window->set_linear_filtering(settings.linear_filtering);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
         _camera_position->set_visible(settings.camera_position_window);
-        _map_renderer->set_colours(settings.map_colours);
+        _map_renderer->set_settings(settings);
         for (const auto& toggle : settings.toggles)
         {
             set_toggle(toggle.first, toggle.second);
@@ -453,7 +414,7 @@ namespace trview
     {
         _show_tooltip = value;
         _tooltip->set_visible(_tooltip->visible() && _show_tooltip);
-        _map_tooltip->set_visible(_map_tooltip->visible() && _show_tooltip);
+        _map_renderer->set_show_tooltip(_show_tooltip);
     }
 
     void ViewerUI::set_use_alternate_groups(bool value)
@@ -599,6 +560,7 @@ namespace trview
 
     void ViewerUI::reset_layout()
     {
+        _map_renderer->reset();
         _camera_position->reset();
     }
 

@@ -113,7 +113,7 @@ namespace trview
         _token_store += _ui->on_camera_reset += [&]() { _camera->reset(); };
         _token_store += _ui->on_camera_mode += [&](auto mode) { set_camera_mode(mode); };
         _token_store += _ui->on_camera_projection_mode += [&](ProjectionMode mode) { set_camera_projection_mode(mode); };
-        _token_store += _ui->on_sector_hover += [&](const std::shared_ptr<ISector>& sector) { set_sector_highlight(sector); };
+        _token_store += _ui->on_sector_hover += [&](auto sector) { set_sector_highlight(sector.lock()); };
         _token_store += _ui->on_add_waypoint += [&]()
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? IWaypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? IWaypoint::Type::Trigger : IWaypoint::Type::Position;
@@ -637,68 +637,10 @@ namespace trview
                         }
                     }
                 }
-                else if (std::shared_ptr<ISector> sector = _ui->current_minimap_sector())
-                {
-                    const auto level = _level.lock();
-                    if (level && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
-                    {
-                        const auto room = sector->room().lock();
-                        const auto triggers = level->triggers();
-                        auto trigger = std::find_if(triggers.begin(), triggers.end(),
-                            [&](auto t)
-                            {
-                                if (const auto t_ptr = t.lock())
-                                {
-                                    return t_ptr->sector_id() == sector->id() && t_ptr->room().lock() == room;
-                                }
-                                return false;
-                                
-                            });
-
-                        if (trigger == triggers.end() || (GetAsyncKeyState(VK_CONTROL) & 0x8000))
-                        {
-                            if (has_flag(sector->flags(), SectorFlag::Portal))
-                            {
-                                on_room_selected(level->room(sector->portals()[0]));
-                            }
-                            else if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
-                            {
-                                on_room_selected(level->room(sector->room_below()));
-                            }
-                            else if (_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomAbove))
-                            {
-                                on_room_selected(level->room(sector->room_above()));
-                            }
-                        }
-                        else
-                        {
-                            on_trigger_selected(*trigger);
-                        }
-                    }
-                }
             }
             else if (button == IMouse::Button::Right)
             {
                 _ui->set_show_context_menu(false);
-
-                if (ImGui::GetCurrentContext() && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
-                {
-                    if (auto sector = _ui->current_minimap_sector())
-                    {
-                        const auto level = _level.lock();
-                        if (level)
-                        {
-                            if (!_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomAbove))
-                            {
-                                on_room_selected(level->room(sector->room_above()));
-                            }
-                            else if (_settings.invert_map_controls && has_flag(sector->flags(), SectorFlag::RoomBelow))
-                            {
-                                on_room_selected(level->room(sector->room_below()));
-                            }
-                        }
-                    }
-                }
             }
         };
 
@@ -1080,7 +1022,7 @@ namespace trview
 
         // Inform elements that need to know that the device has been resized.
         _camera->set_view_size(size);
-        _ui->set_host_size(size);
+        _ui->set_host_size_changed();
         _scene_target = _render_target_source(static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height), graphics::IRenderTarget::DepthStencilMode::Enabled);
         _scene_sprite->set_host_size(size);
     }

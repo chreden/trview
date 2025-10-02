@@ -49,7 +49,6 @@
     <ClCompile Include="Routing\Actions.cpp" Filter="Routing" />
     <ClCompile Include="Routing\IWaypoint.cpp" Filter="Routing" />
     <ClCompile Include="Settings\RandomizerSettings.cpp" Filter="Settings" />
-    <ClCompile Include="Resources\DefaultFonts.cpp" Filter="Resources" />
     <ClCompile Include="trview_imgui.cpp" />
     <ClCompile Include="Windows\LightsWindowManager.cpp" Filter="Windows\Lights" />
     <ClCompile Include="Windows\LightsWindow.cpp" Filter="Windows\Lights" />
@@ -247,7 +246,6 @@
     <ClInclude Include="UI\ICameraControls.h" Filter="UI" />
     <ClInclude Include="Mocks\UI\ICameraControls.h" Filter="Mocks\UI" />
     <ClInclude Include="Settings\RandomizerSettings.h" Filter="Settings" />
-    <ClInclude Include="Resources\DefaultFonts.h" Filter="Resources" />
     <ClInclude Include="Mocks\UI\IMapRenderer.h" Filter="Mocks\UI" />
     <ClInclude Include="Windows\ILightsWindowManager.h" Filter="Windows\Lights" />
     <ClInclude Include="Windows\LightsWindowManager.h" Filter="Windows\Lights" />
@@ -518,9 +516,6 @@
     <Filter Include="Mocks\Settings">
       <UniqueIdentifier>{dd4f8f55-fa38-46f7-8a03-a4f1ed7b68b2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\Files\Fonts">
-      <UniqueIdentifier>{466ee8d4-f50b-4b30-bc47-f6e2f7219a7c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Windows\Items">
       <UniqueIdentifier>{ce2a8d5b-cdbb-4fb8-93fe-c8d9a6cbb594}</UniqueIdentifier>
     </Filter>
@@ -696,7 +691,6 @@
     <None Include="Resources\Generated\selection_pixel_shader.cso" Filter="Resources\Generated" />
     <None Include="Resources\Generated\ui_pixel_shader.cso" Filter="Resources\Generated" />
     <None Include="Resources\Generated\ui_vertex_shader.cso" Filter="Resources\Generated" />
-    <None Include="Resources\Files\Fonts\arial7.bin" Filter="Resources\Files\Fonts" />
     <None Include="Track\Track.inl" Filter="Track" />
     <None Include="Lua\Lua.inl" Filter="Lua" />
     <None Include="Elements\IStaticMesh.inl" Filter="Elements\StaticMesh" />

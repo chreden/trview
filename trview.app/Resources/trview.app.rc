@@ -238,9 +238,6 @@ IDR_UI_PIXEL_SHADER     SHADER                  "Generated\\ui_pixel_shader.cso"
 
 IDR_SELECTION_SHADER    SHADER                  "Generated\\selection_pixel_shader.cso"
 
-// Fonts
-ARIAL7                  SPRITEFONT              "Files\\Fonts\\arial7.bin"
-
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
 
