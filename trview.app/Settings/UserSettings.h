@@ -56,7 +56,7 @@ namespace trview
         bool camera_display_degrees{ true };
         bool randomizer_tools{ false };
         RandomizerSettings randomizer;
-        uint32_t max_recent_files{ 10u };
+        int32_t max_recent_files{ 10u };
         MapColours map_colours;
         Colour route_colour{ Colour::Green };
         Colour waypoint_colour{ Colour::White };

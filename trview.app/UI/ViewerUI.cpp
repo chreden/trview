@@ -125,30 +125,7 @@ namespace trview
             };
         };
 
-        forward_setting(_settings_window->on_vsync, _settings.vsync);
-        forward_setting(_settings_window->on_go_to_lara, _settings.go_to_lara);
-        forward_setting(_settings_window->on_invert_map_controls, _settings.invert_map_controls);
-        forward_setting(_settings_window->on_items_startup, _settings.items_startup);
-        forward_setting(_settings_window->on_triggers_startup, _settings.triggers_startup);
-        forward_setting(_settings_window->on_rooms_startup, _settings.rooms_startup);
-        forward_setting(_settings_window->on_auto_orbit, _settings.auto_orbit);
-        forward_setting(_settings_window->on_invert_vertical_pan, _settings.invert_vertical_pan);
-        forward_setting(_settings_window->on_sensitivity_changed, _settings.camera_sensitivity);
-        forward_setting(_settings_window->on_movement_speed_changed, _settings.camera_movement_speed);
-        forward_setting(_settings_window->on_camera_acceleration, _settings.camera_acceleration);
-        forward_setting(_settings_window->on_camera_acceleration_rate, _settings.camera_acceleration_rate);
-        forward_setting(_settings_window->on_camera_display_degrees, _settings.camera_display_degrees);
-        forward_setting(_settings_window->on_randomizer_tools, _settings.randomizer_tools);
-        forward_setting(_settings_window->on_max_recent_files, _settings.max_recent_files);
-        forward_setting(_settings_window->on_background_colour, _settings.background_colour);
-        forward_setting(_settings_window->on_minimap_colours, _settings.map_colours);
-        forward_setting(_settings_window->on_default_route_colour, _settings.route_colour);
-        forward_setting(_settings_window->on_default_waypoint_colour, _settings.waypoint_colour);
-        forward_setting(_settings_window->on_route_startup, _settings.route_startup);
-        forward_setting(_settings_window->on_camera_fov, _settings.fov);
-        forward_setting(_settings_window->on_camera_sink_startup, _settings.camera_sink_startup);
-        forward_setting(_settings_window->on_statics_startup, _settings.statics_startup);
-        forward_setting(_settings_window->on_linear_filtering, _settings.linear_filtering);
+        _settings_window->on_settings += on_settings;
         _settings_window->on_font += on_font;
         _settings_window->on_linear_filtering += on_linear_filtering;
 
@@ -346,30 +323,7 @@ namespace trview
     void ViewerUI::set_settings(const UserSettings& settings)
     {
         _settings = settings;
-        _settings_window->set_auto_orbit(settings.auto_orbit);
-        _settings_window->set_go_to_lara(settings.go_to_lara);
-        _settings_window->set_invert_map_controls(settings.invert_map_controls);
-        _settings_window->set_items_startup(settings.items_startup);
-        _settings_window->set_triggers_startup(settings.triggers_startup);
-        _settings_window->set_rooms_startup(settings.rooms_startup);
-        _settings_window->set_vsync(settings.vsync);
-        _settings_window->set_invert_vertical_pan(settings.invert_vertical_pan);
-        _settings_window->set_movement_speed(settings.camera_movement_speed);
-        _settings_window->set_sensitivity(settings.camera_sensitivity);
-        _settings_window->set_camera_acceleration(settings.camera_acceleration);
-        _settings_window->set_camera_acceleration_rate(settings.camera_acceleration_rate);
-        _settings_window->set_camera_display_degrees(settings.camera_display_degrees);
-        _settings_window->set_randomizer_tools(settings.randomizer_tools);
-        _settings_window->set_max_recent_files(settings.max_recent_files);
-        _settings_window->set_background_colour(settings.background_colour);
-        _settings_window->set_map_colours(settings.map_colours);
-        _settings_window->set_default_route_colour(settings.route_colour);
-        _settings_window->set_default_waypoint_colour(settings.waypoint_colour);
-        _settings_window->set_route_startup(settings.route_startup);
-        _settings_window->set_fov(settings.fov);
-        _settings_window->set_camera_sink_startup(settings.camera_sink_startup);
-        _settings_window->set_statics_startup(settings.statics_startup);
-        _settings_window->set_linear_filtering(settings.linear_filtering);
+        _settings_window->set_settings(settings);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
         _camera_position->set_visible(settings.camera_position_window);
         _map_renderer->set_settings(settings);
