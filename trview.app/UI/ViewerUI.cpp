@@ -116,15 +116,6 @@ namespace trview
         _level_info = std::make_unique<LevelInfo>(*texture_storage);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
-        const auto forward_setting = [&]<typename T>(auto& event, T& target)
-        {
-            _token_store += event += [&](T value)
-            {
-                target = value;
-                on_settings(_settings);
-            };
-        };
-
         _settings_window->on_settings += on_settings;
         _settings_window->on_font += on_font;
         _settings_window->on_linear_filtering += on_linear_filtering;
