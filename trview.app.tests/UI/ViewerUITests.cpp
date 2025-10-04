@@ -73,27 +73,6 @@ namespace
     }
 }
 
-TEST(ViewerUI, OnCameraDisplayDegreesEventRaised)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    std::optional<UserSettings> settings;
-    auto token = ui->on_settings += [&](const auto& value)
-    {
-        settings = value;
-    };
-
-    settings_window.on_camera_display_degrees(true);
-    ASSERT_TRUE(settings.has_value());
-    ASSERT_TRUE(settings.value().camera_display_degrees);
-    settings.reset();
-
-    settings_window.on_camera_display_degrees(false);
-    ASSERT_TRUE(settings.has_value());
-    ASSERT_FALSE(settings.value().camera_display_degrees);
-}
-
 TEST(ViewerUI, BoundingBoxUpdatesViewOptions)
 {
     auto [view_options_ptr, view_options] = create_mock<MockViewOptions>();
@@ -143,27 +122,6 @@ TEST(ViewerUI, OnAddMidWaypoint)
 
     context_menu.on_add_mid_waypoint();
     ASSERT_TRUE(raised);
-}
-
-TEST(ViewerUI, OnRandomizerToolsEventRaised)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    std::optional<UserSettings> settings;
-    auto token = ui->on_settings += [&](const auto& value)
-    {
-        settings = value;
-    };
-
-    settings_window.on_randomizer_tools(true);
-    ASSERT_TRUE(settings.has_value());
-    ASSERT_TRUE(settings.value().randomizer_tools);
-    settings.reset();
-
-    settings_window.on_randomizer_tools(false);
-    ASSERT_TRUE(settings.has_value());
-    ASSERT_FALSE(settings.value().randomizer_tools);
 }
 
 TEST(ViewerUI, CameraControlsResetEventRaised)
@@ -231,86 +189,6 @@ TEST(ViewerUI, SetCameraProjectionModeUpdatesCameraControls)
     ui->set_camera_projection_mode(ProjectionMode::Orthographic);
 }
 
-TEST(ViewerUI, SetMapColoursUpdatesMapRenderer)
-{
-    auto [map_renderer_ptr, map_renderer] = create_mock<MockMapRenderer>();
-    EXPECT_CALL(map_renderer, set_settings).Times(1);
-
-    auto window = register_test_module().with_map_renderer_source([&]() { return std::move(map_renderer_ptr); }).build();
-    window->set_settings({});
-}
-
-TEST(ViewerUI, OnMinimapColoursEventRaised)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto window = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    auto raised = false;
-    auto token = window->on_settings += [&](auto&&)
-    {
-        raised = true;
-    };
-
-    settings_window.on_minimap_colours({});
-    ASSERT_TRUE(raised);
-}
-
-TEST(ViewerUI, OnDefaultRouteColourEventRaised)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto window = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    std::optional<UserSettings> raised;
-    auto token = window->on_settings += [&](auto&& settings)
-    {
-        raised = settings;
-    };
-
-    settings_window.on_default_route_colour(Colour::Yellow);
-
-    ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(raised.value().route_colour, Colour::Yellow);
-}
-
-TEST(ViewerUI, OnDefaultWaypointColourRaised)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto window = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    std::optional<UserSettings> raised;
-    auto token = window->on_settings += [&](auto&& settings)
-    {
-        raised = settings;
-    };
-
-    settings_window.on_default_waypoint_colour(Colour::Yellow);
-
-    ASSERT_TRUE(raised.has_value());
-    ASSERT_EQ(raised.value().waypoint_colour, Colour::Yellow);
-}
-
-TEST(ViewerUI, SetDefaultRouteColourCalled)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto window = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-    EXPECT_CALL(settings_window, set_default_route_colour(Colour::Yellow)).Times(1);
-
-    UserSettings settings;
-    settings.route_colour = Colour::Yellow;
-    window->set_settings(settings);
-}
-
-TEST(ViewerUI, SetDefaultWaypointColourCalled)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto window = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-    EXPECT_CALL(settings_window, set_default_waypoint_colour(Colour::Yellow)).Times(1);
-
-    UserSettings settings;
-    settings.waypoint_colour = Colour::Yellow;
-    window->set_settings(settings);
-}
-
 TEST(ViewerUI, OnCopyEventForwarded)
 {
     auto [context_menu_ptr, context_menu] = create_mock<MockContextMenu>();
@@ -326,35 +204,6 @@ TEST(ViewerUI, OnCopyEventForwarded)
 
     ASSERT_TRUE(raised);
     ASSERT_EQ(raised, trview::IContextMenu::CopyType::Position);
-}
-
-TEST(ViewerUI, OnRouteStartupEventRaised)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    std::optional<UserSettings> settings;
-    auto token = ui->on_settings += [&](auto raised)
-    {
-        settings = raised;
-    };
-
-    settings_window.on_route_startup(true);
-
-    ASSERT_TRUE(settings);
-    ASSERT_TRUE(settings.value().route_startup);
-}
-
-TEST(ViewerUI, SetRouteStartupUpdatesSettingsWindow)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    EXPECT_CALL(settings_window, set_route_startup(true)).Times(1);
-
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    UserSettings settings{};
-    settings.route_startup = true;
-    ui->set_settings(settings);
 }
 
 TEST(ViewerUI, OnTriggerSelectedEventForwarded)
@@ -388,65 +237,6 @@ TEST(ViewerUI, SetTriggeredByUpdatesContextMenu)
     ui->set_triggered_by({ mock_shared<MockTrigger>() });
 }
 
-
-TEST(ViewerUI, FovEventRaised)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    std::optional<UserSettings> settings;
-    auto token = ui->on_settings += [&](auto raised)
-    {
-        settings = raised;
-    };
-
-    settings_window.on_camera_fov(1.0f);
-
-    ASSERT_TRUE(settings);
-    ASSERT_EQ(settings.value().fov, 1.0f);
-}
-
-TEST(ViewerUI, SetFovUpdatesSettingsWindow)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    EXPECT_CALL(settings_window, set_fov(1.0f)).Times(1);
-
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    UserSettings settings{};
-    settings.fov = 1.0f;
-    ui->set_settings(settings);
-}
-
-TEST(ViewerUI, OnCameraSinkStartupEventRaised)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    std::optional<UserSettings> settings;
-    auto token = ui->on_settings += [&](auto raised)
-    {
-        settings = raised;
-    };
-
-    settings_window.on_camera_sink_startup(true);
-
-    ASSERT_TRUE(settings);
-    ASSERT_TRUE(settings.value().camera_sink_startup);
-}
-
-TEST(ViewerUI, SetCameraSinkStartupUpdatesSettingsWindow)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    EXPECT_CALL(settings_window, set_camera_sink_startup(true)).Times(1);
-
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    UserSettings settings{};
-    settings.camera_sink_startup = true;
-    ui->set_settings(settings);
-}
-
 TEST(ViewerUI, FontForwarded)
 {
     auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
@@ -462,35 +252,6 @@ TEST(ViewerUI, FontForwarded)
     ASSERT_EQ(raised->second.name, "Test");
     ASSERT_EQ(raised->second.filename, "test.ttf");
     ASSERT_EQ(raised->second.size, 100);
-}
-
-TEST(ViewerUI, OnStaticsStartupEventRaised)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    std::optional<UserSettings> settings;
-    auto token = ui->on_settings += [&](auto raised)
-        {
-            settings = raised;
-        };
-
-    settings_window.on_statics_startup(true);
-
-    ASSERT_TRUE(settings);
-    ASSERT_TRUE(settings.value().statics_startup);
-}
-
-TEST(ViewerUI, SetStaticsStartupUpdatesSettingsWindow)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    EXPECT_CALL(settings_window, set_statics_startup(true)).Times(1);
-
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    UserSettings settings{};
-    settings.statics_startup = true;
-    ui->set_settings(settings);
 }
 
 TEST(ViewerUI, NgPlusEnabled)
@@ -530,4 +291,29 @@ TEST(ViewerUI, SetTileFilterEnabled)
     auto ui = register_test_module().with_context_menu(std::move(context_menu_ptr)).build();
 
     ui->set_tile_filter_enabled(true);
+}
+
+TEST(ViewerUI, SettingsSentToSettingsWindow)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    EXPECT_CALL(settings_window, set_settings).Times(1);
+
+    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+
+    ui->set_settings({});
+}
+
+TEST(ViewerUI, SettingsEventRaised)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
+
+    std::optional<UserSettings> settings;
+    auto token = ui->on_settings += [&](auto raised)
+        {
+            settings = raised;
+        };
+
+    settings_window.on_settings({});
+    ASSERT_TRUE(settings);
 }
