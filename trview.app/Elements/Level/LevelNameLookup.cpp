@@ -275,6 +275,36 @@ namespace trview
             }
             return std::nullopt;
         }
+
+        std::optional<int> level_index_from_gameflow(const std::shared_ptr<IFiles>& files, const std::filesystem::path& gameflow_path, const std::string& filename)
+        {
+            int index = 0;
+            if (auto gameflow = files->load_file(gameflow_path))
+            {
+                auto json = nlohmann::json::parse(*gameflow);
+                for (const auto& level : json["levels"].items())
+                {
+                    const std::string level_path = level.value()["path"].get<std::string>();
+                    if (level_path == ("data/" + filename))
+                    {
+                        return index;
+                    }
+                    ++index;
+                }
+            }
+            return std::nullopt;
+        }
+
+        std::optional<std::string> level_name_from_strings(const std::shared_ptr<IFiles>& files, const std::filesystem::path& strings_path, int index)
+        {
+            if (auto strings = files->load_file(strings_path))
+            {
+                auto json = nlohmann::json::parse(*strings);
+                const auto& level = json["levels"].at(index);
+                return level["title"].get<std::string>();
+            }
+            return std::nullopt;
+        }
     }
 
     ILevelNameLookup::~ILevelNameLookup()
@@ -311,6 +341,65 @@ namespace trview
         return get_name(level_ptr->filename(), level_ptr->platform_and_version(), level_ptr->hash());
     }
 
+    bool LevelNameLookup::is_trx() const
+    {
+        return false;
+    }
+
+    std::optional<std::string> LevelNameLookup::check_remastered(const std::string& filename, trlevel::PlatformAndVersion platform_and_version) const
+    {
+        if (!platform_and_version.remastered)
+        {
+            return std::nullopt;
+        }
+
+        const std::filesystem::path level_path{ filename };
+        if (const auto strings_data = load_strings_data(_files, level_path))
+        {
+            std::string level_stem = level_path.stem().string();
+            std::erase(level_stem, '_');
+            const std::string level_name = std::format("LVL_{}=", level_stem);
+            const std::string strings_text = { std::from_range, strings_data.value() };
+            const auto start = strings_text.find(level_name);
+            if (start != strings_text.npos)
+            {
+                const auto end = strings_text.find('\r', start);
+                if (end != strings_text.npos)
+                {
+                    return strings_text.substr(start + level_name.size(), end - start - level_name.size());
+                }
+            }
+        }
+
+        return std::nullopt;
+    }
+
+    std::optional<std::string> LevelNameLookup::check_trx(const std::string& filename, trlevel::PlatformAndVersion platform_and_version) const
+    {
+        using namespace trlevel;
+
+        if (platform_and_version.platform == Platform::PC)
+        {
+            const std::filesystem::path file_path{ filename };
+
+            // TODO: TR1
+            if (platform_and_version.version == LevelVersion::Tomb2)
+            {
+                std::filesystem::path gameflow_path = file_path.parent_path();
+                gameflow_path += "/../cfg/tr2/gameflow.json5";
+                std::optional<int> level_index = level_index_from_gameflow(_files, gameflow_path, file_path.filename().string());
+                if (level_index)
+                {
+                    std::filesystem::path strings_path = gameflow_path;
+                    strings_path.replace_filename("strings.json5");
+                    return level_name_from_strings(_files, strings_path, *level_index);
+                }
+            }
+        }
+
+        return std::nullopt;
+    }
+
     std::optional<std::string> LevelNameLookup::get_name(const std::string& filename, trlevel::PlatformAndVersion platform_and_version, const std::string& hash) const
     {
         using namespace trlevel;
@@ -318,45 +407,32 @@ namespace trview
         // Mode 1: Check in the files (TOMBPC, English.DAT, etc)
         if (platform_and_version.platform == Platform::PC)
         {
-            if (platform_and_version.remastered)
+            if (auto remastered = check_remastered(filename, platform_and_version))
             {
-                const std::filesystem::path level_path{ filename };
-                if (const auto strings_data = load_strings_data(_files, level_path))
-                {
-                    std::string level_stem = level_path.stem().string();
-                    std::erase(level_stem, '_');
-                    const std::string level_name = std::format("LVL_{}=", level_stem);
-                    const std::string strings_text = { std::from_range, strings_data.value() };
-                    const auto start = strings_text.find(level_name);
-                    if (start != strings_text.npos)
-                    {
-                        const auto end = strings_text.find('\r', start);
-                        if (end != strings_text.npos)
-                        {
-                            return strings_text.substr(start + level_name.size(), end - start - level_name.size());
-                        }
-                    }
-                }
+                return remastered;
             }
-            else
+
+            if (auto trx = check_trx(filename, platform_and_version))
             {
-                switch (platform_and_version.version)
+                return trx;
+            }
+
+            switch (platform_and_version.version)
+            {
+            case LevelVersion::Tomb2:
+            case LevelVersion::Tomb3:
+                if (auto name = read_tombpc_1_3(_files, filename))
                 {
-                case LevelVersion::Tomb2:
-                case LevelVersion::Tomb3:
-                    if (auto name = read_tombpc_1_3(_files, filename))
-                    {
-                        return name.value();
-                    }
-                    break;
-                case LevelVersion::Tomb4:
-                case LevelVersion::Tomb5:
-                    if (auto name = read_english_4_5(_files, filename, platform_and_version.version))
-                    {
-                        return name.value();
-                    }
-                    break;
+                    return name.value();
                 }
+                break;
+            case LevelVersion::Tomb4:
+            case LevelVersion::Tomb5:
+                if (auto name = read_english_4_5(_files, filename, platform_and_version.version))
+                {
+                    return name.value();
+                }
+                break;
             }
         }
 

@@ -16,6 +16,11 @@ namespace trview
     private:
         std::optional<std::string> get_name(const std::string& filename, trlevel::PlatformAndVersion platform_and_version, const std::string& hash) const;
 
+        std::optional<std::string> check_remastered(const std::string& filename, trlevel::PlatformAndVersion platform_and_version) const;
+        std::optional<std::string> check_trx(const std::string& filename, trlevel::PlatformAndVersion platform_and_version) const;
+        bool is_trx() const;
+
+
         std::shared_ptr<IFiles> _files;
         std::unordered_map<std::string, std::string> _hashes;
     };

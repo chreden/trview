@@ -26,11 +26,14 @@ namespace trview
         void open_file(const std::string& filename, const std::weak_ptr<trlevel::IPack>& pack) override;
         void render() override;
         void set_recent_files(const std::list<std::string>& files) override;
+        void set_sorting_mode(LevelSortingMode mode) override;
         void switch_to(const std::string& filename) override;
     private:
         void choose_file();
         void next_directory_file();
         void previous_directory_file();
+        void sort_level_switcher();
+        void update_level_switcher();
 
         struct File
         {
@@ -48,5 +51,6 @@ namespace trview
         std::shared_ptr<IFiles> _files;
         std::optional<std::string> _initial_directory;
         LevelNameSource _level_name_source;
+        LevelSortingMode _sorting_mode{ LevelSortingMode::FilenameOnly };
     };
 }

@@ -85,6 +85,7 @@ namespace trview
 
         set_route(_settings.randomizer_tools ? randomizer_route_source(std::nullopt) : route_source(std::nullopt));
 
+        _file_menu->set_sorting_mode(_settings.level_sorting_mode);
         _file_menu->set_recent_files(_settings.recent_files);
         _token_store += _file_menu->on_file_open += [=](const auto& file) { open(file, ILevel::OpenMode::Full); };
         _token_store += _file_menu->on_reload += [=]() { reload(); };
@@ -126,6 +127,7 @@ namespace trview
         _token_store += _windows->on_settings += [this](auto&& settings)
             {
                 _settings = settings;
+                _file_menu->set_sorting_mode(_settings.level_sorting_mode);
                 _plugins->set_settings(_settings);
                 _viewer->set_settings(_settings);
                 _windows->set_settings(settings);
@@ -329,6 +331,7 @@ namespace trview
         _token_store += _viewer->on_settings += [this](auto&& settings)
         {
             _settings = settings;
+            _file_menu->set_sorting_mode(_settings.level_sorting_mode);
             _plugins->set_settings(_settings);
             _viewer->set_settings(_settings);
             _windows->set_settings(settings);

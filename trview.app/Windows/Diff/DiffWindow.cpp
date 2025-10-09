@@ -479,6 +479,7 @@ namespace trview
     {
         _settings = settings;
         _file_menu->set_recent_files(_settings.recent_diff_files);
+        _file_menu->set_sorting_mode(_settings.level_sorting_mode);
     }
 
     void DiffWindow::start_load(const std::string& filename)
