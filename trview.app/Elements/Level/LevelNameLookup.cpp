@@ -281,7 +281,7 @@ namespace trview
             int index = 0;
             if (auto gameflow = files->load_file(gameflow_path))
             {
-                auto json = nlohmann::json::parse(*gameflow);
+                auto json = nlohmann::json::parse(*gameflow, nullptr, true, true);
                 for (const auto& level : json["levels"].items())
                 {
                     const std::string level_path = level.value()["path"].get<std::string>();
@@ -299,11 +299,16 @@ namespace trview
         {
             if (auto strings = files->load_file(strings_path))
             {
-                auto json = nlohmann::json::parse(*strings);
+                auto json = nlohmann::json::parse(*strings, nullptr, true, true);
                 const auto& level = json["levels"].at(index);
                 return level["title"].get<std::string>();
             }
             return std::nullopt;
+        }
+
+        std::string trx_filter_for_level(trlevel::LevelVersion version)
+        {
+            return std::format("tr{}*", static_cast<int>(version));
         }
     }
 
@@ -381,18 +386,27 @@ namespace trview
         if (platform_and_version.platform == Platform::PC)
         {
             const std::filesystem::path file_path{ filename };
+            auto dirs = _files->get_directories(
+                std::format("{}/{}", file_path.parent_path().parent_path().string(), "/cfg"),
+                trx_filter_for_level(platform_and_version.version));
 
-            // TODO: TR1
-            if (platform_and_version.version == LevelVersion::Tomb2)
+            for (const auto& dir : dirs)
             {
-                std::filesystem::path gameflow_path = file_path.parent_path();
-                gameflow_path += "/../cfg/tr2/gameflow.json5";
-                std::optional<int> level_index = level_index_from_gameflow(_files, gameflow_path, file_path.filename().string());
-                if (level_index)
+                try
                 {
-                    std::filesystem::path strings_path = gameflow_path;
-                    strings_path.replace_filename("strings.json5");
-                    return level_name_from_strings(_files, strings_path, *level_index);
+                    std::filesystem::path gameflow_path = dir.path;
+                    gameflow_path += "/gameflow.json5";
+                    std::optional<int> level_index = level_index_from_gameflow(_files, gameflow_path, file_path.filename().string());
+                    if (level_index)
+                    {
+                        std::filesystem::path strings_path = gameflow_path;
+                        strings_path.replace_filename("strings.json5");
+                        return level_name_from_strings(_files, strings_path, *level_index);
+                    }
+                }
+                catch (const nlohmann::detail::parse_error& e)
+                {
+                    OutputDebugStringA(e.what());
                 }
             }
         }
