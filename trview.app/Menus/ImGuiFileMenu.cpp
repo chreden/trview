@@ -75,4 +75,27 @@ namespace trview
     {
         filename;
     }
+
+    void ImGuiFileMenu::set_sorting_mode(LevelSortingMode mode)
+    {
+        _sorting_mode = mode;
+        sort_level_switcher();
+    }
+
+    void ImGuiFileMenu::sort_level_switcher()
+    {
+        switch (_sorting_mode)
+        {
+            case LevelSortingMode::FilenameOnly:
+            {
+                std::ranges::sort(_file_switcher, [](auto&& l, auto&& r) { return l.friendly_name < r.friendly_name; });
+                break;
+            }
+            case LevelSortingMode::NameThenFilename:
+            {
+                // std::ranges::sort(_file_switcher, [](auto&& l, auto&& r) { return l.level_name < r.level_name; });
+                // break;
+            }
+        }
+    }
 }

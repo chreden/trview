@@ -9,7 +9,7 @@ namespace trview
 
     Actions::Actions(const std::string& actions_json)
     {
-        auto json = nlohmann::json::parse(actions_json.begin(), actions_json.end());
+        auto json = nlohmann::json::parse(actions_json.begin(), actions_json.end(), nullptr, true, true, true);
         for (const auto& action : json["actions"])
         {
             auto name = read_attribute<std::string>(action, "name");
