@@ -281,7 +281,7 @@ namespace trview
             int index = 0;
             if (auto gameflow = files->load_file(gameflow_path))
             {
-                auto json = nlohmann::json::parse(*gameflow, nullptr, true, true);
+                auto json = nlohmann::json::parse(*gameflow, nullptr, true, true, true);
                 for (const auto& level : json["levels"].items())
                 {
                     const std::string level_path = level.value()["path"].get<std::string>();
@@ -299,7 +299,7 @@ namespace trview
         {
             if (auto strings = files->load_file(strings_path))
             {
-                auto json = nlohmann::json::parse(*strings, nullptr, true, true);
+                auto json = nlohmann::json::parse(*strings, nullptr, true, true, true);
                 const auto& level = json["levels"].at(index);
                 return level["title"].get<std::string>();
             }
@@ -319,7 +319,7 @@ namespace trview
     LevelNameLookup::LevelNameLookup(const std::shared_ptr<IFiles>& files, const std::string& level_hashes_json)
         : _files(files)
     {
-        const auto json = nlohmann::json::parse(level_hashes_json.begin(), level_hashes_json.end());
+        const auto json = nlohmann::json::parse(level_hashes_json.begin(), level_hashes_json.end(), nullptr, true, true, true);
         for (const auto& [key, value] : json.items())
         {
             _hashes.insert({ key, value.at("name").get<std::string>() });

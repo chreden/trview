@@ -86,7 +86,7 @@ namespace trview
                 return settings;
             }
 
-            auto json = nlohmann::json::parse(data.value().begin(), data.value().end());
+            auto json = nlohmann::json::parse(data.value().begin(), data.value().end(), nullptr, true, true, true);
             read_attribute(json, settings.camera_sensitivity, "camera");
             read_attribute(json, settings.camera_movement_speed, "movement");
             read_attribute(json, settings.vsync, "vsync");
@@ -146,7 +146,7 @@ namespace trview
                 return settings;
             }
 
-            auto json = nlohmann::json::parse(data.value().begin(), data.value().end());
+            auto json = nlohmann::json::parse(data.value().begin(), data.value().end(), nullptr, true, true, true);
             from_json(json, settings.randomizer);
         }
         catch (...)
