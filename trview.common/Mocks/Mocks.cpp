@@ -8,6 +8,7 @@
 #include "Windows/IShell.h"
 #include "Windows/IShortcuts.h"
 #include "IFiles.h"
+#include "Messages/IMessageSystem.h"
 
 namespace trview
 {
@@ -30,5 +31,8 @@ namespace trview
 
         MockFiles::MockFiles() {}
         MockFiles::~MockFiles() {}
+
+        MockMessageSystem::MockMessageSystem() {}
+        MockMessageSystem::~MockMessageSystem() {}
     }
 }

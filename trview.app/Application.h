@@ -20,6 +20,8 @@
 #include "UI/IImGuiBackend.h"
 #include "Plugins/IPlugins.h"
 #include "UI/Fonts/IFonts.h"
+#include <trview.common/Messages/IRecipient.h>
+#include <trview.common/Messages/IMessageSystem.h>
 
 struct ImFont;
 
@@ -42,7 +44,7 @@ namespace trview
         Event<> on_closing;
     };
 
-    class Application final : public IApplication, public MessageHandler
+    class Application final : public IApplication, public MessageHandler, public IRecipient
     {
     public:
         enum class LoadMode
@@ -56,7 +58,7 @@ namespace trview
             std::unique_ptr<IUpdateChecker> update_checker,
             std::shared_ptr<ISettingsLoader> settings_loader,
             std::unique_ptr<IFileMenu> file_menu,
-            std::shared_ptr<IViewer> viewer,
+            const std::shared_ptr<IViewer>& viewer,
             const IRoute::Source& route_source,
             std::shared_ptr<IShortcuts> shortcuts,
             const ILevel::Source& level_source,
@@ -68,7 +70,8 @@ namespace trview
             const IRandomizerRoute::Source& randomizer_route_source,
             std::shared_ptr<IFonts> fonts,
             std::unique_ptr<IWindows> windows,
-            LoadMode load_mode);
+            LoadMode load_mode,
+            const std::shared_ptr<IMessageSystem>& messaging);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -84,6 +87,7 @@ namespace trview
         void set_route(const std::shared_ptr<IRoute>& route) override;
         UserSettings settings() const override;
         std::weak_ptr<IViewer> viewer() const override;
+        void receive_message(const Message& message) override;
     private:
         // Window setup functions.
         void setup_view_menu();
@@ -121,6 +125,8 @@ namespace trview
         void check_load();
         void end_diff(const std::weak_ptr<ILevel>& level);
         void select_flyby_node(const std::weak_ptr<IFlybyNode>& node);
+        void set_settings();
+        void send_settings_message();
 
         TokenStore _token_store;
 
@@ -171,7 +177,9 @@ namespace trview
         LoadMode _load_mode;
         std::string _progress;
         std::optional<std::string> _route_directory;
+
+        std::shared_ptr<IMessageSystem> _messaging;
     };
 
-    std::unique_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);
+    std::shared_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);
 }

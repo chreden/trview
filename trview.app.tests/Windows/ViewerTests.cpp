@@ -24,8 +24,8 @@
 #include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/ISoundSource.h>
 #include <trview.graphics/Mocks/ISamplerState.h>
-
 #include <trview.tests.common/Event.h>
+#include <trview.common/Messages/Message.h>
 
 using testing::A;
 using testing::Return;
@@ -457,7 +457,7 @@ TEST(Viewer, OrbitEnabledWhenItemSelectedAndAutoOrbitEnabled)
 
     UserSettings settings;
     settings.auto_orbit = true;
-    viewer->set_settings(settings);
+    viewer->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(settings) });
 
     viewer->set_camera_mode(ICamera::Mode::Free);
     viewer->select_item(mock_shared<MockItem>());
@@ -477,7 +477,7 @@ TEST(Viewer, OrbitNotEnabledWhenItemSelectedAndAutoOrbitDisabled)
 
     UserSettings settings;
     settings.auto_orbit = false;
-    viewer->set_settings(settings);
+    viewer->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(settings) });
 
     viewer->set_camera_mode(ICamera::Mode::Free);
     viewer->select_item({});
@@ -497,7 +497,7 @@ TEST(Viewer, OrbitEnabledWhenTriggerSelectedAndAutoOrbitEnabled)
 
     UserSettings settings;
     settings.auto_orbit = true;
-    viewer->set_settings(settings);
+    viewer->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(settings) });
 
     viewer->set_camera_mode(ICamera::Mode::Free);
 
@@ -519,7 +519,7 @@ TEST(Viewer, OrbitNotEnabledWhenTriggerSelectedAndAutoOrbitDisabled)
 
     UserSettings settings;
     settings.auto_orbit = false;
-    viewer->set_settings(settings);
+    viewer->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(settings) });
 
     viewer->set_camera_mode(ICamera::Mode::Free);
 
@@ -541,7 +541,7 @@ TEST(Viewer, OrbitEnabledWhenWaypointSelectedAndAutoOrbitEnabled)
 
     UserSettings settings;
     settings.auto_orbit = true;
-    viewer->set_settings(settings);
+    viewer->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(settings) });
 
     viewer->set_camera_mode(ICamera::Mode::Free);
 
@@ -563,7 +563,7 @@ TEST(Viewer, OrbitNotEnabledWhenWaypointSelectedAndAutoOrbitDisabled)
 
     UserSettings settings;
     settings.auto_orbit = false;
-    viewer->set_settings(settings);
+    viewer->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(settings) });
 
     viewer->set_camera_mode(ICamera::Mode::Free);
 
@@ -586,7 +586,7 @@ TEST(Viewer, OrbitEnabledWhenRoomSelectedAndAutoOrbitEnabled)
 
     UserSettings settings;
     settings.auto_orbit = true;
-    viewer->set_settings(settings);
+    viewer->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(settings) });
 
     auto room = mock_shared<MockRoom>();
     viewer->set_camera_mode(ICamera::Mode::Free);
@@ -607,20 +607,11 @@ TEST(Viewer, OrbitNotEnabledWhenRoomSelectedAndAutoOrbitDisabled)
 
     UserSettings settings;
     settings.auto_orbit = false;
-    viewer->set_settings(settings);
+    viewer->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(settings) });
 
     auto room = mock_shared<MockRoom>();
     viewer->set_camera_mode(ICamera::Mode::Free);
     viewer->select_room(room);
-}
-
-TEST(Viewer, SetSettingsUpdatesUI)
-{
-    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-    EXPECT_CALL(ui, set_settings).Times(2);
-
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
-    viewer->set_settings({});
 }
 
 TEST(Viewer, CameraRotationUpdated)
@@ -842,7 +833,7 @@ TEST(Viewer, OrbitHereOrbitsWhenSettingDisabled)
 
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_camera(camera).build();
     viewer->set_camera_mode(ICamera::Mode::Free);
-    viewer->set_settings(settings);
+    viewer->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(settings) });
 
     ui.on_orbit();
 }
@@ -1120,7 +1111,7 @@ TEST(Viewer, ToggleSaved)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
-    viewer->set_settings({});
+    viewer->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(UserSettings{}) });
 
     std::optional<UserSettings> raised;
     auto token = viewer->on_settings += [&](const auto& new_settings) { raised = new_settings; };

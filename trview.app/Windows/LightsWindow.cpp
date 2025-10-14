@@ -9,8 +9,8 @@ namespace trview
     {
     }
 
-    LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard)
-        : _clipboard(clipboard)
+    LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _messaging(messaging)
     {
         _tips["Direction"] = "Direction is inverted in-game. 3D view shows correct direction.";
         setup_filters();
@@ -22,8 +22,14 @@ namespace trview
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
-                _settings.lights_window_columns = _filters.columns();
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->lights_window_columns = _filters.columns();
+                    if (auto ms = _messaging.lock())
+                    {
+                        ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(_settings.value()) });
+                    }
+                }
             };
     }
 
@@ -34,6 +40,14 @@ namespace trview
 
     void LightsWindow::render()
     {
+        if (!_settings)
+        {
+            if (auto ms = _messaging.lock())
+            {
+                ms->send_message(Message{ .type = "get_settings", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(weak_from_this()) });
+            }
+        }
+
         if (!render_lights_window())
         {
             on_window_closed();
@@ -314,13 +328,16 @@ namespace trview
         }
     }
 
-    void LightsWindow::set_settings(const UserSettings& settings)
+    void LightsWindow::receive_message(const Message& message)
     {
-        _settings = settings;
-        if (!_columns_set)
+        if (message.type == "settings")
         {
-            _filters.set_columns(settings.lights_window_columns);
-            _columns_set = true;
+            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            if (!_columns_set)
+            {
+                _filters.set_columns(_settings->lights_window_columns);
+                _columns_set = true;
+            }
         }
     }
 }

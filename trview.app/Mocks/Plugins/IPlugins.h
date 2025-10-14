@@ -14,7 +14,6 @@ namespace trview
             MOCK_METHOD(void, initialise, (IApplication*), (override));
             MOCK_METHOD(void, render_ui, (), (override));
             MOCK_METHOD(void, reload, (), (override));
-            MOCK_METHOD(void, set_settings, (const UserSettings&), (override));
         };
     }
 }

@@ -189,10 +189,6 @@ namespace trview
         /// @param room The selected room.
         virtual void set_selected_room(const std::shared_ptr<IRoom>& room) = 0;
 
-        /// Set the user settings.
-        /// @param settings The user settings.
-        virtual void set_settings(const UserSettings& settings) = 0;
-
         /// Set whether the context menu is visible.
         /// "param value Whether the context menu is visible.
         virtual void set_show_context_menu(bool value) = 0;

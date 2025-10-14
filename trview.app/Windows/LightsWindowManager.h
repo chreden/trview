@@ -23,7 +23,6 @@ namespace trview
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual std::weak_ptr<ILightsWindow> create_window() override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
-        void set_settings(const UserSettings& settings) override;
     private:
         std::vector<std::weak_ptr<ILight>> _lights;
         ILightsWindow::Source _lights_window_source;

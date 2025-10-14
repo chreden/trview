@@ -110,7 +110,7 @@ namespace trview
         std::weak_ptr<IRoom> _selected_room;
 
         TokenStore _token_store;
-        std::unique_ptr<IMapRenderer> _map_renderer;
+        std::shared_ptr<IMapRenderer> _map_renderer;
         std::shared_ptr<IClipboard> _clipboard;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb1 };
         std::string _id{ "Rooms 0" };

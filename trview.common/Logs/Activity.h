@@ -26,7 +26,7 @@ namespace trview
         Activity operator=(const Activity&) = delete;
         ~Activity();
         void log(const std::string& text) const;
-        void log(Message::Status status, const std::string& text) const;
+        void log(LogMessage::Status status, const std::string& text) const;
     private:
         mutable std::shared_ptr<ILog> _log;
         std::string _topic;

@@ -169,7 +169,6 @@ namespace trview
     void RoomsWindow::set_settings(const UserSettings& settings)
     {
         _settings = settings;
-        _map_renderer->set_settings(settings);
         if (!_columns_set)
         {
             _filters.set_columns(_settings.rooms_window_columns);

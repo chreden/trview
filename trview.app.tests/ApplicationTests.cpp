@@ -23,6 +23,7 @@
 #include <trview.app/Mocks/Plugins/IPlugins.h>
 #include <trview.app/Mocks/UI/IFonts.h>
 #include <trview.app/Mocks/Windows/IWindows.h>
+#include <trview.common/Mocks/Messages/IMessageSystem.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -66,13 +67,14 @@ namespace
             IRandomizerRoute::Source randomizer_route_source { [](auto&&...) { return mock_shared<MockRandomizerRoute>(); } };
             std::shared_ptr<IFonts> fonts { mock_shared<MockFonts>() };
             std::unique_ptr<IWindows> windows{ mock_unique<MockWindows>() };
+            std::shared_ptr<IMessageSystem> message_system{ mock_shared<MockMessageSystem>() };
 
             std::unique_ptr<Application> build()
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<Application>(window, std::move(update_checker), std::move(settings_loader),
                     std::move(file_menu), std::move(viewer), route_source, shortcuts, level_source, startup_options, dialogs, files,
-                    std::move(imgui_backend), plugins, randomizer_route_source, fonts, std::move(windows), Application::LoadMode::Sync);
+                    std::move(imgui_backend), plugins, randomizer_route_source, fonts, std::move(windows), Application::LoadMode::Sync, message_system);
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)
@@ -158,6 +160,12 @@ namespace
                 this->fonts = fonts;
                 return *this;
             }
+
+            test_module& with_messaging(std::shared_ptr<IMessageSystem> messaging)
+            {
+                this->message_system = messaging;
+                return *this;
+            }
         };
         return test_module{};
     }
@@ -241,15 +249,6 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     ASSERT_EQ(called.value(), "test_path.tr2");
 
     ASSERT_EQ(events.back(), "viewer");
-}
-
-TEST(Application, PropagatesSettingsWhenUpdated)
-{
-    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    EXPECT_CALL(viewer, set_settings).Times(2);
-
-    auto application = register_test_module().with_viewer(std::move(viewer_ptr)).build();
-    viewer.on_settings({});
 }
 
 TEST(Application, SavesSettingsOnShutdown)
@@ -437,20 +436,6 @@ TEST(Application, SettingsSetOnWindow)
     auto application = register_test_module()
         .with_windows(std::move(windows_ptr))
         .build();
-}
-
-TEST(Application, SettingsSetOnSettingsChanged)
-{
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
-    EXPECT_CALL(windows, set_settings).Times(1);
-    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-
-    auto application = register_test_module()
-        .with_windows(std::move(windows_ptr))
-        .with_viewer(std::move(viewer_ptr))
-        .build();
-
-    viewer.on_settings(UserSettings());
 }
 
 TEST(Application, ResetFonts)
@@ -642,8 +627,9 @@ TEST(Application, RecentRouteLoaded)
     auto route = mock_shared<MockRoute>();
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, set_route(std::shared_ptr<IRoute>(route))).Times(2);
-    UserSettings called_settings{};
-    EXPECT_CALL(viewer, set_settings).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
+    auto messaging = mock_shared<MockMessageSystem>();
+    trview::Message called_settings;
+    EXPECT_CALL(*messaging, send_message).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
     auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
     ON_CALL(level, filename).WillByDefault(Return("test.tr2"));
     auto [windows_ptr, windows] = create_mock<MockWindows>();
@@ -656,11 +642,12 @@ TEST(Application, RecentRouteLoaded)
         .with_route_source([&](auto&&...) {return route; })
         .with_level_source([&](auto&&...) { return std::move(level_ptr); })
         .with_windows(std::move(windows_ptr))
+        .with_messaging(messaging)
         .build();
     
     application->open("test.tr2", ILevel::OpenMode::Full);
 
-    ASSERT_EQ(called_settings.recent_routes["test.tr2"].route_path, "test.tvr");
+    ASSERT_EQ(std::static_pointer_cast<MessageData<UserSettings>>(called_settings.data)->value.recent_routes["test.tr2"].route_path, "test.tvr");
 }
 
 TEST(Application, RecentRouteNotLoaded)
@@ -672,8 +659,9 @@ TEST(Application, RecentRouteNotLoaded)
     auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, message_box(std::wstring(L"Reopen last used route for this level?"), std::wstring(L"Reopen route"), IDialogs::Buttons::Yes_No)).Times(1).WillOnce(Return(false));
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    UserSettings called_settings{};
-    EXPECT_CALL(viewer, set_settings).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
+    auto messaging = mock_shared<MockMessageSystem>();
+    trview::Message called_settings;
+    EXPECT_CALL(*messaging, send_message).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
     auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
     ON_CALL(level, filename).WillByDefault(Return("test.tr2"));
     auto [windows_ptr, windows] = create_mock<MockWindows>();
@@ -685,11 +673,12 @@ TEST(Application, RecentRouteNotLoaded)
         .with_viewer(std::move(viewer_ptr))
         .with_level_source([&](auto&&...) { return std::move(level_ptr); })
         .with_windows(std::move(windows_ptr))
+        .with_messaging(messaging)
         .build();
 
     application->open("test.tr2", ILevel::OpenMode::Full);
 
-    ASSERT_TRUE(called_settings.recent_routes.empty());
+    ASSERT_TRUE(std::static_pointer_cast<MessageData<UserSettings>>(called_settings.data)->value.recent_routes.empty());
 }
 
 TEST(Application, RecentRouteLoadedOnWindowOpened)
@@ -703,8 +692,9 @@ TEST(Application, RecentRouteLoadedOnWindowOpened)
     auto route = mock_shared<MockRoute>();
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, set_route(std::shared_ptr<IRoute>(route))).Times(2);
-    UserSettings called_settings{};
-    EXPECT_CALL(viewer, set_settings).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
+    auto messaging = mock_shared<MockMessageSystem>();
+    trview::Message called_settings;
+    EXPECT_CALL(*messaging, send_message).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
     auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
     ON_CALL(level, filename).WillByDefault(Return("test.tr2"));
     auto [windows_ptr, windows] = create_mock<MockWindows>();
@@ -716,6 +706,7 @@ TEST(Application, RecentRouteLoadedOnWindowOpened)
         .with_route_source([&](auto&&...) {return route; })
         .with_level_source([&](auto&&...) { return std::move(level_ptr); })
         .with_windows(std::move(windows_ptr))
+        .with_messaging(messaging)
         .build();
 
     application->open("test.tr2", ILevel::OpenMode::Full);
@@ -723,7 +714,7 @@ TEST(Application, RecentRouteLoadedOnWindowOpened)
     ON_CALL(windows, is_route_window_open).WillByDefault(Return(true));
     windows.on_route_window_created();
 
-    ASSERT_EQ(called_settings.recent_routes["test.tr2"].route_path, "test.tvr");
+    ASSERT_EQ(std::static_pointer_cast<MessageData<UserSettings>>(called_settings.data)->value.recent_routes["test.tr2"].route_path, "test.tvr");
 }
 
 TEST(Application, SectorHoverForwarded)

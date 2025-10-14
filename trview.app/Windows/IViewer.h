@@ -84,8 +84,6 @@ namespace trview
 
         virtual void open(const std::weak_ptr<ILevel>& level, ILevel::OpenMode open_mode) = 0;
 
-        virtual void set_settings(const UserSettings& settings) = 0;
-
         /// Select the specified item.
         /// @param item The item to select.
         /// @remarks This will not raise the on_item_selected event.

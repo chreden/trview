@@ -38,11 +38,12 @@
 #include <trview.common/Windows/IClipboard.h>
 
 #include <trview.graphics/Sampler/ISamplerState.h>
+#include <trview.common/Messages/IRecipient.h>
 
 namespace trview
 {
     /// Class that coordinates all the parts of the application.
-    class Viewer : public IViewer, public MessageHandler
+    class Viewer : public IViewer, public MessageHandler, public IRecipient
     {
     public:
         /// Create a new viewer.
@@ -50,7 +51,7 @@ namespace trview
         explicit Viewer(
             const Window& window, 
             const std::shared_ptr<graphics::IDevice>& device,
-            std::unique_ptr<IViewerUI> ui, 
+            const std::shared_ptr<IViewerUI>& ui, 
             std::unique_ptr<IPicking> picking,
             std::unique_ptr<input::IMouse> mouse,
             const std::shared_ptr<IShortcuts>& shortcuts,
@@ -71,7 +72,6 @@ namespace trview
         virtual void render_ui() override;
         virtual void present(bool vsync) override;
         void open(const std::weak_ptr<ILevel>& level, ILevel::OpenMode open_mode) override;
-        virtual void set_settings(const UserSettings& settings) override;
         virtual void select_item(const std::weak_ptr<IItem>& item) override;
         void select_room(const std::weak_ptr<IRoom>& room) override;
         virtual void select_trigger(const std::weak_ptr<ITrigger>& trigger) override;
@@ -96,6 +96,7 @@ namespace trview
         void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) override;
         void select_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) override;
         std::weak_ptr<ILevel> level() const override;
+        void receive_message(const Message& message) override;
     private:
         void initialise_input();
         void toggle_highlight();
@@ -147,7 +148,7 @@ namespace trview
         std::shared_ptr<ICamera> _camera;
         input::Keyboard _keyboard;
         std::unique_ptr<input::IMouse> _mouse;
-        std::unique_ptr<IViewerUI> _ui;
+        std::shared_ptr<IViewerUI> _ui;
         CameraInput _camera_input;
         UserSettings _settings;
         std::unique_ptr<IPicking> _picking;

@@ -38,12 +38,3 @@ namespace
         return test_module{};
     }
 }
-
-TEST(RoomsWindow, SetMapColoursUpdatesMapRenderer)
-{
-    auto [map_renderer_ptr, map_renderer] = create_mock<MockMapRenderer>();
-    EXPECT_CALL(map_renderer, set_settings).Times(1);
-
-    auto window = register_test_module().with_map_renderer_source([&]() { return std::move(map_renderer_ptr); }).build();
-    window->set_settings({});
-}

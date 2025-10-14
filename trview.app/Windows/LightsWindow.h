@@ -10,9 +10,11 @@
 
 #include "../Settings/UserSettings.h"
 
+#include <trview.common/Messages/IMessageSystem.h>
+
 namespace trview
 {
-    class LightsWindow final : public ILightsWindow
+    class LightsWindow final : public ILightsWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -25,7 +27,7 @@ namespace trview
             static inline const std::string details_panel = "Light Details";
         };
 
-        explicit LightsWindow(const std::shared_ptr<IClipboard>& clipboard);
+        explicit LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~LightsWindow() = default;
         virtual void clear_selected_light() override;
         virtual void render() override;
@@ -35,7 +37,7 @@ namespace trview
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_number(int32_t number) override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
-        void set_settings(const UserSettings& settings) override;
+        void receive_message(const Message& message) override;
     private:
         void set_sync_light(bool value);
         void set_local_selected_light(const std::weak_ptr<ILight>& light);
@@ -57,8 +59,9 @@ namespace trview
         Filters<ILight> _filters;
         Track<Type::Room> _track;
         AutoHider _auto_hider;
-        UserSettings _settings;
+        std::optional<UserSettings> _settings;
         TokenStore _token_store;
         bool _columns_set{ false };
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }

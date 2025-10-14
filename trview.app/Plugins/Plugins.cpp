@@ -1,4 +1,5 @@
 #include "Plugins.h"
+#include <trview.common/Messages/Message.h>
 
 namespace trview
 {
@@ -58,8 +59,11 @@ namespace trview
         initialise(_application);
     }
 
-    void Plugins::set_settings(const UserSettings& settings)
+    void Plugins::receive_message(const Message& message)
     {
-        _settings = settings;
+        if (message.type == "settings")
+        {
+            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+        }
     }
 }

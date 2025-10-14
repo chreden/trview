@@ -6,6 +6,7 @@
 #include <trview.graphics/ISprite.h>
 #include <trview.graphics/ViewportStore.h>
 #include <trview.common/Strings.h>
+#include <trview.common/Messages/Message.h>
 
 #include "../Windows/IItemsWindow.h"
 #include "../Elements/Flyby/IFlybyNode.h"
@@ -18,12 +19,12 @@ namespace trview
     {
     }
 
-    Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
+    Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<IViewerUI>& ui, std::unique_ptr<IPicking> picking,
         std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::Source& sprite_source,
         std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure, const graphics::IRenderTarget::SizeSource& render_target_source, const graphics::IDeviceWindow::Source& device_window_source,
         std::unique_ptr<ISectorHighlight> sector_highlight, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<ICamera>& camera, const graphics::ISamplerState::Source& sampler_source)
         : MessageHandler(window), _shortcuts(shortcuts), _timer(default_time_source()), _keyboard(window), _mouse(std::move(mouse)), _window_resizer(window),
-        _alternate_group_toggler(window), _menu_detector(window), _device(device), _route(route), _ui(std::move(ui)), _picking(std::move(picking)),
+        _alternate_group_toggler(window), _menu_detector(window), _device(device), _route(route), _ui(ui), _picking(std::move(picking)),
         _compass(std::move(compass)), _measure(std::move(measure)), _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight)),
         _clipboard(clipboard), _camera(camera), _sampler_source(sampler_source)
     {
@@ -405,7 +406,6 @@ namespace trview
                 _sampler_source(graphics::ISamplerState::AddressMode::Clamp)->set_filter_mode(mode);
             };
 
-        _ui->set_settings(_settings);
         _ui->set_camera_mode(ICamera::Mode::Orbit);
 
         _token_store += _measure->on_visible += [&](bool show) { _ui->set_show_measure(show); };
@@ -1383,13 +1383,6 @@ namespace trview
         _camera->set_settings(_settings);
     }
 
-    void Viewer::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        _ui->set_settings(_settings);
-        apply_camera_settings();
-    }
-
     std::weak_ptr<ICamera> Viewer::camera() const
     {
         return _camera;
@@ -1609,5 +1602,14 @@ namespace trview
             level->set_show_animation(show);
         }
         set_toggle(Options::animation, show);
+    }
+
+    void Viewer::receive_message(const Message& message)
+    {
+        if (message.type == "settings")
+        {
+            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            apply_camera_settings();
+        }
     }
 }

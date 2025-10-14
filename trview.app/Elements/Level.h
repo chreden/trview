@@ -22,6 +22,8 @@
 #include "SoundSource/ISoundSource.h"
 #include "Flyby/IFlyby.h"
 
+#include <trview.common/Messages/IMessageSystem.h>
+
 namespace trview
 {
     struct ILevelTextureStorage;
@@ -34,7 +36,7 @@ namespace trview
         struct IShader;
     }
 
-    class Level final : public ILevel, public std::enable_shared_from_this<ILevel>
+    class Level final : public ILevel, public std::enable_shared_from_this<ILevel>, public IRecipient
     {
     public:
         Level(const std::shared_ptr<graphics::IDevice>& device,
@@ -46,7 +48,8 @@ namespace trview
             const graphics::IBuffer::ConstantSource& buffer_source,
             std::shared_ptr<ISoundStorage> sound_storage,
             std::shared_ptr<INgPlusSwitcher> ngplus_switcher,
-            const std::shared_ptr<graphics::ISamplerState>& sampler_state);
+            const std::shared_ptr<graphics::ISamplerState>& sampler_state,
+            const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~Level() = default;
         virtual std::vector<graphics::Texture> level_textures() const override;
         virtual std::optional<uint32_t> selected_item() const override;
@@ -140,6 +143,7 @@ namespace trview
         std::vector<std::weak_ptr<IFlyby>> flybys() const override;
         void update(float delta) override;
         void set_show_animation(bool show) override;
+        void receive_message(const Message& message) override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -246,6 +250,8 @@ namespace trview
         trlevel::PlatformAndVersion _platform_and_version;
         std::shared_ptr<IModelStorage> _model_storage;
         bool _show_animation{ true };
+
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 
     /// Find the first item with the type id specified.

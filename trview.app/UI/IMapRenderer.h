@@ -14,7 +14,7 @@ namespace trview
             Select
         };
 
-        using Source = std::function<std::unique_ptr<IMapRenderer>()>;
+        using Source = std::function<std::shared_ptr<IMapRenderer>()>;
 
         virtual ~IMapRenderer() = 0;
 
@@ -38,7 +38,6 @@ namespace trview
         virtual void clear_highlight() = 0;
         virtual void set_highlight(uint16_t x, uint16_t z) = 0;
         virtual void set_mode(Mode mode) = 0;
-        virtual void set_settings(const UserSettings& settings) = 0;
         virtual void set_selection(const std::shared_ptr<ISector>& sector) = 0;
         virtual void set_show_tooltip(bool value) = 0;
         virtual Size size() const = 0;

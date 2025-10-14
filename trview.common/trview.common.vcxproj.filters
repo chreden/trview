@@ -37,9 +37,14 @@
     <ClInclude Include="Logs\Log.h" Filter="Logs" />
     <ClInclude Include="Mocks\Logs\ILog.h" Filter="Mocks\Logs" />
     <ClInclude Include="Logs\Activity.h" Filter="Logs" />
-    <ClInclude Include="Logs\Message.h" Filter="Logs" />
+    <ClInclude Include="Logs\LogMessage.h" Filter="Logs" />
     <ClInclude Include="Version.h" />
     <ClInclude Include="Version.hpp" />
+    <ClInclude Include="Messages\IMessageSystem.h" Filter="Messages" />
+    <ClInclude Include="Messages\MessageSystem.h" Filter="Messages" />
+    <ClInclude Include="Messages\IRecipient.h" Filter="Messages" />
+    <ClInclude Include="Mocks\Messages\IMessageSystem.h" Filter="Messages" />
+    <ClInclude Include="Messages\Message.h" Filter="Messages" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Size.cpp" />
@@ -62,6 +67,7 @@
     <ClCompile Include="Logs\Log.cpp" Filter="Logs" />
     <ClCompile Include="Logs\Activity.cpp" Filter="Logs" />
     <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
+    <ClCompile Include="Messages\MessageSystem.cpp" Filter="Messages" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -81,6 +87,12 @@
     </Filter>
     <Filter Include="Mocks\Logs">
       <UniqueIdentifier>{122ceb97-bded-427e-90dc-a18a8941f0b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Messages">
+      <UniqueIdentifier>{e1fa69da-ada5-4603-9d34-54ceffaa4d58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Messages">
+      <UniqueIdentifier>{8031554f-07de-4d09-be35-91e0ea191b50}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

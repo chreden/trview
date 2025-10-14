@@ -4,6 +4,7 @@
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Windows/LightsWindow.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
+#include <trview.common/Mocks/Messages/IMessageSystem.h>
 
 using namespace testing;
 using namespace trview;
@@ -17,10 +18,11 @@ namespace
         struct test_module
         {
             std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
+            std::shared_ptr<IMessageSystem> messaging{ mock_shared<MockMessageSystem>() };
 
             std::unique_ptr<LightsWindow> build()
             {
-                return std::make_unique<LightsWindow>(clipboard);
+                return std::make_unique<LightsWindow>(clipboard, messaging);
             }
         };
 

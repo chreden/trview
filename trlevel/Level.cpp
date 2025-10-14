@@ -766,12 +766,12 @@ namespace trlevel
         }
         catch (const LevelEncryptedException&)
         {
-            activity.log(trview::Message::Status::Error, "Level is encrypted, aborting");
+            activity.log(trview::LogMessage::Status::Error, "Level is encrypted, aborting");
             throw;
         }
         catch (const std::exception& e)
         {   
-            activity.log(trview::Message::Status::Error, std::format("Level failed to load: {}", e.what()));
+            activity.log(trview::LogMessage::Status::Error, std::format("Level failed to load: {}", e.what()));
             throw LevelLoadException(e.what());
         }
     }

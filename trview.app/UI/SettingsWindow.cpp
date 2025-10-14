@@ -7,8 +7,9 @@ namespace trview
     {
     }
 
-    SettingsWindow::SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IFonts>& fonts, const std::shared_ptr<ITextureStorage>& texture_storage)
-        : _dialogs(dialogs), _shell(shell), _fonts(fonts)
+    SettingsWindow::SettingsWindow(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IFonts>& fonts, const std::shared_ptr<ITextureStorage>& texture_storage,
+        const std::weak_ptr<IMessageSystem>& message_system)
+        : _dialogs(dialogs), _shell(shell), _fonts(fonts), _message_system(message_system)
     {
         _linear_texture = texture_storage->lookup("texture_filtering_linear");
         _point_texture = texture_storage->lookup("texture_filtering_point");
@@ -18,7 +19,7 @@ namespace trview
     {
         if (ImGui::Checkbox(name.c_str(), &setting))
         {
-            on_settings(_settings);
+            save_settings();
         }
     }
 
@@ -26,7 +27,7 @@ namespace trview
     {
         if (ImGui::SliderFloat(name.c_str(), &value, min, max))
         {
-            on_settings(_settings);
+            save_settings();
         }
     }
 
@@ -56,7 +57,7 @@ namespace trview
                     if (ImGui::InputInt(Names::max_recent_files.c_str(), &_settings.max_recent_files))
                     {
                         _settings.max_recent_files = std::max(0, _settings.max_recent_files);
-                        on_settings(_settings);
+                        save_settings();
                     }
 
                     ImGui::EndTabItem();
@@ -67,7 +68,7 @@ namespace trview
                     checkbox(Names::vsync, _settings.vsync);
                     if (ImGui::Checkbox(Names::linear_filtering.c_str(), &_settings.linear_filtering))
                     {
-                        on_settings(_settings);
+                        save_settings();
                         on_linear_filtering(_settings.linear_filtering);
                     }
                     show_texture_filtering_window();
@@ -77,7 +78,7 @@ namespace trview
                     if (ImGui::ColorEdit3(Names::background_colour.c_str(), &background_colour[0]))
                     {
                         _settings.background_colour = Colour(1.0f, background_colour[0], background_colour[1], background_colour[2]);
-                        on_settings(_settings);
+                        save_settings();
                     }
                     ImGui::EndTabItem();
                 }
@@ -135,7 +136,7 @@ namespace trview
                     if (ImGui::Button(Names::reset_fov.c_str()))
                     {
                         _settings.fov = 45;
-                        on_settings(_settings);
+                        save_settings();
                     }
                     ImGui::SameLine();
                     slider(Names::fov, _settings.fov, 10, 145);
@@ -152,14 +153,14 @@ namespace trview
                         if (ImGui::Button(("Reset##" + name).c_str()))
                         {
                             _settings.map_colours.clear_colour(flag);
-                            on_settings(_settings);
+                            save_settings();
                         }
                         ImGui::SameLine();
                         DirectX::SimpleMath::Color colour = _settings.map_colours.colour(flag);
                         if (ImGui::ColorEdit4(name.c_str(), &colour.x))
                         {
                             _settings.map_colours.set_colour(flag, colour);
-                            on_settings(_settings);
+                            save_settings();
                         }
                     };
 
@@ -168,14 +169,14 @@ namespace trview
                         if (ImGui::Button(("Reset##" + name).c_str()))
                         {
                             _settings.map_colours.clear_colour(type);
-                            on_settings(_settings);
+                            save_settings();
                         }
                         ImGui::SameLine();
                         DirectX::SimpleMath::Color colour = _settings.map_colours.colour(type);
                         if (ImGui::ColorEdit4(name.c_str(), &colour.x))
                         {
                             _settings.map_colours.set_colour(type, colour);
-                            on_settings(_settings);
+                            save_settings();
                         }
                     };
 
@@ -203,12 +204,12 @@ namespace trview
                 {
                     if (ImGui::ColorEdit3(Names::default_route_colour.c_str(), &_settings.route_colour.r))
                     {
-                        on_settings(_settings);
+                        save_settings();
                     }
 
                     if (ImGui::ColorEdit3(Names::default_waypoint_colour.c_str(), &_settings.waypoint_colour.r))
                     {
-                        on_settings(_settings);
+                        save_settings();
                     }
 
                     ImGui::EndTabItem();
@@ -227,11 +228,6 @@ namespace trview
         {
             _all_fonts = _fonts->list_fonts();
         }
-    }
-
-    void SettingsWindow::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
     }
 
     void SettingsWindow::show_texture_filtering_window()
@@ -265,6 +261,22 @@ namespace trview
                 ImGui::EndTable();
             }
             ImGui::EndPopup();
+        }
+    }
+
+    void SettingsWindow::save_settings()
+    {
+        if (auto ms = _message_system.lock())
+        {
+            ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(_settings) });
+        }
+    }
+
+    void SettingsWindow::receive_message(const Message& message)
+    {
+        if (message.type == "settings")
+        {
+            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
         }
     }
 }

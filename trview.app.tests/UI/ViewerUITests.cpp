@@ -292,28 +292,3 @@ TEST(ViewerUI, SetTileFilterEnabled)
 
     ui->set_tile_filter_enabled(true);
 }
-
-TEST(ViewerUI, SettingsSentToSettingsWindow)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    EXPECT_CALL(settings_window, set_settings).Times(1);
-
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    ui->set_settings({});
-}
-
-TEST(ViewerUI, SettingsEventRaised)
-{
-    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
-
-    std::optional<UserSettings> settings;
-    auto token = ui->on_settings += [&](auto raised)
-        {
-            settings = raised;
-        };
-
-    settings_window.on_settings({});
-    ASSERT_TRUE(settings);
-}

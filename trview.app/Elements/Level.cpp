@@ -10,6 +10,8 @@
 #include <format>
 #include <ranges>
 
+#include "../Settings/UserSettings.h"
+
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
@@ -108,10 +110,11 @@ namespace trview
         const graphics::IBuffer::ConstantSource& buffer_source,
         std::shared_ptr<ISoundStorage> sound_storage,
         std::shared_ptr<INgPlusSwitcher> ngplus_switcher,
-        const std::shared_ptr<graphics::ISamplerState>& sampler_state)
+        const std::shared_ptr<graphics::ISamplerState>& sampler_state,
+        const std::weak_ptr<IMessageSystem>& messaging)
         : _device(device), _texture_storage(level_texture_storage),
         _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log), _sound_storage(sound_storage),
-        _ngplus_switcher(ngplus_switcher), _room_sampler_state(sampler_state)
+        _ngplus_switcher(ngplus_switcher), _room_sampler_state(sampler_state), _messaging(messaging)
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -1449,6 +1452,13 @@ namespace trview
         _pack = level->pack().lock();
         _model_storage = model_storage;
 
+        if (auto messaging = _messaging.lock())
+        {
+            // TODO: This is a bit of a smell.
+            auto us = std::reinterpret_pointer_cast<IRecipient>(shared_from_this());
+            messaging->send_message(Message{ .type = "get_settings", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(us) });
+        }
+
         record_models(*level);
         callbacks.on_progress("Generating rooms");
         generate_rooms(*level, room_source, *mesh_storage);
@@ -1645,6 +1655,15 @@ namespace trview
     void Level::set_show_animation(bool show)
     {
         _show_animation = show;
+    }
+
+    void Level::receive_message(const Message& message)
+    {
+        if (message.type == "settings")
+        {
+            _map_colours = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value.map_colours;
+            on_geometry_colours_changed();
+        }
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
