@@ -262,12 +262,6 @@ namespace trview
         _route_window->set_route(route);
     }
 
-    void Windows::set_settings(const UserSettings& settings)
-    {
-        _route_window->set_randomizer_enabled(settings.randomizer_tools);
-        _route_window->set_randomizer_settings(settings.randomizer);
-    }
-
     void Windows::setup(const UserSettings& settings)
     {
         if (settings.camera_sink_startup)
@@ -299,8 +293,6 @@ namespace trview
         {
             _triggers_windows->create_window();
         }
-
-        set_settings(settings);
     }
 
     void Windows::add_waypoint(const Vector3& position, const Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index)

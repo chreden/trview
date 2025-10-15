@@ -128,11 +128,6 @@ namespace trview
                     }
                 }
             };
-        _token_store += _windows->on_settings += [this](auto&& settings)
-            {
-                _settings = settings;
-                set_settings();
-            };
 
         _windows->setup(_settings);
         setup_viewer(*startup_options);
@@ -983,7 +978,6 @@ namespace trview
     // Temporary:
     void Application::set_settings()
     {
-        _windows->set_settings(_settings);
         lua::set_settings(_settings);
     }
 

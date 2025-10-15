@@ -57,7 +57,6 @@ namespace trview
         void set_level(const std::weak_ptr<ILevel>& level) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
         void set_route(const std::weak_ptr<IRoute>& route) override;
-        void set_settings(const UserSettings& settings) override;
         void setup(const UserSettings& settings) override;
     private:
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index);

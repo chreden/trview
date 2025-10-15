@@ -434,7 +434,7 @@ namespace trview
         messaging->add_recipient(viewer);
 
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard, messaging); };
-        auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files); };
+        auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files, messaging); };
         auto lights_window_source = [=]()
             { 
                 auto lights_window = std::make_shared<LightsWindow>(clipboard, messaging);

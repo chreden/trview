@@ -67,16 +67,6 @@ namespace trview
         /// </summary>
         /// <param name="delta">Elapsed time since previous update.</param>
         virtual void update(float delta) = 0;
-        /// <summary>
-        /// Set whether randomizer integration is enabled.
-        /// </summary>
-        /// <param name="value">Whether randomizer integration is enabled.</param>
-        virtual void set_randomizer_enabled(bool value) = 0;
-        /// <summary>
-        /// Set the current randomizer settings.
-        /// </summary>
-        /// <param name="settings">The settings.</param>
-        virtual void set_randomizer_settings(const RandomizerSettings& settings) = 0;
     };
 }
 

@@ -650,17 +650,6 @@ TEST(Windows, SetRoute)
     ASSERT_EQ(route_route, real_route);
 }
 
-TEST(Windows, SetSettings)
-{
-    auto [route_ptr, route] = create_mock<MockRouteWindowManager>();
-    auto windows = register_test_module().with_route(std::move(route_ptr)).build();
-
-    EXPECT_CALL(route, set_randomizer_enabled(true)).Times(1);
-    EXPECT_CALL(route, set_randomizer_settings).Times(1);
-
-    windows->set_settings({ .randomizer_tools = true });
-}
-
 TEST(Windows, Setup)
 {
     auto [cameras_ptr, cameras] = create_mock<MockCameraSinkWindowManager>();
@@ -687,9 +676,6 @@ TEST(Windows, Setup)
     EXPECT_CALL(route, create_window).Times(0);
     EXPECT_CALL(statics, create_window).Times(0);
     EXPECT_CALL(triggers, create_window).Times(0);
-
-    EXPECT_CALL(route, set_randomizer_enabled(true)).Times(1);
-    EXPECT_CALL(route, set_randomizer_settings).Times(1);
 
     windows->setup({ .randomizer_tools = true });
 }
