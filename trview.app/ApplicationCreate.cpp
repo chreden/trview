@@ -383,7 +383,7 @@ namespace trview
             settings_loader->load_user_settings());
         messaging->add_recipient(plugins);
 
-        auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell, dialogs); };
+        auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell, dialogs, messaging); };
         auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
         auto fonts = std::make_shared<Fonts>(files, imgui_backend);
         auto map_renderer_source = [=]()

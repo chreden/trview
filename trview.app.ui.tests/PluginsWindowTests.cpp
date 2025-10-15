@@ -5,6 +5,7 @@
 #include <trview.app/Mocks/Plugins/IPlugins.h>
 #include <trview.common/Mocks/Windows/IShell.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
+#include <trview.common/Mocks/Messages/IMessageSystem.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -20,10 +21,11 @@ namespace
             std::shared_ptr<IPlugins> plugins{ mock_shared<MockPlugins>() };
             std::shared_ptr<IShell> shell{ mock_shared<MockShell>() };
             std::shared_ptr<IDialogs> dialogs{ mock_shared<MockDialogs>() };
+            std::shared_ptr<IMessageSystem> messaging{ mock_shared<MockMessageSystem>() };
 
             std::unique_ptr<PluginsWindow> build()
             {
-                return std::make_unique<PluginsWindow>(plugins, shell, dialogs);
+                return std::make_unique<PluginsWindow>(plugins, shell, dialogs, messaging);
             }
 
             test_module& with_plugins(std::shared_ptr<IPlugins> plugins)
@@ -41,6 +43,12 @@ namespace
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)
             {
                 this->dialogs = dialogs;
+                return *this;
+            }
+
+            test_module& with_messaging(std::shared_ptr<IMessageSystem> messaging)
+            {
+                this->messaging = messaging;
                 return *this;
             }
         };
@@ -117,20 +125,17 @@ void register_plugins_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<PluginsWindowContext>();
             auto dialogs = mock_shared<MockDialogs>();
             ON_CALL(*dialogs, open_folder).WillByDefault(Return("test"));
+            auto messaging = mock_shared<MockMessageSystem>();
             context.plugins = mock_shared<MockPlugins>();
-            context.ptr = register_test_module().with_dialogs(dialogs).with_plugins(context.plugins).build();
+            context.ptr = register_test_module().with_dialogs(dialogs).with_plugins(context.plugins).with_messaging(messaging).build();
 
-            std::optional<UserSettings> raised;
-            auto token = context.ptr->on_settings += [&](const auto& value)
-                {
-                    raised = value;
-                };
+            trview::Message called_settings;
+            EXPECT_CALL(*messaging, send_message).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
 
             ctx->ItemClick("/**/+");
 
             const std::vector<std::string> expected{ "test" };
-            IM_CHECK_EQ(raised.has_value(), true);
-            IM_CHECK_EQ(raised.value().plugin_directories, expected);
+            IM_CHECK_EQ(std::static_pointer_cast<MessageData<UserSettings>>(called_settings.data)->value.plugin_directories, expected);
         });
 
     test<PluginsWindowContext>(engine, "Plugins Window", "Open Plugin Directories",
@@ -145,7 +150,7 @@ void register_plugins_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<PluginsWindowContext>();
             context.plugins = mock_shared<MockPlugins>();
             context.ptr = register_test_module().with_shell(shell).with_plugins(context.plugins).build();
-            context.ptr->set_settings(settings);
+            context.ptr->receive_message(trview::Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(settings) });
 
             ctx->ItemClick("/**/Open##0");
 
@@ -157,22 +162,20 @@ void register_plugins_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<PluginsWindowContext>();
+            auto messaging = mock_shared<MockMessageSystem>();
             context.plugins = mock_shared<MockPlugins>();
-            context.ptr = register_test_module().with_plugins(context.plugins).build();
+            context.ptr = register_test_module().with_plugins(context.plugins).with_messaging(messaging).build();
+            
 
             UserSettings settings{ .plugin_directories = { "path" } };
-            context.ptr->set_settings(settings);
+            context.ptr->receive_message(trview::Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(settings) });
 
-            std::optional<UserSettings> raised;
-            auto token = context.ptr->on_settings += [&](const auto& value)
-                {
-                    raised = value;
-                };
+            trview::Message called_settings;
+            EXPECT_CALL(*messaging, send_message).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
 
             ctx->ItemClick("/**/Remove##0");
 
             const std::vector<std::string> expected;
-            IM_CHECK_EQ(raised.has_value(), true);
-            IM_CHECK_EQ(raised.value().plugin_directories, expected);
+            IM_CHECK_EQ(std::static_pointer_cast<MessageData<UserSettings>>(called_settings.data)->value.plugin_directories, expected);
         });
 }

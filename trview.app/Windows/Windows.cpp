@@ -81,8 +81,6 @@ namespace trview
             
         _pack_windows->on_level_open += on_level_open;
 
-        _plugins_windows->on_settings += on_settings;
-
         _rooms_windows->on_camera_sink_selected += on_camera_sink_selected;
         _rooms_windows->on_item_selected += on_item_selected;
         _rooms_windows->on_light_selected += on_light_selected;
@@ -266,7 +264,6 @@ namespace trview
 
     void Windows::set_settings(const UserSettings& settings)
     {
-        _plugins_windows->set_settings(settings);
         _route_window->set_randomizer_enabled(settings.randomizer_tools);
         _route_window->set_randomizer_settings(settings.randomizer);
     }

@@ -15,9 +15,7 @@ namespace trview
         void render() override;
         std::weak_ptr<IPluginsWindow> create_window() override;
         void update(float delta) override;
-        void set_settings(const UserSettings& settings) override;
     private:
         IPluginsWindow::Source _source;
-        UserSettings _settings;
     };
 }
