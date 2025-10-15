@@ -14,11 +14,9 @@ namespace trview
         virtual void render() = 0;
         virtual void select_static(const std::weak_ptr<IStaticMesh>& static_mesh) = 0;
         virtual void set_room(const std::weak_ptr<IRoom>& room) = 0;
-        virtual void set_settings(const UserSettings& settings) = 0;
         virtual void set_statics(const std::vector<std::weak_ptr<IStaticMesh>>& statics) = 0;
         virtual void update(float dt) = 0;
 
         Event<std::weak_ptr<IStaticMesh>> on_static_selected;
-        Event<UserSettings> on_settings;
     };
 }

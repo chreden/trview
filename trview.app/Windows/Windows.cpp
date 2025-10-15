@@ -108,7 +108,6 @@ namespace trview
         _sounds_windows->on_sound_source_selected += on_sound_source_selected;
 
         _statics_windows->on_static_selected += on_static_selected;
-        _statics_windows->on_settings += on_settings;
 
         _triggers_windows->on_item_selected += on_item_selected;
         _triggers_windows->on_trigger_selected += on_trigger_selected;
@@ -274,7 +273,6 @@ namespace trview
         _rooms_windows->set_settings(settings);
         _route_window->set_randomizer_enabled(settings.randomizer_tools);
         _route_window->set_randomizer_settings(settings.randomizer);
-        _statics_windows->set_settings(settings);
     }
 
     void Windows::setup(const UserSettings& settings)

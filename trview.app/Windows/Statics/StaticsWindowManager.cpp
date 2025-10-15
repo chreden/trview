@@ -60,15 +60,6 @@ namespace trview
         }
     }
 
-    void StaticsWindowManager::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        for (auto& window : _windows)
-        {
-            window.second->set_settings(settings);
-        }
-    }
-
     void StaticsWindowManager::select_static(const std::weak_ptr<IStaticMesh>& static_mesh)
     {
         _selected_static = static_mesh;

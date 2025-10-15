@@ -4,7 +4,7 @@
 
 #include <trview.common/TokenStore.h>
 #include <trview.common/Windows/IClipboard.h>
-
+#include <trview.common/Messages/IMessageSystem.h>
 
 #include "IStaticsWindow.h"
 #include "../../Elements/IRoom.h"
@@ -16,7 +16,7 @@
 
 namespace trview
 {
-    class StaticsWindow final : public IStaticsWindow
+    class StaticsWindow final : public IStaticsWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -28,16 +28,16 @@ namespace trview
             static inline const std::string static_stats = "##staticstats";
         };
 
-        explicit StaticsWindow(const std::shared_ptr<IClipboard>& clipboard);
+        explicit StaticsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~StaticsWindow() = default;
         void render() override;
         std::weak_ptr<IStaticMesh> selected_static() const override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
         void set_number(int32_t number) override;
         void set_selected_static(const std::weak_ptr<IStaticMesh>& static_mesh) override;
-        void set_settings(const UserSettings& settings) override;
         void set_statics(const std::vector<std::weak_ptr<IStaticMesh>>& statics) override;
         void update(float dt) override;
+        void receive_message(const Message& message) override;
     private:
         bool render_statics_window();
         void render_statics_list();
@@ -57,8 +57,9 @@ namespace trview
         std::shared_ptr<IClipboard> _clipboard;
         AutoHider _auto_hider;
         TokenStore _token_store;
-        UserSettings _settings;
+        std::optional<UserSettings> _settings;
         bool _columns_set{ false };
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }
 
