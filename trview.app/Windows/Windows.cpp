@@ -52,7 +52,6 @@ namespace trview
         _camera_sink_windows->on_camera_sink_selected += on_camera_sink_selected;
         _camera_sink_windows->on_flyby_node_selected += on_flyby_node_selected;
         _camera_sink_windows->on_trigger_selected += on_trigger_selected;
-        _camera_sink_windows->on_settings += on_settings;
 
         _diff_windows->on_item_selected += on_item_selected;
         _diff_windows->on_light_selected += on_light_selected;
@@ -270,7 +269,6 @@ namespace trview
 
     void Windows::set_settings(const UserSettings& settings)
     {
-        _camera_sink_windows->set_settings(settings);
         _diff_windows->set_settings(settings);
         _plugins_windows->set_settings(settings);
         _rooms_windows->set_settings(settings);

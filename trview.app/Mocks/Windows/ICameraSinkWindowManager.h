@@ -18,7 +18,6 @@ namespace trview
             MOCK_METHOD(void, set_selected_flyby_node, (const std::weak_ptr<IFlybyNode>&), (override));
             MOCK_METHOD(void, set_room, (const std::weak_ptr<IRoom>&), (override));
             MOCK_METHOD(void, set_platform_and_version, (const trlevel::PlatformAndVersion&), (override));
-            MOCK_METHOD(void, set_settings, (const UserSettings&), (override));
             MOCK_METHOD(void, update, (float), (override));
         };
     }

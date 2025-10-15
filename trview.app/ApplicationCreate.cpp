@@ -443,7 +443,7 @@ namespace trview
             };
 
         auto log_window_source = [=]() { return std::make_shared<LogWindow>(log, dialogs, files); };
-        auto camera_sink_window_source = [=]() { return std::make_shared<CameraSinkWindow>(clipboard, camera); };
+        auto camera_sink_window_source = [=]() { return std::make_shared<CameraSinkWindow>(clipboard, camera, messaging); };
 
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };

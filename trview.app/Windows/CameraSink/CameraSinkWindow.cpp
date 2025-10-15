@@ -125,8 +125,8 @@ namespace trview
     {
     }
 
-    CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera)
-        : _clipboard(clipboard), _camera(camera)
+    CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _camera(camera), _messaging(messaging)
     {
         setup_filters();
         setup_flyby_filters();
@@ -134,6 +134,14 @@ namespace trview
 
     void CameraSinkWindow::render()
     {
+        if (!_settings)
+        {
+            if (auto ms = _messaging.lock())
+            {
+                ms->send_message(Message{ .type = "get_settings", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(weak_from_this()) });
+            }
+        }
+
         if (!render_camera_sink_window())
         {
             on_window_closed();
@@ -479,8 +487,14 @@ namespace trview
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
-                _settings.camera_sink_window_columns = _filters.columns();
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->camera_sink_window_columns = _filters.columns();
+                    if (auto ms = _messaging.lock())
+                    {
+                        ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(*_settings) });
+                    }
+                }
             };
     }
 
@@ -511,8 +525,14 @@ namespace trview
             };
         _token_store += _flyby_filters.on_columns_saved += [this]()
             {
-                _settings.flyby_columns = _flyby_filters.columns();
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->flyby_columns = _flyby_filters.columns();
+                    if (auto ms = _messaging.lock())
+                    {
+                        ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(*_settings) });
+                    }
+                }
             };
 
         _node_filters.add_getter<int>("#", [](auto&& node) { return static_cast<int>(node.number()); });
@@ -536,21 +556,15 @@ namespace trview
             };
         _token_store += _node_filters.on_columns_saved += [this]()
             {
-                _settings.flyby_node_columns= _node_filters.columns();
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->flyby_node_columns = _node_filters.columns();
+                    if (auto ms = _messaging.lock())
+                    {
+                        ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(*_settings) });
+                    }
+                }
             };
-    }
-
-    void CameraSinkWindow::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        if (!_columns_set)
-        {
-            _filters.set_columns(settings.camera_sink_window_columns);
-            _flyby_filters.set_columns(settings.flyby_columns);
-            _node_filters.set_columns(settings.flyby_node_columns);
-            _columns_set = true;
-        }
     }
 
     void CameraSinkWindow::render_flybys()
@@ -948,5 +962,20 @@ namespace trview
         }
 
         _initial_state.reset();
+    }
+
+    void CameraSinkWindow::receive_message(const Message& message)
+    {
+        if (message.type == "settings")
+        {
+            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            if (!_columns_set)
+            {
+                _filters.set_columns(_settings->camera_sink_window_columns);
+                _flyby_filters.set_columns(_settings->flyby_columns);
+                _node_filters.set_columns(_settings->flyby_node_columns);
+                _columns_set = true;
+            }
+        }
     }
 }
