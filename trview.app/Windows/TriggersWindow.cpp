@@ -39,8 +39,8 @@ namespace trview
     {
     }
 
-    TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard)
-        : _clipboard(clipboard)
+    TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _messaging(messaging)
     {
         setup_filters();
 
@@ -51,8 +51,14 @@ namespace trview
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
-                _settings.triggers_window_columns = _filters.columns();
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->triggers_window_columns = _filters.columns();
+                    if (auto ms = _messaging.lock())
+                    {
+                        ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(*_settings) });
+                    }
+                }
             };
 
         _token_store += _track.on_toggle<Type::Room>() += [&](bool value)
@@ -144,6 +150,14 @@ namespace trview
 
     void TriggersWindow::render()
     {
+        if (!_settings)
+        {
+            if (auto ms = _messaging.lock())
+            {
+                ms->send_message(Message{ .type = "get_settings", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(weak_from_this()) });
+            }
+        }
+
         if (!render_triggers_window())
         {
             on_window_closed();
@@ -612,13 +626,16 @@ namespace trview
         }
     }
 
-    void TriggersWindow::set_settings(const UserSettings& settings)
+    void TriggersWindow::receive_message(const Message& message)
     {
-        _settings = settings;
-        if (!_columns_set)
+        if (message.type == "settings")
         {
-            _filters.set_columns(settings.triggers_window_columns);
-            _columns_set = true;
+            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            if (!_columns_set)
+            {
+                _filters.set_columns(_settings->triggers_window_columns);
+                _columns_set = true;
+            }
         }
     }
 }

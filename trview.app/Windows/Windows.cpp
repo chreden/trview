@@ -106,7 +106,6 @@ namespace trview
         _route_window->on_new_route += on_new_route;
         _route_window->on_new_randomizer_route += on_new_randomizer_route;
 
-        _sounds_windows->on_settings += on_settings;
         _sounds_windows->on_sound_source_selected += on_sound_source_selected;
 
         _statics_windows->on_static_selected += on_static_selected;
@@ -277,7 +276,6 @@ namespace trview
         _rooms_windows->set_settings(settings);
         _route_window->set_randomizer_enabled(settings.randomizer_tools);
         _route_window->set_randomizer_settings(settings.randomizer);
-        _sounds_windows->set_settings(settings);
         _statics_windows->set_settings(settings);
     }
 

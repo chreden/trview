@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trview.common/TokenStore.h>
+#include <trview.common/Messages/IMessageSystem.h>
 
 #include "ISoundsWindow.h"
 #include "../../Filters/Filters.h"
@@ -11,7 +12,7 @@ namespace trview
 {
     struct ILevel;
 
-    class SoundsWindow final : public ISoundsWindow
+    class SoundsWindow final : public ISoundsWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -25,16 +26,16 @@ namespace trview
             static inline const std::string sync_sound_source = "Sync";
         };
 
-        explicit SoundsWindow();
+        explicit SoundsWindow(const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~SoundsWindow() = default;
         void render() override;
         void set_level_platform(trlevel::Platform platform) override;
         void set_level_version(trlevel::LevelVersion version) override;
         void set_number(int32_t number) override;
         void set_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source) override;
-        void set_settings(const UserSettings& settings) override;
         void set_sound_storage(const std::weak_ptr<ISoundStorage>& sound_storage) override;
         void set_sound_sources(const std::vector<std::weak_ptr<ISoundSource>>& sound_sources) override;
+        void receive_message(const Message& message) override;
     private:
         bool render_sounds_window();
         void render_sound_sources_list();
@@ -57,6 +58,7 @@ namespace trview
         TokenStore _token_store;
         AutoHider _auto_hider;
         bool _columns_set{ false };
-        UserSettings _settings;
+        std::optional<UserSettings> _settings;
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }

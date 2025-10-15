@@ -433,7 +433,7 @@ namespace trview
             sampler_source);
         messaging->add_recipient(viewer);
 
-        auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard); };
+        auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard, messaging); };
         auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files); };
         auto lights_window_source = [=]()
             { 
@@ -448,7 +448,7 @@ namespace trview
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };
         auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard); };
-        auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(); };
+        auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(messaging); };
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
         auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, std::make_unique<ImGuiFileMenu>(dialogs, files)); };
         auto pack_window_source = [=]() { return std::make_shared<PackWindow>(files, dialogs); };

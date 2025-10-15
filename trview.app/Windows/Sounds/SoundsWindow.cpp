@@ -15,7 +15,8 @@ namespace trview
     {
     }
 
-    SoundsWindow::SoundsWindow()
+    SoundsWindow::SoundsWindow(const std::weak_ptr<IMessageSystem>& messaging)
+        : _messaging(messaging)
     {
         setup_filters();
 
@@ -26,13 +27,27 @@ namespace trview
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
-                _settings.sounds_window_columns = _filters.columns();
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->sounds_window_columns = _filters.columns();
+                    if (auto ms = _messaging.lock())
+                    {
+                        ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(*_settings) });
+                    }
+                }
             };
     }
 
     void SoundsWindow::render()
     {
+        if (!_settings)
+        {
+            if (auto ms = _messaging.lock())
+            {
+                ms->send_message(Message{ .type = "get_settings", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(weak_from_this()) });
+            }
+        }
+
         if (!render_sounds_window())
         {
             on_window_closed();
@@ -62,16 +77,6 @@ namespace trview
         {
             _filters.scroll_to_item();
             set_local_selected_sound_source(sound_source);
-        }
-    }
-
-    void SoundsWindow::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        if (!_columns_set)
-        {
-            _filters.set_columns(settings.sounds_window_columns);
-            _columns_set = true;
         }
     }
 
@@ -326,6 +331,19 @@ namespace trview
         {
             _filters.add_getter<int>("Pitch", [](auto&& sound_source) { return static_cast<int>(sound_source.pitch()); });
             _filters.add_getter<int>("Range", [](auto&& sound_source) { return static_cast<int>(sound_source.range()); });
+        }
+    }
+
+    void SoundsWindow::receive_message(const Message& message)
+    {
+        if (message.type == "settings")
+        {
+            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            if (!_columns_set)
+            {
+                _filters.set_columns(_settings->sounds_window_columns);
+                _columns_set = true;
+            }
         }
     }
 }

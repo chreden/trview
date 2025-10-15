@@ -35,13 +35,11 @@ namespace trview
         triggers_window->on_add_to_route += on_add_to_route;
         triggers_window->on_camera_sink_selected += on_camera_sink_selected;
         triggers_window->on_flyby_node_selected += on_flyby_node_selected;
-        triggers_window->on_settings += on_settings;
         triggers_window->set_items(_items);
         triggers_window->set_platform_and_version(_platform_and_version);
         triggers_window->set_triggers(_triggers);
         triggers_window->set_current_room(_current_room);
         triggers_window->set_selected_trigger(_selected_trigger);
-        triggers_window->set_settings(_settings);
         return add_window(triggers_window);
     }
 
@@ -100,14 +98,5 @@ namespace trview
     void TriggersWindowManager::update(float delta)
     {
         WindowManager::update(delta);
-    }
-
-    void TriggersWindowManager::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        for (auto& window : _windows)
-        {
-            window.second->set_settings(settings);
-        }
     }
 }
