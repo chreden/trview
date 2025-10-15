@@ -8,6 +8,7 @@
 #include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.tests.common/Mocks.h>
+#include <trview.common/Mocks/Messages/IMessageSystem.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -21,10 +22,11 @@ namespace
         struct test_module
         {
             std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
+            std::shared_ptr<IMessageSystem> messaging{ mock_shared<MockMessageSystem>() };
 
             std::unique_ptr<TriggersWindow> build()
             {
-                return std::make_unique<TriggersWindow>(clipboard);
+                return std::make_unique<TriggersWindow>(clipboard, messaging);
             }
         };
 

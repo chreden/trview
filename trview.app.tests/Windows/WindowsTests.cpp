@@ -652,11 +652,9 @@ TEST(Windows, SetRoute)
 
 TEST(Windows, SetSettings)
 {
-    auto [rooms_ptr, rooms] = create_mock<MockRoomsWindowManager>();
     auto [route_ptr, route] = create_mock<MockRouteWindowManager>();
-    auto windows = register_test_module().with_rooms(std::move(rooms_ptr)).with_route(std::move(route_ptr)).build();
+    auto windows = register_test_module().with_route(std::move(route_ptr)).build();
 
-    EXPECT_CALL(rooms, set_settings).Times(1);
     EXPECT_CALL(route, set_randomizer_enabled(true)).Times(1);
     EXPECT_CALL(route, set_randomizer_settings).Times(1);
 
@@ -690,7 +688,6 @@ TEST(Windows, Setup)
     EXPECT_CALL(statics, create_window).Times(0);
     EXPECT_CALL(triggers, create_window).Times(0);
 
-    EXPECT_CALL(rooms, set_settings).Times(1);
     EXPECT_CALL(route, set_randomizer_enabled(true)).Times(1);
     EXPECT_CALL(route, set_randomizer_settings).Times(1);
 

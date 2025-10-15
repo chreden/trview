@@ -4,6 +4,7 @@
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Windows/Statics/StaticsWindow.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
+#include <trview.common/Mocks/Messages/IMessageSystem.h>
 
 #include <format>
 #include <ranges>
@@ -20,10 +21,11 @@ namespace
         struct test_module
         {
             std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
+            std::shared_ptr<IMessageSystem> messaging{ mock_shared<MockMessageSystem>() };
 
             std::unique_ptr<StaticsWindow> build()
             {
-                return std::make_unique<StaticsWindow>(clipboard);
+                return std::make_unique<StaticsWindow>(clipboard, messaging);
             }
 
             test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
