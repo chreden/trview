@@ -12,13 +12,14 @@
 #include <trview.common/Event.h>
 #include "../UI/MapColours.h"
 #include <trlevel/IPack.h>
+#include <trview.common/Messages/IRecipient.h>
 
 namespace trview
 {
     struct ISoundStorage;
     struct ISoundSource;
 
-    struct ILevel
+    struct ILevel : public IRecipient
     {
         using Source = std::function<std::shared_ptr<ILevel>(const std::string&, const std::shared_ptr<trlevel::IPack>&, trlevel::ILevel::LoadCallbacks)>;
 

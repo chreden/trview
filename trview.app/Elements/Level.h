@@ -36,7 +36,7 @@ namespace trview
         struct IShader;
     }
 
-    class Level final : public ILevel, public std::enable_shared_from_this<ILevel>, public IRecipient
+    class Level final : public ILevel, public std::enable_shared_from_this<ILevel>
     {
     public:
         Level(const std::shared_ptr<graphics::IDevice>& device,

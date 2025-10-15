@@ -89,6 +89,7 @@ namespace trview
             MOCK_METHOD(std::vector<std::weak_ptr<IFlyby>>, flybys, (), (const, override));
             MOCK_METHOD(void, update, (float), (override));
             MOCK_METHOD(void, set_show_animation, (bool), (override));
+            MOCK_METHOD(void, receive_message, (const Message&), (override));
 
             std::shared_ptr<MockLevel> with_version(trlevel::LevelVersion version)
             {

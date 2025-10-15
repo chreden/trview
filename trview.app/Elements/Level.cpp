@@ -1454,9 +1454,7 @@ namespace trview
 
         if (auto messaging = _messaging.lock())
         {
-            // TODO: This is a bit of a smell.
-            auto us = std::reinterpret_pointer_cast<IRecipient>(shared_from_this());
-            messaging->send_message(Message{ .type = "get_settings", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(us) });
+            messaging->send_message(Message{ .type = "get_settings", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(shared_from_this()) });
         }
 
         record_models(*level);

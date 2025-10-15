@@ -17,9 +17,6 @@ namespace trview
 
     void MessageSystem::send_message(const Message& message)
     {
-        // TODO: Prune the dead
-        // TODO: Async?
-
         for (const auto& recipient : _recipients)
         {
             if (auto recipient_ptr = recipient.lock())
