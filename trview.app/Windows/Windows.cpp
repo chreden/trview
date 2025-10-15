@@ -77,7 +77,6 @@ namespace trview
                 }
             };
         _items_windows->on_item_selected += on_item_selected;
-        _items_windows->on_settings += on_settings;
         _items_windows->on_trigger_selected += on_trigger_selected;
 
         _lights_windows->on_light_selected += on_light_selected;
@@ -275,7 +274,6 @@ namespace trview
         _camera_sink_windows->set_settings(settings);
         _diff_windows->set_settings(settings);
         _plugins_windows->set_settings(settings);
-        _items_windows->set_settings(settings);
         _rooms_windows->set_settings(settings);
         _route_window->set_randomizer_enabled(settings.randomizer_tools);
         _route_window->set_randomizer_settings(settings.randomizer);

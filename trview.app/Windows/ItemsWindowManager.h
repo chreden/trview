@@ -37,7 +37,6 @@ namespace trview
         virtual std::weak_ptr<IItemsWindow> create_window() override;
         virtual void update(float delta) override;
         std::vector<std::weak_ptr<IItemsWindow>> windows() const override;
-        void set_settings(const UserSettings& settings) override;
     private:
         std::vector<std::weak_ptr<IItem>> _items;
         std::vector<std::weak_ptr<ITrigger>> _triggers;
@@ -47,6 +46,5 @@ namespace trview
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         std::function<bool(uint32_t)> _model_checker;
         bool _ng_plus{ false };
-        UserSettings _settings;
     };
 }

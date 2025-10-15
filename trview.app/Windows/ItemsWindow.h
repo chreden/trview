@@ -5,6 +5,7 @@
 
 #include <trview.common/TokenStore.h>
 #include <trview.common/Windows/IClipboard.h>
+#include <trview.common/Messages/IMessageSystem.h>
 #include "../Filters/Filters.h"
 
 #include "IItemsWindow.h"
@@ -16,7 +17,7 @@
 namespace trview
 {
     /// Used to show and filter the items in the level.
-    class ItemsWindow final : public IItemsWindow
+    class ItemsWindow final : public IItemsWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -31,7 +32,7 @@ namespace trview
             static inline const std::string auto_hide = "Auto-Hide";
         };
 
-        explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard);
+        explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~ItemsWindow() = default;
         void set_filters(std::vector<Filters<IItem>::Filter> filters) override;
         virtual void render() override;
@@ -47,7 +48,7 @@ namespace trview
         virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) override;
         void set_ng_plus(bool value) override;
         std::string name() const override;
-        void set_settings(const UserSettings& settings) override;
+        void receive_message(const Message& message) override;
     private:
         void set_sync_item(bool value);
         void render_items_list();
@@ -78,8 +79,10 @@ namespace trview
 
         bool _ng_plus{ false };
         AutoHider _auto_hider;
-        UserSettings _settings;
+        std::optional<UserSettings> _settings;
         TokenStore _token_store;
         bool _columns_set{ false };
+
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }
