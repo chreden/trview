@@ -35,7 +35,6 @@ namespace trview
         Event<std::weak_ptr<ILight>> on_light_selected;
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
         Event<std::weak_ptr<IStaticMesh>> on_static_mesh_selected;
-        Event<UserSettings> on_settings;
 
         /// Clear the selected trigger.
         virtual void clear_selected_trigger() = 0;
@@ -55,8 +54,6 @@ namespace trview
         /// </summary>
         /// <param name="version">The level version</param>
         virtual void set_level_version(trlevel::LevelVersion version) = 0;
-
-        virtual void set_settings(const UserSettings& settings) = 0;
 
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.

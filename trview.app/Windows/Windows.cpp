@@ -89,7 +89,6 @@ namespace trview
         _rooms_windows->on_light_selected += on_light_selected;
         _rooms_windows->on_room_selected += on_room_selected;
         _rooms_windows->on_sector_hover += on_sector_hover;
-        _rooms_windows->on_settings += on_settings;
         _rooms_windows->on_static_mesh_selected += on_static_selected;
         _rooms_windows->on_trigger_selected += on_trigger_selected;
 
@@ -270,7 +269,6 @@ namespace trview
     {
         _diff_windows->set_settings(settings);
         _plugins_windows->set_settings(settings);
-        _rooms_windows->set_settings(settings);
         _route_window->set_randomizer_enabled(settings.randomizer_tools);
         _route_window->set_randomizer_settings(settings.randomizer);
     }

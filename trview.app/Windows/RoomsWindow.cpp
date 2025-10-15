@@ -94,8 +94,8 @@ namespace trview
     {
     }
 
-    RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard)
-        : _map_renderer(map_renderer_source()), _clipboard(clipboard)
+    RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
+        : _map_renderer(map_renderer_source()), _clipboard(clipboard), _messaging(messaging)
     {
         _map_renderer->on_room_selected += on_room_selected;
         _map_renderer->on_trigger_selected += on_trigger_selected;
@@ -111,8 +111,14 @@ namespace trview
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
-                _settings.rooms_window_columns = _filters.columns();
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->rooms_window_columns = _filters.columns();
+                    if (auto ms = _messaging.lock())
+                    {
+                        ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(*_settings) });
+                    }
+                }
             };
 
         _token_store += _track.on_toggle<Type::Item>() += [&](bool value)
@@ -164,16 +170,6 @@ namespace trview
     void RoomsWindow::set_level_version(trlevel::LevelVersion version)
     {
         _level_version = version;
-    }
-
-    void RoomsWindow::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        if (!_columns_set)
-        {
-            _filters.set_columns(_settings.rooms_window_columns);
-            _columns_set = true;
-        }
     }
 
     void RoomsWindow::set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms)
@@ -255,6 +251,14 @@ namespace trview
 
     void RoomsWindow::render()
     {
+        if (!_settings)
+        {
+            if (auto ms = _messaging.lock())
+            {
+                ms->send_message(Message{ .type = "get_settings", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(weak_from_this()) });
+            }
+        }
+
         if (!render_rooms_window())
         {
             on_window_closed();
@@ -1172,5 +1176,18 @@ namespace trview
     void RoomsWindow::set_filters(std::vector<Filters<IRoom>::Filter> filters)
     {
         _filters.set_filters(filters);
+    }
+
+    void RoomsWindow::receive_message(const Message& message)
+    {
+        if (message.type == "settings")
+        {
+            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            if (!_columns_set)
+            {
+                _filters.set_columns(_settings->rooms_window_columns);
+                _columns_set = true;
+            }
+        }
     }
 }
