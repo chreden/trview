@@ -86,7 +86,7 @@ namespace trview
         _settings = _settings_loader->load_user_settings();
         add_missing_fonts(_settings);
         send_settings_message();
-        set_settings();
+        lua::set_settings(_settings);
 
         set_route(_settings.randomizer_tools ? randomizer_route_source(std::nullopt) : route_source(std::nullopt));
 
@@ -958,7 +958,7 @@ namespace trview
         if (message.type == "settings")
         {
             _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
-            set_settings();
+            lua::set_settings(_settings);
         }
         else if (message.type == "get_settings")
         {
@@ -968,12 +968,6 @@ namespace trview
                 requester->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(_settings) });
             }
         }
-    }
-
-    // Temporary:
-    void Application::set_settings()
-    {
-        lua::set_settings(_settings);
     }
 
     void Application::send_settings_message()
