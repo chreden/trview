@@ -4,6 +4,7 @@
 #include <string>
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/TokenStore.h>
+#include <trview.common/Messages/IMessageSystem.h>
 
 #include "../../Menus/IFileMenu.h"
 #include "../../Elements/ILevel.h"
@@ -12,19 +13,18 @@
 
 namespace trview
 {
-    class DiffWindow final : public IDiffWindow
+    class DiffWindow final : public IDiffWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
         {
         };
 
-        explicit DiffWindow(const std::shared_ptr<IDialogs>& dialogs, const ILevel::Source& level_source, std::unique_ptr<IFileMenu> file_menu);
+        explicit DiffWindow(const std::shared_ptr<IDialogs>& dialogs, const ILevel::Source& level_source, std::unique_ptr<IFileMenu> file_menu, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~DiffWindow() = default;
         void render() override;
         void set_level(const std::weak_ptr<ILevel>& level) override;
         void set_number(int32_t number) override;
-        void set_settings(const UserSettings& settings) override;
 
         struct Diff
         {
@@ -61,6 +61,8 @@ namespace trview
             std::vector<Item<IRoom>> rooms;
             std::vector<Item<ISector>> sectors;
         };
+
+        void receive_message(const Message& message) override;
     private:
         struct LoadOperation
         {
@@ -86,7 +88,8 @@ namespace trview
         std::weak_ptr<ILevel> _level;
         std::unique_ptr<IFileMenu> _file_menu;
         TokenStore _token_store;
-        UserSettings _settings;
+        std::optional<UserSettings> _settings;
         bool _only_show_changes{ false };
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }

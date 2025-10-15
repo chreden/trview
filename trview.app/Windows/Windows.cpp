@@ -66,7 +66,6 @@ namespace trview
                 on_sector_selected(sector);
                 _rooms_windows->set_selected_sector(sector);
             };
-        _diff_windows->on_settings += on_settings;
 
         _token_store += _items_windows->on_add_to_route += [this](auto item)
             {
@@ -267,7 +266,6 @@ namespace trview
 
     void Windows::set_settings(const UserSettings& settings)
     {
-        _diff_windows->set_settings(settings);
         _plugins_windows->set_settings(settings);
         _route_window->set_randomizer_enabled(settings.randomizer_tools);
         _route_window->set_randomizer_settings(settings.randomizer);

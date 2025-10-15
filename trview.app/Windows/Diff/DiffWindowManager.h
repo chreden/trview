@@ -5,7 +5,6 @@
 #include "../WindowManager.h"
 #include "IDiffWindowManager.h"
 #include "IDiffWindow.h"
-#include "../../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -18,10 +17,8 @@ namespace trview
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void render() override;
         void set_level(const std::weak_ptr<ILevel>& level) override;
-        void set_settings(const UserSettings& settings) override;
     private:
         IDiffWindow::Source _diff_window_source;
         std::weak_ptr<ILevel> _level;
-        UserSettings _settings;
     };
 }

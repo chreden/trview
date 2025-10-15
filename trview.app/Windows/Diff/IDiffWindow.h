@@ -12,7 +12,7 @@ namespace trview
     struct ITrigger;
     struct IRoom;
     struct ISector;
-    struct UserSettings;
+    struct IStaticMesh;
 
     struct IDiffWindow
     {
@@ -22,7 +22,6 @@ namespace trview
         virtual void render() = 0;
         virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
         virtual void set_number(int32_t number) = 0;
-        virtual void set_settings(const UserSettings& settings) = 0;
         /// <summary>
         /// Event raised when the window is closed.
         /// </summary>
@@ -37,6 +36,5 @@ namespace trview
         Event<std::weak_ptr<ISoundSource>> on_sound_source_selected;
         Event<std::weak_ptr<IRoom>> on_room_selected;
         Event<std::weak_ptr<ISector>> on_sector_selected;
-        Event<UserSettings> on_settings;
     };
 }
