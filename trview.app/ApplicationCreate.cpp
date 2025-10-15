@@ -410,7 +410,8 @@ namespace trview
             std::make_unique<ViewOptions>(rooms_window_manager),
             std::make_unique<ContextMenu>(items_window_manager),
             std::make_unique<CameraControls>(),
-            std::make_unique<Toolbar>(plugins));
+            std::make_unique<Toolbar>(plugins),
+            messaging);
         messaging->add_recipient(viewer_ui);
 
         const auto camera = std::make_shared<Camera>(window.size());
@@ -430,7 +431,8 @@ namespace trview
             std::make_unique<SectorHighlight>(default_mesh_source),
             clipboard,
             camera,
-            sampler_source);
+            sampler_source,
+            messaging);
         messaging->add_recipient(viewer);
 
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard, messaging); };

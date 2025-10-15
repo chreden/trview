@@ -319,11 +319,6 @@ namespace trview
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
         _token_store += _viewer->on_camera_sink_selected += [this](const auto& camera_sink) { select_camera_sink(camera_sink); };
         _token_store += _viewer->on_flyby_node_selected += [this](const auto& flyby_node) { select_flyby_node(flyby_node); };
-        _token_store += _viewer->on_settings += [this](auto&& settings)
-        {
-            _settings = settings;
-            set_settings();
-        };
         _token_store += _viewer->on_font += [this](auto&& name, auto&& font) { _new_font = { name, font }; };
         _token_store += _viewer->on_static_mesh_selected += [this](const auto& static_mesh) { select_static_mesh(static_mesh); };
         _token_store += _viewer->on_sound_source_selected += [this](const auto& sound_source) { select_sound_source(sound_source); };

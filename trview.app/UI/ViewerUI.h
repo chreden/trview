@@ -14,8 +14,7 @@
 #include <trview.input/Mouse.h>
 #include <trview.app/UI/IMapRenderer.h>
 #include <trview.common/TokenStore.h>
-#include <trview.common/Messages/IRecipient.h>
-
+#include <trview.common/Messages/IMessageSystem.h>
 
 namespace trview
 {
@@ -30,7 +29,8 @@ namespace trview
             std::unique_ptr<IViewOptions> view_options,
             std::unique_ptr<IContextMenu> context_menu,
             std::unique_ptr<ICameraControls> camera_controls,
-            std::unique_ptr<IToolbar> toolbar);
+            std::unique_ptr<IToolbar> toolbar,
+            const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual bool is_input_active() const override;
@@ -103,5 +103,6 @@ namespace trview
         uint32_t _selected_item{ 0u };
         std::weak_ptr<IRoute> _route;
         std::weak_ptr<ILevel> _level;
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }

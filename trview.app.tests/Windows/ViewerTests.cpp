@@ -26,6 +26,7 @@
 #include <trview.graphics/Mocks/ISamplerState.h>
 #include <trview.tests.common/Event.h>
 #include <trview.common/Messages/Message.h>
+#include <trview.common/Mocks/Messages/IMessageSystem.h>
 
 using testing::A;
 using testing::Return;
@@ -140,7 +141,7 @@ namespace
             std::unique_ptr<IMouse> mouse{ mock_unique<MockMouse>() };
             std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
             std::shared_ptr<IRoute> route{ mock_shared<MockRoute>() };
-            ISprite::Source sprite_source{ [](auto&&...) { return mock_unique<MockSprite>(); }};
+            ISprite::Source sprite_source{ [](auto&&...) { return mock_unique<MockSprite>(); } };
             std::unique_ptr<ICompass> compass{ mock_unique<MockCompass>() };
             std::unique_ptr<IMeasure> measure{ mock_unique<MockMeasure>() };
             IRenderTarget::SizeSource render_target_source{ [](auto&&...) { return mock_unique<MockRenderTarget>(); } };
@@ -149,13 +150,15 @@ namespace
             std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
             std::shared_ptr<MockCamera> camera{ mock_shared<MockCamera>() };
             ISamplerState::Source sampler_source{ [](auto&&...) { return mock_shared<MockSamplerState>(); } };
+            std::shared_ptr<IMessageSystem> messaging{ mock_shared<MockMessageSystem>() };
 
             std::unique_ptr<Viewer> build()
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 ON_CALL(*camera, idle_rotation).WillByDefault(Return(true));
                 return std::make_unique<Viewer>(window, device, std::move(ui), std::move(picking), std::move(mouse), shortcuts, route, sprite_source,
-                    std::move(compass), std::move(measure), render_target_source, device_window_source, std::move(sector_highlight), clipboard, camera, sampler_source);
+                    std::move(compass), std::move(measure), render_target_source, device_window_source, std::move(sector_highlight), clipboard, camera,
+                    sampler_source, messaging);
             }
 
             test_module& with_camera(const std::shared_ptr<MockCamera>& camera)
@@ -199,6 +202,13 @@ namespace
                 this->sector_highlight = std::move(sector_highlight);
                 return *this;
             }
+
+            test_module& with_messaging(std::shared_ptr<IMessageSystem> messaging)
+            {
+                this->messaging = messaging;
+                return *this;
+            }
+
         };
         return test_module{};
     }
@@ -241,24 +251,6 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     activate_context_menu(picking, mouse, item);
 
     ui.on_hide();
-}
-
-/// Tests that the on_settings event from the UI is observed and forwarded.
-TEST(Viewer, SettingsRaised)
-{
-    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
-
-    std::optional<UserSettings> raised_settings;
-    auto token = viewer->on_settings += [&raised_settings](const auto& settings) { raised_settings = settings; };
-
-    UserSettings settings;
-    settings.add_recent_file("test file");
-    ui.on_settings(settings);
-
-    ASSERT_TRUE(raised_settings.has_value());
-    ASSERT_EQ(raised_settings.value().recent_files.size(), 1);
-    ASSERT_EQ(raised_settings.value().recent_files.front(), "test file");
 }
 
 /// Tests that the on_select_room event from the UI is observed and forwarded.
@@ -1110,18 +1102,17 @@ TEST(Viewer, SetRouteForwarded)
 TEST(Viewer, ToggleSaved)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    auto messaging = mock_shared<MockMessageSystem>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_messaging(messaging).build();
     viewer->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(UserSettings{}) });
 
-    std::optional<UserSettings> raised;
-    auto token = viewer->on_settings += [&](const auto& new_settings) { raised = new_settings; };
+    trview::Message called_settings;
+    EXPECT_CALL(*messaging, send_message).Times(testing::AtLeast(1)).WillRepeatedly(testing::SaveArg<0>(&called_settings));
 
     ui.on_toggle_changed(IViewer::Options::water, true);
 
     const std::unordered_map<std::string, bool> expected { { IViewer::Options::water, true } };
-
-    ASSERT_TRUE(raised);
-    ASSERT_EQ(raised.value().toggles, expected);
+    ASSERT_EQ(std::static_pointer_cast<MessageData<UserSettings>>(called_settings.data)->value.toggles, expected);
 }
 
 TEST(Viewer, SectorHighlightForwarded)

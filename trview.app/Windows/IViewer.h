@@ -38,10 +38,6 @@ namespace trview
 
         virtual ~IViewer() = 0;
 
-        /// Event raised when the user settings have changed.
-        /// @remarks The settings is passed as a parameter to the listener functions.
-        Event<UserSettings> on_settings;
-
         /// Event raised when the viwer wants to select an item.
         Event<std::weak_ptr<IItem>> on_item_selected;
 

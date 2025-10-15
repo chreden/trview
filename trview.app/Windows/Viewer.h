@@ -64,7 +64,8 @@ namespace trview
             std::unique_ptr<ISectorHighlight> sector_highlight,
             const std::shared_ptr<IClipboard>& clipboard,
             const std::shared_ptr<ICamera>& camera,
-            const graphics::ISamplerState::Source& sampler_source);
+            const graphics::ISamplerState::Source& sampler_source,
+            const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~Viewer() = default;
         std::weak_ptr<ICamera> camera() const override;
         virtual ICamera::Mode camera_mode() const override;
@@ -187,6 +188,7 @@ namespace trview
         Point _previous_mouse_pos;
         bool _camera_moved{ false };
         graphics::ISamplerState::Source _sampler_source;
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }
 

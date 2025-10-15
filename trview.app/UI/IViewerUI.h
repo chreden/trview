@@ -77,9 +77,6 @@ namespace trview
         /// Event raised when a room is selected.
         Event<std::weak_ptr<IRoom>> on_select_room;
 
-        /// Event raised when the user settings are changed.
-        Event<UserSettings> on_settings;
-
         /// Event raised when a tool is selected.
         Event<Tool> on_tool_selected;
 

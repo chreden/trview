@@ -36,9 +36,11 @@ namespace trview
         std::unique_ptr<IViewOptions> view_options,
         std::unique_ptr<IContextMenu> context_menu,
         std::unique_ptr<ICameraControls> camera_controls,
-        std::unique_ptr<IToolbar> toolbar)
+        std::unique_ptr<IToolbar> toolbar,
+        const std::weak_ptr<IMessageSystem>& messaging)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _camera_controls(std::move(camera_controls)),
-        _view_options(std::move(view_options)), _settings_window(settings_window), _context_menu(std::move(context_menu)), _toolbar(std::move(toolbar))
+        _view_options(std::move(view_options)), _settings_window(settings_window), _context_menu(std::move(context_menu)), _toolbar(std::move(toolbar)),
+        _messaging(messaging)
     {
         _token_store += shortcuts->add_shortcut(true, 'F') += [&]()
         {
@@ -125,7 +127,10 @@ namespace trview
         _token_store += _camera_position->on_hidden += [this]()
             {
                 _settings.camera_position_window = false;
-                on_settings(_settings);
+                if (auto ms = _messaging.lock())
+                {
+                    ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(_settings) });
+                }
             };
 
         _map_renderer = map_renderer_source();
