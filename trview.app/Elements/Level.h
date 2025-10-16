@@ -253,20 +253,4 @@ namespace trview
 
         std::weak_ptr<IMessageSystem> _messaging;
     };
-
-    /// Find the first item with the type id specified.
-    /// @param level The level to search.
-    /// @param type_id The type id to search for.
-    /// @param output_item The item to output the result into.
-    /// @returns True if the item was found.
-    bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item);
-
-    /// <summary>
-    /// Find the last item with the type id specified.
-    /// </summary>
-    /// <param name="level">The level to search.</param>
-    /// <param name="type_id">The type id to search for.</param>
-    /// <param name="output_item">The item to output the result into.</param>
-    /// <returns>True if the item was found.</returns>
-    bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item);
 }

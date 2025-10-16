@@ -11,6 +11,7 @@
 #include <ranges>
 
 #include "../Settings/UserSettings.h"
+#include "../Messages/Messages.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -1451,11 +1452,7 @@ namespace trview
         _ng = level->trng();
         _pack = level->pack().lock();
         _model_storage = model_storage;
-
-        if (auto messaging = _messaging.lock())
-        {
-            messaging->send_message(Message{ .type = "get_settings", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(shared_from_this()) });
-        }
+        messages::get_settings(_messaging, weak_from_this());
 
         record_models(*level);
         callbacks.on_progress("Generating rooms");
@@ -1657,27 +1654,11 @@ namespace trview
 
     void Level::receive_message(const Message& message)
     {
-        if (message.type == "settings")
+        if (auto settings = messages::read_settings(message))
         {
-            _map_colours = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value.map_colours;
+            _map_colours = settings->map_colours;
             on_geometry_colours_changed();
         }
-    }
-
-    bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
-    {
-        const auto& items = level.items();
-        auto found_item = std::find_if(items.begin(), items.end(), [=](const auto& item)
-            {
-                auto i = item.lock();
-                return i && i->type_id() == type_id; 
-            });
-        if (found_item == items.end())
-        {
-            return false;
-        }
-        output_item = *found_item;
-        return true;
     }
 
     bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

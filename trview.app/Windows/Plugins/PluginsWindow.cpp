@@ -1,4 +1,5 @@
 #include "PluginsWindow.h"
+#include "../../Messages/Messages.h"
 
 namespace trview
 {
@@ -16,11 +17,7 @@ namespace trview
     {
         if (!_settings)
         {
-            if (auto ms = _messaging.lock())
-            {
-                ms->send_message(Message{ .type = "get_settings", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(weak_from_this()) });
-                return;
-            }
+            messages::get_settings(_messaging, weak_from_this());
         }
 
         if (!render_plugins_window())
@@ -50,10 +47,7 @@ namespace trview
                         if (ImGui::Button(std::format("Remove##{}", i).c_str()))
                         {
                             _settings->plugin_directories.erase(_settings->plugin_directories.begin() + i);
-                            if (auto ms = _messaging.lock())
-                            {
-                                ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(*_settings) });
-                            }
+                            messages::send_settings(_messaging, *_settings);
                             plugins->reload();
                         }
                         ImGui::TableNextColumn();
@@ -72,10 +66,7 @@ namespace trview
                         if (auto path = _dialogs->open_folder())
                         {
                             _settings->plugin_directories.push_back(path.value());
-                            if (auto ms = _messaging.lock())
-                            {
-                                ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(*_settings) });
-                            }
+                            messages::send_settings(_messaging, *_settings);
                             plugins->reload();
                         }
                     }
@@ -107,10 +98,7 @@ namespace trview
                             {
                                 plugin->set_enabled(enabled);
                                 _settings->plugins[plugin->path()].enabled = enabled;
-                                if (auto ms = _messaging.lock())
-                                {
-                                    ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(*_settings) });
-                                }
+                                messages::send_settings(_messaging, *_settings);
                             }
                             ImGui::EndDisabled();
                             ImGui::TableNextColumn();
@@ -152,9 +140,9 @@ namespace trview
 
     void PluginsWindow::receive_message(const Message& message)
     {
-        if (message.type == "settings")
+        if (auto settings = messages::read_settings(message))
         {
-            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            _settings = settings.value();
         }
     }
 }

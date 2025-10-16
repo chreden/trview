@@ -5,6 +5,7 @@
 #include "RowCounter.h"
 #include "../Elements/IRoom.h"
 #include "../Elements/ISector.h"
+#include "../Messages/Messages.h"
 
 namespace trview
 {
@@ -52,10 +53,7 @@ namespace trview
                 if (_settings)
                 {
                     _settings->items_window_columns = _filters.columns();
-                    if (auto ms = _messaging.lock())
-                    {
-                        ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(*_settings) });
-                    }
+                    messages::send_settings(_messaging, *_settings);
                 }
             };
     }
@@ -312,10 +310,7 @@ namespace trview
     {
         if (!_settings)
         {
-            if (auto ms = _messaging.lock())
-            {
-                ms->send_message(Message{ .type = "get_settings", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(weak_from_this()) });
-            }
+            messages::get_settings(_messaging, weak_from_this());
         }
 
         if (!render_items_window())
@@ -475,9 +470,9 @@ namespace trview
 
     void ItemsWindow::receive_message(const Message& message)
     {
-        if (message.type == "settings")
+        if (auto settings = messages::read_settings(message))
         {
-            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            _settings = settings.value();
             if (!_columns_set)
             {
                 _filters.set_columns(_settings->items_window_columns);

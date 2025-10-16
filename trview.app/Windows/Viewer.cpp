@@ -10,22 +10,15 @@
 
 #include "../Windows/IItemsWindow.h"
 #include "../Elements/Flyby/IFlybyNode.h"
+#include "../Messages/Messages.h"
+#include "../Elements/SoundSource/ISoundSource.h"
+#include "../Elements/ILevel.h"
+#include "../Messages/Messages.h"
 
 using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    namespace
-    {
-        void send_settings_message(const std::weak_ptr<IMessageSystem>& messaging, const UserSettings& settings)
-        {
-            if (auto ms = messaging.lock())
-            {
-                ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(settings) });
-            }
-        }
-    }
-
     IViewer::~IViewer()
     {
     }
@@ -95,7 +88,7 @@ namespace trview
                 return;
             }
             _settings.toggles[name] = value;
-            send_settings_message(_messaging, _settings);
+            messages::send_settings(_messaging, _settings);
         };
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
@@ -876,8 +869,8 @@ namespace trview
     {
         if (auto level = _level.lock())
         {
-            bool new_value = !level->highlight_mode_enabled(Level::RoomHighlightMode::Highlight);
-            level->set_highlight_mode(Level::RoomHighlightMode::Highlight, new_value);
+            bool new_value = !level->highlight_mode_enabled(ILevel::RoomHighlightMode::Highlight);
+            level->set_highlight_mode(ILevel::RoomHighlightMode::Highlight, new_value);
             _ui->set_toggle(Options::highlight, new_value);
         }
     }
@@ -1430,14 +1423,14 @@ namespace trview
                     case ID_WINDOWS_CAMERA_POSITION:
                     {
                         _settings.camera_position_window = true;
-                        send_settings_message(_messaging, _settings);
+                        messages::send_settings(_messaging, _settings);
                         _ui->set_show_camera_position(true);
                         break;
                     }
                     case ID_WINDOWS_RESET_LAYOUT:
                     {
                         _settings.camera_position_window = true;
-                        send_settings_message(_messaging, _settings);
+                        messages::send_settings(_messaging, _settings);
                         _ui->reset_layout();
                         _ui->set_show_camera_position(true);
                         break;
@@ -1556,7 +1549,7 @@ namespace trview
     {
         _ui->set_toggle(name, value);
         _settings.toggles[name] = value;
-        send_settings_message(_messaging, _settings);
+        messages::send_settings(_messaging, _settings);
     }
 
     void Viewer::set_show_sound_sources(bool show)
@@ -1617,9 +1610,9 @@ namespace trview
 
     void Viewer::receive_message(const Message& message)
     {
-        if (message.type == "settings")
+        if (auto settings = messages::read_settings(message))
         {
-            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            _settings = settings.value();
             apply_camera_settings();
         }
     }

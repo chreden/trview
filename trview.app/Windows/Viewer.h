@@ -17,28 +17,24 @@
 #include <trview.input/IMouse.h>
 #include <trview.common/TokenStore.h>
 
-#include <trview.app/Camera/Camera.h>
+#include <trview.app/Camera/ICamera.h>
 #include <trview.app/Camera/CameraInput.h>
-#include <trview.app/Elements/Level.h>
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/Windows/WindowResizer.h>
 #include <trview.app/Tools/Measure.h>
 #include <trview.app/Tools/Compass.h>
 #include <trview.app/Menus/AlternateGroupToggler.h>
-#include <trview.app/Routing/Route.h>
 #include <trview.app/Geometry/IPicking.h>
 #include <trview.app/Graphics/ISectorHighlight.h>
 #include <trview.app/UI/IViewerUI.h>
-#include "../Elements/ITypeInfoLookup.h"
 #include <trview.app/Menus/MenuDetector.h>
-#include <trview.app/Lua/Lua.h>
-#include <trview.common/Windows/Shortcuts.h>
+#include <trview.common/Windows/IShortcuts.h>
 #include <trview.graphics/IDeviceWindow.h>
 #include <trview.app/Windows/IViewer.h>
 #include <trview.common/Windows/IClipboard.h>
 
 #include <trview.graphics/Sampler/ISamplerState.h>
-#include <trview.common/Messages/IRecipient.h>
+#include <trview.common/Messages/IMessageSystem.h>
 
 namespace trview
 {

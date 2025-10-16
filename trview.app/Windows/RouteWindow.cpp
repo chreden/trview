@@ -6,6 +6,7 @@
 #include <format>
 #include "../Routing/IRandomizerRoute.h"
 #include "../Elements/ILevel.h"
+#include "../Messages/Messages.h"
 
 namespace trview
 {
@@ -404,11 +405,8 @@ namespace trview
     {
         if (!_randomizer_settings)
         {
-            if (auto ms = _messaging.lock())
-            {
-                ms->send_message(Message{ .type = "get_settings", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(weak_from_this()) });
-                return;
-            }
+            messages::get_settings(_messaging, weak_from_this());
+            return;
         }
 
         if (!render_route_window())
@@ -669,11 +667,10 @@ namespace trview
 
     void RouteWindow::receive_message(const Message& message)
     {
-        if (message.type == "settings")
+        if (auto settings = messages::read_settings(message))
         {
-            auto settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
-            _randomizer_enabled = settings.randomizer_tools;
-            _randomizer_settings = settings.randomizer;
+            _randomizer_enabled = settings->randomizer_tools;
+            _randomizer_settings = settings->randomizer;
         }
     }
 }

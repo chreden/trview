@@ -125,7 +125,6 @@ namespace trview
         void check_load();
         void end_diff(const std::weak_ptr<ILevel>& level);
         void select_flyby_node(const std::weak_ptr<IFlybyNode>& node);
-        void send_settings_message();
 
         TokenStore _token_store;
 

@@ -1,5 +1,6 @@
 #include "Plugins.h"
 #include <trview.common/Messages/Message.h>
+#include "../Messages/Messages.h"
 
 namespace trview
 {
@@ -61,9 +62,9 @@ namespace trview
 
     void Plugins::receive_message(const Message& message)
     {
-        if (message.type == "settings")
+        if (auto settings = messages::read_settings(message))
         {
-            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            _settings = settings.value();
         }
     }
 }

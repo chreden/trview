@@ -60,7 +60,6 @@ namespace trview
         void receive_message(const Message& message) override;
     private:
         void show_texture_filtering_window();
-        void save_settings();
 
         void checkbox(const std::string& name, bool& setting);
         void slider(const std::string& name, float& value, float min, float max);

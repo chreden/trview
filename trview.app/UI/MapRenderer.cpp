@@ -2,6 +2,7 @@
 #include "../Elements/ILevel.h"
 #include <ranges>
 #include <trview.common/Messages/Message.h>
+#include "../Messages/Messages.h"
 
 using namespace DirectX::SimpleMath;
 using namespace Microsoft::WRL;
@@ -27,10 +28,7 @@ namespace trview
     {
         if (!_settings)
         {
-            if (auto messaging = _messaging.lock())
-            {
-                messaging->send_message(Message{ .type = "get_settings", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(weak_from_this()) });
-            }
+            messages::get_settings(_messaging, weak_from_this());
             return;
         }
 
@@ -382,9 +380,9 @@ namespace trview
 
     void MapRenderer::receive_message(const Message& message)
     {
-        if (message.type == "settings")
+        if (auto settings = messages::read_settings(message))
         {
-            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            _settings = settings.value();
         }
     }
 }

@@ -10,6 +10,7 @@
 
 #include <trview.common/Messages/IMessageSystem.h>
 #include <trview.common/Messages/Message.h>
+#include "Messages/Messages.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -85,7 +86,7 @@ namespace trview
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
         add_missing_fonts(_settings);
-        send_settings_message();
+        messages::send_settings(_messaging, _settings);
         lua::set_settings(_settings);
 
         set_route(_settings.randomizer_tools ? randomizer_route_source(std::nullopt) : route_source(std::nullopt));
@@ -521,7 +522,7 @@ namespace trview
             if (_fonts->add_font(_new_font->first, _new_font->second))
             {
                 _settings.fonts[_new_font->first] = _new_font->second;
-                send_settings_message();
+                messages::send_settings(_messaging, _settings);
             }
             _new_font.reset();
         }
@@ -642,7 +643,7 @@ namespace trview
             if (_level)
             {
                 _settings.recent_routes[_level->filename()] = { path, is_rando };
-                send_settings_message();
+                messages::send_settings(_messaging, _settings);
             }
         }
     }
@@ -671,7 +672,7 @@ namespace trview
                 if (_level)
                 {
                     _settings.recent_routes[_level->filename()] = { filename->filename, is_rando };
-                    send_settings_message();
+                    messages::send_settings(_messaging, _settings);
                 }
             }
             catch (std::exception& e)
@@ -697,7 +698,7 @@ namespace trview
         else
         {
             _settings.recent_routes.erase(_level->filename());
-            send_settings_message();
+            messages::send_settings(_messaging, _settings);
         }
         _recent_route_prompted = true;
     }
@@ -800,7 +801,7 @@ namespace trview
             const Vector3 old_target = _viewer->target();
             const bool old_auto_orbit = _settings.auto_orbit;
             _settings.auto_orbit = false;
-            send_settings_message();
+            messages::send_settings(_messaging, _settings);
 
             auto selected_item = old_level->selected_item();
             if (selected_item.has_value())
@@ -836,7 +837,7 @@ namespace trview
 
             _viewer->set_target(old_target);
             _settings.auto_orbit = old_auto_orbit;
-            send_settings_message();
+            messages::send_settings(_messaging, _settings);
         }
         else
         {
@@ -925,7 +926,7 @@ namespace trview
         _settings.add_recent_file(op.filename);
         _file_menu->set_recent_files(_settings.recent_files);
         _settings_loader->save_user_settings(_settings);
-        send_settings_message();
+        messages::send_settings(_messaging, _settings);
         set_current_level(op.level, op.open_mode, false);
     }
 
@@ -955,23 +956,17 @@ namespace trview
 
     void Application::receive_message(const Message& message)
     {
-        if (message.type == "settings")
+        if (auto settings = messages::read_settings(message))
         {
-            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            _settings = settings.value();
             lua::set_settings(_settings);
         }
         else if (message.type == "get_settings")
         {
-            // TODO: Should this go via the system? Maybe.
             if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
             {
                 requester->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(_settings) });
             }
         }
-    }
-
-    void Application::send_settings_message()
-    {
-        _messaging->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(_settings) });
     }
 }

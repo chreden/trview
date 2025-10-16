@@ -8,6 +8,7 @@
 #include "../Windows/IViewer.h"
 #include <ranges>
 #include <trview.common/Messages/Message.h>
+#include "../Messages/Messages.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -507,9 +508,9 @@ namespace trview
 
     void ViewerUI::receive_message(const Message& message)
     {
-        if (message.type == "settings")
+        if (auto settings = messages::read_settings(message))
         {
-            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            _settings = settings.value();
             _camera_position->set_display_degrees(_settings.camera_display_degrees);
             _camera_position->set_visible(_settings.camera_position_window);
             for (const auto& toggle : _settings.toggles)

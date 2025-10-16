@@ -1,6 +1,7 @@
 #include "StaticsWindow.h"
 #include "../RowCounter.h"
 #include "../../trview_imgui.h"
+#include "../../Messages/Messages.h"
 
 namespace trview
 {
@@ -23,10 +24,7 @@ namespace trview
                 if (_settings)
                 {
                     _settings->statics_window_columns = _filters.columns();
-                    if (auto ms = _messaging.lock())
-                    {
-                        ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(*_settings) });
-                    }
+                    messages::send_settings(_messaging, *_settings);
                 }
             };
     }
@@ -241,9 +239,9 @@ namespace trview
 
     void StaticsWindow::receive_message(const Message& message)
     {
-        if (message.type == "settings")
+        if (auto settings = messages::read_settings(message))
         {
-            _settings = std::static_pointer_cast<MessageData<UserSettings>>(message.data)->value;
+            _settings = settings.value();
             if (!_columns_set)
             {
                 _filters.set_columns(_settings->statics_window_columns);
