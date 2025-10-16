@@ -128,10 +128,7 @@ namespace trview
         _token_store += _camera_position->on_hidden += [this]()
             {
                 _settings.camera_position_window = false;
-                if (auto ms = _messaging.lock())
-                {
-                    ms->send_message(Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(_settings) });
-                }
+                messages::send_settings(_messaging, _settings);
             };
 
         _map_renderer = map_renderer_source();
