@@ -201,8 +201,8 @@ namespace trview
             const trlevel::tr_object_texture& ot = _object_textures[i];
             const auto [min_x, max_x] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.x_whole; }));
             const auto [min_y, max_y] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.y_whole; }));
-            const uint32_t width = max_x - min_x + 1;
-            const uint32_t height = max_y - min_y + 1;
+            const uint32_t width = std::max(max_x - min_x, 1);
+            const uint32_t height = std::max(max_y - min_y, 1);
 
             std::vector<uint32_t> output_texture;
             output_texture.resize(width * height, 0xffff00ff);
