@@ -222,8 +222,8 @@ namespace trview
                 .uvs = ot.Vertices | std::views::transform([&](auto&& v) -> Vector2
                 {
                     return Vector2(
-                        (static_cast<float>(v.x_whole - min_x) / (width - 1)),
-                        (static_cast<float>(v.y_whole - min_y) / (height - 1)));
+                        (static_cast<float>(v.x_whole - min_x) / width),
+                        (static_cast<float>(v.y_whole - min_y) / height));
                 }) | std::ranges::to<std::vector>(),
                 .tile = _texture_storage->num_textures()
             };
