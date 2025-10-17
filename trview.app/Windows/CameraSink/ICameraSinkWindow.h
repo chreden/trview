@@ -18,7 +18,6 @@ namespace trview
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
         virtual void set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) = 0;
         virtual void set_current_room(const std::weak_ptr<IRoom>& room) = 0;
-        virtual void set_settings(const UserSettings& settings) = 0;
 
         virtual void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) = 0;
         virtual void update(float delta) = 0;
@@ -26,8 +25,6 @@ namespace trview
         /// Event raised when the window is closed.
         /// </summary>
         Event<> on_window_closed;
-
-        Event<UserSettings> on_settings;
 
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
         Event<std::weak_ptr<IFlybyNode>> on_flyby_node_selected;

@@ -23,7 +23,7 @@ namespace trview
         virtual void set_number(int32_t number) override;
     private:
         bool render_log_window();
-        void save_to_file(const std::vector<Message>& messages, int level_offset);
+        void save_to_file(const std::vector<LogMessage>& messages, int level_offset);
 
         std::shared_ptr<ILog> _log;
         std::shared_ptr<IDialogs> _dialogs;

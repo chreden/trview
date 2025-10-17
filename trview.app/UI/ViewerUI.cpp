@@ -6,8 +6,9 @@
 #include <trview.common/Windows/Shortcuts.h>
 #include "../Routing/IRoute.h"
 #include "../Windows/IViewer.h"
-
 #include <ranges>
+#include <trview.common/Messages/Message.h>
+#include "../Messages/Messages.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -32,13 +33,15 @@ namespace trview
     ViewerUI::ViewerUI(const Window& window, const std::shared_ptr<ITextureStorage>& texture_storage,
         const std::shared_ptr<IShortcuts>& shortcuts,
         const IMapRenderer::Source& map_renderer_source,
-        std::unique_ptr<ISettingsWindow> settings_window,
+        const std::shared_ptr<ISettingsWindow>& settings_window,
         std::unique_ptr<IViewOptions> view_options,
         std::unique_ptr<IContextMenu> context_menu,
         std::unique_ptr<ICameraControls> camera_controls,
-        std::unique_ptr<IToolbar> toolbar)
+        std::unique_ptr<IToolbar> toolbar,
+        const std::weak_ptr<IMessageSystem>& messaging)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _camera_controls(std::move(camera_controls)),
-        _view_options(std::move(view_options)), _settings_window(std::move(settings_window)), _context_menu(std::move(context_menu)), _toolbar(std::move(toolbar))
+        _view_options(std::move(view_options)), _settings_window(settings_window), _context_menu(std::move(context_menu)), _toolbar(std::move(toolbar)),
+        _messaging(messaging)
     {
         _token_store += shortcuts->add_shortcut(true, 'F') += [&]()
         {
@@ -116,7 +119,6 @@ namespace trview
         _level_info = std::make_unique<LevelInfo>(*texture_storage);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
-        _settings_window->on_settings += on_settings;
         _settings_window->on_font += on_font;
         _settings_window->on_linear_filtering += on_linear_filtering;
 
@@ -126,7 +128,7 @@ namespace trview
         _token_store += _camera_position->on_hidden += [this]()
             {
                 _settings.camera_position_window = false;
-                on_settings(_settings);
+                messages::send_settings(_messaging, _settings);
             };
 
         _map_renderer = map_renderer_source();
@@ -309,19 +311,6 @@ namespace trview
     void ViewerUI::set_remove_waypoint_enabled(bool value)
     {
         _context_menu->set_remove_enabled(value);
-    }
-
-    void ViewerUI::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        _settings_window->set_settings(settings);
-        _camera_position->set_display_degrees(settings.camera_display_degrees);
-        _camera_position->set_visible(settings.camera_position_window);
-        _map_renderer->set_settings(settings);
-        for (const auto& toggle : settings.toggles)
-        {
-            set_toggle(toggle.first, toggle.second);
-        }
     }
 
     void ViewerUI::set_selected_item(uint32_t index)
@@ -512,5 +501,19 @@ namespace trview
     void ViewerUI::set_tile_filter_enabled(bool value)
     {
         _context_menu->set_tile_filter_enabled(value);
+    }
+
+    void ViewerUI::receive_message(const Message& message)
+    {
+        if (auto settings = messages::read_settings(message))
+        {
+            _settings = settings.value();
+            _camera_position->set_display_degrees(_settings.camera_display_degrees);
+            _camera_position->set_visible(_settings.camera_position_window);
+            for (const auto& toggle : _settings.toggles)
+            {
+                set_toggle(toggle.first, toggle.second);
+            }
+        }
     }
 }

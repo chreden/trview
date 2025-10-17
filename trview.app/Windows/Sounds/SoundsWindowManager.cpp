@@ -27,10 +27,8 @@ namespace trview
         sounds_window->set_level_platform(_level_platform);
         sounds_window->set_level_version(_level_version);
         sounds_window->set_selected_sound_source(_selected_sound_source);
-        sounds_window->set_settings(_settings);
         sounds_window->set_sound_sources(_sound_sources);
         sounds_window->set_sound_storage(_sound_storage);
-        sounds_window->on_settings += on_settings;
         sounds_window->on_sound_source_selected += on_sound_source_selected;
         return add_window(sounds_window);
     }
@@ -64,15 +62,6 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_level_version(version);
-        }
-    }
-
-    void SoundsWindowManager::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        for (auto& window : _windows)
-        {
-            window.second->set_settings(settings);
         }
     }
 

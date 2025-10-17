@@ -1,6 +1,7 @@
 #include "StaticsWindow.h"
 #include "../RowCounter.h"
 #include "../../trview_imgui.h"
+#include "../../Messages/Messages.h"
 
 namespace trview
 {
@@ -8,8 +9,8 @@ namespace trview
     {
     }
 
-    StaticsWindow::StaticsWindow(const std::shared_ptr<IClipboard>& clipboard)
-        : _clipboard(clipboard)
+    StaticsWindow::StaticsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _messaging(messaging)
     {
         setup_filters();
 
@@ -20,8 +21,11 @@ namespace trview
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
-                _settings.statics_window_columns = _filters.columns();
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->statics_window_columns = _filters.columns();
+                    messages::send_settings(_messaging, *_settings);
+                }
             };
     }
 
@@ -233,13 +237,16 @@ namespace trview
         }
     }
 
-    void StaticsWindow::set_settings(const UserSettings& settings)
+    void StaticsWindow::receive_message(const Message& message)
     {
-        _settings = settings;
-        if (!_columns_set)
+        if (auto settings = messages::read_settings(message))
         {
-            _filters.set_columns(settings.statics_window_columns);
-            _columns_set = true;
+            _settings = settings.value();
+            if (!_columns_set)
+            {
+                _filters.set_columns(_settings->statics_window_columns);
+                _columns_set = true;
+            }
         }
     }
 }

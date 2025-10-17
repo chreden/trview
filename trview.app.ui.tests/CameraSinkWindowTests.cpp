@@ -7,6 +7,7 @@
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.tests.common/Mocks.h>
 #include <trview.app/Mocks/Camera/ICamera.h>
+#include <trview.common/Mocks/Messages/IMessageSystem.h>
 
 using namespace testing;
 using namespace trview;
@@ -23,10 +24,11 @@ namespace
             {
                 std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
                 std::shared_ptr<ICamera> camera{ mock_shared<MockCamera>() };
+                std::shared_ptr<IMessageSystem> messaging{ mock_shared<MockMessageSystem>() };
 
                 std::unique_ptr<CameraSinkWindow> build()
                 {
-                    return std::make_unique<CameraSinkWindow>(clipboard, camera);
+                    return std::make_unique<CameraSinkWindow>(clipboard, camera, messaging);
                 }
             };
 

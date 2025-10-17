@@ -45,8 +45,6 @@ namespace trview
         _route_window->on_new_randomizer_route += on_new_randomizer_route;
         _token_store += _route_window->on_window_closed += [&]() { _closing = true; };
 
-        _route_window->set_randomizer_settings(_randomizer_settings);
-        _route_window->set_randomizer_enabled(_randomizer_enabled);
         _route_window->set_items(_all_items);
         _route_window->set_rooms(_all_rooms);
         _route_window->set_triggers(_all_triggers);
@@ -120,24 +118,6 @@ namespace trview
         if (_route_window)
         {
             _route_window->update(delta);
-        }
-    }
-
-    void RouteWindowManager::set_randomizer_enabled(bool value)
-    {
-        _randomizer_enabled = value;
-        if (_route_window)
-        {
-            _route_window->set_randomizer_enabled(value);
-        }
-    }
-
-    void RouteWindowManager::set_randomizer_settings(const RandomizerSettings& settings)
-    {
-        _randomizer_settings = settings;
-        if (_route_window)
-        {
-            _route_window->set_randomizer_settings(settings);
         }
     }
 

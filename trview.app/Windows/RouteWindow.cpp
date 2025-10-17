@@ -6,6 +6,7 @@
 #include <format>
 #include "../Routing/IRandomizerRoute.h"
 #include "../Elements/ILevel.h"
+#include "../Messages/Messages.h"
 
 namespace trview
 {
@@ -28,8 +29,8 @@ namespace trview
     }
 
     RouteWindow::RouteWindow(const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
-        const std::shared_ptr<IFiles>& files)
-        : _clipboard(clipboard), _dialogs(dialogs), _files(files)
+        const std::shared_ptr<IFiles>& files, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _dialogs(dialogs), _files(files), _messaging(messaging)
     {
     }
 
@@ -402,6 +403,12 @@ namespace trview
 
     void RouteWindow::render()
     {
+        if (!_randomizer_settings)
+        {
+            messages::get_settings(_messaging, weak_from_this());
+            return;
+        }
+
         if (!render_route_window())
         {
             on_window_closed();
@@ -455,16 +462,6 @@ namespace trview
         }
     }
 
-    void RouteWindow::set_randomizer_enabled(bool value)
-    {
-        _randomizer_enabled = value;
-    }
-
-    void RouteWindow::set_randomizer_settings(const RandomizerSettings& settings)
-    {
-        _randomizer_settings = settings;
-    }
-
     void RouteWindow::load_randomiser_settings(IWaypoint& waypoint)
     {
         auto waypoint_settings = waypoint.randomizer_settings();
@@ -472,7 +469,7 @@ namespace trview
 
         if (ImGui::BeginTable(Names::randomizer_flags.c_str(), 2))
         {
-            for (const auto& b : _randomizer_settings.settings)
+            for (const auto& b : _randomizer_settings->settings)
             {
                 if (b.second.type == RandomizerSettings::Setting::Type::Boolean)
                 {
@@ -491,7 +488,7 @@ namespace trview
             ImGui::EndTable();
         }
 
-        for (const auto& b : _randomizer_settings.settings)
+        for (const auto& b : _randomizer_settings->settings)
         {
             auto value = waypoint_settings.find(b.first) == waypoint_settings.end() ? b.second.default_value : waypoint_settings[b.first];
             switch (b.second.type)
@@ -665,6 +662,15 @@ namespace trview
             }
 
             ImGui::EndMenuBar();
+        }
+    }
+
+    void RouteWindow::receive_message(const Message& message)
+    {
+        if (auto settings = messages::read_settings(message))
+        {
+            _randomizer_enabled = settings->randomizer_tools;
+            _randomizer_settings = settings->randomizer;
         }
     }
 }

@@ -2,6 +2,7 @@
 #include "../trview_imgui.h"
 #include <format>
 #include "RowCounter.h"
+#include "../Messages/Messages.h"
 
 namespace trview
 {
@@ -9,8 +10,8 @@ namespace trview
     {
     }
 
-    LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard)
-        : _clipboard(clipboard)
+    LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _messaging(messaging)
     {
         _tips["Direction"] = "Direction is inverted in-game. 3D view shows correct direction.";
         setup_filters();
@@ -22,8 +23,11 @@ namespace trview
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
-                _settings.lights_window_columns = _filters.columns();
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->lights_window_columns = _filters.columns();
+                    messages::send_settings(_messaging, *_settings);
+                }
             };
     }
 
@@ -34,6 +38,11 @@ namespace trview
 
     void LightsWindow::render()
     {
+        if (!_settings)
+        {
+            messages::get_settings(_messaging, weak_from_this());
+        }
+
         if (!render_lights_window())
         {
             on_window_closed();
@@ -314,13 +323,16 @@ namespace trview
         }
     }
 
-    void LightsWindow::set_settings(const UserSettings& settings)
+    void LightsWindow::receive_message(const Message& message)
     {
-        _settings = settings;
-        if (!_columns_set)
+        if (auto settings = messages::read_settings(message))
         {
-            _filters.set_columns(settings.lights_window_columns);
-            _columns_set = true;
+            _settings = settings.value();
+            if (!_columns_set)
+            {
+                _filters.set_columns(_settings->lights_window_columns);
+                _columns_set = true;
+            }
         }
     }
 }

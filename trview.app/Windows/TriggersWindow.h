@@ -5,6 +5,7 @@
 
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.common/TokenStore.h>
+#include <trview.common/Messages/IMessageSystem.h>
 #include "../Filters/Filters.h"
 #include "../Track/Track.h"
 
@@ -16,7 +17,7 @@
 
 namespace trview
 {
-    class TriggersWindow final : public ITriggersWindow
+    class TriggersWindow final : public ITriggersWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -33,7 +34,7 @@ namespace trview
             static inline const std::string colour = "##colour";
         };
 
-        explicit TriggersWindow(const std::shared_ptr<IClipboard>& clipboard);
+        explicit TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~TriggersWindow() = default;
         virtual void render() override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
@@ -45,7 +46,7 @@ namespace trview
         void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) override;
         virtual std::weak_ptr<ITrigger> selected_trigger() const override;
         virtual void update(float delta) override;
-        void set_settings(const UserSettings& settings) override;
+        void receive_message(const Message& message) override;
     private:
         void set_sync_trigger(bool value);
         void render_triggers_list();
@@ -85,7 +86,8 @@ namespace trview
         Track<Type::Room> _track;
         AutoHider _auto_hider;
         trlevel::PlatformAndVersion _platform_and_version;
-        UserSettings _settings;
+        std::optional<UserSettings> _settings;
         bool _columns_set{ false };
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }

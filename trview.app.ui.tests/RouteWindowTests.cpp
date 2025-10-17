@@ -12,6 +12,9 @@
 #include <trview.app/Windows/RouteWindow.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
 
+#include <trview.app/Settings/UserSettings.h>
+#include <trview.common/Mocks/Messages/IMessageSystem.h>
+
 using namespace testing;
 using namespace trview;
 using namespace trview::mocks;
@@ -27,6 +30,7 @@ namespace
             std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
             std::shared_ptr<IDialogs> dialogs{ mock_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ mock_shared<MockFiles>() };
+            std::shared_ptr<IMessageSystem> messaging{ mock_shared<MockMessageSystem>() };
 
             test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
             {
@@ -48,7 +52,7 @@ namespace
 
             std::unique_ptr<RouteWindow> build()
             {
-                return std::make_unique<RouteWindow>(clipboard, dialogs, files);
+                return std::make_unique<RouteWindow>(clipboard, dialogs, files, messaging);
             }
         };
         return test_module{};
@@ -201,8 +205,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
 
             RandomizerSettings settings;
             settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::String, std::string("One"), { std::string("One"), std::string("Two") } };
-            context.ptr->set_randomizer_settings(settings);
-            context.ptr->set_randomizer_enabled(true);
+            context.ptr->receive_message(trview::Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(UserSettings {.randomizer_tools = true, .randomizer = settings})});
 
             IWaypoint::WaypointRandomizerSettings new_settings;
 
@@ -459,7 +462,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
                 raised = true;
             };
 
-            context.ptr->set_randomizer_enabled(true);
+            context.ptr->receive_message(trview::Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(UserSettings {.randomizer_tools = true}) });
             ctx->ItemClick("Route###Route/##menubar/File");
             ctx->ItemClick("##Menu_00/New");
             ctx->ItemClick("##Menu_01/Randomizer Route");
@@ -505,8 +508,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Boolean };
             settings.settings["test2"] = { "Test 2", RandomizerSettings::Setting::Type::String, std::string("One"), { std::string("One"), std::string("Two"), std::string("Three") } };
             settings.settings["test3"] = { "Test 3", RandomizerSettings::Setting::Type::Number, 1.0f };
-            context.ptr->set_randomizer_settings(settings);
-            context.ptr->set_randomizer_enabled(true);
+            context.ptr->receive_message(trview::Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(UserSettings {.randomizer_tools = true, .randomizer = settings}) });
 
             ctx->Yield();
             ctx->SetRef(ctx->WindowInfo("Route###Route/Waypoint Details")->Window);
@@ -527,7 +529,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
 
             RandomizerSettings settings;
             settings.settings["test"] = { "Test", RandomizerSettings::Setting::Type::Boolean };
-            context.ptr->set_randomizer_settings(settings);
+            context.ptr->receive_message(trview::Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(UserSettings {.randomizer_tools = true, .randomizer = settings}) });
 
             auto waypoint = mock_shared<MockWaypoint>();
             auto route = mock_shared<MockRoute>();
@@ -651,8 +653,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
 
             RandomizerSettings settings;
             settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Number, 1.0f };
-            context.ptr->set_randomizer_settings(settings);
-            context.ptr->set_randomizer_enabled(true);
+            context.ptr->receive_message(trview::Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(UserSettings {.randomizer_tools = true, .randomizer = settings}) });
 
             IWaypoint::WaypointRandomizerSettings new_settings;
 
@@ -682,8 +683,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
 
             RandomizerSettings settings;
             settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::String, std::string("One") };
-            context.ptr->set_randomizer_settings(settings);
-            context.ptr->set_randomizer_enabled(true);
+            context.ptr->receive_message(trview::Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(UserSettings {.randomizer_tools = true, .randomizer = settings}) });
 
             IWaypoint::WaypointRandomizerSettings new_settings;
 
@@ -724,8 +724,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             context.route = route;
             context.ptr->set_route(route);
             context.ptr->select_waypoint(waypoint);
-            context.ptr->set_randomizer_settings(settings);
-            context.ptr->set_randomizer_enabled(true);
+            context.ptr->receive_message(trview::Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(UserSettings {.randomizer_tools = true, .randomizer = settings}) });
 
             ctx->ItemClick("/**/Test 1");
 

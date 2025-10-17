@@ -655,8 +655,8 @@ TEST(Room, MissingStaticMeshesIgnored)
     EXPECT_CALL(*level, get_static_mesh(0)).Times(1).WillOnce(Return(std::nullopt));
     EXPECT_CALL(*level, get_static_mesh(1)).Times(1).WillOnce(Return(trlevel::tr_staticmesh{}));
     auto log = mock_shared<MockLog>();
-    EXPECT_CALL(*log, log(Message::Status::Information, "Level", std::vector<std::string>{ "Room 0" }, testing::A<const std::string&>())).Times(2);
-    EXPECT_CALL(*log, log(Message::Status::Error, "Level", std::vector<std::string>{ "Room 0" }, testing::A<const std::string&>())).Times(1);
+    EXPECT_CALL(*log, log(LogMessage::Status::Information, "Level", std::vector<std::string>{ "Room 0" }, testing::A<const std::string&>())).Times(2);
+    EXPECT_CALL(*log, log(LogMessage::Status::Error, "Level", std::vector<std::string>{ "Room 0" }, testing::A<const std::string&>())).Times(1);
     auto mesh = mock_shared<MockStaticMesh>();
     EXPECT_CALL(*mesh, render_bounding_box).Times(1);
     trlevel::tr3_room level_room;

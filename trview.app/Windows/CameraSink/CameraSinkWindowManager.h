@@ -3,7 +3,6 @@
 #include <trview.common/MessageHandler.h>
 #include "ICameraSinkWindowManager.h"
 #include "../WindowManager.h"
-#include "../../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -21,7 +20,6 @@ namespace trview
         void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
-        void set_settings(const UserSettings& settings) override;
         void update(float delta) override;
     private:
         ICameraSinkWindow::Source _camera_sink_window_source;
@@ -29,7 +27,6 @@ namespace trview
         std::weak_ptr<ICameraSink> _selected_camera_sink;
         std::weak_ptr<IFlybyNode> _selected_flyby_node;
         std::weak_ptr<IRoom> _current_room;
-        UserSettings _settings;
         std::vector<std::weak_ptr<IFlyby>> _flybys;
         trlevel::PlatformAndVersion _platform_and_version;
     };

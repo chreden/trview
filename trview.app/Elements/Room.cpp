@@ -368,7 +368,7 @@ namespace trview
             auto level_static_mesh = level.get_static_mesh(room_mesh.mesh_id);
             if (!level_static_mesh.has_value())
             {
-                activity.log(trview::Message::Status::Error, std::format("Static Mesh {} was requested but not found", room_mesh.mesh_id));
+                activity.log(trview::LogMessage::Status::Error, std::format("Static Mesh {} was requested but not found", room_mesh.mesh_id));
                 continue;
             }
             _static_meshes.push_back(static_mesh_mesh_source(room_mesh, level_static_mesh.value(), mesh_storage.mesh(level_static_mesh.value().Mesh), shared_from_this(), _level));

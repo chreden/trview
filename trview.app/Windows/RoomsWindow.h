@@ -4,6 +4,7 @@
 
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.common/TokenStore.h>
+#include <trview.common/Messages/IMessageSystem.h>
 
 #include "../Settings/UserSettings.h"
 
@@ -15,7 +16,7 @@
 
 namespace trview
 {
-    class RoomsWindow final : public IRoomsWindow
+    class RoomsWindow final : public IRoomsWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -31,14 +32,13 @@ namespace trview
         /// Create a rooms window as a child of the specified window.
         /// @param device The graphics device
         /// @param renderer_source The function to call to get a renderer.
-        explicit RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard);
+        explicit RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~RoomsWindow() = default;
         void clear_selected_trigger() override;
         void render() override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
         void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         void set_level_version(trlevel::LevelVersion version) override;
-        void set_settings(const UserSettings& settings) override;
         void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
         void set_selected_item(const std::weak_ptr<IItem>& item) override;
         void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
@@ -54,6 +54,7 @@ namespace trview
         std::string name() const override;
         void set_filters(std::vector<Filters<IRoom>::Filter> filters) override;
         void set_selected_sector(const std::weak_ptr<ISector>& sector) override;
+        void receive_message(const Message& message) override;
     private:
         void set_sync_room(bool value);
         void render_rooms_list();
@@ -110,7 +111,7 @@ namespace trview
         std::weak_ptr<IRoom> _selected_room;
 
         TokenStore _token_store;
-        std::unique_ptr<IMapRenderer> _map_renderer;
+        std::shared_ptr<IMapRenderer> _map_renderer;
         std::shared_ptr<IClipboard> _clipboard;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb1 };
         std::string _id{ "Rooms 0" };
@@ -128,7 +129,8 @@ namespace trview
         AutoHider _auto_hider;
         bool _trng{ false };
 
-        UserSettings _settings;
+        std::optional<UserSettings> _settings;
         bool _columns_set{ false };
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }

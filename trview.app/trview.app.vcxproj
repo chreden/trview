@@ -74,6 +74,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Lua\Vector3.cpp" />
     <ClCompile Include="Menus\FileMenu.cpp" />
     <ClCompile Include="Menus\ImGuiFileMenu.cpp" />
+    <ClCompile Include="Messages\Messages.cpp" />
     <ClCompile Include="Mocks\Mocks.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
@@ -109,6 +110,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Scriptable\IScriptable.h" />
     <ClInclude Include="Lua\Scriptable\Scriptable.h" />
     <ClInclude Include="Menus\ImGuiFileMenu.h" />
+    <ClInclude Include="Messages\Messages.h" />
     <ClInclude Include="Mocks\Elements\IFlyby.h" />
     <ClInclude Include="Mocks\Elements\IFlybyNode.h" />
     <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h" />

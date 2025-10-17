@@ -2,6 +2,7 @@
 
 #include <trview.common/TokenStore.h>
 #include <trview.common/Windows/IClipboard.h>
+#include <trview.common/Messages/IMessageSystem.h>
 #include "../../Filters/Filters.h"
 #include "../../Track/Track.h"
 #include "ICameraSinkWindow.h"
@@ -10,7 +11,7 @@
 
 namespace trview
 {
-    class CameraSinkWindow final : public ICameraSinkWindow
+    class CameraSinkWindow final : public ICameraSinkWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -24,7 +25,7 @@ namespace trview
             static inline const std::string type = "Type";
         };
 
-        explicit CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera);
+        explicit CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~CameraSinkWindow() = default;
         void render() override;
         void set_number(int32_t number) override;
@@ -33,9 +34,9 @@ namespace trview
         void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
-        void set_settings(const UserSettings& settings) override;
         void update(float delta) override;
         void set_platform_and_version(const trlevel::PlatformAndVersion& version) override;
+        void receive_message(const Message& message) override;
     private:
         bool render_camera_sink_window();
         void set_sync(bool value);
@@ -86,7 +87,7 @@ namespace trview
         std::weak_ptr<ICamera> _camera;
 
         bool _playing_flyby{ false };
-        UserSettings _settings;
+        std::optional<UserSettings> _settings;
         bool _columns_set{ false };
         bool _force_sort{ false };
         TokenStore _token_store;
@@ -94,6 +95,7 @@ namespace trview
         std::optional<IFlyby::CameraState> _initial_state;
         trlevel::PlatformAndVersion _platform_and_version;
         bool _go_to_flybys{ false };
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }
 

@@ -22,7 +22,6 @@ namespace trview
         Event<std::weak_ptr<IItem>> on_add_to_route;
         /// Event raised when the window is closed.
         Event<> on_window_closed;
-        Event<UserSettings> on_settings;
         virtual void set_filters(std::vector<Filters<IItem>::Filter> filters) = 0;
         /// Set the items to display in the window.
         /// @param items The items to show.
@@ -55,7 +54,6 @@ namespace trview
         virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) = 0;
         virtual void set_ng_plus(bool value) = 0;
         virtual std::string name() const = 0;
-        virtual void set_settings(const UserSettings& settings) = 0;
     };
 }
 

@@ -3,6 +3,7 @@
 #include "../../Elements/IRoom.h"
 #include "../RowCounter.h"
 #include "../../Elements/Flyby/IFlybyNode.h"
+#include "../../Messages/Messages.h"
 
 namespace trview
 {
@@ -125,8 +126,8 @@ namespace trview
     {
     }
 
-    CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera)
-        : _clipboard(clipboard), _camera(camera)
+    CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _camera(camera), _messaging(messaging)
     {
         setup_filters();
         setup_flyby_filters();
@@ -134,6 +135,11 @@ namespace trview
 
     void CameraSinkWindow::render()
     {
+        if (!_settings)
+        {
+            messages::get_settings(_messaging, weak_from_this());
+        }
+
         if (!render_camera_sink_window())
         {
             on_window_closed();
@@ -479,8 +485,11 @@ namespace trview
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
-                _settings.camera_sink_window_columns = _filters.columns();
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->camera_sink_window_columns = _filters.columns();
+                    messages::send_settings(_messaging, *_settings);
+                }
             };
     }
 
@@ -511,8 +520,11 @@ namespace trview
             };
         _token_store += _flyby_filters.on_columns_saved += [this]()
             {
-                _settings.flyby_columns = _flyby_filters.columns();
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->flyby_columns = _flyby_filters.columns();
+                    messages::send_settings(_messaging, *_settings);
+                }
             };
 
         _node_filters.add_getter<int>("#", [](auto&& node) { return static_cast<int>(node.number()); });
@@ -536,21 +548,12 @@ namespace trview
             };
         _token_store += _node_filters.on_columns_saved += [this]()
             {
-                _settings.flyby_node_columns= _node_filters.columns();
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->flyby_node_columns = _node_filters.columns();
+                    messages::send_settings(_messaging, *_settings);
+                }
             };
-    }
-
-    void CameraSinkWindow::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        if (!_columns_set)
-        {
-            _filters.set_columns(settings.camera_sink_window_columns);
-            _flyby_filters.set_columns(settings.flyby_columns);
-            _node_filters.set_columns(settings.flyby_node_columns);
-            _columns_set = true;
-        }
     }
 
     void CameraSinkWindow::render_flybys()
@@ -948,5 +951,20 @@ namespace trview
         }
 
         _initial_state.reset();
+    }
+
+    void CameraSinkWindow::receive_message(const Message& message)
+    {
+        if (auto settings = messages::read_settings(message))
+        {
+            _settings = settings.value();
+            if (!_columns_set)
+            {
+                _filters.set_columns(_settings->camera_sink_window_columns);
+                _flyby_filters.set_columns(_settings->flyby_columns);
+                _node_filters.set_columns(_settings->flyby_node_columns);
+                _columns_set = true;
+            }
+        }
     }
 }

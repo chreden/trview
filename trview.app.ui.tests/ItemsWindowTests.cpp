@@ -6,6 +6,7 @@
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/IItem.h>
+#include <trview.common/Mocks/Messages/IMessageSystem.h>
 
 #include <ranges>
 #include <format>
@@ -22,10 +23,11 @@ namespace
         struct test_module
         {
             std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
+            std::shared_ptr<IMessageSystem> messaging{ mock_shared<MockMessageSystem>() };
 
             std::unique_ptr<ItemsWindow> build()
             {
-                return std::make_unique<ItemsWindow>(clipboard);
+                return std::make_unique<ItemsWindow>(clipboard, messaging);
             }
 
             test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)

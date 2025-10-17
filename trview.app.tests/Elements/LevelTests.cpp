@@ -25,6 +25,7 @@
 #include <trview.tests.common/Event.h>
 #include <trview.app/Mocks/Elements/INgPlusSwitcher.h>
 #include <trview.graphics/mocks/ISamplerState.h>
+#include <trview.common/Mocks/Messages/IMessageSystem.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -66,10 +67,11 @@ namespace
             std::shared_ptr<INgPlusSwitcher> ngplus_switcher{ mock_shared<MockNgPlusSwitcher>() };
             std::shared_ptr<ISamplerState> sampler_state{ mock_shared<MockSamplerState>() };
             IFlyby::Source flyby_source{ [](auto&&...) { return mock_shared<MockFlyby>(); } };
+            std::shared_ptr<IMessageSystem> messaging{ mock_shared<MockMessageSystem>() };
 
             std::shared_ptr<Level> build()
             {
-                auto new_level = std::make_shared<Level>(device, shader_storage, level_texture_storage, std::move(transparency_buffer), std::move(selection_renderer), log, buffer_source, sound_storage, ngplus_switcher, sampler_state);
+                auto new_level = std::make_shared<Level>(device, shader_storage, level_texture_storage, std::move(transparency_buffer), std::move(selection_renderer), log, buffer_source, sound_storage, ngplus_switcher, sampler_state, messaging);
                 new_level->initialise(std::move(level), mesh_storage, model_storage, entity_source, ai_source, room_source, trigger_source, light_source, camera_sink_source, sound_source_source, flyby_source, callbacks);
                 return new_level;
             }

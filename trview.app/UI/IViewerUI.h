@@ -77,9 +77,6 @@ namespace trview
         /// Event raised when a room is selected.
         Event<std::weak_ptr<IRoom>> on_select_room;
 
-        /// Event raised when the user settings are changed.
-        Event<UserSettings> on_settings;
-
         /// Event raised when a tool is selected.
         Event<Tool> on_tool_selected;
 
@@ -188,10 +185,6 @@ namespace trview
         /// Set the selected room.
         /// @param room The selected room.
         virtual void set_selected_room(const std::shared_ptr<IRoom>& room) = 0;
-
-        /// Set the user settings.
-        /// @param settings The user settings.
-        virtual void set_settings(const UserSettings& settings) = 0;
 
         /// Set whether the context menu is visible.
         /// "param value Whether the context menu is visible.

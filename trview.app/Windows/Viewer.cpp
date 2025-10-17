@@ -6,9 +6,14 @@
 #include <trview.graphics/ISprite.h>
 #include <trview.graphics/ViewportStore.h>
 #include <trview.common/Strings.h>
+#include <trview.common/Messages/Message.h>
 
 #include "../Windows/IItemsWindow.h"
 #include "../Elements/Flyby/IFlybyNode.h"
+#include "../Messages/Messages.h"
+#include "../Elements/SoundSource/ISoundSource.h"
+#include "../Elements/ILevel.h"
+#include "../Messages/Messages.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -18,14 +23,15 @@ namespace trview
     {
     }
 
-    Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
+    Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<IViewerUI>& ui, std::unique_ptr<IPicking> picking,
         std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::Source& sprite_source,
         std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure, const graphics::IRenderTarget::SizeSource& render_target_source, const graphics::IDeviceWindow::Source& device_window_source,
-        std::unique_ptr<ISectorHighlight> sector_highlight, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<ICamera>& camera, const graphics::ISamplerState::Source& sampler_source)
+        std::unique_ptr<ISectorHighlight> sector_highlight, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<ICamera>& camera, const graphics::ISamplerState::Source& sampler_source,
+        const std::weak_ptr<IMessageSystem>& messaging)
         : MessageHandler(window), _shortcuts(shortcuts), _timer(default_time_source()), _keyboard(window), _mouse(std::move(mouse)), _window_resizer(window),
-        _alternate_group_toggler(window), _menu_detector(window), _device(device), _route(route), _ui(std::move(ui)), _picking(std::move(picking)),
+        _alternate_group_toggler(window), _menu_detector(window), _device(device), _route(route), _ui(ui), _picking(std::move(picking)),
         _compass(std::move(compass)), _measure(std::move(measure)), _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight)),
-        _clipboard(clipboard), _camera(camera), _sampler_source(sampler_source)
+        _clipboard(clipboard), _camera(camera), _sampler_source(sampler_source), _messaging(messaging)
     {
         apply_camera_settings();
 
@@ -82,7 +88,7 @@ namespace trview
                 return;
             }
             _settings.toggles[name] = value;
-            on_settings(_settings);
+            messages::send_settings(_messaging, _settings);
         };
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
@@ -275,7 +281,6 @@ namespace trview
             stored_pick.type = PickResult::Type::Room;
             add_recent_orbit(stored_pick);
         };
-        _ui->on_settings += on_settings;
         _token_store += _ui->on_tool_selected += [&](auto tool) { _active_tool = tool; _measure->reset(); };
         _token_store += _ui->on_camera_position += [&](const auto& position)
         {
@@ -405,7 +410,6 @@ namespace trview
                 _sampler_source(graphics::ISamplerState::AddressMode::Clamp)->set_filter_mode(mode);
             };
 
-        _ui->set_settings(_settings);
         _ui->set_camera_mode(ICamera::Mode::Orbit);
 
         _token_store += _measure->on_visible += [&](bool show) { _ui->set_show_measure(show); };
@@ -865,8 +869,8 @@ namespace trview
     {
         if (auto level = _level.lock())
         {
-            bool new_value = !level->highlight_mode_enabled(Level::RoomHighlightMode::Highlight);
-            level->set_highlight_mode(Level::RoomHighlightMode::Highlight, new_value);
+            bool new_value = !level->highlight_mode_enabled(ILevel::RoomHighlightMode::Highlight);
+            level->set_highlight_mode(ILevel::RoomHighlightMode::Highlight, new_value);
             _ui->set_toggle(Options::highlight, new_value);
         }
     }
@@ -1383,13 +1387,6 @@ namespace trview
         _camera->set_settings(_settings);
     }
 
-    void Viewer::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        _ui->set_settings(_settings);
-        apply_camera_settings();
-    }
-
     std::weak_ptr<ICamera> Viewer::camera() const
     {
         return _camera;
@@ -1426,14 +1423,14 @@ namespace trview
                     case ID_WINDOWS_CAMERA_POSITION:
                     {
                         _settings.camera_position_window = true;
-                        on_settings(_settings);
+                        messages::send_settings(_messaging, _settings);
                         _ui->set_show_camera_position(true);
                         break;
                     }
                     case ID_WINDOWS_RESET_LAYOUT:
                     {
                         _settings.camera_position_window = true;
-                        on_settings(_settings);
+                        messages::send_settings(_messaging, _settings);
                         _ui->reset_layout();
                         _ui->set_show_camera_position(true);
                         break;
@@ -1552,7 +1549,7 @@ namespace trview
     {
         _ui->set_toggle(name, value);
         _settings.toggles[name] = value;
-        on_settings(_settings);
+        messages::send_settings(_messaging, _settings);
     }
 
     void Viewer::set_show_sound_sources(bool show)
@@ -1609,5 +1606,14 @@ namespace trview
             level->set_show_animation(show);
         }
         set_toggle(Options::animation, show);
+    }
+
+    void Viewer::receive_message(const Message& message)
+    {
+        if (auto settings = messages::read_settings(message))
+        {
+            _settings = settings.value();
+            apply_camera_settings();
+        }
     }
 }

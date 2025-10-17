@@ -22,11 +22,9 @@ namespace trview
         window->set_selected_camera_sink(_selected_camera_sink);
         window->set_current_room(_current_room);
         window->set_platform_and_version(_platform_and_version);
-        window->set_settings(_settings);
         window->on_camera_sink_selected += on_camera_sink_selected;
         window->on_flyby_node_selected += on_flyby_node_selected;
         window->on_trigger_selected += on_trigger_selected;
-        window->on_settings += on_settings;
         return add_window(window);
     }
 
@@ -95,15 +93,6 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_current_room(_current_room);
-        }
-    }
-
-    void CameraSinkWindowManager::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        for (auto& window : _windows)
-        {
-            window.second->set_settings(_settings);
         }
     }
 

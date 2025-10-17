@@ -12,13 +12,14 @@
 #include <trview.common/Event.h>
 #include "../UI/MapColours.h"
 #include <trlevel/IPack.h>
+#include <trview.common/Messages/IRecipient.h>
 
 namespace trview
 {
     struct ISoundStorage;
     struct ISoundSource;
 
-    struct ILevel
+    struct ILevel : public IRecipient
     {
         using Source = std::function<std::shared_ptr<ILevel>(const std::string&, const std::shared_ptr<trlevel::IPack>&, trlevel::ILevel::LoadCallbacks)>;
 
@@ -167,4 +168,13 @@ namespace trview
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
         Event<bool> on_ng_plus;
     };
+
+    /// <summary>
+    /// Find the last item with the type id specified.
+    /// </summary>
+    /// <param name="level">The level to search.</param>
+    /// <param name="type_id">The type id to search for.</param>
+    /// <param name="output_item">The item to output the result into.</param>
+    /// <returns>True if the item was found.</returns>
+    bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item);
 }

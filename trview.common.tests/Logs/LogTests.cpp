@@ -5,7 +5,7 @@ using namespace trview;
 TEST(Log, TopicsCreated)
 {
     Log log;
-    log.log(Message::Status::Information, "topic", "activity", "text");
+    log.log(LogMessage::Status::Information, "topic", "activity", "text");
     std::vector<std::string> expected_topics{ "topic" };
     ASSERT_EQ(log.topics(), expected_topics);
 }
@@ -13,8 +13,8 @@ TEST(Log, TopicsCreated)
 TEST(Log, ActivityCreated)
 {
     Log log;
-    log.log(Message::Status::Information, "topic", "activity", "text");
-    log.log(Message::Status::Information, "topic", "activity 2", "text");
+    log.log(LogMessage::Status::Information, "topic", "activity", "text");
+    log.log(LogMessage::Status::Information, "topic", "activity 2", "text");
     std::vector<std::string> expected_activities{ "activity", "activity 2" };
     ASSERT_EQ(log.activities("topic"), expected_activities);
 }
@@ -22,25 +22,25 @@ TEST(Log, ActivityCreated)
 TEST(Log, TopicAndActivityFilter)
 {
     Log log;
-    log.log(Message::Status::Information, "topic", "activity", "text");
-    log.log(Message::Status::Information, "topic", "activity 2", "text");
-    log.log(Message::Status::Warning, "topic", "activity 2", "text 2");
+    log.log(LogMessage::Status::Information, "topic", "activity", "text");
+    log.log(LogMessage::Status::Information, "topic", "activity 2", "text");
+    log.log(LogMessage::Status::Warning, "topic", "activity 2", "text 2");
     auto messages = log.messages("topic", "activity 2");
     ASSERT_EQ(messages.size(), 2u);
     ASSERT_EQ(messages[0].text, "text");
-    ASSERT_EQ(messages[0].status, Message::Status::Information);
+    ASSERT_EQ(messages[0].status, LogMessage::Status::Information);
     ASSERT_EQ(messages[0].topic, "topic");
     ASSERT_EQ(messages[1].text, "text 2");
-    ASSERT_EQ(messages[1].status, Message::Status::Warning);
+    ASSERT_EQ(messages[1].status, LogMessage::Status::Warning);
     ASSERT_EQ(messages[1].topic, "topic");
 }
 
 TEST(Log, AllMessages)
 {
     Log log;
-    log.log(Message::Status::Information, "topic", "activity", "text");
-    log.log(Message::Status::Information, "topic", "activity 2", "text");
-    log.log(Message::Status::Warning, "topic", "activity 2", "text 2");
+    log.log(LogMessage::Status::Information, "topic", "activity", "text");
+    log.log(LogMessage::Status::Information, "topic", "activity 2", "text");
+    log.log(LogMessage::Status::Warning, "topic", "activity 2", "text 2");
     auto messages = log.messages();
     ASSERT_EQ(messages.size(), 3u);
 }
@@ -48,7 +48,7 @@ TEST(Log, AllMessages)
 TEST(Log, Clear)
 {
     Log log;
-    log.log(Message::Status::Information, "topic", "activity", "text");
+    log.log(LogMessage::Status::Information, "topic", "activity", "text");
     ASSERT_EQ(log.messages().size(), 1u);
     log.clear();
     ASSERT_EQ(log.messages().size(), 0u);

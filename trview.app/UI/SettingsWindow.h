@@ -4,17 +4,21 @@
 #pragma once
 
 #include "ISettingsWindow.h"
+#include "../Settings/UserSettings.h"
 
 #include <trview.common/Windows/IShell.h>
 #include <trview.common/Windows/IDialogs.h>
 #include "Fonts/IFonts.h"
+
+#include <trview.common/Messages/IMessageSystem.h>
+#include <trview.common/Messages/IRecipient.h>
 
 namespace trview
 {
     struct ITextureStorage;
 
     /// UI window for program level settings.
-    class SettingsWindow final : public ISettingsWindow
+    class SettingsWindow final : public ISettingsWindow, public IRecipient
     {
     public:
         struct Names
@@ -48,11 +52,12 @@ namespace trview
         explicit SettingsWindow(const std::shared_ptr<IDialogs>& dialogs,
             const std::shared_ptr<IShell>& shell,
             const std::shared_ptr<IFonts>& fonts,
-            const std::shared_ptr<ITextureStorage>& texture_storage);
+            const std::shared_ptr<ITextureStorage>& texture_storage,
+            const std::weak_ptr<IMessageSystem>& message_system);
         virtual ~SettingsWindow() = default;
         virtual void render() override;
         virtual void toggle_visibility() override;
-        void set_settings(const UserSettings& settings) override;
+        void receive_message(const Message& message) override;
     private:
         void show_texture_filtering_window();
 
@@ -68,5 +73,6 @@ namespace trview
         bool _showing_filtering_popup{ false };
         graphics::Texture _linear_texture;
         graphics::Texture _point_texture;
+        std::weak_ptr<IMessageSystem> _message_system;
     };
 }

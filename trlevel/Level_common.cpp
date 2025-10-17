@@ -591,7 +591,7 @@ namespace trlevel
 
         if (std::all_of(textile32.begin(), textile32.end(), is_blank))
         {
-            activity.log(trview::Message::Status::Warning, "32-bit textiles were all blank, discarding");
+            activity.log(trview::LogMessage::Status::Warning, "32-bit textiles were all blank, discarding");
             textile32 = {};
             callbacks.on_progress(std::format("Reading {} 16-bit textiles", num_textiles));
             log_file(activity, file, std::format("Reading {} 16-bit textiles", num_textiles));

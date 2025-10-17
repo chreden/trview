@@ -17,32 +17,29 @@
 #include <trview.input/IMouse.h>
 #include <trview.common/TokenStore.h>
 
-#include <trview.app/Camera/Camera.h>
+#include <trview.app/Camera/ICamera.h>
 #include <trview.app/Camera/CameraInput.h>
-#include <trview.app/Elements/Level.h>
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/Windows/WindowResizer.h>
 #include <trview.app/Tools/Measure.h>
 #include <trview.app/Tools/Compass.h>
 #include <trview.app/Menus/AlternateGroupToggler.h>
-#include <trview.app/Routing/Route.h>
 #include <trview.app/Geometry/IPicking.h>
 #include <trview.app/Graphics/ISectorHighlight.h>
 #include <trview.app/UI/IViewerUI.h>
-#include "../Elements/ITypeInfoLookup.h"
 #include <trview.app/Menus/MenuDetector.h>
-#include <trview.app/Lua/Lua.h>
-#include <trview.common/Windows/Shortcuts.h>
+#include <trview.common/Windows/IShortcuts.h>
 #include <trview.graphics/IDeviceWindow.h>
 #include <trview.app/Windows/IViewer.h>
 #include <trview.common/Windows/IClipboard.h>
 
 #include <trview.graphics/Sampler/ISamplerState.h>
+#include <trview.common/Messages/IMessageSystem.h>
 
 namespace trview
 {
     /// Class that coordinates all the parts of the application.
-    class Viewer : public IViewer, public MessageHandler
+    class Viewer : public IViewer, public MessageHandler, public IRecipient
     {
     public:
         /// Create a new viewer.
@@ -50,7 +47,7 @@ namespace trview
         explicit Viewer(
             const Window& window, 
             const std::shared_ptr<graphics::IDevice>& device,
-            std::unique_ptr<IViewerUI> ui, 
+            const std::shared_ptr<IViewerUI>& ui, 
             std::unique_ptr<IPicking> picking,
             std::unique_ptr<input::IMouse> mouse,
             const std::shared_ptr<IShortcuts>& shortcuts,
@@ -63,7 +60,8 @@ namespace trview
             std::unique_ptr<ISectorHighlight> sector_highlight,
             const std::shared_ptr<IClipboard>& clipboard,
             const std::shared_ptr<ICamera>& camera,
-            const graphics::ISamplerState::Source& sampler_source);
+            const graphics::ISamplerState::Source& sampler_source,
+            const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~Viewer() = default;
         std::weak_ptr<ICamera> camera() const override;
         virtual ICamera::Mode camera_mode() const override;
@@ -71,7 +69,6 @@ namespace trview
         virtual void render_ui() override;
         virtual void present(bool vsync) override;
         void open(const std::weak_ptr<ILevel>& level, ILevel::OpenMode open_mode) override;
-        virtual void set_settings(const UserSettings& settings) override;
         virtual void select_item(const std::weak_ptr<IItem>& item) override;
         void select_room(const std::weak_ptr<IRoom>& room) override;
         virtual void select_trigger(const std::weak_ptr<ITrigger>& trigger) override;
@@ -96,6 +93,7 @@ namespace trview
         void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) override;
         void select_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) override;
         std::weak_ptr<ILevel> level() const override;
+        void receive_message(const Message& message) override;
     private:
         void initialise_input();
         void toggle_highlight();
@@ -147,7 +145,7 @@ namespace trview
         std::shared_ptr<ICamera> _camera;
         input::Keyboard _keyboard;
         std::unique_ptr<input::IMouse> _mouse;
-        std::unique_ptr<IViewerUI> _ui;
+        std::shared_ptr<IViewerUI> _ui;
         CameraInput _camera_input;
         UserSettings _settings;
         std::unique_ptr<IPicking> _picking;
@@ -186,6 +184,7 @@ namespace trview
         Point _previous_mouse_pos;
         bool _camera_moved{ false };
         graphics::ISamplerState::Source _sampler_source;
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }
 

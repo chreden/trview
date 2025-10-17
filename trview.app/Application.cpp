@@ -8,6 +8,10 @@
 #include "Elements/SoundSource/ISoundSource.h"
 #include "Elements/Flyby/IFlybyNode.h"
 
+#include <trview.common/Messages/IMessageSystem.h>
+#include <trview.common/Messages/Message.h>
+#include "Messages/Messages.h"
+
 using namespace DirectX::SimpleMath;
 
 namespace trview
@@ -57,7 +61,7 @@ namespace trview
         std::unique_ptr<IUpdateChecker> update_checker,
         std::shared_ptr<ISettingsLoader> settings_loader,
         std::unique_ptr<IFileMenu> file_menu,
-        std::shared_ptr<IViewer> viewer,
+        const std::shared_ptr<IViewer>& viewer,
         const IRoute::Source& route_source,
         std::shared_ptr<IShortcuts> shortcuts,
         const ILevel::Source& level_source,
@@ -69,18 +73,20 @@ namespace trview
         const IRandomizerRoute::Source& randomizer_route_source,
         std::shared_ptr<IFonts> fonts,
         std::unique_ptr<IWindows> windows,
-        LoadMode load_mode)
+        LoadMode load_mode,
+        const std::shared_ptr<IMessageSystem>& messaging)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _viewer(viewer),
         _route_source(route_source), _shortcuts(shortcuts), _level_source(level_source), _dialogs(dialogs), _files(files), _timer(default_time_source()),
         _imgui_backend(std::move(imgui_backend)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
-        _windows(std::move(windows))
+        _windows(std::move(windows)), _messaging(messaging)
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
         add_missing_fonts(_settings);
+        messages::send_settings(_messaging, _settings);
         lua::set_settings(_settings);
 
         set_route(_settings.randomizer_tools ? randomizer_route_source(std::nullopt) : route_source(std::nullopt));
@@ -121,18 +127,6 @@ namespace trview
                         select_room(r);
                         _viewer->set_target(r->sector_centroid(s));
                     }
-                }
-            };
-        _token_store += _windows->on_settings += [this](auto&& settings)
-            {
-                _settings = settings;
-                _plugins->set_settings(_settings);
-                _viewer->set_settings(_settings);
-                _windows->set_settings(settings);
-                lua::set_settings(settings);
-                if (_level)
-                {
-                    _level->set_map_colours(settings.map_colours);
                 }
             };
 
@@ -326,23 +320,9 @@ namespace trview
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
         _token_store += _viewer->on_camera_sink_selected += [this](const auto& camera_sink) { select_camera_sink(camera_sink); };
         _token_store += _viewer->on_flyby_node_selected += [this](const auto& flyby_node) { select_flyby_node(flyby_node); };
-        _token_store += _viewer->on_settings += [this](auto&& settings)
-        {
-            _settings = settings;
-            _plugins->set_settings(_settings);
-            _viewer->set_settings(_settings);
-            _windows->set_settings(settings);
-            lua::set_settings(settings);
-            if (_level)
-            {
-                _level->set_map_colours(settings.map_colours);
-            }
-        };
         _token_store += _viewer->on_font += [this](auto&& name, auto&& font) { _new_font = { name, font }; };
         _token_store += _viewer->on_static_mesh_selected += [this](const auto& static_mesh) { select_static_mesh(static_mesh); };
         _token_store += _viewer->on_sound_source_selected += [this](const auto& sound_source) { select_sound_source(sound_source); };
-
-        _viewer->set_settings(_settings);
 
         auto filename = startup_options.filename();
         if (!filename.empty())
@@ -542,7 +522,7 @@ namespace trview
             if (_fonts->add_font(_new_font->first, _new_font->second))
             {
                 _settings.fonts[_new_font->first] = _new_font->second;
-                _viewer->set_settings(_settings);
+                messages::send_settings(_messaging, _settings);
             }
             _new_font.reset();
         }
@@ -663,7 +643,7 @@ namespace trview
             if (_level)
             {
                 _settings.recent_routes[_level->filename()] = { path, is_rando };
-                _viewer->set_settings(_settings);
+                messages::send_settings(_messaging, _settings);
             }
         }
     }
@@ -692,7 +672,7 @@ namespace trview
                 if (_level)
                 {
                     _settings.recent_routes[_level->filename()] = { filename->filename, is_rando };
-                    _viewer->set_settings(_settings);
+                    messages::send_settings(_messaging, _settings);
                 }
             }
             catch (std::exception& e)
@@ -718,7 +698,7 @@ namespace trview
         else
         {
             _settings.recent_routes.erase(_level->filename());
-            _viewer->set_settings(_settings);
+            messages::send_settings(_messaging, _settings);
         }
         _recent_route_prompted = true;
     }
@@ -821,7 +801,7 @@ namespace trview
             const Vector3 old_target = _viewer->target();
             const bool old_auto_orbit = _settings.auto_orbit;
             _settings.auto_orbit = false;
-            _viewer->set_settings(_settings);
+            messages::send_settings(_messaging, _settings);
 
             auto selected_item = old_level->selected_item();
             if (selected_item.has_value())
@@ -857,7 +837,7 @@ namespace trview
 
             _viewer->set_target(old_target);
             _settings.auto_orbit = old_auto_orbit;
-            _viewer->set_settings(_settings);
+            messages::send_settings(_messaging, _settings);
         }
         else
         {
@@ -946,7 +926,7 @@ namespace trview
         _settings.add_recent_file(op.filename);
         _file_menu->set_recent_files(_settings.recent_files);
         _settings_loader->save_user_settings(_settings);
-        _viewer->set_settings(_settings);
+        messages::send_settings(_messaging, _settings);
         set_current_level(op.level, op.open_mode, false);
     }
 
@@ -972,5 +952,21 @@ namespace trview
         level->set_selected_flyby_node(node);
         _viewer->select_flyby_node(node);
         _windows->select(node);
+    }
+
+    void Application::receive_message(const Message& message)
+    {
+        if (auto settings = messages::read_settings(message))
+        {
+            _settings = settings.value();
+            lua::set_settings(_settings);
+        }
+        else if (message.type == "get_settings")
+        {
+            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
+            {
+                requester->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(_settings) });
+            }
+        }
     }
 }

@@ -131,6 +131,7 @@
     <ClCompile Include="Geometry\Model\ModelStorage.cpp" Filter="Geometry\Model" />
     <ClCompile Include="Elements\Flyby\Flyby.cpp" Filter="Elements\Flyby" />
     <ClCompile Include="Elements\Flyby\FlybyNode.cpp" Filter="Elements\Flyby" />
+    <ClCompile Include="Messages\Messages.cpp" Filter="Messages" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -439,6 +440,7 @@
     <ClInclude Include="Elements\Flyby\IFlybyNode.h" Filter="Elements\Flyby" />
     <ClInclude Include="Elements\Flyby\FlybyNode.h" Filter="Elements\Flyby" />
     <ClInclude Include="Mocks\Elements\IFlybyNode.h" Filter="Mocks\Elements" />
+    <ClInclude Include="Messages\Messages.h" Filter="Messages" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -665,6 +667,9 @@
     </Filter>
     <Filter Include="Elements\Flyby">
       <UniqueIdentifier>{52dec27a-a711-4587-9a97-4ae9bdb7a050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Messages">
+      <UniqueIdentifier>{a047438d-5a92-49e4-b596-108105134baa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

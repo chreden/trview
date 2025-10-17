@@ -4,10 +4,12 @@
 #include "IPluginsWindow.h"
 #include <trview.common/Windows/IShell.h>
 #include <trview.common/Windows/IDialogs.h>
+#include <trview.common/Messages/IMessageSystem.h>
+#include "../../Settings/UserSettings.h"
 
 namespace trview
 {
-    class PluginsWindow final : public IPluginsWindow
+    class PluginsWindow final : public IPluginsWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -15,12 +17,12 @@ namespace trview
             static inline const std::string plugins_list = "Plugins";
         };
 
-        explicit PluginsWindow(const std::weak_ptr<IPlugins>& plugins, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IDialogs>& dialogs);
+        explicit PluginsWindow(const std::weak_ptr<IPlugins>& plugins, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IDialogs>& dialogs, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~PluginsWindow() = default;
         void render() override;
         void set_number(int32_t number) override;
-        void set_settings(const UserSettings& settings) override;
         void update(float dt) override;
+        void receive_message(const Message& message) override;
     private:
         bool render_plugins_window();
 
@@ -28,7 +30,8 @@ namespace trview
         std::weak_ptr<IPlugins> _plugins;
         std::shared_ptr<IShell> _shell;
         std::shared_ptr<IDialogs> _dialogs;
-        UserSettings _settings;
+        std::optional<UserSettings> _settings;
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }
 

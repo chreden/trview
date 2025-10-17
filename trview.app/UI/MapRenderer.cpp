@@ -1,6 +1,8 @@
 #include "MapRenderer.h"
 #include "../Elements/ILevel.h"
 #include <ranges>
+#include <trview.common/Messages/Message.h>
+#include "../Messages/Messages.h"
 
 using namespace DirectX::SimpleMath;
 using namespace Microsoft::WRL;
@@ -17,13 +19,19 @@ namespace trview
     {
     }
 
-    MapRenderer::MapRenderer(const std::shared_ptr<IFonts>& fonts)
-        : _fonts(fonts)
+    MapRenderer::MapRenderer(const std::shared_ptr<IFonts>& fonts, const std::weak_ptr<IMessageSystem>& messaging)
+        : _fonts(fonts), _messaging(messaging)
     {
     }
 
     void MapRenderer::render(bool window)
     {
+        if (!_settings)
+        {
+            messages::get_settings(_messaging, weak_from_this());
+            return;
+        }
+
         if (!_visible || !_loaded)
         {
             return;
@@ -80,20 +88,21 @@ namespace trview
         // Background rectangle.
         draw(list, Point(), Size(width, height), Color(0.0f, 0.0f, 0.0f));
 
+        const auto settings = _settings.value();
         std::for_each(_tiles.begin(), _tiles.end(), [&](const Tile& tile)
             {
                 const ImVec2 tile_pos = ImVec2(tile.position.x, tile.position.y);
                 const ImVec2 tile_size = ImVec2(tile.size.width, tile.size.height);
 
                 Color text_color = Colour::White;
-                Color draw_color = _settings.map_colours.colour_from_flags_field(tile.sector->flags());
+                Color draw_color = settings.map_colours.colour_from_flags_field(tile.sector->flags());
 
                 // Special case for special walls (and no space)
                 if (!is_no_space(tile.sector->flags()) &&
                     has_flag(tile.sector->flags(), SectorFlag::Wall) &&
                     has_flag(tile.sector->flags(), SectorFlag::SpecialWall))
                 {
-                    draw_color = _settings.map_colours.colour(SectorFlag::SpecialWall);
+                    draw_color = settings.map_colours.colour(SectorFlag::SpecialWall);
                 }
 
                 // If the cursor is over the tile, then negate colour 
@@ -115,30 +124,30 @@ namespace trview
 
                 if (has_flag(tile.sector->flags(), SectorFlag::Wall) && (has_flag(tile.sector->flags(), SectorFlag::Portal) || is_no_space(tile.sector->flags())))
                 {
-                    const auto colour = _settings.map_colours.colour(has_flag(tile.sector->flags(), SectorFlag::SpecialWall) ? SectorFlag::SpecialWall : SectorFlag::Wall);
+                    const auto colour = settings.map_colours.colour(has_flag(tile.sector->flags(), SectorFlag::SpecialWall) ? SectorFlag::SpecialWall : SectorFlag::Wall);
                     draw(list, tile.position, tile.size / 4.0f, colour);
                 }
 
                 if (has_flag(tile.sector->flags(), SectorFlag::ClimbableNorth))
-                    draw(list, tile.position, Size(tile.size.width, thickness), _settings.map_colours.colour(SectorFlag::ClimbableNorth));
+                    draw(list, tile.position, Size(tile.size.width, thickness), settings.map_colours.colour(SectorFlag::ClimbableNorth));
                 if (has_flag(tile.sector->flags(), SectorFlag::ClimbableEast))
-                    draw(list, Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), _settings.map_colours.colour(SectorFlag::ClimbableEast));
+                    draw(list, Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), settings.map_colours.colour(SectorFlag::ClimbableEast));
                 if (has_flag(tile.sector->flags(), SectorFlag::ClimbableSouth))
-                    draw(list, Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), _settings.map_colours.colour(SectorFlag::ClimbableSouth));
+                    draw(list, Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), settings.map_colours.colour(SectorFlag::ClimbableSouth));
                 if (has_flag(tile.sector->flags(), SectorFlag::ClimbableWest))
-                    draw(list, tile.position, Size(thickness, tile.size.height), _settings.map_colours.colour(SectorFlag::ClimbableWest));
+                    draw(list, tile.position, Size(thickness, tile.size.height), settings.map_colours.colour(SectorFlag::ClimbableWest));
 
                 // If sector is a down portal, draw a transparent black square over it 
                 if (has_flag(tile.sector->flags(), SectorFlag::RoomBelow))
-                    draw(list, tile.position, tile.size, _settings.map_colours.colour(MapColours::Special::RoomBelow));
+                    draw(list, tile.position, tile.size, settings.map_colours.colour(MapColours::Special::RoomBelow));
 
                 // If sector is an up portal, draw a small corner square in the top left to signify this 
                 if (has_flag(tile.sector->flags(), SectorFlag::RoomAbove))
-                    draw(list, tile.position, Size(tile.size.width / 4, tile.size.height / 4), _settings.map_colours.colour(MapColours::Special::RoomAbove));
+                    draw(list, tile.position, Size(tile.size.width / 4, tile.size.height / 4), settings.map_colours.colour(MapColours::Special::RoomAbove));
 
                 if (has_flag(tile.sector->flags(), SectorFlag::Death) && has_flag(tile.sector->flags(), SectorFlag::Trigger))
                 {
-                    draw(list, tile.position + Point(tile.size.width * 0.75f, 0), tile.size / 4.0f, _settings.map_colours.colour(SectorFlag::Death));
+                    draw(list, tile.position + Point(tile.size.width * 0.75f, 0), tile.size / 4.0f, settings.map_colours.colour(SectorFlag::Death));
                 }
 
                 if (has_flag(tile.sector->flags(), SectorFlag::Portal))
@@ -270,11 +279,6 @@ namespace trview
         _mode = mode;
     }
 
-    void MapRenderer::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-    }
-
     void MapRenderer::set_selection(const std::shared_ptr<ISector>& sector)
     {
         _selected_sector = sector;
@@ -304,6 +308,12 @@ namespace trview
 
     void MapRenderer::clicking()
     {
+        if (!_settings)
+        {
+            return;
+        }
+
+        const auto settings = _settings.value();
         if (_previous_sector)
         {
             if (const auto room = _previous_sector->room().lock())
@@ -326,11 +336,11 @@ namespace trview
                             {
                                 on_room_selected(level->room(_previous_sector->portals()[0]));
                             }
-                            else if (!_settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomBelow))
+                            else if (!settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomBelow))
                             {
                                 on_room_selected(level->room(_previous_sector->room_below()));
                             }
-                            else if (_settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomAbove))
+                            else if (settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomAbove))
                             {
                                 on_room_selected(level->room(_previous_sector->room_above()));
                             }
@@ -342,11 +352,11 @@ namespace trview
                     }
                     else if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && _mode == Mode::Normal)
                     {
-                        if (!_settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomAbove))
+                        if (!settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomAbove))
                         {
                             on_room_selected(level->room(_previous_sector->room_above()));
                         }
-                        else if (_settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomBelow))
+                        else if (settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomBelow))
                         {
                             on_room_selected(level->room(_previous_sector->room_below()));
                         }
@@ -366,5 +376,13 @@ namespace trview
     void MapRenderer::reposition()
     {
         _anchor.reposition = true;
+    }
+
+    void MapRenderer::receive_message(const Message& message)
+    {
+        if (auto settings = messages::read_settings(message))
+        {
+            _settings = settings.value();
+        }
     }
 }

@@ -5,6 +5,7 @@
 #include "RowCounter.h"
 #include "../Elements/IRoom.h"
 #include "../Elements/ISector.h"
+#include "../Messages/Messages.h"
 
 namespace trview
 {
@@ -30,8 +31,8 @@ namespace trview
     {
     }
 
-    ItemsWindow::ItemsWindow(const std::shared_ptr<IClipboard>& clipboard)
-        : _clipboard(clipboard)
+    ItemsWindow::ItemsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _messaging(messaging)
     {
         _tips["OCB"] = "Changes entity behaviour";
         _tips["Clear Body"] = "If true, removed when Bodybag is triggered";
@@ -49,8 +50,11 @@ namespace trview
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
-                _settings.items_window_columns = _filters.columns();
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->items_window_columns = _filters.columns();
+                    messages::send_settings(_messaging, *_settings);
+                }
             };
     }
 
@@ -304,6 +308,11 @@ namespace trview
 
     void ItemsWindow::render()
     {
+        if (!_settings)
+        {
+            messages::get_settings(_messaging, weak_from_this());
+        }
+
         if (!render_items_window())
         {
             on_window_closed();
@@ -459,13 +468,16 @@ namespace trview
         }
     }
 
-    void ItemsWindow::set_settings(const UserSettings& settings)
+    void ItemsWindow::receive_message(const Message& message)
     {
-        _settings = settings;
-        if (!_columns_set)
+        if (auto settings = messages::read_settings(message))
         {
-            _filters.set_columns(_settings.items_window_columns);
-            _columns_set = true;
+            _settings = settings.value();
+            if (!_columns_set)
+            {
+                _filters.set_columns(_settings->items_window_columns);
+                _columns_set = true;
+            }
         }
     }
 }

@@ -30,23 +30,12 @@ namespace trview
     std::weak_ptr<IPluginsWindow> PluginsWindowManager::create_window()
     {
         auto plugins_window = _source();
-        plugins_window->on_settings += on_settings;
-        plugins_window->set_settings(_settings);
         return add_window(plugins_window);
     }
 
     void PluginsWindowManager::update(float delta)
     {
         WindowManager::update(delta);
-    }
-
-    void PluginsWindowManager::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        for (auto& window : _windows)
-        {
-            window.second->set_settings(settings);
-        }
     }
 }
 

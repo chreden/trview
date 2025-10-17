@@ -22,6 +22,8 @@
 #include "SoundSource/ISoundSource.h"
 #include "Flyby/IFlyby.h"
 
+#include <trview.common/Messages/IMessageSystem.h>
+
 namespace trview
 {
     struct ILevelTextureStorage;
@@ -46,7 +48,8 @@ namespace trview
             const graphics::IBuffer::ConstantSource& buffer_source,
             std::shared_ptr<ISoundStorage> sound_storage,
             std::shared_ptr<INgPlusSwitcher> ngplus_switcher,
-            const std::shared_ptr<graphics::ISamplerState>& sampler_state);
+            const std::shared_ptr<graphics::ISamplerState>& sampler_state,
+            const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~Level() = default;
         virtual std::vector<graphics::Texture> level_textures() const override;
         virtual std::optional<uint32_t> selected_item() const override;
@@ -140,6 +143,7 @@ namespace trview
         std::vector<std::weak_ptr<IFlyby>> flybys() const override;
         void update(float delta) override;
         void set_show_animation(bool show) override;
+        void receive_message(const Message& message) override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
@@ -246,21 +250,7 @@ namespace trview
         trlevel::PlatformAndVersion _platform_and_version;
         std::shared_ptr<IModelStorage> _model_storage;
         bool _show_animation{ true };
+
+        std::weak_ptr<IMessageSystem> _messaging;
     };
-
-    /// Find the first item with the type id specified.
-    /// @param level The level to search.
-    /// @param type_id The type id to search for.
-    /// @param output_item The item to output the result into.
-    /// @returns True if the item was found.
-    bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item);
-
-    /// <summary>
-    /// Find the last item with the type id specified.
-    /// </summary>
-    /// <param name="level">The level to search.</param>
-    /// <param name="type_id">The type id to search for.</param>
-    /// <param name="output_item">The item to output the result into.</param>
-    /// <returns>True if the item was found.</returns>
-    bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item);
 }

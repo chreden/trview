@@ -14,21 +14,23 @@
 #include <trview.input/Mouse.h>
 #include <trview.app/UI/IMapRenderer.h>
 #include <trview.common/TokenStore.h>
+#include <trview.common/Messages/IMessageSystem.h>
 
 namespace trview
 {
-    class ViewerUI final : public IViewerUI
+    class ViewerUI final : public IViewerUI, public IRecipient
     {
     public:
         explicit ViewerUI(const Window& window,
             const std::shared_ptr<ITextureStorage>& texture_storage,
             const std::shared_ptr<IShortcuts>& shortcuts,
             const IMapRenderer::Source& map_renderer_source,
-            std::unique_ptr<ISettingsWindow> settings_window,
+            const std::shared_ptr<ISettingsWindow>& settings_window,
             std::unique_ptr<IViewOptions> view_options,
             std::unique_ptr<IContextMenu> context_menu,
             std::unique_ptr<ICameraControls> camera_controls,
-            std::unique_ptr<IToolbar> toolbar);
+            std::unique_ptr<IToolbar> toolbar,
+            const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual bool is_input_active() const override;
@@ -54,7 +56,6 @@ namespace trview
         virtual void set_remove_waypoint_enabled(bool value) override;
         virtual void set_selected_item(uint32_t index) override;
         virtual void set_selected_room(const std::shared_ptr<IRoom>& room) override;
-        virtual void set_settings(const UserSettings& settings) override;
         virtual void set_show_context_menu(bool value) override;
         virtual void set_show_measure(bool value) override;
         virtual void set_show_minimap(bool value) override;
@@ -72,6 +73,7 @@ namespace trview
         void set_show_camera_position(bool value) override;
         void reset_layout() override;
         void set_tile_filter_enabled(bool value) override;
+        void receive_message(const Message& message) override;
     private:
         void generate_tool_window();
         void render_route_notes();
@@ -87,10 +89,10 @@ namespace trview
         std::unique_ptr<IViewOptions> _view_options;
         std::unique_ptr<IToolbar> _toolbar;
         std::unique_ptr<LevelInfo> _level_info;
-        std::unique_ptr<ISettingsWindow> _settings_window;
+        std::shared_ptr<ISettingsWindow> _settings_window;
         std::unique_ptr<ICameraControls> _camera_controls;
         std::unique_ptr<CameraPosition> _camera_position;
-        std::unique_ptr<IMapRenderer> _map_renderer;
+        std::shared_ptr<IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _tooltip;
         bool _show_tooltip{ true };
         bool _show_measure{ false };
@@ -101,5 +103,6 @@ namespace trview
         uint32_t _selected_item{ 0u };
         std::weak_ptr<IRoute> _route;
         std::weak_ptr<ILevel> _level;
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }

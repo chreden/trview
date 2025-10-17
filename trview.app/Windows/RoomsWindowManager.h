@@ -35,7 +35,6 @@ namespace trview
         std::weak_ptr<ITrigger> selected_trigger() const;
         void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         void set_level_version(trlevel::LevelVersion version) override;
-        void set_settings(const UserSettings& settings) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
         void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) override;
         void set_selected_item(const std::weak_ptr<IItem>& item) override;

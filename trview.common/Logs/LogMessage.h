@@ -2,7 +2,7 @@
 
 namespace trview
 {
-    struct Message
+    struct LogMessage
     {
         enum class Status
         {

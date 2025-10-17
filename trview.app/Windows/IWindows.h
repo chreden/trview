@@ -17,7 +17,6 @@ namespace trview
     struct IStaticMesh;
     struct ITrigger;
     struct IWaypoint;
-    struct UserSettings;
 
     struct IWindows
     {
@@ -36,7 +35,6 @@ namespace trview
         virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
         virtual void set_room(const std::weak_ptr<IRoom>& room) = 0;
         virtual void set_route(const std::weak_ptr<IRoute>& route) = 0;
-        virtual void set_settings(const UserSettings& settings) = 0;
         virtual void setup(const UserSettings& settings) = 0;
 
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
@@ -60,6 +58,5 @@ namespace trview
         Event<std::weak_ptr<IWaypoint>> on_waypoint_selected;
         Event<std::weak_ptr<ISector>> on_sector_selected;
         Event<> on_route_window_created;
-        Event<UserSettings> on_settings;
     };
 }

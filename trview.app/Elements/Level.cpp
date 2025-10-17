@@ -10,6 +10,9 @@
 #include <format>
 #include <ranges>
 
+#include "../Settings/UserSettings.h"
+#include "../Messages/Messages.h"
+
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
@@ -108,10 +111,11 @@ namespace trview
         const graphics::IBuffer::ConstantSource& buffer_source,
         std::shared_ptr<ISoundStorage> sound_storage,
         std::shared_ptr<INgPlusSwitcher> ngplus_switcher,
-        const std::shared_ptr<graphics::ISamplerState>& sampler_state)
+        const std::shared_ptr<graphics::ISamplerState>& sampler_state,
+        const std::weak_ptr<IMessageSystem>& messaging)
         : _device(device), _texture_storage(level_texture_storage),
         _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log), _sound_storage(sound_storage),
-        _ngplus_switcher(ngplus_switcher), _room_sampler_state(sampler_state)
+        _ngplus_switcher(ngplus_switcher), _room_sampler_state(sampler_state), _messaging(messaging)
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -1448,6 +1452,7 @@ namespace trview
         _ng = level->trng();
         _pack = level->pack().lock();
         _model_storage = model_storage;
+        messages::get_settings(_messaging, weak_from_this());
 
         record_models(*level);
         callbacks.on_progress("Generating rooms");
@@ -1647,20 +1652,13 @@ namespace trview
         _show_animation = show;
     }
 
-    bool find_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
+    void Level::receive_message(const Message& message)
     {
-        const auto& items = level.items();
-        auto found_item = std::find_if(items.begin(), items.end(), [=](const auto& item)
-            {
-                auto i = item.lock();
-                return i && i->type_id() == type_id; 
-            });
-        if (found_item == items.end())
+        if (auto settings = messages::read_settings(message))
         {
-            return false;
+            _map_colours = settings->map_colours;
+            on_geometry_colours_changed();
         }
-        output_item = *found_item;
-        return true;
     }
 
     bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

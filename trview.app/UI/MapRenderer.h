@@ -14,6 +14,9 @@
 #include "../trview_imgui.h"
 
 #include "IMapRenderer.h"
+#include <trview.common/Messages/IRecipient.h>
+#include <trview.common/Messages/IMessageSystem.h>
+
 
 namespace trview
 {
@@ -31,10 +34,10 @@ namespace trview
         };
     }
 
-    class MapRenderer final : public IMapRenderer
+    class MapRenderer final : public IMapRenderer, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
-        MapRenderer(const std::shared_ptr<IFonts>& fonts);
+        MapRenderer(const std::shared_ptr<IFonts>& fonts, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~MapRenderer() = default;
         // Renders the map 
         void render(bool window) override;
@@ -50,11 +53,11 @@ namespace trview
         void clear_highlight() override;
         void set_highlight(uint16_t x, uint16_t z) override;
         void set_mode(Mode mode) override;
-        void set_settings(const UserSettings& settings) override;
         void set_selection(const std::shared_ptr<ISector>& sector) override;
         void set_show_tooltip(bool value) override;
         Size size() const override;
         void reposition() override;
+        void receive_message(const Message& message) override;
     private:
         std::shared_ptr<ISector> sector_at(const Point& p) const;
         // Determines the position (on screen) to draw a sector 
@@ -66,6 +69,7 @@ namespace trview
         void tooltip();
         void clicking();
 
+        std::weak_ptr<IMessageSystem> _messaging;
         bool _visible{ true };
         std::vector<Tile> _tiles; 
         std::uint16_t _rows, _columns; 
@@ -74,7 +78,7 @@ namespace trview
         std::optional<std::pair<uint16_t, uint16_t>> _highlighted_sector;
         std::shared_ptr<ISector> _previous_sector;
         Mode _mode{ Mode::Normal };
-        UserSettings _settings;
+        std::optional<UserSettings> _settings;
         std::weak_ptr<ISector> _selected_sector;
         std::shared_ptr<IFonts> _fonts;
         bool _show_tooltip{ true };

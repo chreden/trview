@@ -1,4 +1,6 @@
 #include "Plugins.h"
+#include <trview.common/Messages/Message.h>
+#include "../Messages/Messages.h"
 
 namespace trview
 {
@@ -58,8 +60,11 @@ namespace trview
         initialise(_application);
     }
 
-    void Plugins::set_settings(const UserSettings& settings)
+    void Plugins::receive_message(const Message& message)
     {
-        _settings = settings;
+        if (auto settings = messages::read_settings(message))
+        {
+            _settings = settings.value();
+        }
     }
 }

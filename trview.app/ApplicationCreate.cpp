@@ -32,6 +32,7 @@
 #include "Elements/StaticMesh.h"
 #include "Elements/Sector.h"
 #include "Elements/SoundSource/SoundSource.h"
+#include "Elements/Level.h"
 #include "Graphics/TextureStorage.h"
 #include "Geometry/Mesh.h"
 #include "Geometry/Picking.h"
@@ -43,11 +44,13 @@
 #include "Graphics/SelectionRenderer.h"
 #include "Graphics/SectorHighlight.h"
 #include "Lua/Scriptable/Scriptable.h"
+#include "Lua/Lua.h"
 #include "Menus/FileMenu.h"
 #include "Menus/ImGuiFileMenu.h"
 #include "Menus/UpdateChecker.h"
 #include "Routing/Waypoint.h"
 #include "Routing/RandomizerRoute.h"
+#include "Routing/Route.h"
 #include "Settings/SettingsLoader.h"
 #include "Settings/StartupOptions.h"
 #include "Sound/SoundStorage.h"
@@ -91,6 +94,8 @@
 #include "Windows/Diff/DiffWindow.h"
 #include "Windows/Pack/PackWindowManager.h"
 #include "Windows/Pack/PackWindow.h"
+
+#include <trview.common/Messages/MessageSystem.h>
 
 namespace trview
 {
@@ -165,8 +170,9 @@ namespace trview
         }
     }
 
-    std::unique_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line)
+    std::shared_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line)
     {
+        auto messaging = std::make_shared<MessageSystem>();
         auto files = std::make_shared<Files>();
         auto settings_loader = std::make_shared<SettingsLoader>(files);
         auto window = create_window(hInstance, command_show, settings_loader->load_user_settings());
@@ -345,7 +351,12 @@ namespace trview
                     buffer_source,
                     sound_storage,
                     ngplus,
-                    clamp_sampler_state);
+                    clamp_sampler_state,
+                    messaging);
+
+                std::shared_ptr<ILevel> level_ptr = new_level;
+                std::shared_ptr<IRecipient> rec_ptr = new_level;
+                messaging->add_recipient(new_level);
                 new_level->initialise(level,
                     mesh_storage,
                     model_storage,
@@ -373,32 +384,44 @@ namespace trview
             std::make_shared<Plugin>(std::make_unique<Lua>(route_source, randomizer_route_source, waypoint_source, scriptable_source, dialogs, files), "Default", "trview", "Default Lua plugin for trview"),
             plugin_source,
             settings_loader->load_user_settings());
-        auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell, dialogs); };
+        messaging->add_recipient(plugins);
+
+        auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell, dialogs, messaging); };
         auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
         auto fonts = std::make_shared<Fonts>(files, imgui_backend);
-        auto map_renderer_source = [=]() { return std::make_unique<MapRenderer>(fonts); };
+        auto map_renderer_source = [=]()
+            { 
+                auto renderer = std::make_shared<MapRenderer>(fonts, messaging);
+                messaging->add_recipient(renderer);
+                return renderer;
+            };
         auto clipboard = std::make_shared<Clipboard>(window);
-        auto items_window_source = [=]() { return std::make_shared<ItemsWindow>(clipboard); };
+        auto items_window_source = [=]() { return std::make_shared<ItemsWindow>(clipboard, messaging); };
         auto items_window_manager = std::make_shared<ItemsWindowManager>(window, shortcuts, items_window_source);
-        auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard); };
+        auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard, messaging); };
         auto rooms_window_manager = std::make_shared<RoomsWindowManager>(window, shortcuts, rooms_window_source);
 
-        auto viewer_ui = std::make_unique<ViewerUI>(
+        auto settings_window = std::make_shared<SettingsWindow>(dialogs, shell, fonts, texture_storage, messaging);
+        messaging->add_recipient(settings_window);
+
+        auto viewer_ui = std::make_shared<ViewerUI>(
             window,
             texture_storage,
             shortcuts,
             map_renderer_source,
-            std::make_unique<SettingsWindow>(dialogs, shell, fonts, texture_storage),
+            settings_window,
             std::make_unique<ViewOptions>(rooms_window_manager),
             std::make_unique<ContextMenu>(items_window_manager),
             std::make_unique<CameraControls>(),
-            std::make_unique<Toolbar>(plugins));
+            std::make_unique<Toolbar>(plugins),
+            messaging);
+        messaging->add_recipient(viewer_ui);
 
         const auto camera = std::make_shared<Camera>(window.size());
-        auto viewer = std::make_unique<Viewer>(
+        auto viewer = std::make_shared<Viewer>(
             window,
             device,
-            std::move(viewer_ui),
+            viewer_ui,
             std::make_unique<Picking>(window),
             std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window)),
             shortcuts,
@@ -411,29 +434,36 @@ namespace trview
             std::make_unique<SectorHighlight>(default_mesh_source),
             clipboard,
             camera,
-            sampler_source);
+            sampler_source,
+            messaging);
+        messaging->add_recipient(viewer);
 
-        auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard); };
-        auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files); };
-        auto lights_window_source = [=]() { return std::make_shared<LightsWindow>(clipboard); };
+        auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard, messaging); };
+        auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files, messaging); };
+        auto lights_window_source = [=]()
+            { 
+                auto lights_window = std::make_shared<LightsWindow>(clipboard, messaging);
+                messaging->add_recipient(lights_window);
+                return lights_window;
+            };
 
         auto log_window_source = [=]() { return std::make_shared<LogWindow>(log, dialogs, files); };
-        auto camera_sink_window_source = [=]() { return std::make_shared<CameraSinkWindow>(clipboard, camera); };
+        auto camera_sink_window_source = [=]() { return std::make_shared<CameraSinkWindow>(clipboard, camera, messaging); };
 
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };
-        auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard); };
-        auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(); };
+        auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard, messaging); };
+        auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(messaging); };
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
-        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, std::make_unique<ImGuiFileMenu>(dialogs, files)); };
+        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, std::make_unique<ImGuiFileMenu>(dialogs, files), messaging); };
         auto pack_window_source = [=]() { return std::make_shared<PackWindow>(files, dialogs); };
 
-        return std::make_unique<Application>(
+        auto application = std::make_shared<Application>(
             window,
             std::make_unique<UpdateChecker>(window),
             settings_loader,
             std::make_unique<FileMenu>(window, shortcuts, dialogs, files),
-            std::move(viewer),
+            viewer,
             route_source,
             shortcuts,
             level_source,
@@ -460,6 +490,9 @@ namespace trview
                 std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source),
                 std::make_unique<TexturesWindowManager>(window, textures_window_source),
                 std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source)),
-            Application::LoadMode::Async);
+            Application::LoadMode::Async,
+            messaging);
+        messaging->add_recipient(application);
+        return application;
     }
 }

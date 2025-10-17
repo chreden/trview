@@ -8,12 +8,12 @@ namespace trview
     {
     }
 
-    void Log::log(Message::Status status, const std::string& topic, const std::string& activity, const std::string& text)
+    void Log::log(LogMessage::Status status, const std::string& topic, const std::string& activity, const std::string& text)
     {
         log(status, topic, std::vector<std::string>{ activity }, text);
     }
 
-    void Log::log(Message::Status status, const std::string& topic, const std::vector<std::string>& activity, const std::string& text)
+    void Log::log(LogMessage::Status status, const std::string& topic, const std::vector<std::string>& activity, const std::string& text)
     {
         SYSTEMTIME time;
         GetLocalTime(&time);
@@ -24,15 +24,15 @@ namespace trview
             topic, activity, text });
     }
 
-    std::vector<Message> Log::messages() const
+    std::vector<LogMessage> Log::messages() const
     {
         std::lock_guard lock{ _mutex };
         return _messages;
     }
 
-    std::vector<Message> Log::messages(const std::string& topic, const std::string& activity) const 
+    std::vector<LogMessage> Log::messages(const std::string& topic, const std::string& activity) const
     {
-        std::vector<Message> messages;
+        std::vector<LogMessage> messages;
         {
             std::lock_guard lock{ _mutex };
             std::copy_if(_messages.begin(), _messages.end(), std::back_inserter(messages),

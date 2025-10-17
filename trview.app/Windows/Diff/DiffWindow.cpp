@@ -11,6 +11,9 @@
 #include "../../Elements/IRoom.h"
 #include "../../Elements/ISector.h"
 
+#include "../../Messages/Messages.h"
+
+
 namespace trview
 {
     namespace
@@ -415,14 +418,20 @@ namespace trview
     {
     }
 
-    DiffWindow::DiffWindow(const std::shared_ptr<IDialogs>& dialogs, const ILevel::Source& level_source, std::unique_ptr<IFileMenu> file_menu)
-        : _dialogs(dialogs), _level_source(level_source), _file_menu(std::move(file_menu))
+    DiffWindow::DiffWindow(const std::shared_ptr<IDialogs>& dialogs, const ILevel::Source& level_source, std::unique_ptr<IFileMenu> file_menu,
+        const std::weak_ptr<IMessageSystem>& messaging)
+        : _dialogs(dialogs), _level_source(level_source), _file_menu(std::move(file_menu)), _messaging(messaging)
     {
         _token_store += _file_menu->on_file_open += [this](auto&& filename) { start_load(filename); };
     }
 
     void DiffWindow::render()
     {
+        if (!_settings)
+        {
+            messages::get_settings(_messaging, weak_from_this());
+        }
+
         if (!render_diff_window())
         {
             if (_diff.has_value())
@@ -473,12 +482,6 @@ namespace trview
     void DiffWindow::set_number(int32_t number)
     {
         _id = std::format("Diff {}", number);
-    }
-
-    void DiffWindow::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        _file_menu->set_recent_files(_settings.recent_diff_files);
     }
 
     void DiffWindow::start_load(const std::string& filename)
@@ -727,9 +730,12 @@ namespace trview
             if (_diff->level)
             {
                 _file_menu->open_file(_diff->level->filename(), _diff->level->pack());
-                _settings.add_recent_diff_file(_diff->level->filename());
-                _file_menu->set_recent_files(_settings.recent_diff_files);
-                on_settings(_settings);
+                if (_settings)
+                {
+                    _settings->add_recent_diff_file(_diff->level->filename());
+                    _file_menu->set_recent_files(_settings->recent_diff_files);
+                    messages::send_settings(_messaging, *_settings);
+                }
             }
         }
         return false;
@@ -885,6 +891,15 @@ namespace trview
             }
 
             ImGui::EndTabBar();
+        }
+    }
+
+    void DiffWindow::receive_message(const Message& message)
+    {
+        if (auto settings = messages::read_settings(message))
+        {
+            _settings = settings.value();
+            _file_menu->set_recent_files(_settings->recent_diff_files);
         }
     }
 }

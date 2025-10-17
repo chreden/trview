@@ -17,7 +17,6 @@ namespace trview
     {
         const auto window = _diff_window_source();
         window->set_level(_level);
-        window->set_settings(_settings);
         window->on_item_selected += on_item_selected;
         window->on_light_selected += on_light_selected;
         window->on_trigger_selected += on_trigger_selected;
@@ -27,7 +26,6 @@ namespace trview
         window->on_sound_source_selected += on_sound_source_selected;
         window->on_room_selected += on_room_selected;
         window->on_sector_selected += on_sector_selected;
-        window->on_settings += on_settings;
         return add_window(window);
     }
 
@@ -51,15 +49,6 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_level(level);
-        }
-    }
-
-    void DiffWindowManager::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-        for (auto& window : _windows)
-        {
-            window.second->set_settings(settings);
         }
     }
 }

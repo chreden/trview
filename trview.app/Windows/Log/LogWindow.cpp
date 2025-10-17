@@ -28,9 +28,9 @@ namespace trview
         {
             switch (message.status)
             {
-            case Message::Status::Warning:
+            case LogMessage::Status::Warning:
                 return ImVec4(1, 1, 0, 1);
-            case Message::Status::Error:
+            case LogMessage::Status::Error:
                 return ImVec4(1, 0, 0, 1);
             }
             return ImVec4(1, 1, 1, 1);
@@ -123,7 +123,7 @@ namespace trview
         _id = std::format("Log {}", number);
     }
 
-    void LogWindow::save_to_file(const std::vector<Message>& messages, int level_offset)
+    void LogWindow::save_to_file(const std::vector<LogMessage>& messages, int level_offset)
     {
         auto result = _dialogs->save_file(L"Save log", { { L"Log File", { L"*.txt" } } }, 1);
         if (!result.has_value())

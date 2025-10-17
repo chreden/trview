@@ -1,4 +1,5 @@
 #include "PluginsWindow.h"
+#include "../../Messages/Messages.h"
 
 namespace trview
 {
@@ -6,13 +7,19 @@ namespace trview
     {
     }
 
-    PluginsWindow::PluginsWindow(const std::weak_ptr<IPlugins>& plugins, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IDialogs>& dialogs)
-        : _plugins(plugins), _shell(shell), _dialogs(dialogs)
+    PluginsWindow::PluginsWindow(const std::weak_ptr<IPlugins>& plugins, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IDialogs>& dialogs,
+        const std::weak_ptr<IMessageSystem>& messaging)
+        : _plugins(plugins), _shell(shell), _dialogs(dialogs), _messaging(messaging)
     {
     }
 
     void PluginsWindow::render()
     {
+        if (!_settings)
+        {
+            messages::get_settings(_messaging, weak_from_this());
+        }
+
         if (!render_plugins_window())
         {
             on_window_closed();
@@ -31,7 +38,7 @@ namespace trview
                 ImGui::Text("Plugin Directories");
                 if (ImGui::BeginTable("Directories", 3, ImGuiTableFlags_SizingFixedFit, ImVec2(0, 0)))
                 {
-                    const auto directories = _settings.plugin_directories;
+                    const auto directories = _settings->plugin_directories;
                     for (std::size_t i = 0; i < directories.size(); ++i)
                     {
                         ImGui::TableNextRow();
@@ -39,8 +46,8 @@ namespace trview
 
                         if (ImGui::Button(std::format("Remove##{}", i).c_str()))
                         {
-                            _settings.plugin_directories.erase(_settings.plugin_directories.begin() + i);
-                            on_settings(_settings);
+                            _settings->plugin_directories.erase(_settings->plugin_directories.begin() + i);
+                            messages::send_settings(_messaging, *_settings);
                             plugins->reload();
                         }
                         ImGui::TableNextColumn();
@@ -58,8 +65,8 @@ namespace trview
                     {
                         if (auto path = _dialogs->open_folder())
                         {
-                            _settings.plugin_directories.push_back(path.value());
-                            on_settings(_settings);
+                            _settings->plugin_directories.push_back(path.value());
+                            messages::send_settings(_messaging, *_settings);
                             plugins->reload();
                         }
                     }
@@ -90,8 +97,8 @@ namespace trview
                             if (ImGui::Checkbox(std::format("##enabled-{}", reinterpret_cast<std::size_t>(plugin.get())).c_str(), &enabled))
                             {
                                 plugin->set_enabled(enabled);
-                                _settings.plugins[plugin->path()].enabled = enabled;
-                                on_settings(_settings);
+                                _settings->plugins[plugin->path()].enabled = enabled;
+                                messages::send_settings(_messaging, *_settings);
                             }
                             ImGui::EndDisabled();
                             ImGui::TableNextColumn();
@@ -127,12 +134,15 @@ namespace trview
         _id = std::format("Plugins {}", number);
     }
 
-    void PluginsWindow::set_settings(const UserSettings& settings)
-    {
-        _settings = settings;
-    }
-
     void PluginsWindow::update(float)
     {
+    }
+
+    void PluginsWindow::receive_message(const Message& message)
+    {
+        if (auto settings = messages::read_settings(message))
+        {
+            _settings = settings.value();
+        }
     }
 }
