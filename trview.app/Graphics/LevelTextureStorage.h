@@ -39,7 +39,27 @@ namespace trview
         Triangle::AnimationMode animation_mode(uint32_t texture_index) const override;
         std::vector<uint32_t> animated_texture(uint32_t texture_index) const override;
     private:
+        struct SourceTexture
+        {
+            uint32_t width{ 0 };
+            uint32_t height{ 0 };
+            std::vector<uint32_t> bytes;
+        };
+
+        struct TextureReplacement
+        {
+            std::vector<DirectX::SimpleMath::Vector2> uvs;
+            uint32_t tile{ 0 };
+            uint8_t min_x{ 0 };
+            uint8_t min_y{ 0 };
+            uint8_t max_x{ 0 };
+            uint8_t max_y{ 0 };
+            uint32_t source_tile{ 0 };
+        };
+
         void generate_replacement_textures();
+        uint32_t copy_subtexture(uint32_t source_texture_index, uint32_t min_x, uint32_t min_y, uint32_t width, uint32_t height);
+        bool find_matching_replacement(TextureReplacement& repl) const;
 
         std::weak_ptr<trlevel::ILevel> _level;
         std::shared_ptr<graphics::IDevice> _device;
@@ -49,19 +69,6 @@ namespace trview
         std::array<DirectX::SimpleMath::Color, 256> _palette;
         trlevel::PlatformAndVersion _platform_and_version;
         std::unordered_map<uint32_t, std::vector<uint32_t>> _animated_textures;
-
-        struct SourceTexture
-        {
-            uint32_t width;
-            uint32_t height;
-            std::vector<uint32_t> bytes;
-        };
-
-        struct TextureReplacement
-        {
-            std::vector<DirectX::SimpleMath::Vector2> uvs;
-            uint32_t tile;
-        };
         std::vector<SourceTexture> _source_textures;
         std::unordered_map<uint32_t, TextureReplacement> _texture_replacements;
         uint32_t _num_textiles{ 0u };
