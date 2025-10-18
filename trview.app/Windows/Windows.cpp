@@ -53,7 +53,6 @@ namespace trview
         _camera_sink_windows->on_flyby_node_selected += on_flyby_node_selected;
         _camera_sink_windows->on_trigger_selected += on_trigger_selected;
 
-        _diff_windows->on_item_selected += on_item_selected;
         _diff_windows->on_light_selected += on_light_selected;
         _diff_windows->on_trigger_selected += on_trigger_selected;
         _diff_windows->on_diff_ended += on_diff_ended;
@@ -74,7 +73,6 @@ namespace trview
                     add_waypoint(item_ptr->position(), Vector3::Down, item_room(item_ptr), IWaypoint::Type::Entity, item_ptr->number());
                 }
             };
-        _items_windows->on_item_selected += on_item_selected;
         _items_windows->on_trigger_selected += on_trigger_selected;
 
         _lights_windows->on_light_selected += on_light_selected;
@@ -82,7 +80,6 @@ namespace trview
         _pack_windows->on_level_open += on_level_open;
 
         _rooms_windows->on_camera_sink_selected += on_camera_sink_selected;
-        _rooms_windows->on_item_selected += on_item_selected;
         _rooms_windows->on_light_selected += on_light_selected;
         _rooms_windows->on_room_selected += on_room_selected;
         _rooms_windows->on_sector_hover += on_sector_hover;
@@ -90,7 +87,6 @@ namespace trview
         _rooms_windows->on_trigger_selected += on_trigger_selected;
 
         _route_window->on_waypoint_selected += on_waypoint_selected;
-        _route_window->on_item_selected += on_item_selected;
         _route_window->on_trigger_selected += on_trigger_selected;
         _route_window->on_route_open += on_route_open;
         _route_window->on_route_reload += on_route_reload;
@@ -105,7 +101,6 @@ namespace trview
 
         _statics_windows->on_static_selected += on_static_selected;
 
-        _triggers_windows->on_item_selected += on_item_selected;
         _triggers_windows->on_trigger_selected += on_trigger_selected;
         _token_store += _triggers_windows->on_add_to_route += [this](auto trigger)
             {
@@ -163,12 +158,6 @@ namespace trview
     void Windows::select(const std::weak_ptr<IFlybyNode>& flyby_node)
     {
         _camera_sink_windows->set_selected_flyby_node(flyby_node);
-    }
-
-    void Windows::select(const std::weak_ptr<IItem>& item)
-    {
-        _items_windows->set_selected_item(item);
-        _rooms_windows->set_selected_item(item);
     }
 
     void Windows::select(const std::weak_ptr<ILight>& light)

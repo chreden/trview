@@ -1,4 +1,5 @@
 #include <trview.app/Windows/ItemsWindowManager.h>
+#include <trview.app/Windows/IItemsWindow.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.app/Mocks/Windows/IItemsWindow.h>
 #include <trview.app/Elements/Types.h>
@@ -20,9 +21,9 @@ namespace
         {
             Window window{ create_test_window(L"ItemsWindowManagerTests") };
             std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
-            ItemsWindow::Source window_source{ [](auto&&...) { return mock_shared<MockItemsWindow>(); } };
+            IItemsWindow::Source window_source{ [](auto&&...) { return mock_shared<MockItemsWindow>(); } };
 
-            test_module& with_window_source(const ItemsWindow::Source& source)
+            test_module& with_window_source(const IItemsWindow::Source& source)
             {
                 this->window_source = source;
                 return *this;
@@ -61,23 +62,6 @@ TEST(ItemsWindowManager, AddToRouteEventRaised)
 
     auto test_item = mock_shared<MockItem>();
     created_window->on_add_to_route(test_item);
-
-    ASSERT_TRUE(raised_item);
-    ASSERT_EQ(raised_item, test_item);
-}
-
-TEST(ItemsWindowManager, ItemSelectedEventRaised)
-{
-    auto manager = register_test_module().build();
-
-    std::shared_ptr<IItem> raised_item;
-    auto token = manager->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-
-    auto test_item = mock_shared<MockItem>();
-    created_window->on_item_selected(test_item);
 
     ASSERT_TRUE(raised_item);
     ASSERT_EQ(raised_item, test_item);
@@ -138,18 +122,6 @@ TEST(ItemsWindowManager, SetRoomSetsRoomOnWindows)
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
     manager->set_room(mock_shared<MockRoom>());
-}
-
-TEST(ItemsWindowManager, SetSelectedItemSetsSelectedItemOnWindows)
-{
-    auto mock_window = mock_shared<MockItemsWindow>();
-    EXPECT_CALL(*mock_window, set_selected_item).Times(2);
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-    ASSERT_EQ(created_window, mock_window);
-    manager->set_selected_item(mock_shared<MockItem>());
 }
 
 TEST(ItemsWindowManager, CreateWindowCreatesNewWindowWithSavedValues)

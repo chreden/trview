@@ -335,7 +335,7 @@ namespace trview
                         ImGui::TextWrapped("This trigger is affected by a trigger triggerer. This trigger will be disabled until the item is activated.");
                         if (ImGui::Button(std::format("Item {} - {}", item_ptr->number(), item_ptr->type()).c_str(), ImVec2(-1, 0)))
                         {
-                            on_item_selected(item);
+                            messages::send_select_item(_messaging, item);
                         }
                     }
                 }
@@ -381,7 +381,7 @@ namespace trview
                         if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object && command.index() < _all_items.size())
                         {
                             _track.set_enabled<Type::Room>(false);
-                            on_item_selected(_all_items[command.index()]);
+                            messages::send_select_item(_messaging, _all_items[command.index()]);
                         }
                         else if (equals_any(command.type(), TriggerCommandType::UnderwaterCurrent, TriggerCommandType::Camera))
                         {

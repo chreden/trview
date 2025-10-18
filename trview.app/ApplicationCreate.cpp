@@ -61,6 +61,7 @@
 #include "UI/ViewerUI.h"
 #include "UI/ViewOptions.h"
 #include "UI/MapRenderer.h"
+#include "Windows/ItemsWindow.h"
 #include "Windows/ItemsWindowManager.h"
 #include "Windows/LightsWindow.h"
 #include "Windows/LightsWindowManager.h"
@@ -401,9 +402,21 @@ namespace trview
                 return renderer;
             };
         auto clipboard = std::make_shared<Clipboard>(window);
-        auto items_window_source = [=]() { return std::make_shared<ItemsWindow>(clipboard, messaging); };
+        auto items_window_source = [=]()
+            {
+                auto new_window = std::make_shared<ItemsWindow>(clipboard, messaging);
+                messaging->add_recipient(new_window);
+                new_window->initialise();
+                return new_window;
+            };
         auto items_window_manager = std::make_shared<ItemsWindowManager>(window, shortcuts, items_window_source);
-        auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard, messaging); };
+        auto rooms_window_source = [=]()
+            {
+                auto new_window = std::make_shared<RoomsWindow>(map_renderer_source, clipboard, messaging);
+                messaging->add_recipient(new_window);
+                new_window->initialise();
+                return new_window;
+            };
         auto rooms_window_manager = std::make_shared<RoomsWindowManager>(window, shortcuts, rooms_window_source);
 
         auto settings_window = std::make_shared<SettingsWindow>(dialogs, shell, fonts, texture_storage, messaging);
@@ -445,6 +458,7 @@ namespace trview
             sampler_source,
             messaging);
         messaging->add_recipient(viewer);
+        viewer->initialise();
 
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard, messaging); };
         auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files, messaging); };

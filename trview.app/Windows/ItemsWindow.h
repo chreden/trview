@@ -40,7 +40,7 @@ namespace trview
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void clear_selected_item() override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
-        virtual void set_selected_item(const std::weak_ptr<IItem>& item) override;
+        void set_selected_item(const std::weak_ptr<IItem>& item);
         virtual std::weak_ptr<IItem> selected_item() const override;
         virtual void update(float delta) override;
         virtual void set_number(int32_t number) override;
@@ -49,6 +49,7 @@ namespace trview
         void set_ng_plus(bool value) override;
         std::string name() const override;
         void receive_message(const Message& message) override;
+        void initialise();
     private:
         void set_sync_item(bool value);
         void render_items_list();

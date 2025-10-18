@@ -765,7 +765,7 @@ namespace trview
             const auto show_table = [this](
                 const std::string& table_name,
                 const auto& diff_entries,
-                auto& on_selected,
+                auto&& on_selected,
                 const auto& key_get)
                 {
                     if (ImGui::BeginTable(table_name.c_str(), 5, ImGuiTableFlags_ScrollY))
@@ -843,7 +843,7 @@ namespace trview
             
             if (ImGui::BeginTabItem(std::format("Items{}", any_items ? "*" : "").c_str()))
             {
-                show_table("Items List", _diff->diff.items, on_item_selected, [](auto&& i) { return i->type(); });
+                show_table("Items List", _diff->diff.items, [&](auto&& item) { messages::send_select_item(_messaging, item); }, [](auto&& i) { return i->type(); });
                 ImGui::EndTabItem();
             }
 

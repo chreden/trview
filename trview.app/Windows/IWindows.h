@@ -7,7 +7,6 @@ namespace trview
 {
     struct ICameraSink;
     struct IFlybyNode;
-    struct IItem;
     struct ILevel;
     struct ILight;
     struct IRoom;
@@ -26,7 +25,6 @@ namespace trview
         virtual void render() = 0;
         virtual void select(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
         virtual void select(const std::weak_ptr<IFlybyNode>& flyby_node) = 0;
-        virtual void select(const std::weak_ptr<IItem>& item) = 0;
         virtual void select(const std::weak_ptr<ILight>& light) = 0;
         virtual void select(const std::weak_ptr<ISoundSource>& sound_source) = 0;
         virtual void select(const std::weak_ptr<IStaticMesh>& static_mesh) = 0;
@@ -40,7 +38,6 @@ namespace trview
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
         Event<std::weak_ptr<ILevel>> on_diff_ended;
         Event<std::weak_ptr<IFlybyNode>> on_flyby_node_selected;
-        Event<std::weak_ptr<IItem>> on_item_selected;
         Event<std::string> on_level_open;
         Event<std::string> on_level_switch;
         Event<std::weak_ptr<ILight>> on_light_selected;

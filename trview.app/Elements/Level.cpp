@@ -277,7 +277,6 @@ namespace trview
         {
             _selected_item = selected_item;
             on_level_changed();
-            on_item_selected(_selected_item);
         }
     }
 
@@ -1612,7 +1611,7 @@ namespace trview
                     if (alternate != _entities.end())
                     {
                         _selected_item = *alternate;
-                        on_item_selected(_selected_item);
+                        messages::send_select_item(_messaging, _selected_item);
                         on_level_changed();
                     }
                 }
@@ -1660,7 +1659,11 @@ namespace trview
 
     void Level::receive_message(const Message& message)
     {
-        if (auto settings = messages::read_settings(message))
+        if (auto selected_item = messages::read_select_item(message))
+        {
+            set_selected_item(selected_item.value());
+        }
+        else if (auto settings = messages::read_settings(message))
         {
             _map_colours = settings->map_colours;
             on_geometry_colours_changed();

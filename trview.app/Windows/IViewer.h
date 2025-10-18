@@ -38,9 +38,6 @@ namespace trview
 
         virtual ~IViewer() = 0;
 
-        /// Event raised when the viwer wants to select an item.
-        Event<std::weak_ptr<IItem>> on_item_selected;
-
         /// Event raised when the viewer wants to select a room.
         Event<std::weak_ptr<IRoom>> on_room_selected;
 
@@ -82,7 +79,6 @@ namespace trview
 
         /// Select the specified item.
         /// @param item The item to select.
-        /// @remarks This will not raise the on_item_selected event.
         virtual void select_item(const std::weak_ptr<IItem>& item) = 0;
 
         /// <summary>

@@ -768,7 +768,7 @@ namespace trview
                 {
                     scroller.fix_scroll();
                     _local_selected_item = item;
-                    on_item_selected(item);
+                    messages::send_select_item(_messaging, item);
                     _scroll_to_item = false;
                 }
 
@@ -1175,7 +1175,11 @@ namespace trview
 
     void RoomsWindow::receive_message(const Message& message)
     {
-        if (auto settings = messages::read_settings(message))
+        if (auto selected_item = messages::read_select_item(message))
+        {
+            set_selected_item(selected_item.value());
+        }
+        else if (auto settings = messages::read_settings(message))
         {
             _settings = settings.value();
             if (!_columns_set)
@@ -1184,5 +1188,10 @@ namespace trview
                 _columns_set = true;
             }
         }
+    }
+
+    void RoomsWindow::initialise()
+    {
+        messages::get_selected_item(_messaging, weak_from_this());
     }
 }

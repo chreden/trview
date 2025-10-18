@@ -32,5 +32,30 @@ namespace trview
                 ms->send_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(settings) });
             }
         }
+
+        void get_selected_item(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
+        {
+            if (auto ms = messaging.lock())
+            {
+                ms->send_message(Message{ .type = "get_selected_item", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(reply_to) });
+            }
+        }
+
+        std::optional<std::weak_ptr<IItem>> read_select_item(const Message& message)
+        {
+            if (message.type != "select_item")
+            {
+                return std::nullopt;
+            }
+            return std::static_pointer_cast<MessageData<std::weak_ptr<IItem>>>(message.data)->value;
+        }
+
+        void send_select_item(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IItem>& item)
+        {
+            if (auto ms = messaging.lock())
+            {
+                ms->send_message({ .type = "select_item", .data = std::make_shared<MessageData<std::weak_ptr<IItem>>>(item) });
+            }
+        }
     }
 }

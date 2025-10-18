@@ -100,7 +100,6 @@ namespace trview
         _token_store += _windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
         _token_store += _windows->on_flyby_node_selected += [this](const auto& node) { select_flyby_node(node); };
         _token_store += _windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _windows->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _windows->on_light_selected += [this](const auto& light) { select_light(light); };
         _token_store += _windows->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _windows->on_sector_hover += [this](const auto& sector) { select_sector(sector); };
@@ -310,7 +309,6 @@ namespace trview
 
     void Application::setup_viewer(const IStartupOptions& startup_options)
     {
-        _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _viewer->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _viewer->on_light_selected += [this](const auto& light) { select_light(light); };
@@ -376,11 +374,7 @@ namespace trview
             return;
         }
 
-        _viewer->open(level, ILevel::OpenMode::Reload);
-        select_room(item_ptr->room());
-        level->set_selected_item(item);
-        _viewer->select_item(item);
-        _windows->select(item);
+        _windows->set_room(item_ptr->room());
     }
 
     void Application::select_room(std::weak_ptr<IRoom> room)
@@ -807,7 +801,7 @@ namespace trview
             {
                 if (const auto new_selected_item = _level->item(selected_item.value()).lock())
                 {
-                    select_item(new_selected_item);
+                    messages::send_select_item(_messaging, new_selected_item);
                 }
             }
 
@@ -954,7 +948,24 @@ namespace trview
 
     void Application::receive_message(const Message& message)
     {
-        if (auto settings = messages::read_settings(message))
+        if (auto selected_item = messages::read_select_item(message))
+        {
+            select_item(selected_item.value());
+        }
+        else if (message.type == "get_selected_item")
+        {
+            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
+            {
+                if (_level)
+                {
+                    if (auto selected = _level->selected_item())
+                    {
+                        requester->receive_message({ .type = "select_item", .data = std::make_shared<MessageData<std::weak_ptr<IItem>>>(_level->item(selected.value())) });
+                    }
+                }
+            }
+        }
+        else if (auto settings = messages::read_settings(message))
         {
             _settings = settings.value();
             lua::set_settings(_settings);

@@ -14,8 +14,6 @@ namespace trview
         using Source = std::function<std::shared_ptr<IItemsWindow>()>;
 
         virtual ~IItemsWindow() = 0;
-        /// Event raised when an item is selected in the list.
-        Event<std::weak_ptr<IItem>> on_item_selected;
         /// Event raised when a trigger is selected in the list.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
         /// Event raised when the 'add to route' button is pressed.
@@ -38,9 +36,6 @@ namespace trview
         /// </summary>
         /// <param name="room">The current room.</param>
         virtual void set_current_room(const std::weak_ptr<IRoom>& room) = 0;
-        /// Set the selected item.
-        /// @param item The selected item.
-        virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
         /// Get the selected item.
         /// @returns The selected item, if present.
         virtual std::weak_ptr<IItem> selected_item() const = 0;

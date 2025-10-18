@@ -37,7 +37,6 @@ namespace trview
         void set_level_version(trlevel::LevelVersion version) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
         void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) override;
-        void set_selected_item(const std::weak_ptr<IItem>& item) override;
         void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         std::weak_ptr<IRoomsWindow> create_window() override;
         void update(float delta) override;

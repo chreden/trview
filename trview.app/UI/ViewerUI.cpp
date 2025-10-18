@@ -84,7 +84,7 @@ namespace trview
             _tooltip->set_visible(false);
             if (std::holds_alternative<std::weak_ptr<IItem>>(item.item))
             {
-                on_select_item(std::get<std::weak_ptr<IItem>>(item.item));
+                messages::send_select_item(_messaging, std::get<std::weak_ptr<IItem>>(item.item));
             }
             else if (std::holds_alternative<std::weak_ptr<ITrigger>>(item.item))
             {
@@ -310,11 +310,6 @@ namespace trview
     void ViewerUI::set_remove_waypoint_enabled(bool value)
     {
         _context_menu->set_remove_enabled(value);
-    }
-
-    void ViewerUI::set_selected_item(uint32_t index)
-    {
-        _selected_item = index;
     }
 
     void ViewerUI::set_selected_room(const std::shared_ptr<IRoom>& room)

@@ -160,7 +160,7 @@ namespace trview
                     set_local_selected_item(item);
                     if (_sync_item)
                     {
-                        on_item_selected(item);
+                        messages::send_select_item(_messaging, item);
                     }
                 }, default_hide(filtered_items));
         }
@@ -470,7 +470,11 @@ namespace trview
 
     void ItemsWindow::receive_message(const Message& message)
     {
-        if (auto settings = messages::read_settings(message))
+        if (auto selected_item = messages::read_select_item(message))
+        {
+            set_selected_item(selected_item.value());
+        }
+        else if (auto settings = messages::read_settings(message))
         {
             _settings = settings.value();
             if (!_columns_set)
@@ -479,5 +483,10 @@ namespace trview
                 _columns_set = true;
             }
         }
+    }
+
+    void ItemsWindow::initialise()
+    {
+        messages::get_selected_item(_messaging, weak_from_this());
     }
 }

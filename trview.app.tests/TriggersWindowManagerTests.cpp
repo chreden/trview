@@ -88,23 +88,6 @@ TEST(TriggersWindowManager, CreateTriggersWindowSetsSelectedTriggerOnWindows)
     ASSERT_EQ(created_window, mock_window);
 }
 
-TEST(TriggersWindowManager, ItemSelectedEventRaised)
-{
-    auto manager = register_test_module().build();
-
-    std::shared_ptr<IItem> raised_item;
-    auto token = manager->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-
-    auto test_item = mock_shared<MockItem>();
-    created_window->on_item_selected(test_item);
-
-    ASSERT_TRUE(raised_item);
-    ASSERT_EQ(raised_item, test_item);
-}
-
 TEST(TriggersWindowManager, TriggerSelectedEventRaised)
 {
     auto manager = register_test_module().build();

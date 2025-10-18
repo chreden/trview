@@ -39,7 +39,7 @@
 namespace trview
 {
     /// Class that coordinates all the parts of the application.
-    class Viewer : public IViewer, public MessageHandler, public IRecipient
+    class Viewer : public IViewer, public MessageHandler, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         /// Create a new viewer.
@@ -94,6 +94,7 @@ namespace trview
         void select_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) override;
         std::weak_ptr<ILevel> level() const override;
         void receive_message(const Message& message) override;
+        void initialise();
     private:
         void initialise_input();
         void toggle_highlight();

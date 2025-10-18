@@ -40,7 +40,7 @@ namespace trview
         void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         void set_level_version(trlevel::LevelVersion version) override;
         void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
-        void set_selected_item(const std::weak_ptr<IItem>& item) override;
+        void set_selected_item(const std::weak_ptr<IItem>& item);
         void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         void update(float delta) override;
         void set_number(int32_t number) override;
@@ -55,6 +55,7 @@ namespace trview
         void set_filters(std::vector<Filters<IRoom>::Filter> filters) override;
         void set_selected_sector(const std::weak_ptr<ISector>& sector) override;
         void receive_message(const Message& message) override;
+        void initialise();
     private:
         void set_sync_room(bool value);
         void render_rooms_list();
