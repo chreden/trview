@@ -95,7 +95,7 @@ namespace trview
                     set_local_selected_static_mesh(stat);
                     if (_sync_static)
                     {
-                        on_static_selected(stat);
+                        messages::send_select_static_mesh(_messaging, stat);
                     }
                 }, default_hide(filtered_statics));
         }
@@ -247,6 +247,10 @@ namespace trview
                 _filters.set_columns(_settings->statics_window_columns);
                 _columns_set = true;
             }
+        }
+        else if (auto selected_static_mesh = messages::read_select_static_mesh(message))
+        {
+            set_selected_static(selected_static_mesh.value());
         }
     }
 }

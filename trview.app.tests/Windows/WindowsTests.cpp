@@ -165,28 +165,6 @@ namespace
     }
 }
 
-TEST(Windows, CameraSinkEventsForwarded)
-{
-    auto [camera_sinks_ptr, camera_sinks] = create_mock<MockCameraSinkWindowManager>();
-    auto windows = register_test_module().with_camera_sinks(std::move(camera_sinks_ptr)).build();
-
-    TokenStore store;
-    std::shared_ptr<ICameraSink> raised_camera;
-    store += windows->on_camera_sink_selected += capture(raised_camera);
-
-    std::shared_ptr<ITrigger> raised_trigger;
-    store += windows->on_trigger_selected += capture(raised_trigger);
-
-    auto camera = mock_shared<MockCameraSink>();
-    auto trigger = mock_shared<MockTrigger>();
-
-    camera_sinks.on_camera_sink_selected(camera);
-    camera_sinks.on_trigger_selected(trigger);
-
-    ASSERT_EQ(raised_camera, camera);
-    ASSERT_EQ(raised_trigger, trigger);
-}
-
 TEST(Windows, CameraSinkStartup)
 {
     auto [camera_sinks_ptr, camera_sinks] = create_mock<MockCameraSinkWindowManager>();
@@ -212,9 +190,6 @@ TEST(Windows, ItemsEventsForwarded)
     std::shared_ptr<IWaypoint> raised_waypoint;
     store += windows->on_waypoint_selected += capture(raised_waypoint);
 
-    std::shared_ptr<IItem> raised_item;
-    store += windows->on_item_selected += capture(raised_item);
-
     std::shared_ptr<ITrigger> raised_trigger;
     store += windows->on_trigger_selected += capture(raised_trigger);
 
@@ -222,11 +197,9 @@ TEST(Windows, ItemsEventsForwarded)
     auto trigger = mock_shared<MockTrigger>();
 
     items.on_add_to_route(item);
-    items.on_item_selected(item);
     items.on_trigger_selected(trigger);
 
     ASSERT_EQ(raised_waypoint, waypoint);
-    ASSERT_EQ(raised_item, item);
     ASSERT_EQ(raised_trigger, trigger);
 }
 
@@ -296,32 +269,8 @@ TEST(Windows, RoomsEventsForwarded)
     auto windows = register_test_module().with_rooms(std::move(rooms_ptr)).build();
 
     TokenStore store;
-    std::shared_ptr<ICameraSink> raised_camera;
-    store += windows->on_camera_sink_selected += capture(raised_camera);
-    std::shared_ptr<IItem> raised_item;
-    store += windows->on_item_selected += capture(raised_item);
-    std::shared_ptr<ILight> raised_light;
-    store += windows->on_light_selected += capture(raised_light);
-    std::shared_ptr<IRoom> raised_room;
-    store += windows->on_room_selected += capture(raised_room);
     std::shared_ptr<ISector> raised_sector;
     store += windows->on_sector_hover += capture(raised_sector);
-    std::shared_ptr<IStaticMesh> raised_static;
-    store += windows->on_static_selected += capture(raised_static);
-    std::shared_ptr<ITrigger> raised_trigger;
-    store += windows->on_trigger_selected += capture(raised_trigger);
-
-    auto camera = mock_shared<MockCameraSink>();
-    rooms.on_camera_sink_selected(camera);
-
-    auto item = mock_shared<MockItem>();
-    rooms.on_item_selected(item);
-
-    auto light = mock_shared<MockLight>();
-    rooms.on_light_selected(light);
-
-    auto room = mock_shared<MockRoom>();
-    rooms.on_room_selected(room);
 
     auto sector = mock_shared<MockSector>();
     rooms.on_sector_hover(sector);
@@ -329,16 +278,7 @@ TEST(Windows, RoomsEventsForwarded)
     auto static_mesh = mock_shared<MockStaticMesh>();
     rooms.on_static_mesh_selected(static_mesh);
 
-    auto trigger = mock_shared<MockTrigger>();
-    rooms.on_trigger_selected(trigger);
-
-    ASSERT_EQ(raised_camera, camera);
-    ASSERT_EQ(raised_item, item);
-    ASSERT_EQ(raised_light, light);
-    ASSERT_EQ(raised_room, room);
     ASSERT_EQ(raised_sector, sector);
-    ASSERT_EQ(raised_static, static_mesh);
-    ASSERT_EQ(raised_trigger, trigger);
 }
 
 TEST(Windows, RoomsStartup)
@@ -360,8 +300,6 @@ TEST(Windows, RouteEventsForwarded)
 
     std::shared_ptr<IWaypoint> raised_waypoint;
     store += route.on_waypoint_selected += capture(raised_waypoint);
-    std::shared_ptr<IItem> raised_item;
-    store += route.on_item_selected += capture(raised_item);
     std::shared_ptr<ITrigger> raised_trigger;
     store += route.on_trigger_selected += capture(raised_trigger);
     bool route_open = false;
@@ -381,8 +319,6 @@ TEST(Windows, RouteEventsForwarded)
 
     auto waypoint = mock_shared<MockWaypoint>();
     route.on_waypoint_selected(waypoint);
-    auto item = mock_shared<MockItem>();
-    route.on_item_selected(item);
     auto trigger = mock_shared<MockTrigger>();
     route.on_trigger_selected(trigger);
     route.on_route_open();
@@ -394,7 +330,6 @@ TEST(Windows, RouteEventsForwarded)
     route.on_new_randomizer_route();
 
     ASSERT_EQ(raised_waypoint, waypoint);
-    ASSERT_EQ(raised_item, item);
     ASSERT_EQ(raised_trigger, trigger);
     ASSERT_EQ(route_open, true);
     ASSERT_EQ(route_reload, true);
@@ -413,116 +348,6 @@ TEST(Windows, RouteStartup)
     auto windows = register_test_module().with_route(std::move(route_ptr)).build();
 
     windows->setup({ .route_startup = true });
-}
-
-TEST(Windows, SelectCameraSink)
-{
-    auto [camera_sinks_ptr, camera_sinks] = create_mock<MockCameraSinkWindowManager>();
-    auto [rooms_ptr, rooms] = create_mock<MockRoomsWindowManager>();
-
-    const auto camera = mock_shared<MockCameraSink>();
-    std::shared_ptr<ICameraSink> camera_sinks_camera;
-    EXPECT_CALL(camera_sinks, set_selected_camera_sink).Times(1).WillRepeatedly([&](auto c) { camera_sinks_camera = c.lock(); });
-    std::shared_ptr<ICameraSink> rooms_camera;
-    EXPECT_CALL(rooms, set_selected_camera_sink).Times(1).WillRepeatedly([&](auto c) { rooms_camera = c.lock(); });
-
-    auto windows = register_test_module().with_camera_sinks(std::move(camera_sinks_ptr)).with_rooms(std::move(rooms_ptr)).build();
-
-    windows->select(camera);
-
-    ASSERT_EQ(camera_sinks_camera, camera);
-    ASSERT_EQ(rooms_camera, camera);
-}
-
-TEST(Windows, SelectItem)
-{
-    auto [items_ptr, items] = create_mock<MockItemsWindowManager>();
-    auto [rooms_ptr, rooms] = create_mock<MockRoomsWindowManager>();
-    auto windows = register_test_module()
-        .with_items(std::move(items_ptr))
-        .with_rooms(std::move(rooms_ptr))
-        .build();
-
-    std::shared_ptr<IItem> items_item;
-    EXPECT_CALL(items, set_selected_item).Times(1).WillRepeatedly([&](auto i) { items_item = i.lock(); });
-    std::shared_ptr<IItem> rooms_item;
-    EXPECT_CALL(rooms, set_selected_item).Times(1).WillRepeatedly([&](auto i) { rooms_item = i.lock(); });
-
-    const auto item = mock_shared<MockItem>();
-    windows->select(item);
-
-    ASSERT_EQ(items_item, item);
-    ASSERT_EQ(rooms_item, item);
-}
-
-TEST(Windows, SelectLight)
-{
-    auto [lights_ptr, lights] = create_mock<MockLightsWindowManager>();
-    auto [rooms_ptr, rooms] = create_mock<MockRoomsWindowManager>();
-    auto windows = register_test_module()
-        .with_lights(std::move(lights_ptr))
-        .with_rooms(std::move(rooms_ptr))
-        .build();
-
-    std::shared_ptr<ILight> lights_light;
-    EXPECT_CALL(lights, set_selected_light).Times(1).WillRepeatedly([&](auto l) { lights_light = l.lock(); });
-    std::shared_ptr<ILight> rooms_light;
-    EXPECT_CALL(rooms, set_selected_light).Times(1).WillRepeatedly([&](auto l) { rooms_light = l.lock(); });
-
-    const auto light = mock_shared<MockLight>();
-    windows->select(light);
-
-    ASSERT_EQ(lights_light, light);
-    ASSERT_EQ(rooms_light, light);
-}
-
-TEST(Windows, SelectSoundSource)
-{
-    auto [sounds_ptr, sounds] = create_mock<MockSoundsWindowManager>();
-    auto windows = register_test_module().with_sounds(std::move(sounds_ptr)).build();
-
-    std::shared_ptr<ISoundSource> sounds_sound;
-    EXPECT_CALL(sounds, select_sound_source).Times(1).WillRepeatedly([&](auto s) { sounds_sound = s.lock(); });
-
-    auto sound_source = mock_shared<MockSoundSource>();
-    windows->select(sound_source);
-
-    ASSERT_EQ(sound_source, sounds_sound);
-}
-
-TEST(Windows, SelectStaticMesh)
-{
-    auto [statics_ptr, statics] = create_mock<MockStaticsWindowManager>();
-    auto windows = register_test_module().with_statics(std::move(statics_ptr)).build();
-
-    std::shared_ptr<IStaticMesh> statics_static;
-    EXPECT_CALL(statics, select_static).Times(1).WillRepeatedly([&](auto s) { statics_static = s.lock(); });
-
-    const auto static_mesh = mock_shared<MockStaticMesh>();
-    windows->select(static_mesh);
-
-    ASSERT_EQ(statics_static, static_mesh);
-}
-
-TEST(Windows, SelectTrigger)
-{
-    auto [triggers_ptr, triggers] = create_mock<MockTriggersWindowManager>();
-    auto [rooms_ptr, rooms] = create_mock<MockRoomsWindowManager>();
-    auto windows = register_test_module()
-        .with_triggers(std::move(triggers_ptr))
-        .with_rooms(std::move(rooms_ptr))
-        .build();
-
-    std::shared_ptr<ITrigger> triggers_trigger;
-    EXPECT_CALL(triggers, set_selected_trigger).Times(1).WillRepeatedly([&](auto t) { triggers_trigger = t.lock(); });
-    std::shared_ptr<ITrigger> rooms_trigger;
-    EXPECT_CALL(rooms, set_selected_trigger).Times(1).WillRepeatedly([&](auto t) { rooms_trigger = t.lock(); });
-
-    const auto trigger = mock_shared<MockTrigger>();
-    windows->select(trigger);
-
-    ASSERT_EQ(triggers_trigger, trigger);
-    ASSERT_EQ(rooms_trigger, trigger);
 }
 
 TEST(Windows, SelectWaypoint)
@@ -545,14 +370,6 @@ TEST(Windows, SetLevel)
     EXPECT_CALL(cameras, set_camera_sinks).Times(1);
     EXPECT_CALL(cameras, set_flybys).Times(1);
     EXPECT_CALL(cameras, set_platform_and_version).Times(1);
-    auto [items_ptr, items] = create_mock<MockItemsWindowManager>();
-    EXPECT_CALL(items, set_items).Times(1);
-    EXPECT_CALL(items, set_triggers).Times(1);
-    EXPECT_CALL(items, set_level_version).Times(1);
-    EXPECT_CALL(items, set_model_checker).Times(1);
-    auto [lights_ptr, lights] = create_mock<MockLightsWindowManager>();
-    EXPECT_CALL(lights, set_level_version).Times(1);
-    EXPECT_CALL(lights, set_lights).Times(1);
     auto [pack_ptr, pack] = create_mock<MockPackWindowManager>();
     EXPECT_CALL(pack, set_level).Times(1);
     EXPECT_CALL(pack, set_pack).Times(1);
@@ -581,8 +398,6 @@ TEST(Windows, SetLevel)
     EXPECT_CALL(textures, set_texture_storage).Times(1);
     auto windows = register_test_module()
         .with_camera_sinks(std::move(cameras_ptr))
-        .with_items(std::move(items_ptr))
-        .with_lights(std::move(lights_ptr))
         .with_packs(std::move(pack_ptr))
         .with_rooms(std::move(rooms_ptr))
         .with_route(std::move(route_ptr))
@@ -680,20 +495,6 @@ TEST(Windows, Setup)
     windows->setup({ .randomizer_tools = true });
 }
 
-TEST(Windows, SoundsEventsForwarded)
-{
-    auto [sounds_ptr, sounds] = create_mock<MockSoundsWindowManager>();
-    auto windows = register_test_module().with_sounds(std::move(sounds_ptr)).build();
-
-    std::shared_ptr<ISoundSource> raised_sound_source;
-    auto t1 = windows->on_sound_source_selected += capture(raised_sound_source);
-
-    auto sound_source = mock_shared<MockSoundSource>();
-    sounds.on_sound_source_selected(sound_source);
-
-    ASSERT_EQ(raised_sound_source, sound_source);
-}
-
 TEST(Windows, StaticsEventsForwarded)
 {
     auto [statics_ptr, statics] = create_mock<MockStaticsWindowManager>();
@@ -731,8 +532,6 @@ TEST(Windows, TriggersEventsForwarded)
     windows->set_route(route);
 
     TokenStore store;
-    std::shared_ptr<IItem> raised_item;
-    store += windows->on_item_selected += capture(raised_item);
     std::shared_ptr<ITrigger> raised_trigger;
     store += windows->on_trigger_selected += capture(raised_trigger);
     std::shared_ptr<IWaypoint> raised_waypoint;
@@ -745,11 +544,9 @@ TEST(Windows, TriggersEventsForwarded)
     auto camera_sink = mock_shared<MockCameraSink>();
 
     triggers.on_add_to_route(trigger);
-    triggers.on_item_selected(item);
     triggers.on_trigger_selected(trigger);
     triggers.on_camera_sink_selected(camera_sink);
 
-    ASSERT_EQ(raised_item, item);
     ASSERT_EQ(raised_trigger, trigger);
     ASSERT_EQ(raised_waypoint, waypoint);
     ASSERT_EQ(raised_camera_sink, camera_sink);

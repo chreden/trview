@@ -6,6 +6,7 @@
 #include "../Elements/IRoom.h"
 #include "../Elements/ISector.h"
 #include "../Messages/Messages.h"
+#include "../Elements/ILevel.h"
 
 namespace trview
 {
@@ -160,7 +161,7 @@ namespace trview
                     set_local_selected_item(item);
                     if (_sync_item)
                     {
-                        on_item_selected(item);
+                        messages::send_select_item(_messaging, item);
                     }
                 }, default_hide(filtered_items));
         }
@@ -258,7 +259,7 @@ namespace trview
                                 {
                                     if (ImGui::Button(std::format("{} {}", to_string(trigger->type()), trigger->number()).c_str(), ImVec2(-1,0)))
                                     {
-                                        on_trigger_selected(trigger);
+                                        messages::send_select_trigger(_messaging, trigger);
                                     }
                                 }
                             }
@@ -457,7 +458,7 @@ namespace trview
                 {
                     _selected_trigger = trigger;
                     _track.set_enabled<Type::Room>(false);
-                    on_trigger_selected(trigger);
+                    messages::send_select_trigger(_messaging, trigger);
                 }
                 ImGui::TableNextColumn();
                 ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
@@ -470,7 +471,15 @@ namespace trview
 
     void ItemsWindow::receive_message(const Message& message)
     {
-        if (auto settings = messages::read_settings(message))
+        if (auto selected_item = messages::read_select_item(message))
+        {
+            set_selected_item(selected_item.value());
+        }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_current_room(selected_room.value());
+        }
+        else if (auto settings = messages::read_settings(message))
         {
             _settings = settings.value();
             if (!_columns_set)
@@ -479,5 +488,21 @@ namespace trview
                 _columns_set = true;
             }
         }
+        else if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                clear_selected_item();
+                set_items(level_ptr->items());
+                set_triggers(level_ptr->triggers());
+                set_level_version(level_ptr->version());
+            }
+        }
+    }
+
+    void ItemsWindow::initialise()
+    {
+        messages::get_open_level(_messaging, weak_from_this());
+        messages::get_selected_item(_messaging, weak_from_this());
     }
 }

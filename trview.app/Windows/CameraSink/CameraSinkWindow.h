@@ -31,12 +31,13 @@ namespace trview
         void set_number(int32_t number) override;
         void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
         void set_flybys(const std::vector<std::weak_ptr<IFlyby>>& flybys) override;
-        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
-        void set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) override;
+        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
+        void set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node);
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
         void update(float delta) override;
         void set_platform_and_version(const trlevel::PlatformAndVersion& version) override;
         void receive_message(const Message& message) override;
+        void initialise();
     private:
         bool render_camera_sink_window();
         void set_sync(bool value);

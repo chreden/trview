@@ -40,12 +40,12 @@ namespace trview
         void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         void set_level_version(trlevel::LevelVersion version) override;
         void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
-        void set_selected_item(const std::weak_ptr<IItem>& item) override;
-        void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
+        void set_selected_item(const std::weak_ptr<IItem>& item);
+        void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
         void update(float delta) override;
         void set_number(int32_t number) override;
         void set_floordata(const std::vector<uint16_t>& data) override;
-        void set_selected_light(const std::weak_ptr<ILight>& light) override;
+        void set_selected_light(const std::weak_ptr<ILight>& light);
         void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void clear_selected_light() override;
         void clear_selected_camera_sink() override;
@@ -53,8 +53,9 @@ namespace trview
         void set_trng(bool value) override;
         std::string name() const override;
         void set_filters(std::vector<Filters<IRoom>::Filter> filters) override;
-        void set_selected_sector(const std::weak_ptr<ISector>& sector) override;
+        void set_selected_sector(const std::weak_ptr<ISector>& sector);
         void receive_message(const Message& message) override;
+        void initialise();
     private:
         void set_sync_room(bool value);
         void render_rooms_list();

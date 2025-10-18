@@ -28,6 +28,12 @@ namespace
             {
                 return std::make_unique<TriggersWindow>(clipboard, messaging);
             }
+
+            test_module& with_messaging(const std::shared_ptr<MockMessageSystem>& messaging)
+            {
+                this->messaging = messaging;
+                return *this;
+            }
         };
 
         return test_module{};
@@ -148,10 +154,11 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<TriggersWindowContext>();
-            context.ptr = register_test_module().build();
+            auto messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(messaging).build();
 
-            std::shared_ptr<IItem> raised_item;
-            auto token = context.ptr->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
+            std::optional<trview::Message> raised;
+            EXPECT_CALL(*messaging, send_message).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&raised));
 
             context.items = 
             {
@@ -169,7 +176,8 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
 
             auto selected = context.ptr->selected_trigger().lock();
             IM_CHECK_EQ(selected, trigger);
-            IM_CHECK_EQ(raised_item, context.items[1]);
+            IM_CHECK_EQ(true, raised.has_value());
+            IM_CHECK_EQ(std::static_pointer_cast<MessageData<std::weak_ptr<IItem>>>(raised->data)->value.lock(), context.items[1]);
         });
 
     test<TriggersWindowContext>(engine, "Triggers Window", "Reset Colour",

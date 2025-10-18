@@ -37,8 +37,6 @@ namespace trview
         _route_window->on_route_reload += on_route_reload;
         _route_window->on_route_save += on_route_save;
         _route_window->on_route_save_as += on_route_save_as;
-        _route_window->on_item_selected += on_item_selected;
-        _route_window->on_trigger_selected += on_trigger_selected;
         _route_window->on_waypoint_selected += on_waypoint_selected;
         _route_window->on_level_switch += on_level_switch;
         _route_window->on_new_route += on_new_route;

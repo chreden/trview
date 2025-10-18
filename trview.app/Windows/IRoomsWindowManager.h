@@ -8,18 +8,7 @@ namespace trview
     {
         virtual ~IRoomsWindowManager() = 0;
 
-        /// Event raised when the user has selected a room in the room window.
-        Event<std::weak_ptr<IRoom>> on_room_selected;
-
-        /// Event raised when the user has selected an item in the room window.
-        Event<std::weak_ptr<IItem>> on_item_selected;
-
-        /// Event raised when the user has selected a trigger in the room window.
-        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-
         Event<std::weak_ptr<ISector>> on_sector_hover;
-        Event<std::weak_ptr<ILight>> on_light_selected;
-        Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
         Event<std::weak_ptr<IStaticMesh>> on_static_mesh_selected;
 
         /// Render all of the rooms windows.
@@ -40,14 +29,6 @@ namespace trview
         /// @param rooms The rooms to show.
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) = 0;
 
-        /// Set the item currently selected in the viewer.
-        /// @param item The item currently selected.
-        virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
-
-        /// Set the trigger currently selected in the viewer.
-        /// @param trigger The trigger currently selected.
-        virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
-
         /// Create a new rooms window.
         virtual std::weak_ptr<IRoomsWindow> create_window() = 0;
         /// <summary>
@@ -57,9 +38,6 @@ namespace trview
         virtual void update(float delta) = 0;
 
         virtual void set_floordata(const std::vector<uint16_t>& data) = 0;
-        virtual void set_selected_light(const std::weak_ptr<ILight>& light) = 0;
-        virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
-        virtual void set_selected_sector(const std::weak_ptr<ISector>& sector) = 0;
         virtual void set_ng_plus(bool value) = 0;
         virtual void set_trng(bool value) = 0;
         virtual std::vector<std::weak_ptr<IRoomsWindow>> windows() const = 0;

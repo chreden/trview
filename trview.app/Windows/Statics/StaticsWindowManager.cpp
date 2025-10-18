@@ -32,8 +32,6 @@ namespace trview
         auto window = _source();
         window->set_statics(_statics);
         window->set_current_room(_current_room);
-        window->set_selected_static(_selected_static);
-        window->on_static_selected += on_static_selected;
         return add_window(window);
     }
 
@@ -57,15 +55,6 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_current_room(room);
-        }
-    }
-
-    void StaticsWindowManager::select_static(const std::weak_ptr<IStaticMesh>& static_mesh)
-    {
-        _selected_static = static_mesh;
-        for (auto& window : _windows)
-        {
-            window.second->set_selected_static(static_mesh);
         }
     }
 }

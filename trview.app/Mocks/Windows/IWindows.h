@@ -13,13 +13,6 @@ namespace trview
             MOCK_METHOD(bool, is_route_window_open, (), (const, override));
             MOCK_METHOD(void, update, (float), (override));
             MOCK_METHOD(void, render, (), (override));
-            MOCK_METHOD(void, select, (const std::weak_ptr<ICameraSink>&), (override));
-            MOCK_METHOD(void, select, (const std::weak_ptr<IFlybyNode>&), (override));
-            MOCK_METHOD(void, select, (const std::weak_ptr<IItem>&), (override));
-            MOCK_METHOD(void, select, (const std::weak_ptr<ILight>&), (override));
-            MOCK_METHOD(void, select, (const std::weak_ptr<ISoundSource>&), (override));
-            MOCK_METHOD(void, select, (const std::weak_ptr<IStaticMesh>&), (override));
-            MOCK_METHOD(void, select, (const std::weak_ptr<ITrigger>&), (override));
             MOCK_METHOD(void, select, (const std::weak_ptr<IWaypoint>&), (override));
             MOCK_METHOD(void, set_level, (const std::weak_ptr<ILevel>&), (override));
             MOCK_METHOD(void, set_room, (const std::weak_ptr<IRoom>&), (override));

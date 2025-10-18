@@ -155,15 +155,11 @@ namespace trview
         virtual std::vector<std::weak_ptr<IFlyby>> flybys() const = 0;
         virtual void update(float delta) = 0;
 
-        Event<std::weak_ptr<IItem>> on_item_selected;
-        // Event raised when the level needs to change the selected room.
-        Event<std::weak_ptr<IRoom>> on_room_selected;
         // Event raised when the level needs to change the alternate mode.
         Event<bool> on_alternate_mode_selected;
         /// Event raised when the level needs to change the alternate group mode.
         Event<uint16_t, bool> on_alternate_group_selected;
         mutable Event<> on_geometry_colours_changed;
-        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
         Event<bool> on_ng_plus;
     };
 

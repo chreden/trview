@@ -925,7 +925,7 @@ namespace trview
         {
             if (auto level = current_room->level().lock())
             {
-                on_room_selected(level->room(current_room->alternate_room()));
+                messages::send_select_room(_messaging, level->room(current_room->alternate_room()));
             }
         }
 
@@ -951,7 +951,7 @@ namespace trview
         {
             if (auto level = current_room->level().lock())
             {
-                on_room_selected(level->room(current_room->alternate_room()));
+                messages::send_select_room(_messaging, level->room(current_room->alternate_room()));
             }
         }
     }
@@ -1070,7 +1070,12 @@ namespace trview
 
     void Level::set_selected_trigger(uint32_t number)
     {
-        const auto selected_trigger = _triggers[number];
+        set_selected_trigger(_triggers[number]);
+    }
+
+    void Level::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
+    {
+        const auto selected_trigger = trigger.lock();
         if (_selected_trigger.lock() != selected_trigger)
         {
             _selected_trigger = selected_trigger;
@@ -1081,6 +1086,12 @@ namespace trview
     void Level::set_selected_light(uint32_t number)
     {
         _selected_light = _lights[number];
+    }
+
+    void Level::set_selected_light(const std::weak_ptr<ILight>& light)
+    {
+        _selected_light = light;
+        on_level_changed();
     }
 
     void Level::set_selected_camera_sink(uint32_t number)
@@ -1592,7 +1603,7 @@ namespace trview
                     if (alternate != _entities.end())
                     {
                         _selected_item = *alternate;
-                        on_item_selected(_selected_item);
+                        messages::send_select_item(_messaging, _selected_item);
                     }
                 }
             }
@@ -1639,10 +1650,26 @@ namespace trview
 
     void Level::receive_message(const Message& message)
     {
-        if (auto settings = messages::read_settings(message))
+        if (auto selected_item = messages::read_select_item(message))
+        {
+            set_selected_item(selected_item.value());
+        }
+        else if (auto settings = messages::read_settings(message))
         {
             _map_colours = settings->map_colours;
             on_geometry_colours_changed();
+        }
+        else if (auto selected_light = messages::read_select_light(message))
+        {
+            set_selected_light(selected_light.value());
+        }
+        else if (auto selected_trigger = messages::read_select_trigger(message))
+        {
+            set_selected_trigger(selected_trigger.value());
+        }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_selected_room(selected_room.value());
         }
     }
 

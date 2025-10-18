@@ -17,15 +17,7 @@ namespace trview
     {
         const auto window = _diff_window_source();
         window->set_level(_level);
-        window->on_item_selected += on_item_selected;
-        window->on_light_selected += on_light_selected;
-        window->on_trigger_selected += on_trigger_selected;
         window->on_diff_ended += on_diff_ended;
-        window->on_camera_sink_selected += on_camera_sink_selected;
-        window->on_static_mesh_selected += on_static_mesh_selected;
-        window->on_sound_source_selected += on_sound_source_selected;
-        window->on_room_selected += on_room_selected;
-        window->on_sector_selected += on_sector_selected;
         return add_window(window);
     }
 

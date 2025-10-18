@@ -35,6 +35,12 @@ namespace
                 this->clipboard = clipboard;
                 return *this;
             }
+
+            test_module& with_messaging(const std::shared_ptr<IMessageSystem>& messaging)
+            {
+                this->messaging = messaging;
+                return *this;
+            }
         };
 
         return test_module{};
@@ -105,10 +111,11 @@ void register_items_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<ItemsWindowContext>();
-            context.ptr = register_test_module().build();
+            auto messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(messaging).build();
 
-            std::shared_ptr<IItem> raised_item;
-            auto token = context.ptr->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
+            std::optional<trview::Message> called_item;
+            EXPECT_CALL(*messaging, send_message).Times(0).WillRepeatedly(SaveArg<0>(&called_item));
 
             context.items =
             {
@@ -120,7 +127,7 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             ctx->ItemUncheck("Items 0/**/Sync");
             ctx->ItemClick("Items 0/**/1##1");
 
-            IM_CHECK_EQ(raised_item, nullptr);
+            IM_CHECK_EQ(called_item.has_value(), false);
         });
 
     test<ItemsWindowContext>(engine, "Items Window", "Item Selected Raised When Sync Item Enabled",
@@ -128,10 +135,11 @@ void register_items_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<ItemsWindowContext>();
-            context.ptr = register_test_module().build();
+            auto messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(messaging).build();
 
-            std::shared_ptr<IItem> raised_item;
-            auto token = context.ptr->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
+            std::optional<trview::Message> called_item;
+            EXPECT_CALL(*messaging, send_message).Times(1).WillRepeatedly(SaveArg<0>(&called_item));
 
             context.items =
             {
@@ -142,7 +150,7 @@ void register_items_window_tests(ImGuiTestEngine* engine)
 
             ctx->ItemClick("Items 0/**/1##1");
 
-            IM_CHECK_EQ(raised_item, context.items[1]);
+            IM_CHECK_EQ(std::static_pointer_cast<MessageData<std::weak_ptr<IItem>>>(called_item->data)->value.lock(), context.items[1]);
 
             const auto from_window = context.ptr->selected_item().lock();
             IM_CHECK_EQ(from_window, context.items[1]);
@@ -153,10 +161,11 @@ void register_items_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<ItemsWindowContext>();
-            context.ptr = register_test_module().build();
+            auto messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(messaging).build();
 
-            std::shared_ptr<IItem> raised_item;
-            auto token = context.ptr->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
+            std::optional<trview::Message> called_item;
+            EXPECT_CALL(*messaging, send_message).Times(1).WillRepeatedly(SaveArg<0>(&called_item));
 
             auto room_78 = mock_shared<MockRoom>()->with_number(78);
 
@@ -175,7 +184,7 @@ void register_items_window_tests(ImGuiTestEngine* engine)
 
             IM_CHECK_EQ(ctx->ItemExists("Items 0/**/0##0"), false);
             IM_CHECK_EQ(ctx->ItemExists("Items 0/**/1##1"), true);
-            IM_CHECK_EQ(raised_item, context.items[1]);
+            IM_CHECK_EQ(std::static_pointer_cast<MessageData<std::weak_ptr<IItem>>>(called_item->data)->value.lock(), context.items[1]);
         });
 
     test<ItemsWindowContext>(engine, "Items Window", "Items List Not Filtered When Room Set and Track Room Disabled",
@@ -183,10 +192,11 @@ void register_items_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<ItemsWindowContext>();
-            context.ptr = register_test_module().build();
+            auto messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(messaging).build();
 
-            std::shared_ptr<IItem> raised_item;
-            auto token = context.ptr->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
+            std::optional<trview::Message> called_item;
+            EXPECT_CALL(*messaging, send_message).Times(1).WillRepeatedly(SaveArg<0>(&called_item));
 
             auto room_78 = mock_shared<MockRoom>()->with_number(78);
 
@@ -200,7 +210,7 @@ void register_items_window_tests(ImGuiTestEngine* engine)
 
             ctx->ItemClick("Items 0/**/0##0");
 
-            IM_CHECK_EQ(raised_item, context.items[0]);
+            IM_CHECK_EQ(std::static_pointer_cast<MessageData<std::weak_ptr<IItem>>>(called_item->data)->value.lock(), context.items[0]);
         });
 
     test<ItemsWindowContext>(engine, "Items Window", "Items List Populated on Set",

@@ -14,23 +14,11 @@ namespace trview
 
         virtual ~ITriggersWindow() = 0;
 
-        /// Event raised when a trigger is selected in the list.
-        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-
-        /// Event raised when an item is selected in the list.
-        Event<std::weak_ptr<IItem>> on_item_selected;
-
         /// Event raised when the 'add to route' button is pressed.
         Event<std::weak_ptr<ITrigger>> on_add_to_route;
 
         /// Event raised when the window is closed.
         Event<> on_window_closed;
-
-        /// <summary>
-        /// Event raised when a camera/sinkm is selected in the list.
-        /// </summary>
-        Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
-        Event<std::weak_ptr<IFlybyNode>> on_flyby_node_selected;
 
         /// Clear the currently selected trigger from the details panel.
         virtual void clear_selected_trigger() = 0;
@@ -51,10 +39,6 @@ namespace trview
         virtual void set_number(int32_t number) = 0;
 
         virtual void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) = 0;
-
-        /// Set the selected trigger.
-        /// @param item The selected trigger.
-        virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
 
         /// Set the triggers to display in the window.
         /// @param triggers The triggers.

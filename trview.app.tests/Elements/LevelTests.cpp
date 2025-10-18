@@ -34,6 +34,7 @@ using namespace trview::graphics::mocks;
 using namespace trlevel;
 using namespace trlevel::mocks;
 using namespace trview::tests;
+using namespace testing;
 using testing::Return;
 using testing::A;
 using testing::NiceMock;
@@ -121,6 +122,12 @@ namespace
             test_module& with_trigger_source(const ITrigger::Source& trigger_source)
             {
                 this->trigger_source = trigger_source;
+                return *this;
+            }
+
+            test_module& with_messaging(const std::shared_ptr<IMessageSystem>& messaging)
+            {
+                this->messaging = messaging;
                 return *this;
             }
         };
@@ -468,6 +475,7 @@ TEST(Level, SelectedItem)
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     ON_CALL(mock_level, num_entities()).WillByDefault(Return(5));
     ON_CALL(mock_level, num_rooms()).WillByDefault(Return(1));
+    auto messaging = mock_shared<MockMessageSystem>();
 
     std::vector<std::shared_ptr<IItem>> items;
 
@@ -483,16 +491,18 @@ TEST(Level, SelectedItem)
                 items.push_back(entity);
                 return entity;
             })
+        .with_messaging(messaging)
         .build();
 
-    std::shared_ptr<IItem> raised;
-    auto token = level->on_item_selected += [&](auto t) { raised = t.lock(); };
+    std::optional<trview::Message> raised;
+    EXPECT_CALL(*messaging, send_message).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&raised));
 
     ASSERT_EQ(level->selected_item(), std::nullopt);
     level->set_selected_item(items[4]);
     ASSERT_TRUE(level->selected_item().has_value());
     ASSERT_EQ(level->selected_item().value(), 4);
-    ASSERT_EQ(raised, items[4]);
+    ASSERT_TRUE(raised.has_value());
+    ASSERT_EQ(std::static_pointer_cast<MessageData<std::weak_ptr<IItem>>>(raised->data)->value.lock(), items[4]);
 }
 
 TEST(Level, SelectedLight)

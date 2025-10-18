@@ -21,12 +21,6 @@ namespace trview
         /// Event raised when a waypoint is selected.
         Event<std::weak_ptr<IWaypoint>> on_waypoint_selected;
 
-        /// Event raised when an item is selected.
-        Event<std::weak_ptr<IItem>> on_item_selected;
-
-        /// Event raised when a trigger is selected.
-        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-
         Event<> on_window_created;
 
         Event<std::string> on_level_switch;

@@ -46,21 +46,6 @@ namespace
     }
 }
 
-TEST(LightsWindowManager, OnLightSelectedRaised)
-{
-    auto manager = register_test_module().build();
-    auto light = mock_shared<MockLight>();
-
-    std::weak_ptr<ILight> raised;
-    auto token = manager->on_light_selected += [&](auto&& value) { raised = value; };
-
-    auto window = manager->create_window().lock();
-    ASSERT_NE(window, nullptr);
-
-    window->on_light_selected(light);
-    ASSERT_EQ(raised.lock(), light);
-}
-
 TEST(LightsWindowManager, SetLightsUpdatesExistingWindows)
 {
     auto window = mock_shared<MockLightsWindow>();
@@ -116,28 +101,6 @@ TEST(LightsWindowManager, SetSelectedLightUpdatesNewWindows)
     EXPECT_CALL(*window, set_selected_light).Times(1);
 
     auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->create_window();
-}
-
-TEST(LightsWindowManager, SetLevelVersionUpdatesExistingWindows)
-{
-    auto window = mock_shared<MockLightsWindow>();
-    EXPECT_CALL(*window, set_level_version(trlevel::LevelVersion::Tomb1)).Times(1);
-    EXPECT_CALL(*window, set_level_version(trlevel::LevelVersion::Tomb4)).Times(1);
-
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->set_level_version(trlevel::LevelVersion::Tomb1);
-    manager->create_window();
-    manager->set_level_version(trlevel::LevelVersion::Tomb4);
-}
-
-TEST(LightsWindowManager, SetLevelVersionUpdatesNewWindows)
-{
-    auto window = mock_shared<MockLightsWindow>();
-    EXPECT_CALL(*window, set_level_version(trlevel::LevelVersion::Tomb4)).Times(1);
-
-    auto manager = register_test_module().with_window_source([&]() { return window; }).build();
-    manager->set_level_version(trlevel::LevelVersion::Tomb4);
     manager->create_window();
 }
 

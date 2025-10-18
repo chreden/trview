@@ -41,12 +41,13 @@ namespace trview
         virtual void clear_selected_trigger() override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_number(int32_t number) override;
-        virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
+        void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) override;
         virtual std::weak_ptr<ITrigger> selected_trigger() const override;
         virtual void update(float delta) override;
         void receive_message(const Message& message) override;
+        void initialise();
     private:
         void set_sync_trigger(bool value);
         void render_triggers_list();

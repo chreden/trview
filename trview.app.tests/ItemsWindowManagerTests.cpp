@@ -1,4 +1,5 @@
 #include <trview.app/Windows/ItemsWindowManager.h>
+#include <trview.app/Windows/IItemsWindow.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.app/Mocks/Windows/IItemsWindow.h>
 #include <trview.app/Elements/Types.h>
@@ -20,9 +21,9 @@ namespace
         {
             Window window{ create_test_window(L"ItemsWindowManagerTests") };
             std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
-            ItemsWindow::Source window_source{ [](auto&&...) { return mock_shared<MockItemsWindow>(); } };
+            IItemsWindow::Source window_source{ [](auto&&...) { return mock_shared<MockItemsWindow>(); } };
 
-            test_module& with_window_source(const ItemsWindow::Source& source)
+            test_module& with_window_source(const IItemsWindow::Source& source)
             {
                 this->window_source = source;
                 return *this;
@@ -66,68 +67,6 @@ TEST(ItemsWindowManager, AddToRouteEventRaised)
     ASSERT_EQ(raised_item, test_item);
 }
 
-TEST(ItemsWindowManager, ItemSelectedEventRaised)
-{
-    auto manager = register_test_module().build();
-
-    std::shared_ptr<IItem> raised_item;
-    auto token = manager->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-
-    auto test_item = mock_shared<MockItem>();
-    created_window->on_item_selected(test_item);
-
-    ASSERT_TRUE(raised_item);
-    ASSERT_EQ(raised_item, test_item);
-}
-
-TEST(ItemsWindowManager, TriggerSelectedEventRaised)
-{
-    auto manager = register_test_module().build();
-
-    std::optional<std::weak_ptr<ITrigger>> raised_trigger;
-    auto token = manager->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-
-    auto test_trigger = mock_shared<MockTrigger>();
-    created_window->on_trigger_selected(test_trigger);
-
-    ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(raised_trigger.value().lock(), test_trigger);
-}
-
-TEST(ItemsWindowManager, SetItemsSetsItemsOnWindows)
-{
-    auto mock_window = mock_shared<MockItemsWindow>();
-    EXPECT_CALL(*mock_window, set_items).Times(2);
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-    ASSERT_EQ(created_window, mock_window);
-
-    manager->set_items({});
-}
-
-TEST(ItemsWindowManager, SetTriggersSetsTriggersOnWindows)
-{
-    auto mock_window = mock_shared<MockItemsWindow>();
-    EXPECT_CALL(*mock_window, set_triggers).Times(2);
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    auto trigger = mock_shared<MockTrigger>();
-    manager->set_triggers({ trigger });
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-    ASSERT_EQ(created_window, mock_window);
-    manager->set_triggers({ trigger });
-}
-
 TEST(ItemsWindowManager, SetRoomSetsRoomOnWindows)
 {
     auto mock_window = mock_shared<MockItemsWindow>();
@@ -138,29 +77,6 @@ TEST(ItemsWindowManager, SetRoomSetsRoomOnWindows)
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
     manager->set_room(mock_shared<MockRoom>());
-}
-
-TEST(ItemsWindowManager, SetSelectedItemSetsSelectedItemOnWindows)
-{
-    auto mock_window = mock_shared<MockItemsWindow>();
-    EXPECT_CALL(*mock_window, set_selected_item).Times(2);
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-    ASSERT_EQ(created_window, mock_window);
-    manager->set_selected_item(mock_shared<MockItem>());
-}
-
-TEST(ItemsWindowManager, CreateWindowCreatesNewWindowWithSavedValues)
-{
-    auto mock_window = mock_shared<MockItemsWindow>();
-    EXPECT_CALL(*mock_window, set_items).Times(1);
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-
-    auto created_window = manager->create_window().lock();
-    ASSERT_NE(created_window, nullptr);
-    ASSERT_EQ(created_window, mock_window);
 }
 
 TEST(ItemsWindowManager, CreateItemsWindowKeyboardShortcut)
@@ -177,25 +93,6 @@ TEST(ItemsWindowManager, WindowsUpdated)
     auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
     manager->create_window();
     manager->update(1.0f);
-}
-
-TEST(ItemsWindowManager, CreateWindowPassesLevelVersion)
-{
-    auto mock_window = mock_shared<MockItemsWindow>();
-    EXPECT_CALL(*mock_window, set_level_version(trlevel::LevelVersion::Tomb4)).Times(1);
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-    manager->set_level_version(trlevel::LevelVersion::Tomb4);
-    manager->create_window();
-}
-
-TEST(ItemsWindowManager, SetLevelVersionUpdatesWindows)
-{
-    auto mock_window = mock_shared<MockItemsWindow>();
-    EXPECT_CALL(*mock_window, set_level_version(trlevel::LevelVersion::Unknown)).Times(1);
-    EXPECT_CALL(*mock_window, set_level_version(trlevel::LevelVersion::Tomb4)).Times(1);
-    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
-    manager->create_window();
-    manager->set_level_version(trlevel::LevelVersion::Tomb4);
 }
 
 TEST(ItemsWindowManager, CreateWindowPassesModelChecker)

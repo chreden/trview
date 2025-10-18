@@ -32,10 +32,11 @@ namespace trview
         void set_level_platform(trlevel::Platform platform) override;
         void set_level_version(trlevel::LevelVersion version) override;
         void set_number(int32_t number) override;
-        void set_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source) override;
+        void set_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source);
         void set_sound_storage(const std::weak_ptr<ISoundStorage>& sound_storage) override;
         void set_sound_sources(const std::vector<std::weak_ptr<ISoundSource>>& sound_sources) override;
         void receive_message(const Message& message) override;
+        void initialise();
     private:
         bool render_sounds_window();
         void render_sound_sources_list();

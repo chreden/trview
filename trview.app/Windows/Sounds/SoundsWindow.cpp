@@ -145,7 +145,7 @@ namespace trview
                     set_local_selected_sound_source(sound_source);
                     if (_sync_sound_source)
                     {
-                        on_sound_source_selected(sound_source);
+                        messages::send_select_sound_source(_messaging, sound_source);
                     }
                 }, default_hide(filtered_sound_sources));
         }
@@ -343,5 +343,14 @@ namespace trview
                 _columns_set = true;
             }
         }
+        else if (auto selected_sound = messages::read_select_sound_source(message))
+        {
+            set_selected_sound_source(selected_sound.value());
+        }
+    }
+
+    void SoundsWindow::initialise()
+    {
+        messages::get_selected_sound_source(_messaging, weak_from_this());
     }
 }

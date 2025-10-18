@@ -49,23 +49,7 @@ namespace trview
         _route_window(std::move(route_window_manager)), _sounds_windows(std::move(sounds_window_manager)), _statics_windows(std::move(statics_window_manager)),
         _textures_windows(std::move(textures_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _pack_windows(std::move(pack_window_manager))
     {
-        _camera_sink_windows->on_camera_sink_selected += on_camera_sink_selected;
-        _camera_sink_windows->on_flyby_node_selected += on_flyby_node_selected;
-        _camera_sink_windows->on_trigger_selected += on_trigger_selected;
-
-        _diff_windows->on_item_selected += on_item_selected;
-        _diff_windows->on_light_selected += on_light_selected;
-        _diff_windows->on_trigger_selected += on_trigger_selected;
         _diff_windows->on_diff_ended += on_diff_ended;
-        _diff_windows->on_camera_sink_selected += on_camera_sink_selected;
-        _diff_windows->on_static_mesh_selected += on_static_selected;
-        _diff_windows->on_sound_source_selected += on_sound_source_selected;
-        _diff_windows->on_room_selected += on_room_selected;
-        _token_store += _diff_windows->on_sector_selected += [this](auto sector)
-            {
-                on_sector_selected(sector);
-                _rooms_windows->set_selected_sector(sector);
-            };
 
         _token_store += _items_windows->on_add_to_route += [this](auto item)
             {
@@ -74,24 +58,12 @@ namespace trview
                     add_waypoint(item_ptr->position(), Vector3::Down, item_room(item_ptr), IWaypoint::Type::Entity, item_ptr->number());
                 }
             };
-        _items_windows->on_item_selected += on_item_selected;
-        _items_windows->on_trigger_selected += on_trigger_selected;
-
-        _lights_windows->on_light_selected += on_light_selected;
             
         _pack_windows->on_level_open += on_level_open;
 
-        _rooms_windows->on_camera_sink_selected += on_camera_sink_selected;
-        _rooms_windows->on_item_selected += on_item_selected;
-        _rooms_windows->on_light_selected += on_light_selected;
-        _rooms_windows->on_room_selected += on_room_selected;
         _rooms_windows->on_sector_hover += on_sector_hover;
-        _rooms_windows->on_static_mesh_selected += on_static_selected;
-        _rooms_windows->on_trigger_selected += on_trigger_selected;
 
         _route_window->on_waypoint_selected += on_waypoint_selected;
-        _route_window->on_item_selected += on_item_selected;
-        _route_window->on_trigger_selected += on_trigger_selected;
         _route_window->on_route_open += on_route_open;
         _route_window->on_route_reload += on_route_reload;
         _route_window->on_route_save += on_route_save;
@@ -101,12 +73,6 @@ namespace trview
         _route_window->on_new_route += on_new_route;
         _route_window->on_new_randomizer_route += on_new_randomizer_route;
 
-        _sounds_windows->on_sound_source_selected += on_sound_source_selected;
-
-        _statics_windows->on_static_selected += on_static_selected;
-
-        _triggers_windows->on_item_selected += on_item_selected;
-        _triggers_windows->on_trigger_selected += on_trigger_selected;
         _token_store += _triggers_windows->on_add_to_route += [this](auto trigger)
             {
                 if (auto trigger_ptr = trigger.lock())
@@ -114,8 +80,6 @@ namespace trview
                     add_waypoint(trigger_ptr->position(), Vector3::Down, trigger_room(trigger_ptr), IWaypoint::Type::Trigger, trigger_ptr->number());
                 }
             };
-        _triggers_windows->on_camera_sink_selected += on_camera_sink_selected;
-        _triggers_windows->on_flyby_node_selected += on_flyby_node_selected;
     }
 
     bool Windows::is_route_window_open() const
@@ -154,45 +118,6 @@ namespace trview
         _triggers_windows->render();
     }
 
-    void Windows::select(const std::weak_ptr<ICameraSink>& camera_sink)
-    {
-        _camera_sink_windows->set_selected_camera_sink(camera_sink);
-        _rooms_windows->set_selected_camera_sink(camera_sink);
-    }
-
-    void Windows::select(const std::weak_ptr<IFlybyNode>& flyby_node)
-    {
-        _camera_sink_windows->set_selected_flyby_node(flyby_node);
-    }
-
-    void Windows::select(const std::weak_ptr<IItem>& item)
-    {
-        _items_windows->set_selected_item(item);
-        _rooms_windows->set_selected_item(item);
-    }
-
-    void Windows::select(const std::weak_ptr<ILight>& light)
-    {
-        _lights_windows->set_selected_light(light);
-        _rooms_windows->set_selected_light(light);
-    }
-
-    void Windows::select(const std::weak_ptr<ISoundSource>& sound_source)
-    {
-        _sounds_windows->select_sound_source(sound_source);
-    }
-
-    void Windows::select(const std::weak_ptr<IStaticMesh>& static_mesh)
-    {
-        _statics_windows->select_static(static_mesh);
-    }
-
-    void Windows::select(const std::weak_ptr<ITrigger>& trigger)
-    {
-        _rooms_windows->set_selected_trigger(trigger);
-        _triggers_windows->set_selected_trigger(trigger);
-    }
-
     void Windows::select(const std::weak_ptr<IWaypoint>& waypoint)
     {
         _route_window->select_waypoint(waypoint);
@@ -210,13 +135,8 @@ namespace trview
         _camera_sink_windows->set_flybys(new_level->flybys());
         _camera_sink_windows->set_platform_and_version(new_level->platform_and_version());
         _diff_windows->set_level(new_level);
-        _items_windows->set_items(new_level->items());
-        _items_windows->set_triggers(new_level->triggers());
-        _items_windows->set_level_version(new_level->version());
         _items_windows->set_model_checker([=](uint32_t id) { return new_level->has_model(id); });
         _items_windows->set_ng_plus(new_level->ng_plus());
-        _lights_windows->set_level_version(new_level->version());
-        _lights_windows->set_lights(new_level->lights());
         _pack_windows->set_level(new_level);
         _pack_windows->set_pack(new_level->pack());
         _rooms_windows->set_level_version(new_level->version());

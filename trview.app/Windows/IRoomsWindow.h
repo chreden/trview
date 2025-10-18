@@ -18,22 +18,11 @@ namespace trview
 
         virtual ~IRoomsWindow() = 0;
 
-        /// Event raised when the user has selected a room in the room window.
-        Event<std::weak_ptr<IRoom>> on_room_selected;
-
-        /// Event raised when the user has selected an item in the room window.
-        Event<std::weak_ptr<IItem>> on_item_selected;
-
-        /// Event raised when the user has selected a trigger in the room window.
-        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-
         /// Event raised when the window is closed.
         Event<> on_window_closed;
 
         Event<std::weak_ptr<ISector>> on_sector_hover;
 
-        Event<std::weak_ptr<ILight>> on_light_selected;
-        Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
         Event<std::weak_ptr<IStaticMesh>> on_static_mesh_selected;
 
         /// Clear the selected trigger.
@@ -59,14 +48,6 @@ namespace trview
         /// @param rooms The rooms to show.
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) = 0;
 
-        /// Set the item currently selected in the viewer.
-        /// @param item The item currently selected.
-        virtual void set_selected_item(const std::weak_ptr<IItem>& item) = 0;
-
-        /// Set the trigger currently selected in the viewer.
-        /// @param trigger The trigger currently selected.
-        virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
-
         /// <summary>
         /// Update the window.
         /// </summary>
@@ -86,6 +67,5 @@ namespace trview
         virtual void set_trng(bool value) = 0;
         virtual std::string name() const = 0;
         virtual void set_filters(std::vector<Filters<IRoom>::Filter> filters) = 0;
-        virtual void set_selected_sector(const std::weak_ptr<ISector>& sector) = 0;
     };
 }

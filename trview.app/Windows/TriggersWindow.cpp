@@ -243,7 +243,7 @@ namespace trview
                     set_local_selected_trigger(trigger);
                     if (_sync_trigger)
                     {
-                        on_trigger_selected(trigger);
+                        messages::send_select_trigger(_messaging, trigger);
                     }
                 }, default_hide(filtered_triggers));
         }
@@ -335,7 +335,7 @@ namespace trview
                         ImGui::TextWrapped("This trigger is affected by a trigger triggerer. This trigger will be disabled until the item is activated.");
                         if (ImGui::Button(std::format("Item {} - {}", item_ptr->number(), item_ptr->type()).c_str(), ImVec2(-1, 0)))
                         {
-                            on_item_selected(item);
+                            messages::send_select_item(_messaging, item);
                         }
                     }
                 }
@@ -381,7 +381,7 @@ namespace trview
                         if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object && command.index() < _all_items.size())
                         {
                             _track.set_enabled<Type::Room>(false);
-                            on_item_selected(_all_items[command.index()]);
+                            messages::send_select_item(_messaging, _all_items[command.index()]);
                         }
                         else if (equals_any(command.type(), TriggerCommandType::UnderwaterCurrent, TriggerCommandType::Camera))
                         {
@@ -390,7 +390,7 @@ namespace trview
                             {
                                 if (auto level = selected_trigger->level().lock())
                                 {
-                                    on_camera_sink_selected(level->camera_sink(command.index()));
+                                    messages::send_select_camera_sink(_messaging, level->camera_sink(command.index()));
                                 }
                             }
                         }
@@ -408,7 +408,7 @@ namespace trview
                                             const auto nodes = flyby->nodes();
                                             if (!nodes.empty())
                                             {
-                                                on_flyby_node_selected(nodes[0]);
+                                                messages::send_select_flyby_node(_messaging, nodes[0]);
                                             }
                                             break;
                                         }
@@ -632,5 +632,14 @@ namespace trview
                 _columns_set = true;
             }
         }
+        else if (auto selected_trigger = messages::read_select_trigger(message))
+        {
+            set_selected_trigger(selected_trigger.value());
+        }
+    }
+
+    void TriggersWindow::initialise()
+    {
+        messages::get_selected_trigger(_messaging, weak_from_this());
     }
 }

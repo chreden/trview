@@ -61,6 +61,7 @@
 #include "UI/ViewerUI.h"
 #include "UI/ViewOptions.h"
 #include "UI/MapRenderer.h"
+#include "Windows/ItemsWindow.h"
 #include "Windows/ItemsWindowManager.h"
 #include "Windows/LightsWindow.h"
 #include "Windows/LightsWindowManager.h"
@@ -398,12 +399,25 @@ namespace trview
             { 
                 auto renderer = std::make_shared<MapRenderer>(fonts, messaging);
                 messaging->add_recipient(renderer);
+                renderer->initialise();
                 return renderer;
             };
         auto clipboard = std::make_shared<Clipboard>(window);
-        auto items_window_source = [=]() { return std::make_shared<ItemsWindow>(clipboard, messaging); };
+        auto items_window_source = [=]()
+            {
+                auto new_window = std::make_shared<ItemsWindow>(clipboard, messaging);
+                messaging->add_recipient(new_window);
+                new_window->initialise();
+                return new_window;
+            };
         auto items_window_manager = std::make_shared<ItemsWindowManager>(window, shortcuts, items_window_source);
-        auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard, messaging); };
+        auto rooms_window_source = [=]()
+            {
+                auto new_window = std::make_shared<RoomsWindow>(map_renderer_source, clipboard, messaging);
+                messaging->add_recipient(new_window);
+                new_window->initialise();
+                return new_window;
+            };
         auto rooms_window_manager = std::make_shared<RoomsWindowManager>(window, shortcuts, rooms_window_source);
 
         auto settings_window = std::make_shared<SettingsWindow>(dialogs, shell, fonts, texture_storage, messaging);
@@ -443,23 +457,43 @@ namespace trview
             sampler_source,
             messaging);
         messaging->add_recipient(viewer);
+        viewer->initialise();
 
-        auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard, messaging); };
+        auto triggers_window_source = [=]()
+            { 
+                auto triggers_window = std::make_shared<TriggersWindow>(clipboard, messaging);
+                messaging->add_recipient(triggers_window);
+                triggers_window->initialise();
+                return triggers_window;
+            };
         auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files, messaging); };
         auto lights_window_source = [=]()
             { 
                 auto lights_window = std::make_shared<LightsWindow>(clipboard, messaging);
                 messaging->add_recipient(lights_window);
+                lights_window->initialise();
                 return lights_window;
             };
 
         auto log_window_source = [=]() { return std::make_shared<LogWindow>(log, dialogs, files); };
-        auto camera_sink_window_source = [=]() { return std::make_shared<CameraSinkWindow>(clipboard, camera, messaging); };
+        auto camera_sink_window_source = [=]()
+            { 
+                auto camera_sink_window = std::make_shared<CameraSinkWindow>(clipboard, camera, messaging);
+                messaging->add_recipient(camera_sink_window);
+                camera_sink_window->initialise();
+                return camera_sink_window;
+            };
 
         auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };
         auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard, messaging); };
-        auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(messaging); };
+        auto sounds_window_source = [=]()
+            {
+                auto sounds_window = std::make_shared<SoundsWindow>(messaging);
+                messaging->add_recipient(sounds_window);
+                sounds_window->initialise();
+                return sounds_window;
+            };
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
 
         auto level_name_source = [=](auto&& filename, auto&& pack) -> std::optional<ILevelNameLookup::Name>

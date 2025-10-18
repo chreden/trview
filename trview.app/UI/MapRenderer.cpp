@@ -346,31 +346,31 @@ namespace trview
                         {
                             if (has_flag(_previous_sector->flags(), SectorFlag::Portal))
                             {
-                                on_room_selected(level->room(_previous_sector->portals()[0]));
+                                messages::send_select_room(_messaging, level->room(_previous_sector->portals()[0]));
                             }
                             else if (!settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomBelow))
                             {
-                                on_room_selected(level->room(_previous_sector->room_below()));
+                                messages::send_select_room(_messaging, level->room(_previous_sector->room_below()));
                             }
                             else if (settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomAbove))
                             {
-                                on_room_selected(level->room(_previous_sector->room_above()));
+                                messages::send_select_room(_messaging, level->room(_previous_sector->room_above()));
                             }
                         }
                         else
                         {
-                            on_trigger_selected(trigger);
+                            messages::send_select_trigger(_messaging, trigger);
                         }
                     }
                     else if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && _mode == Mode::Normal)
                     {
                         if (!settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomAbove))
                         {
-                            on_room_selected(level->room(_previous_sector->room_above()));
+                            messages::send_select_room(_messaging, level->room(_previous_sector->room_above()));
                         }
                         else if (settings.invert_map_controls && has_flag(_previous_sector->flags(), SectorFlag::RoomBelow))
                         {
-                            on_room_selected(level->room(_previous_sector->room_below()));
+                            messages::send_select_room(_messaging, level->room(_previous_sector->room_below()));
                         }
                     }
                 }
@@ -396,6 +396,15 @@ namespace trview
         {
             _settings = settings.value();
         }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            load(selected_room.value().lock());
+        }
+    }
+
+    void MapRenderer::initialise()
+    {
+        messages::get_selected_room(_messaging, weak_from_this());
     }
 
     void MapRenderer::set_selection(const std::vector<std::shared_ptr<ISector>>& sectors)

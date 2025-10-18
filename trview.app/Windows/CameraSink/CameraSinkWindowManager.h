@@ -17,8 +17,6 @@ namespace trview
         void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
         void set_flybys(const std::vector<std::weak_ptr<IFlyby>>& flybys) override;
         void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) override;
-        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
-        void set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
         void update(float delta) override;
     private:

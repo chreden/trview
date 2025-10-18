@@ -765,7 +765,7 @@ namespace trview
             const auto show_table = [this](
                 const std::string& table_name,
                 const auto& diff_entries,
-                auto& on_selected,
+                auto&& on_selected,
                 const auto& key_get)
                 {
                     if (ImGui::BeginTable(table_name.c_str(), 5, ImGuiTableFlags_ScrollY))
@@ -843,49 +843,49 @@ namespace trview
             
             if (ImGui::BeginTabItem(std::format("Items{}", any_items ? "*" : "").c_str()))
             {
-                show_table("Items List", _diff->diff.items, on_item_selected, [](auto&& i) { return i->type(); });
+                show_table("Items List", _diff->diff.items, [&](auto&& item) { messages::send_select_item(_messaging, item); }, [](auto&& i) { return i->type(); });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Triggers{}", any_triggers ? "*" : "").c_str()))
             {
-                show_table("Triggers List", _diff->diff.triggers, on_trigger_selected, [](auto&& t) { return to_string(t->type()); });
+                show_table("Triggers List", _diff->diff.triggers, [&](auto&& trigger) { messages::send_select_trigger(_messaging, trigger); }, [](auto&& t) { return to_string(t->type()); });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Lights{}", any_lights ? "*" : "").c_str()))
             {
-                show_table("Lights List", _diff->diff.lights, on_light_selected, [](auto&& l) { return to_string(l->type()); });
+                show_table("Lights List", _diff->diff.lights, [&](auto&& light) { messages::send_select_light(_messaging, light); }, [](auto&& l) { return to_string(l->type()); });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Camera/Sink{}", any_camera_sink ? "*" : "").c_str()))
             {
-                show_table("CameraSink List", _diff->diff.camera_sinks, on_camera_sink_selected, [](auto&& c) { return to_string(c->type()); });
+                show_table("CameraSink List", _diff->diff.camera_sinks, [&](auto&& camera_sink) { messages::send_select_camera_sink(_messaging, camera_sink); }, [](auto&& c) { return to_string(c->type()); });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Statics{}", any_statics ? "*" : "").c_str()))
             {
-                show_table("Statics List", _diff->diff.static_meshes, on_static_mesh_selected, [](auto&& c) { return to_string(c->type()); });
+                show_table("Statics List", _diff->diff.static_meshes, [&](auto&& static_mesh) { messages::send_select_static_mesh(_messaging, static_mesh); }, [](auto&& c) { return to_string(c->type()); });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Sound Sources{}", any_sounds ? "*" : "").c_str()))
             {
-                show_table("Sounds List", _diff->diff.sound_sources, on_sound_source_selected, [](auto&&) { return "Sound"; });
+                show_table("Sounds List", _diff->diff.sound_sources, [&](auto&& sound_source) { messages::send_select_sound_source(_messaging, sound_source); }, [](auto&&) { return "Sound"; });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Rooms{}", any_rooms ? "*" : "").c_str()))
             {
-                show_table("Rooms List", _diff->diff.rooms, on_room_selected, [](auto&&) { return "Room"; });
+                show_table("Rooms List", _diff->diff.rooms, [&](auto&& room) { messages::send_select_room(_messaging, room); }, [](auto&&) { return "Room"; });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Sectors{}", any_sectors ? "*" : "").c_str()))
             {
-                show_table("Sectors List", _diff->diff.sectors, on_sector_selected, [](auto&&) { return "Sector"; });
+                show_table("Sectors List", _diff->diff.sectors, [&](auto&& sector) { messages::send_select_sector(_messaging, sector); }, [](auto&&) { return "Sector"; });
                 ImGui::EndTabItem();
             }
 

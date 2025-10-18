@@ -46,13 +46,6 @@ namespace trview
         bool is_route_window_open() const override;
         void update(float elapsed) override;
         void render() override;
-        void select(const std::weak_ptr<ICameraSink>& camera_sink) override;
-        void select(const std::weak_ptr<IFlybyNode>& flyby_node) override;
-        void select(const std::weak_ptr<IItem>& item) override;
-        void select(const std::weak_ptr<ILight>& light) override;
-        void select(const std::weak_ptr<ISoundSource>& sound_source) override;
-        void select(const std::weak_ptr<IStaticMesh>& static_mesh) override;
-        void select(const std::weak_ptr<ITrigger>& trigger) override;
         void select(const std::weak_ptr<IWaypoint>& waypoint) override;
         void set_level(const std::weak_ptr<ILevel>& level) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;

@@ -90,8 +90,6 @@ namespace trview
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (auto level = _level.lock()) { level->set_neighbour_depth(value); } };
 
-        _token_store += _ui->on_select_item += [&](const auto& item) { on_item_selected(item); };
-        _token_store += _ui->on_select_room += [&](const auto& room) { on_room_selected(room); };
         _token_store += _ui->on_toggle_changed += [this, toggles, persist_toggle_value](const std::string& name, bool value)
         {
             auto toggle = toggles.find(name);
@@ -264,7 +262,7 @@ namespace trview
         _token_store += _ui->on_orbit += [&]()
         {
             bool was_alternate_select = _was_alternate_select;
-            on_room_selected(room_from_pick(_context_pick));
+            messages::send_select_room(_messaging, room_from_pick(_context_pick));
             if (!was_alternate_select)
             {
                 set_camera_mode(ICamera::Mode::Orbit);
@@ -339,7 +337,6 @@ namespace trview
                 }
             }
         };
-        _ui->on_select_trigger += on_trigger_selected;
         _ui->on_font += on_font;
         _token_store += _ui->on_filter_items_to_tile += [&](auto&& window_ptr)
             {
@@ -699,18 +696,8 @@ namespace trview
         _level = level;
 
         _level_token_store.clear();
-        if (old_level)
-        {
-            old_level->on_room_selected -= on_room_selected;
-            old_level->on_item_selected -= on_item_selected;
-            old_level->on_trigger_selected -= on_trigger_selected;
-        }
-
         _level_token_store += new_level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
         _level_token_store += new_level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
-        new_level->on_room_selected += on_room_selected;
-        new_level->on_item_selected += on_item_selected;
-        new_level->on_trigger_selected += on_trigger_selected;
 
         new_level->set_show_triggers(_ui->toggle(Options::triggers));
         new_level->set_show_geometry(_ui->toggle(Options::geometry));
@@ -746,20 +733,18 @@ namespace trview
             std::weak_ptr<IItem> lara;
             if (_settings.go_to_lara && find_last_item_by_type_id(*new_level, 0u, lara))
             {
-                on_item_selected(lara);
+                messages::send_select_item(_messaging, lara);
             }
             else
             {
-                on_room_selected(new_level->room(0));
+                messages::send_select_room(_messaging, new_level->room(0));
             }
 
+            // TODO: Does this need to happen? Might be done by the above.
             if (auto selected_room = new_level->selected_room().lock())
             {
-                _ui->set_selected_room(selected_room);
+                messages::send_select_room(_messaging, selected_room);
             }
-
-            auto selected_item = new_level->selected_item();
-            _ui->set_selected_item(selected_item.value_or(0));
         }
         else if (open_mode == ILevel::OpenMode::Reload && old_level)
         {
@@ -884,7 +869,6 @@ namespace trview
         if (auto item_ptr = item.lock())
         {
             set_target(item_ptr->position());
-            _ui->set_selected_item(item_ptr->number());
             if (_settings.auto_orbit)
             {
                 set_camera_mode(ICamera::Mode::Orbit);
@@ -1310,20 +1294,22 @@ namespace trview
         switch (pick.type)
         {
         case PickResult::Type::Room:
-            on_room_selected(pick.room);
+        {
+            messages::send_select_room(_messaging, pick.room);
             if (pick.override_centre)
             {
                 set_target(pick.position);
             }
             break;
+        }
         case PickResult::Type::Entity:
         {
-            on_item_selected(pick.item);
+            messages::send_select_item(_messaging, pick.item);
             break;
         }
         case PickResult::Type::Trigger:
         {
-            on_trigger_selected(pick.trigger);
+            messages::send_select_trigger(_messaging, pick.trigger);
             break;
         }
         case PickResult::Type::Waypoint:
@@ -1333,17 +1319,17 @@ namespace trview
         }
         case PickResult::Type::Light:
         {
-            on_light_selected(pick.light);
+            messages::send_select_light(_messaging, pick.light);
             break;
         }
         case PickResult::Type::CameraSink:
         {
-            on_camera_sink_selected(pick.camera_sink);
+            messages::send_select_camera_sink(_messaging, pick.camera_sink);
             break;
         }
         case PickResult::Type::StaticMesh:
         {
-            on_static_mesh_selected(pick.static_mesh);
+            messages::send_select_static_mesh(_messaging, pick.static_mesh);
             break;
         }
         case PickResult::Type::Scriptable:
@@ -1356,7 +1342,7 @@ namespace trview
         }
         case PickResult::Type::SoundSource:
         {
-            on_sound_source_selected(pick.sound_source);
+            messages::send_select_sound_source(_messaging, pick.sound_source);
             break;
         }
         case PickResult::Type::FlybyNode:
@@ -1595,10 +1581,94 @@ namespace trview
 
     void Viewer::receive_message(const Message& message)
     {
-        if (auto settings = messages::read_settings(message))
+        if (auto selected_item = messages::read_select_item(message))
+        {
+            if (const auto item = selected_item->lock())
+            {
+                if (const auto level = item->level().lock())
+                {
+                    open(level, ILevel::OpenMode::Reload);
+                    select_room(item->room());
+                    select_item(item);
+                }
+            }
+        }
+        else if (auto selected_light = messages::read_select_light(message))
+        {
+            select_light(selected_light.value());
+        }
+        else if (auto settings = messages::read_settings(message))
         {
             _settings = settings.value();
             apply_camera_settings();
         }
+        else if (auto selected_trigger = messages::read_select_trigger(message))
+        {
+            if (const auto trigger = selected_trigger->lock())
+            {
+                if (const auto level = trigger->level().lock())
+                {
+                    open(level, ILevel::OpenMode::Reload);
+                    select_room(trigger->room());
+                    select_trigger(trigger);
+                }
+            }
+        }
+        else if (auto selected_camera_sink = messages::read_select_camera_sink(message))
+        {
+            if (const auto camera_sink = selected_camera_sink->lock())
+            {
+                if (const auto level = camera_sink->level().lock())
+                {
+                    open(level, ILevel::OpenMode::Reload);
+                    select_room(camera_sink->room());
+                    select_camera_sink(camera_sink);
+                }
+            }
+        }
+        else if (auto selected_sound_source = messages::read_select_sound_source(message))
+        {
+            if (const auto sound_source = selected_sound_source->lock())
+            {
+                if (const auto level = sound_source->level().lock())
+                {
+                    open(level, ILevel::OpenMode::Reload);
+                    select_sound_source(sound_source);
+                }
+            }
+        }
+        else if (auto selected_static_mesh = messages::read_select_static_mesh(message))
+        {
+            if (const auto static_mesh = selected_static_mesh->lock())
+            {
+                if (const auto level = static_mesh->level().lock())
+                {
+                    open(level, ILevel::OpenMode::Reload);
+                    select_static_mesh(static_mesh);
+                }
+            }
+        }
+        else if (auto selected_flyby_node = messages::read_select_flyby_node(message))
+        {
+            if (const auto flyby_node = selected_flyby_node->lock())
+            {
+                if (const auto level = flyby_node->level().lock())
+                {
+                    open(level, ILevel::OpenMode::Reload);
+                    select_flyby_node(flyby_node);
+                }
+            }
+        }
+    }
+
+    void Viewer::initialise()
+    {
+        messages::get_selected_item(_messaging, weak_from_this());
+        messages::get_selected_light(_messaging, weak_from_this());
+        messages::get_selected_trigger(_messaging, weak_from_this());
+        messages::get_selected_camera_sink(_messaging, weak_from_this());
+        messages::get_selected_sound_source(_messaging, weak_from_this());
+        messages::get_selected_static_mesh(_messaging, weak_from_this());
+        messages::get_selected_flyby_node(_messaging, weak_from_this());
     }
 }

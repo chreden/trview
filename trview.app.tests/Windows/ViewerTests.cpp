@@ -210,26 +210,6 @@ namespace
     }
 }
 
-/// Tests that the on_select_item event from the UI is observed and forwarded.
-TEST(Viewer, SelectItemRaisedForValidItem)
-{
-    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-
-    auto item = mock_shared<MockItem>();
-    auto level = mock_shared<MockLevel>();
-
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
-    viewer->open(level, ILevel::OpenMode::Full);
-
-    std::shared_ptr<IItem> raised_item;
-    auto token = viewer->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
-
-    ui.on_select_item(item);
-
-    ASSERT_TRUE(raised_item);
-    ASSERT_EQ(raised_item, item);
-}
-
 /// Tests that the on_hide event from the UI is observed and forwarded when the item is valid.
 TEST(Viewer, ItemVisibilityRaisedForValidItem)
 {
@@ -938,22 +918,20 @@ TEST(Viewer, SetShowRooms)
 TEST(Viewer, GoToLaraSelectsLast)
 {
     auto level = mock_shared<MockLevel>();
-    auto viewer = register_test_module().build();
+    auto messaging = mock_shared<MockMessageSystem>();
+    auto viewer = register_test_module().with_messaging(messaging).build();
 
     auto item1 = mock_shared<MockItem>();
     auto item2 = mock_shared<MockItem>();
     ON_CALL(*level, items).WillByDefault(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2 }));
 
-    std::shared_ptr<IItem> selected;
-    auto token = viewer->on_item_selected += [&](const auto& item)
-    {
-        selected = item.lock();
-    };
+    std::optional<trview::Message> raised;
+    EXPECT_CALL(*messaging, send_message).Times(testing::AtLeast(1)).WillRepeatedly(testing::SaveArg<0>(&raised));
 
     viewer->open(level, ILevel::OpenMode::Full);
 
-    ASSERT_TRUE(selected);
-    ASSERT_EQ(selected, item2);
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(std::static_pointer_cast<MessageData<std::weak_ptr<IItem>>>(raised->data)->value.lock(), item2);
 }
 
 TEST(Viewer, CameraSinkVisibilityRaisedForValidItem)
@@ -1041,28 +1019,6 @@ TEST(Viewer, RoomSelectedForwarded)
     raised.reset();
     level->on_room_selected(room);
     ASSERT_FALSE(raised);
-}
-
-TEST(Viewer, ItemSelectedForwarded)
-{
-    auto item = mock_shared<MockItem>();
-
-    auto level = mock_shared<MockLevel>();
-    auto viewer = register_test_module().build();
-
-    std::shared_ptr<IItem> raised;
-    auto token = viewer->on_item_selected += [&](auto i) { raised = i.lock(); };
-
-    viewer->open(level, ILevel::OpenMode::Full);
-    level->on_item_selected(item);
-
-    ASSERT_EQ(raised, item);
-
-    raised.reset();
-    auto new_level = mock_shared<MockLevel>();
-    viewer->open(new_level, ILevel::OpenMode::Full);
-    level->on_item_selected(item);
-    ASSERT_EQ(raised, nullptr);
 }
 
 TEST(Viewer, TriggerSelectedForwarded)

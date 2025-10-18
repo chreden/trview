@@ -5,9 +5,19 @@
 
 namespace trview
 {
-    struct Message;
-    struct IRecipient;
+    struct IItem;
+    struct ICameraSink;
+    struct IFlybyNode;
+    struct ILevel;
+    struct ILight;
     struct IMessageSystem;
+    struct IRecipient;
+    struct IRoom;
+    struct ISector;
+    struct ISoundSource;
+    struct IStaticMesh;
+    struct ITrigger;
+    struct Message;
     struct UserSettings;
 
     namespace messages
@@ -15,5 +25,46 @@ namespace trview
         void get_settings(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
         std::optional<UserSettings> read_settings(const Message& message);
         void send_settings(const std::weak_ptr<IMessageSystem>& messaging, const UserSettings& settings);
+
+        void get_open_level(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
+        std::optional<std::weak_ptr<ILevel>> read_open_level(const Message& message);
+        void send_open_level(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ILevel>& level);
+
+        // Selection:
+        void get_selected_camera_sink(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
+        std::optional<std::weak_ptr<ICameraSink>> read_select_camera_sink(const Message& message);
+        void send_select_camera_sink(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ICameraSink>& camera_sink);
+
+        void get_selected_item(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
+        std::optional<std::weak_ptr<IItem>> read_select_item(const Message& message);
+        void send_select_item(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IItem>& item);
+
+        void get_selected_flyby_node(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
+        std::optional<std::weak_ptr<IFlybyNode>> read_select_flyby_node(const Message& message);
+        void send_select_flyby_node(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IFlybyNode>& flyby_node);
+
+        void get_selected_light(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
+        std::optional<std::weak_ptr<ILight>> read_select_light(const Message& message);
+        void send_select_light(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ILight>& light);
+
+        void get_selected_room(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
+        std::optional<std::weak_ptr<IRoom>> read_select_room(const Message& message);
+        void send_select_room(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRoom>& room);
+
+        void get_selected_sector(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
+        std::optional<std::weak_ptr<ISector>> read_select_sector(const Message& message);
+        void send_select_sector(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ISector>& sector);
+
+        void get_selected_sound_source(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
+        std::optional<std::weak_ptr<ISoundSource>> read_select_sound_source(const Message& message);
+        void send_select_sound_source(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ISoundSource>& sound_source);
+
+        void get_selected_static_mesh(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
+        std::optional<std::weak_ptr<IStaticMesh>> read_select_static_mesh(const Message& message);
+        void send_select_static_mesh(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IStaticMesh>& static_mesh);
+
+        void get_selected_trigger(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
+        std::optional<std::weak_ptr<ITrigger>> read_select_trigger(const Message& message);
+        void send_select_trigger(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ITrigger>& trigger);
     }
 }

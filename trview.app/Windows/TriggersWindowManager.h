@@ -28,7 +28,6 @@ namespace trview
         virtual void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
-        virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual std::weak_ptr<ITriggersWindow> create_window() override;
         virtual void update(float delta) override;
     private:

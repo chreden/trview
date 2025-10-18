@@ -155,6 +155,8 @@ namespace trview
         void generate_camera_sinks(const trlevel::ILevel& level, const ICameraSink::Source& camera_sink_source);
         void generate_sound_sources(const trlevel::ILevel& level, const ISoundSource::Source& sound_source_source);
         void generate_flybys(const trlevel::ILevel& level, const IFlyby::Source& flyby_source);
+        void set_selected_light(const std::weak_ptr<ILight>& light);
+        void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
 
         // Render the rooms in the level.
         // context: The device context.
