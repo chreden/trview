@@ -199,24 +199,15 @@ namespace trview
         for (auto i = 0; i < _object_textures.size(); ++i)
         {
             const trlevel::tr_object_texture& ot = _object_textures[i];
-            const auto [min_x, max_x] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.x_whole; }));
-            const auto [min_y, max_y] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.y_whole; }));
+            const auto valid = ot.Vertices
+                | std::views::filter([](auto&& v) { return !(v.x_frac == 0 && v.x_whole == 0 && v.y_frac == 0 && v.y_whole == 0); })
+                | std::ranges::to<std::vector>();
+            const auto [min_x, max_x] = std::ranges::minmax(valid | std::views::transform([](auto&& v) { return v.x_whole; }));
+            const auto [min_y, max_y] = std::ranges::minmax(valid | std::views::transform([](auto&& v) { return v.y_whole; }));
             const uint32_t width = std::max(max_x - min_x, 1);
             const uint32_t height = std::max(max_y - min_y, 1);
 
-            std::vector<uint32_t> output_texture;
-            output_texture.resize(width * height, 0xffff00ff);
-
-            const auto& source_texture = _source_textures[ot.TileAndFlag & 0x7fff];
-
-            for (uint32_t y = 0; y < height; ++y)
-            {
-                memcpy(
-                    &output_texture[y * width],
-                    &source_texture.bytes[(min_y + y) * source_texture.width + min_x],
-                    sizeof(uint32_t) * width);
-            }
-
+            const uint32_t source_texture_index = ot.TileAndFlag & 0x7fff;
             TextureReplacement repl =
             {
                 .uvs = ot.Vertices | std::views::transform([&](auto&& v) -> Vector2
@@ -225,13 +216,52 @@ namespace trview
                         (static_cast<float>(v.x_whole - min_x) / width),
                         (static_cast<float>(v.y_whole - min_y) / height));
                 }) | std::ranges::to<std::vector>(),
-                .tile = _texture_storage->num_textures()
+                .tile = 0,
+                .min_x = min_x,
+                .min_y = min_y,
+                .max_x = max_x,
+                .max_y = max_y,
+                .source_tile = source_texture_index
             };
 
+            if (!find_matching_replacement(repl)) 
+            {
+                repl.tile = copy_subtexture(source_texture_index, min_x, min_y, width, height);
+            }
+
             _texture_replacements[static_cast<uint32_t>(i)] = repl;
-            add_textile(output_texture, width, height);
         }
 
         _source_textures = {};
+    }
+
+    uint32_t LevelTextureStorage::copy_subtexture(uint32_t source_texture_index, uint32_t min_x, uint32_t min_y, uint32_t width, uint32_t height)
+    {
+        std::vector<uint32_t> output_texture;
+        output_texture.resize(width * height, 0xffff00ff);
+
+        const auto& source_texture = _source_textures[source_texture_index];
+        for (uint32_t y = 0; y < height; ++y)
+        {
+            memcpy(&output_texture[y * width], &source_texture.bytes[(min_y + y) * source_texture.width + min_x], sizeof(uint32_t) * width);
+        }
+
+        uint32_t result = _texture_storage->num_textures();
+        add_textile(output_texture, width, height);
+        return result;
+    }
+
+    bool LevelTextureStorage::find_matching_replacement(TextureReplacement& repl) const
+    {
+        for (const auto& [key, value] : _texture_replacements)
+        {
+            if (value.source_tile == repl.source_tile &&
+                value.min_x == repl.min_x && value.min_y == repl.min_y && value.max_x == repl.max_x && value.max_y == repl.max_y)
+            {
+                repl.tile = value.tile;
+                return true;
+            }
+        }
+        return false;
     }
 }
