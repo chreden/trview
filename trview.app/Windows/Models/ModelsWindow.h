@@ -4,6 +4,7 @@
 #include <trview.graphics/IDevice.h>
 #include <trview.graphics/IBuffer.h>
 #include "../../Geometry/ITransparencyBuffer.h"
+#include <trview.graphics/Sampler/ISamplerState.h>
 
 namespace trview
 {
@@ -15,7 +16,8 @@ namespace trview
             const graphics::IRenderTarget::SizeSource& render_target_source,
             const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
             const graphics::IBuffer::ConstantSource& buffer_source,
-            ITransparencyBuffer::Source transparency_buffer_source);
+            ITransparencyBuffer::Source transparency_buffer_source,
+            const graphics::ISamplerState::Source& sampler_source);
         virtual ~ModelsWindow() = default;
         void render() override;
         void set_level_texture_storage(const std::weak_ptr<ILevelTextureStorage>& level_texture_storage) override;
@@ -37,5 +39,6 @@ namespace trview
         std::unique_ptr<graphics::IBuffer> _pixel_shader_data;
         std::unique_ptr<ITransparencyBuffer> _transparency_buffer;
         ITransparencyBuffer::Source _transparency_buffer_source;
+        std::shared_ptr<graphics::ISamplerState> _sampler_state;
     };
 }

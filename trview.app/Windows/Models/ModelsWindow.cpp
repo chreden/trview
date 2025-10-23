@@ -28,8 +28,10 @@ namespace trview
         const graphics::IRenderTarget::SizeSource& render_target_source,
         const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
         const graphics::IBuffer::ConstantSource& buffer_source,
-        ITransparencyBuffer::Source transparency_buffer_source)
-        : _device(device), _render_target(render_target_source(512, 512, graphics::IRenderTarget::DepthStencilMode::Enabled)), _transparency_buffer_source(transparency_buffer_source)
+        ITransparencyBuffer::Source transparency_buffer_source,
+        const graphics::ISamplerState::Source& sampler_source)
+        : _device(device), _render_target(render_target_source(512, 512, graphics::IRenderTarget::DepthStencilMode::Enabled)), _transparency_buffer_source(transparency_buffer_source),
+        _sampler_state(sampler_source(graphics::ISamplerState::AddressMode::Clamp))
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -106,6 +108,8 @@ namespace trview
 
             if (selected_model)
             {
+                _sampler_state->apply();
+
                 const auto box = selected_model->bounding_box();
                 const float ex = Vector3(box.Extents).Length();
                 const auto camera_pos = Vector3(0, box.Center.y - 0.25f, ex * 3.5f);

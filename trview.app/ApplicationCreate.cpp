@@ -462,7 +462,7 @@ namespace trview
         auto pack_window_source = [=]() { return std::make_shared<PackWindow>(files, dialogs); };
 
         auto transparency_buffer_source = [=](auto&& lts) { return std::make_unique<TransparencyBuffer>(device, lts); };
-        auto meshes_window_source = [=]() { return std::make_shared<ModelsWindow>(device, render_target_source, shader_storage, buffer_source, transparency_buffer_source); };
+        auto meshes_window_source = [=]() { return std::make_shared<ModelsWindow>(device, render_target_source, shader_storage, buffer_source, transparency_buffer_source, sampler_source); };
 
         auto application = std::make_shared<Application>(
             window,
