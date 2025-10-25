@@ -78,7 +78,7 @@ namespace trview
         bool camera_position_window{ true };
         std::list<std::string> recent_diff_files;
         std::unordered_map<std::string, PluginSetting> plugins;
-        LevelSortingMode level_sorting_mode{ LevelSortingMode::NameThenFilename };
+        LevelSortingMode level_sorting_mode{ LevelSortingMode::Full };
         std::vector<std::string> items_window_columns{ "#", "Room", "Type ID", "Type", "Hide" };
         std::vector<std::string> rooms_window_columns{ "#", "Items", "Triggers", "Statics", "Hide" };
         std::vector<std::string> statics_window_columns{ "#", "Room", "ID", "Type", "Hide" };

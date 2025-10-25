@@ -1,5 +1,7 @@
 #include "ImGuiFileMenu.h"
 #include <trview.common/Strings.h>
+#include "../Messages/Messages.h"
+#include "../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -96,6 +98,15 @@ namespace trview
                 // std::ranges::sort(_file_switcher, [](auto&& l, auto&& r) { return l.level_name < r.level_name; });
                 // break;
             }
+        }
+    }
+
+    void ImGuiFileMenu::receive_message(const Message& message)
+    {
+        if (auto settings = messages::read_settings(message))
+        {
+            set_sorting_mode(settings->level_sorting_mode);
+            set_recent_files(settings->recent_files);
         }
     }
 }

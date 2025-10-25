@@ -1,6 +1,8 @@
 #include "FileMenu.h"
 #include "../Resources/resource.h"
 #include <ranges>
+#include "../Messages/Messages.h"
+#include "../Settings/UserSettings.h"
 
 namespace trview
 {
@@ -77,8 +79,8 @@ namespace trview
     {
     }
 
-    FileMenu::FileMenu(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const LevelNameSource& level_name_source)
-        : MessageHandler(window), _dialogs(dialogs), _directory_listing_menu(create_directory_listing_menu(window)), _files(files), _level_name_source(level_name_source)
+    FileMenu::FileMenu(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const LevelNameSource& level_name_source, const std::weak_ptr<IMessageSystem>& messaging)
+        : MessageHandler(window), _dialogs(dialogs), _directory_listing_menu(create_directory_listing_menu(window)), _files(files), _level_name_source(level_name_source), _messaging(messaging)
     {
         DragAcceptFiles(window, TRUE);
 
@@ -267,6 +269,15 @@ namespace trview
                 std::format("{} ({})", _file_switcher_list[i].level_name.value().name, _file_switcher_list[i].friendly_name) :
                 _file_switcher_list[i].friendly_name;
             AppendMenu(_directory_listing_menu, MF_STRING, ID_SWITCHFILE_BASE + static_cast<int>(i), to_utf16(name).c_str());
+        }
+    }
+
+    void FileMenu::receive_message(const Message& message)
+    {
+        if (auto settings = messages::read_settings(message))
+        {
+            set_sorting_mode(settings->level_sorting_mode);
+            set_recent_files(settings->recent_files);
         }
     }
 }

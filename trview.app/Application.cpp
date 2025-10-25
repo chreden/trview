@@ -60,7 +60,7 @@ namespace trview
     Application::Application(const Window& application_window,
         std::unique_ptr<IUpdateChecker> update_checker,
         std::shared_ptr<ISettingsLoader> settings_loader,
-        std::unique_ptr<IFileMenu> file_menu,
+        const std::shared_ptr<IFileMenu>& file_menu,
         const std::shared_ptr<IViewer>& viewer,
         const IRoute::Source& route_source,
         std::shared_ptr<IShortcuts> shortcuts,
@@ -76,7 +76,7 @@ namespace trview
         LoadMode load_mode,
         const std::shared_ptr<IMessageSystem>& messaging)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
-        _file_menu(std::move(file_menu)), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _viewer(viewer),
+        _file_menu(file_menu), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _viewer(viewer),
         _route_source(route_source), _shortcuts(shortcuts), _level_source(level_source), _dialogs(dialogs), _files(files), _timer(default_time_source()),
         _imgui_backend(std::move(imgui_backend)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
         _windows(std::move(windows)), _messaging(messaging)
@@ -91,8 +91,6 @@ namespace trview
 
         set_route(_settings.randomizer_tools ? randomizer_route_source(std::nullopt) : route_source(std::nullopt));
 
-        _file_menu->set_sorting_mode(_settings.level_sorting_mode);
-        _file_menu->set_recent_files(_settings.recent_files);
         _token_store += _file_menu->on_file_open += [=](const auto& file) { open(file, ILevel::OpenMode::Full); };
         _token_store += _file_menu->on_reload += [=]() { reload(); };
 
@@ -130,7 +128,6 @@ namespace trview
                     }
                 }
             };
-                _file_menu->set_sorting_mode(_settings.level_sorting_mode);
 
         _windows->setup(_settings);
         setup_viewer(*startup_options);
@@ -322,7 +319,6 @@ namespace trview
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
         _token_store += _viewer->on_camera_sink_selected += [this](const auto& camera_sink) { select_camera_sink(camera_sink); };
         _token_store += _viewer->on_flyby_node_selected += [this](const auto& flyby_node) { select_flyby_node(flyby_node); };
-            _file_menu->set_sorting_mode(_settings.level_sorting_mode);
         _token_store += _viewer->on_font += [this](auto&& name, auto&& font) { _new_font = { name, font }; };
         _token_store += _viewer->on_static_mesh_selected += [this](const auto& static_mesh) { select_static_mesh(static_mesh); };
         _token_store += _viewer->on_sound_source_selected += [this](const auto& sound_source) { select_sound_source(sound_source); };
@@ -927,7 +923,6 @@ namespace trview
         }
 
         _settings.add_recent_file(op.filename);
-        _file_menu->set_recent_files(_settings.recent_files);
         _settings_loader->save_user_settings(_settings);
         messages::send_settings(_messaging, _settings);
         set_current_level(op.level, op.open_mode, false);

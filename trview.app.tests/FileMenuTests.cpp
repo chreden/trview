@@ -3,6 +3,7 @@
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trview.common/Mocks/IFiles.h>
 #include <trview.app/Resources/resource.h>
+#include <trview.common/Mocks/Messages/IMessageSystem.h>
 
 using namespace trlevel::mocks;
 using namespace trview;
@@ -26,14 +27,15 @@ namespace
             std::shared_ptr<MockDialogs> dialogs{ mock_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ mock_shared<MockFiles>() };
             FileMenu::LevelNameSource level_name_source{ [](auto&&...) { return std::nullopt; } };
+            std::shared_ptr<IMessageSystem> messaging{ mock_shared<MockMessageSystem>() };
 
-            std::unique_ptr<FileMenu> build()
+            std::shared_ptr<FileMenu> build()
             {
                 ON_CALL(*shortcuts, add_shortcut(false, VK_F5)).WillByDefault([&](auto, auto) -> Event<>&{ return f5_shortcut; });
                 ON_CALL(*shortcuts, add_shortcut(true, 'O')).WillByDefault([&](auto, auto) -> Event<>&{ return ctrl_o_shortcut; });
                 ON_CALL(*shortcuts, add_shortcut(false, VK_F6)).WillByDefault([&](auto, auto) -> Event<>&{ return f6_shortcut; });
                 ON_CALL(*shortcuts, add_shortcut(false, VK_F7)).WillByDefault([&](auto, auto) -> Event<>&{ return f7_shortcut; });
-                return std::make_unique<FileMenu>(window, shortcuts, dialogs, files, level_name_source);
+                return std::make_shared<FileMenu>(window, shortcuts, dialogs, files, level_name_source, messaging);
             }
 
             test_module& with_window(const trview::Window& window)
