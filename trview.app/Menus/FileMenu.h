@@ -4,6 +4,7 @@
 #include <trview.common/MessageHandler.h>
 #include <trview.common/IFiles.h>
 #include "IFileMenu.h"
+#include "../Elements/Level/ILevelNameLookup.h"
 
 namespace trview
 {
@@ -12,7 +13,7 @@ namespace trview
     public:
         static const inline std::string default_file_pattern{ "\\*.TR2*,\\*.TR4*,\\*.TRC*,\\*.PHD,\\*.PSX,\\*.OBJ,\\*.TOM,\\*.SAT" };
 
-        using LevelNameSource = std::function<std::optional<std::string>(const std::string&, const std::shared_ptr<trlevel::IPack>&)>;
+        using LevelNameSource = std::function<std::optional<ILevelNameLookup::Name>(const std::string&, const std::shared_ptr<trlevel::IPack>&)>;
 
         explicit FileMenu(
             const Window& window,
@@ -39,7 +40,7 @@ namespace trview
         {
             std::string path;
             std::string friendly_name;
-            std::optional<std::string> level_name;
+            std::optional<ILevelNameLookup::Name> level_name;
         };
 
         TokenStore _token_store;

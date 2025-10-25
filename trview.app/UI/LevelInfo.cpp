@@ -60,7 +60,7 @@ namespace trview
         {
             if (auto name = _level_name_lookup->lookup(level))
             {
-                _name = std::format("{} ({})", name.value(), level_ptr->name());
+                _name = std::format("{} ({})", name.value().name, level_ptr->name());
             }
             else
             {

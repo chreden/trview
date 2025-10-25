@@ -6,6 +6,8 @@ namespace trview
     {
         switch (mode)
         {
+        case LevelSortingMode::Full:
+            return "By game order, name, then filename";
         case LevelSortingMode::NameThenFilename:
             return "By name, then filename";
         case LevelSortingMode::FilenameOnly:

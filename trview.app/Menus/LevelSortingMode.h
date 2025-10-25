@@ -4,6 +4,7 @@ namespace trview
 {
     enum class LevelSortingMode
     {
+        Full,
         NameThenFilename,
         FilenameOnly
     };

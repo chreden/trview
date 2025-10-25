@@ -465,7 +465,7 @@ namespace trview
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
         auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, std::make_unique<ImGuiFileMenu>(dialogs, files), messaging); };
         auto pack_window_source = [=]() { return std::make_shared<PackWindow>(files, dialogs); };
-        auto level_name_source = [=](auto&& filename, auto&& pack) -> std::optional<std::string>
+        auto level_name_source = [=](auto&& filename, auto&& pack) -> std::optional<ILevelNameLookup::Name>
             {
                 try
                 {

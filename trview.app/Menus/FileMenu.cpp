@@ -238,6 +238,13 @@ namespace trview
     {
         switch (_sorting_mode)
         {
+            case LevelSortingMode::Full:
+            {
+                std::ranges::sort(_file_switcher_list, [](auto&& l, auto&& r) { return
+                    std::tuple(l.level_name.value_or({}).index, l.level_name.value_or({}).name) <
+                    std::tuple(r.level_name.value_or({}).index, r.level_name.value_or({}).name); });
+                break;
+            }
             case LevelSortingMode::FilenameOnly:
             {
                 std::ranges::sort(_file_switcher_list, [](auto&& l, auto&& r) { return l.friendly_name < r.friendly_name; });
@@ -245,7 +252,7 @@ namespace trview
             }
             case LevelSortingMode::NameThenFilename:
             {
-                std::ranges::sort(_file_switcher_list, [](auto&& l, auto&& r) { return l.level_name < r.level_name; });
+                std::ranges::sort(_file_switcher_list, [](auto&& l, auto&& r) { return l.level_name.value_or({}).name < r.level_name.value_or({}).name; });
                 break;
             }
         }
@@ -257,7 +264,7 @@ namespace trview
         for (auto i = 0u; i < _file_switcher_list.size(); ++i)
         {
             const auto name = _file_switcher_list[i].level_name.has_value() ?
-                std::format("{} ({})", _file_switcher_list[i].level_name.value(), _file_switcher_list[i].friendly_name) :
+                std::format("{} ({})", _file_switcher_list[i].level_name.value().name, _file_switcher_list[i].friendly_name) :
                 _file_switcher_list[i].friendly_name;
             AppendMenu(_directory_listing_menu, MF_STRING, ID_SWITCHFILE_BASE + static_cast<int>(i), to_utf16(name).c_str());
         }

@@ -75,22 +75,40 @@ namespace trview
             return version == trlevel::LevelVersion::Tomb4 ? tr4_opcode_size(opcode) : tr5_opcode_size(opcode);
         }
 
-        std::optional<std::vector<uint8_t>> load_strings_data(const std::shared_ptr<IFiles>& files, const std::filesystem::path& level_path)
+        std::vector<std::tuple<std::string, std::string>> find_level_names(const std::vector<uint8_t>& data)
+        {
+            const std::string strings_text = { std::from_range, data };
+
+            std::vector<std::tuple<std::string, std::string>> levels;
+            std::size_t current_position = strings_text.find("LVL_", 0);
+            while (current_position != strings_text.npos)
+            {
+                const std::size_t end_of_key = strings_text.find('=', current_position);
+                const std::size_t end_of_line = strings_text.find('\r', current_position);
+                const std::string key = strings_text.substr(current_position + 4, end_of_key - current_position - 4);
+                const std::string value = strings_text.substr(end_of_key + 1, end_of_line - end_of_key - 1);
+                levels.push_back({ key, value });
+                current_position = strings_text.find("LVL_", current_position + 1);
+            }
+            return levels;
+        }
+
+        std::optional<std::vector<std::tuple<std::string, std::string>>> load_strings_data(const std::shared_ptr<IFiles>& files, const std::filesystem::path& level_path)
         {
             if (const auto strings_data = files->load_file(level_path.parent_path() /= "../TEXT/EN/STRINGS.TXT"))
             {
-                return strings_data;
+                return find_level_names(strings_data.value());
             }
 
             if (const auto expansion_strings_data = files->load_file(level_path.parent_path() /= "../../TEXT/EN/STRINGS.TXT"))
             {
-                return expansion_strings_data;
+                return find_level_names(expansion_strings_data.value());
             }
 
             return std::nullopt;
         }
 
-        std::optional<std::string> read_tombpc_1_3(const std::shared_ptr<IFiles>& files, const std::string& level_filename)
+        std::optional<ILevelNameLookup::Name> read_tombpc_1_3(const std::shared_ptr<IFiles>& files, const std::string& level_filename)
         {
             const std::filesystem::path level_path{ level_filename };
             if (const auto tombpc_data = files->load_file(level_path.parent_path() /= "TOMBPC.DAT"))
@@ -145,7 +163,8 @@ namespace trview
                     const auto found_index = std::ranges::find_if(level_paths, [&](auto& f) { return f.contains(lower_filename); });
                     if (found_index != level_paths.end())
                     {
-                        return level_names[found_index - level_paths.begin()];
+                        const int32_t index = static_cast<int32_t>(found_index - level_paths.begin());
+                        return ILevelNameLookup::Name{ .name = level_names[index], .index = index };
                     }
                 }
                 catch(...)
@@ -266,12 +285,16 @@ namespace trview
             return std::nullopt;
         }
 
-        std::optional<std::string> read_english_4_5(const std::shared_ptr<IFiles>& files, const std::string& level_filename, trlevel::LevelVersion version)
+        std::optional<ILevelNameLookup::Name> read_english_4_5(const std::shared_ptr<IFiles>& files, const std::string& level_filename, trlevel::LevelVersion version)
         {
             const std::optional<uint8_t> string_index = string_index_for_level(files, level_filename, version);
             if (string_index.has_value())
             {
-                return string_at_index(files, level_filename, string_index.value());
+                const auto name = string_at_index(files, level_filename, string_index.value());
+                if (name)
+                {
+                    return ILevelNameLookup::Name{ .name = name.value(), .index = string_index };
+                }
             }
             return std::nullopt;
         }
@@ -295,13 +318,13 @@ namespace trview
             return std::nullopt;
         }
 
-        std::optional<std::string> level_name_from_strings(const std::shared_ptr<IFiles>& files, const std::filesystem::path& strings_path, int index)
+        std::optional<ILevelNameLookup::Name> level_name_from_strings(const std::shared_ptr<IFiles>& files, const std::filesystem::path& strings_path, int index)
         {
             if (auto strings = files->load_file(strings_path))
             {
                 auto json = nlohmann::json::parse(*strings, nullptr, true, true, true);
                 const auto& level = json["levels"].at(index);
-                return level["title"].get<std::string>();
+                return ILevelNameLookup::Name{ .name = level["title"].get<std::string>(), .index = index };
             }
             return std::nullopt;
         }
@@ -326,7 +349,7 @@ namespace trview
         }
     }
 
-    std::optional<std::string> LevelNameLookup::lookup(const std::weak_ptr<ILevel>& level) const
+    std::optional<ILevelNameLookup::Name> LevelNameLookup::lookup(const std::weak_ptr<ILevel>& level) const
     {
         const auto level_ptr = level.lock();
         if (!level_ptr)
@@ -336,7 +359,7 @@ namespace trview
         return get_name(level_ptr->filename(), level_ptr->platform_and_version(), level_ptr->hash());
     }
 
-    std::optional<std::string> LevelNameLookup::lookup(const std::weak_ptr<trlevel::ILevel>& level) const
+    std::optional<ILevelNameLookup::Name> LevelNameLookup::lookup(const std::weak_ptr<trlevel::ILevel>& level) const
     {
         const auto level_ptr = level.lock();
         if (!level_ptr)
@@ -351,7 +374,7 @@ namespace trview
         return false;
     }
 
-    std::optional<std::string> LevelNameLookup::check_remastered(const std::string& filename, trlevel::PlatformAndVersion platform_and_version) const
+    std::optional<ILevelNameLookup::Name> LevelNameLookup::check_remastered(const std::string& filename, trlevel::PlatformAndVersion platform_and_version) const
     {
         if (!platform_and_version.remastered)
         {
@@ -359,19 +382,14 @@ namespace trview
         }
 
         const std::filesystem::path level_path{ filename };
+        const std::string level_stem = level_path.stem().string();
         if (const auto strings_data = load_strings_data(_files, level_path))
         {
-            std::string level_stem = level_path.stem().string();
-            std::erase(level_stem, '_');
-            const std::string level_name = std::format("LVL_{}=", level_stem);
-            const std::string strings_text = { std::from_range, strings_data.value() };
-            const auto start = strings_text.find(level_name);
-            if (start != strings_text.npos)
+            for (std::size_t index = 0; index < strings_data->size(); ++index)
             {
-                const auto end = strings_text.find('\r', start);
-                if (end != strings_text.npos)
+                if (std::get<0>((*strings_data)[index]) == level_stem)
                 {
-                    return strings_text.substr(start + level_name.size(), end - start - level_name.size());
+                    return ILevelNameLookup::Name{ .name = std::get<1>((*strings_data)[index]), .index = static_cast<int32_t>(index) };
                 }
             }
         }
@@ -379,7 +397,7 @@ namespace trview
         return std::nullopt;
     }
 
-    std::optional<std::string> LevelNameLookup::check_trx(const std::string& filename, trlevel::PlatformAndVersion platform_and_version) const
+    std::optional<ILevelNameLookup::Name> LevelNameLookup::check_trx(const std::string& filename, trlevel::PlatformAndVersion platform_and_version) const
     {
         using namespace trlevel;
 
@@ -414,7 +432,7 @@ namespace trview
         return std::nullopt;
     }
 
-    std::optional<std::string> LevelNameLookup::get_name(const std::string& filename, trlevel::PlatformAndVersion platform_and_version, const std::string& hash) const
+    std::optional<ILevelNameLookup::Name> LevelNameLookup::get_name(const std::string& filename, trlevel::PlatformAndVersion platform_and_version, const std::string& hash) const
     {
         using namespace trlevel;
 
@@ -437,14 +455,14 @@ namespace trview
             case LevelVersion::Tomb3:
                 if (auto name = read_tombpc_1_3(_files, filename))
                 {
-                    return name.value();
+                    return name;
                 }
                 break;
             case LevelVersion::Tomb4:
             case LevelVersion::Tomb5:
                 if (auto name = read_english_4_5(_files, filename, platform_and_version.version))
                 {
-                    return name.value();
+                    return name;
                 }
                 break;
             }
@@ -454,7 +472,7 @@ namespace trview
         const auto found = _hashes.find(hash);
         if (found != _hashes.end())
         {
-            return found->second;
+            return ILevelNameLookup::Name{ .name = found->second };
         }
 
         return std::nullopt;
