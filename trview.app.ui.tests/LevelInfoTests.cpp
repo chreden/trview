@@ -57,7 +57,7 @@ void register_level_info_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto lookup = mock_shared<MockLevelNameLookup>();
-            ON_CALL(*lookup, lookup(A<const std::weak_ptr<ILevel>&>())).WillByDefault(testing::Return("test"));
+            ON_CALL(*lookup, lookup(A<const std::weak_ptr<ILevel>&>())).WillByDefault(testing::Return(ILevelNameLookup::Name{ .name = "test" }));
 
             auto& context = ctx->GetVars<LevelInfoContext>();
             context.ptr = register_test_module().with_level_name_lookup(lookup).build();
