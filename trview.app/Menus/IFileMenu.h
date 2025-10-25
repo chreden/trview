@@ -5,6 +5,8 @@
 #include <trview.common/Event.h>
 #include <trlevel/IPack.h>
 
+#include "LevelSortingMode.h"
+
 namespace trview
 {
     struct IFileMenu
@@ -22,11 +24,6 @@ namespace trview
         /// Render in ImGui mode.
         /// </summary>
         virtual void render() = 0;
-        /// <summary>
-        /// Set the list of recent files to display in the menu.
-        /// </summary>
-        /// <param name="files">The files to show.</param>
-        virtual void set_recent_files(const std::list<std::string>& files) = 0;
         virtual void switch_to(const std::string& filename) = 0;
         /// <summary>
         /// Event raised when the user opens a level. The opened level is passed as a parameter.

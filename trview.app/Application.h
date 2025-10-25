@@ -57,7 +57,7 @@ namespace trview
             const Window& application_window,
             std::unique_ptr<IUpdateChecker> update_checker,
             std::shared_ptr<ISettingsLoader> settings_loader,
-            std::unique_ptr<IFileMenu> file_menu,
+            const std::shared_ptr<IFileMenu>& file_menu,
             const std::shared_ptr<IViewer>& viewer,
             const IRoute::Source& route_source,
             std::shared_ptr<IShortcuts> shortcuts,
@@ -131,7 +131,7 @@ namespace trview
         // Window message related components.
         std::shared_ptr<ISettingsLoader> _settings_loader;
         UserSettings _settings;
-        std::unique_ptr<IFileMenu> _file_menu;
+        std::shared_ptr<IFileMenu> _file_menu;
         std::unique_ptr<IUpdateChecker> _update_checker;
         ViewMenu _view_menu;
         std::shared_ptr<IShortcuts> _shortcuts;

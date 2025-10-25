@@ -61,6 +61,24 @@ namespace trview
                         messages::send_settings(_message_system, _settings);
                     }
 
+                    ImGui::AlignTextToFramePadding();
+                    ImGui::Text("Switch Level sorting mode");
+                    ImGui::SameLine();
+                    if (ImGui::BeginCombo(std::format("##sortingmode").c_str(), to_string(_settings.level_sorting_mode).c_str(), ImGuiComboFlags_None))
+                    {
+                        for (int i = 0; i < 3; ++i)
+                        {
+                            LevelSortingMode current_mode = static_cast<LevelSortingMode>(i);
+                            bool is_selected = _settings.level_sorting_mode == current_mode;
+                            if (ImGui::Selectable(to_string(current_mode).c_str(), is_selected))
+                            {
+                                _settings.level_sorting_mode = current_mode;
+                                messages::send_settings(_message_system, _settings);
+                            }
+                        }
+                        ImGui::EndCombo();
+                    }
+
                     ImGui::EndTabItem();
                 }
 
