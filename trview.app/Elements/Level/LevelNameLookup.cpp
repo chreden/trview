@@ -75,11 +75,17 @@ namespace trview
             return version == trlevel::LevelVersion::Tomb4 ? tr4_opcode_size(opcode) : tr5_opcode_size(opcode);
         }
 
-        std::vector<std::tuple<std::string, std::string>> find_level_names(const std::vector<uint8_t>& data)
+        struct LevelKeyValue
+        {
+            std::string key;
+            std::string value;
+        };
+
+        std::vector<LevelKeyValue> find_level_names(const std::vector<uint8_t>& data)
         {
             const std::string strings_text = { std::from_range, data };
 
-            std::vector<std::tuple<std::string, std::string>> levels;
+            std::vector<LevelKeyValue> levels;
             std::size_t current_position = strings_text.find("LVL_", 0);
             while (current_position != strings_text.npos)
             {
@@ -87,13 +93,13 @@ namespace trview
                 const std::size_t end_of_line = strings_text.find('\r', current_position);
                 const std::string key = strings_text.substr(current_position + 4, end_of_key - current_position - 4);
                 const std::string value = strings_text.substr(end_of_key + 1, end_of_line - end_of_key - 1);
-                levels.push_back({ key, value });
+                levels.push_back({ .key = key, .value = value });
                 current_position = strings_text.find("LVL_", current_position + 1);
             }
             return levels;
         }
 
-        std::optional<std::vector<std::tuple<std::string, std::string>>> load_strings_data(const std::shared_ptr<IFiles>& files, const std::filesystem::path& level_path)
+        std::optional<std::vector<LevelKeyValue>> load_strings_data(const std::shared_ptr<IFiles>& files, const std::filesystem::path& level_path)
         {
             if (const auto strings_data = files->load_file(level_path.parent_path() /= "../TEXT/EN/STRINGS.TXT"))
             {
@@ -387,9 +393,10 @@ namespace trview
         {
             for (std::size_t index = 0; index < strings_data->size(); ++index)
             {
-                if (std::get<0>((*strings_data)[index]) == level_stem)
+                const auto& entry = (*strings_data)[index];
+                if (entry.key == level_stem)
                 {
-                    return ILevelNameLookup::Name{ .name = std::get<1>((*strings_data)[index]), .index = static_cast<int32_t>(index) };
+                    return ILevelNameLookup::Name{ .name = entry.value, .index = static_cast<int32_t>(index) };
                 }
             }
         }
