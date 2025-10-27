@@ -234,6 +234,43 @@ namespace trview
 
     void FileMenu::render()
     {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Open"))
+            {
+                const auto filename = _dialogs->open_file(L"Open level", { { L"All Tomb Raider Files", { L"*.tr2", L"*.tr4", L"*.trc", L"*.phd", L"*.psx", L"*.obj", L"*.tom", L"*.sat" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST, _initial_directory);
+                if (filename.has_value())
+                {
+                    _initial_directory = filename->directory;
+                    on_file_open(filename->filename);
+                }
+            }
+
+            if (ImGui::BeginMenu("Open Recent", !_recent_files.empty()))
+            {
+                for (const auto& file : _recent_files)
+                {
+                    if (ImGui::MenuItem(file.c_str()))
+                    {
+                        on_file_open(file);
+                    }
+                }
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Switch Level", !_file_switcher_list.empty()))
+            {
+                for (const auto& file : _file_switcher_list)
+                {
+                    if (ImGui::MenuItem(file.path.c_str()))
+                    {
+                        on_file_open(file.path);
+                    }
+                }
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenu();
+        }
     }
 
     void FileMenu::sort_level_switcher()

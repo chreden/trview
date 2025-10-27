@@ -464,10 +464,6 @@ namespace trview
         auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(messaging); };
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
 
-        auto imgui_file_menu = std::make_shared<ImGuiFileMenu>(dialogs, files);
-        messaging->add_recipient(imgui_file_menu);
-
-        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, imgui_file_menu, messaging); };
         auto pack_window_source = [=]() { return std::make_shared<PackWindow>(files, dialogs); };
         auto level_name_source = [=](auto&& filename, auto&& pack) -> std::optional<ILevelNameLookup::Name>
             {
@@ -485,6 +481,8 @@ namespace trview
 
         auto file_menu = std::make_shared<FileMenu>(window, shortcuts, dialogs, files, level_name_source, messaging);
         messaging->add_recipient(file_menu);
+
+        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, file_menu, messaging); };
 
         auto application = std::make_shared<Application>(
             window,
