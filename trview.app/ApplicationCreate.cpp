@@ -464,11 +464,6 @@ namespace trview
         auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(messaging); };
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
 
-        auto imgui_file_menu = std::make_shared<ImGuiFileMenu>(dialogs, files);
-        messaging->add_recipient(imgui_file_menu);
-
-        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, imgui_file_menu, messaging); };
-        auto pack_window_source = [=]() { return std::make_shared<PackWindow>(files, dialogs); };
         auto level_name_source = [=](auto&& filename, auto&& pack) -> std::optional<ILevelNameLookup::Name>
             {
                 try
@@ -477,11 +472,17 @@ namespace trview
                     level->load(trlevel::ILevel::LoadCallbacks{ .open_mode = trlevel::ILevel::LoadCallbacks::OpenMode::Preview });
                     return level_name_lookup->lookup(level);
                 }
-                catch(...)
+                catch (...)
                 {
                 }
                 return std::nullopt;
             };
+
+        auto imgui_file_menu = std::make_shared<ImGuiFileMenu>(dialogs, files, level_name_source);
+        messaging->add_recipient(imgui_file_menu);
+
+        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, imgui_file_menu, messaging); };
+        auto pack_window_source = [=]() { return std::make_shared<PackWindow>(files, dialogs); };
 
         auto file_menu = std::make_shared<FileMenu>(window, shortcuts, dialogs, files, level_name_source, messaging);
         messaging->add_recipient(file_menu);
