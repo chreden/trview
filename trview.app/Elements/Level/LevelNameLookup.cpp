@@ -311,14 +311,20 @@ namespace trview
             if (auto gameflow = files->load_file(gameflow_path))
             {
                 auto json = nlohmann::json::parse(*gameflow, nullptr, true, true, true);
-                for (const auto& level : json["levels"].items())
+                if (json.contains("levels"))
                 {
-                    const std::string level_path = level.value()["path"].get<std::string>();
-                    if (level_path == ("data/" + filename))
+                    for (const auto& level : json["levels"].items())
                     {
-                        return index;
+                        if (level.value().contains("path"))
+                        {
+                            const std::string level_path = level.value()["path"].get<std::string>();
+                            if (to_lowercase(level_path) == to_lowercase("data/" + filename))
+                            {
+                                return index;
+                            }
+                        }
+                        ++index;
                     }
-                    ++index;
                 }
             }
             return std::nullopt;
@@ -394,7 +400,7 @@ namespace trview
             for (std::size_t index = 0; index < strings_data->size(); ++index)
             {
                 const auto& entry = (*strings_data)[index];
-                if (entry.key == level_stem)
+                if (to_lowercase(entry.key) == to_lowercase(level_stem))
                 {
                     return ILevelNameLookup::Name{ .name = entry.value, .index = static_cast<int32_t>(index) };
                 }
