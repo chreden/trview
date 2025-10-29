@@ -722,10 +722,11 @@ namespace trlevel
 
             read_header(file, *bytes, activity, callbacks);
 
-            // Determine if this is remastered.
+            // TR1-3 remastered aren't identified by version - check for MAP file presence instead.
+            if (!_platform_and_version.remastered)
             {
                 std::filesystem::path level_path{ _filename };
-                level_path.replace_extension(".TEX");
+                level_path.replace_extension(".MAP");
                 _platform_and_version.remastered = _files->load_file(level_path.string()).has_value();
             }
 
@@ -738,14 +739,6 @@ namespace trlevel
             if (is_packed)
             {
                 _platform_and_version.is_pack = false;
-            }
-
-            // TR1-3 remastered aren't identified by version - check for MAP file presence instead.
-            if (!_platform_and_version.remastered)
-            {
-                std::filesystem::path level_path{ _filename };
-                level_path.replace_extension(".MAP");
-                _platform_and_version.remastered = _files->load_file(level_path.string()).has_value();
             }
 
             const std::unordered_map<PlatformAndVersion, std::function<void()>> loaders
