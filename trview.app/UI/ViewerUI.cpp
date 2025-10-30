@@ -30,7 +30,7 @@ namespace trview
 // Disabled as const auto all = { items, triggers, rooms } was being marked as unreachable in debug only.
 #pragma warning(push)
 #pragma warning(disable: 4702)
-    ViewerUI::ViewerUI(const Window& window, const std::shared_ptr<ITextureStorage>& texture_storage,
+    ViewerUI::ViewerUI(const Window& window,
         const std::shared_ptr<IShortcuts>& shortcuts,
         const IMapRenderer::Source& map_renderer_source,
         const std::shared_ptr<ISettingsWindow>& settings_window,
@@ -38,10 +38,11 @@ namespace trview
         std::unique_ptr<IContextMenu> context_menu,
         std::unique_ptr<ICameraControls> camera_controls,
         std::unique_ptr<IToolbar> toolbar,
-        const std::weak_ptr<IMessageSystem>& messaging)
+        const std::weak_ptr<IMessageSystem>& messaging,
+        std::unique_ptr<ILevelInfo> level_info)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _camera_controls(std::move(camera_controls)),
         _view_options(std::move(view_options)), _settings_window(settings_window), _context_menu(std::move(context_menu)), _toolbar(std::move(toolbar)),
-        _messaging(messaging)
+        _messaging(messaging), _level_info(std::move(level_info))
     {
         _token_store += shortcuts->add_shortcut(true, 'F') += [&]()
         {
@@ -116,7 +117,6 @@ namespace trview
         _context_menu->set_remove_enabled(false);
         _context_menu->set_hide_enabled(false);
 
-        _level_info = std::make_unique<LevelInfo>(*texture_storage);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
         _settings_window->on_font += on_font;
@@ -262,8 +262,7 @@ namespace trview
         _map_renderer->load({});
         if (auto new_level = _level.lock())
         {
-            _level_info->set_level(new_level->name());
-            _level_info->set_level_version(new_level->version());
+            _level_info->set_level(new_level);
             _view_options->set_ng_plus_enabled(
                 std::ranges::any_of(new_level->items(), [](auto&& i)
                     {
@@ -273,7 +272,7 @@ namespace trview
         }
         else
         {
-            _level_info->set_level("");
+            _level_info->set_level({});
         }
     }
 

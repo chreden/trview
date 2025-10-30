@@ -282,13 +282,13 @@ namespace trlevel
         }
     }
 
-    Level::Level(const std::string& filename, const std::shared_ptr<IPack>& pack, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log, const IPack::Source& pack_source)
-        : _log(log), _decrypter(decrypter), _filename(filename), _files(files), _pack_source(pack_source), _pack(pack)
+    Level::Level(const std::string& filename, const std::shared_ptr<IPack>& pack, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log, const std::shared_ptr<IHasher>& hasher, const IPack::Source& pack_source)
+        : _log(log), _decrypter(decrypter), _filename(filename), _files(files), _pack_source(pack_source), _pack(pack), _hasher(hasher)
     {
     }
 
-    Level::Level(const std::string& filename, const std::shared_ptr<IPack>& pack, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log)
-        : _log(log), _decrypter(decrypter), _filename(filename), _files(files), _pack(pack)
+    Level::Level(const std::string& filename, const std::shared_ptr<IPack>& pack, const std::shared_ptr<trview::IFiles>& files, const std::shared_ptr<IDecrypter>& decrypter, const std::shared_ptr<trview::ILog>& log, const std::shared_ptr<IHasher>& hasher)
+        : _log(log), _decrypter(decrypter), _filename(filename), _files(files), _pack(pack), _hasher(hasher)
     {
     }
 
@@ -684,12 +684,15 @@ namespace trlevel
     void Level::load(const LoadCallbacks& callbacks)
     {
         // Clear the log before loading the level so we don't keep accumulating memory.
-        _log->clear();
+        if (callbacks.open_mode != LoadCallbacks::OpenMode::Preview)
+        {
+            _log->clear();
+        }
 
         // Load the level from the file.
         _name = trview::filename_without_path(_filename);
 
-        trview::Activity activity(_log, "IO", "Load Level " + _name);
+        trview::Activity activity(callbacks.open_mode != LoadCallbacks::OpenMode::Preview ? _log : nullptr, "IO", "Load Level " + _name);
 
         try
         {
@@ -704,13 +707,30 @@ namespace trlevel
                 throw LevelLoadException();
             }
 
+            _hash = _hasher->hash(*bytes);
             std::basic_ispanstream<uint8_t> file{ std::span(*bytes) };
+
             file.exceptions(std::ios::failbit);
+
             log_file(activity, file, std::format("Opened file \"{}\"", _filename));
+            log_file(activity, file, std::format("File hash: {}", _hash));
+
+            if (callbacks.open_mode != LoadCallbacks::OpenMode::Preview)
+            {
+                OutputDebugStringA(std::format("{}\n", _hash).c_str());
+            }
 
             read_header(file, *bytes, activity, callbacks);
 
-            if (is_pack_preview)
+            // TR1-3 remastered aren't identified by version - check for MAP file presence instead.
+            if (!_platform_and_version.remastered)
+            {
+                std::filesystem::path level_path{ _filename };
+                level_path.replace_extension(".MAP");
+                _platform_and_version.remastered = _files->load_file(level_path.string()).has_value();
+            }
+
+            if (is_pack_preview || callbacks.open_mode == LoadCallbacks::OpenMode::Preview)
             {
                 return;
             }
@@ -719,14 +739,6 @@ namespace trlevel
             if (is_packed)
             {
                 _platform_and_version.is_pack = false;
-            }
-
-            // TR1-3 remastered aren't identified by version - check for MAP file presence instead.
-            if (!_platform_and_version.remastered)
-            {
-                std::filesystem::path level_path{ _filename };
-                level_path.replace_extension(".MAP");
-                _platform_and_version.remastered = _files->load_file(level_path.string()).has_value();
             }
 
             const std::unordered_map<PlatformAndVersion, std::function<void()>> loaders
@@ -1060,5 +1072,15 @@ namespace trlevel
     uint32_t Level::animated_texture_uv_count() const
     {
         return _animated_texture_uv_count;
+    }
+
+    std::string Level::hash() const
+    {
+        return _hash;
+    }
+
+    std::string Level::filename() const
+    {
+        return _filename;
     }
 }

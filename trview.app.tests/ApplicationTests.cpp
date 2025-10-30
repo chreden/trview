@@ -199,15 +199,18 @@ TEST(Application, LevelLoadedOnFileOpen)
 
 TEST(Application, RecentFilesUpdatedOnFileOpen)
 {
-    auto [file_menu_ptr, file_menu] = create_mock<MockFileMenu>();
-    EXPECT_CALL(file_menu, set_recent_files(std::list<std::string>{})).Times(1);
-    EXPECT_CALL(file_menu, set_recent_files(std::list<std::string>{"test_path.tr2"})).Times(1);
     std::optional<std::string> called;
     auto level_source = [&](auto&& filename, auto&&...) { called = filename; return mock_unique<mocks::MockLevel>(); };
-    auto application = register_test_module().with_level_source(level_source).with_file_menu(std::move(file_menu_ptr)).build();
+
+    auto messaging = mock_shared<MockMessageSystem>();
+    trview::Message called_settings;
+    EXPECT_CALL(*messaging, send_message).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
+
+    auto application = register_test_module().with_level_source(level_source).with_messaging(messaging).build();
     application->open("test_path.tr2", ILevel::OpenMode::Full);
     ASSERT_TRUE(called.has_value());
-    ASSERT_EQ(called.value(), "test_path.tr2");
+    std::list<std::string> expected{ "test_path.tr2" };
+    ASSERT_EQ(std::static_pointer_cast<MessageData<UserSettings>>(called_settings.data)->value.recent_files, expected);
 }
 
 TEST(Application, FileOpenedInViewer)

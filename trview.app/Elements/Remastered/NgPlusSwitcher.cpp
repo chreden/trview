@@ -26,7 +26,7 @@ namespace trview
     {
         Resource type_list = get_resource_memory(IDR_NGPLUS, L"TEXT");
         std::string ngplus_json = { type_list.data, type_list.data + type_list.size };
-        auto json = nlohmann::json::parse(ngplus_json.begin(), ngplus_json.end());
+        auto json = nlohmann::json::parse(ngplus_json.begin(), ngplus_json.end(), nullptr, true, true, true);
         for (auto& [key, value] : json["games"].items())
         {
             const auto version = version_mapping.find(key);

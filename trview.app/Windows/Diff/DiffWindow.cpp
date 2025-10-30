@@ -418,9 +418,9 @@ namespace trview
     {
     }
 
-    DiffWindow::DiffWindow(const std::shared_ptr<IDialogs>& dialogs, const ILevel::Source& level_source, std::unique_ptr<IFileMenu> file_menu,
+    DiffWindow::DiffWindow(const std::shared_ptr<IDialogs>& dialogs, const ILevel::Source& level_source, const std::shared_ptr<IFileMenu>& file_menu,
         const std::weak_ptr<IMessageSystem>& messaging)
-        : _dialogs(dialogs), _level_source(level_source), _file_menu(std::move(file_menu)), _messaging(messaging)
+        : _dialogs(dialogs), _level_source(level_source), _file_menu(file_menu), _messaging(messaging)
     {
         _token_store += _file_menu->on_file_open += [this](auto&& filename) { start_load(filename); };
     }
@@ -733,7 +733,6 @@ namespace trview
                 if (_settings)
                 {
                     _settings->add_recent_diff_file(_diff->level->filename());
-                    _file_menu->set_recent_files(_settings->recent_diff_files);
                     messages::send_settings(_messaging, *_settings);
                 }
             }
@@ -899,7 +898,6 @@ namespace trview
         if (auto settings = messages::read_settings(message))
         {
             _settings = settings.value();
-            _file_menu->set_recent_files(_settings->recent_diff_files);
         }
     }
 }

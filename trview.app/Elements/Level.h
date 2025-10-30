@@ -64,6 +64,7 @@ namespace trview
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const override;
         virtual PickResult pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual trlevel::Platform platform() const override;
+        trlevel::PlatformAndVersion platform_and_version() const override;
         void render(const ICamera& camera, bool render_selection) override;
         virtual void render_transparency(const ICamera& camera) override;
         virtual void set_highlight_mode(RoomHighlightMode mode, bool enabled) override;
@@ -139,7 +140,7 @@ namespace trview
         bool ng_plus() const override;
         bool trng() const override;
         std::weak_ptr<trlevel::IPack> pack() const override;
-        trlevel::PlatformAndVersion platform_and_version() const override;
+        std::string hash() const override;
         std::vector<std::weak_ptr<IFlyby>> flybys() const override;
         void update(float delta) override;
         void set_show_animation(bool show) override;
@@ -232,6 +233,7 @@ namespace trview
 
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         std::set<uint32_t> _alternate_groups;
+        trlevel::PlatformAndVersion _platform_and_version;
         std::string _filename;
         std::shared_ptr<ILog> _log;
         std::vector<uint16_t> _floor_data;
@@ -247,7 +249,7 @@ namespace trview
         std::shared_ptr<INgPlusSwitcher> _ngplus_switcher;
         bool _ng{ false };
         std::shared_ptr<trlevel::IPack> _pack;
-        trlevel::PlatformAndVersion _platform_and_version;
+        std::string _hash;
         std::shared_ptr<IModelStorage> _model_storage;
         bool _show_animation{ true };
 

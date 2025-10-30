@@ -6,7 +6,7 @@
 #include <trview.app/UI/IContextMenu.h>
 #include <trview.app/UI/GoTo.h>
 #include <trview.app/UI/IViewerUI.h>
-#include <trview.app/UI/LevelInfo.h>
+#include <trview.app/UI/ILevelInfo.h>
 #include <trview.app/UI/RoomNavigator.h>
 #include <trview.app/UI/ISettingsWindow.h>
 #include <trview.app/UI/Tooltip.h>
@@ -22,7 +22,6 @@ namespace trview
     {
     public:
         explicit ViewerUI(const Window& window,
-            const std::shared_ptr<ITextureStorage>& texture_storage,
             const std::shared_ptr<IShortcuts>& shortcuts,
             const IMapRenderer::Source& map_renderer_source,
             const std::shared_ptr<ISettingsWindow>& settings_window,
@@ -30,7 +29,8 @@ namespace trview
             std::unique_ptr<IContextMenu> context_menu,
             std::unique_ptr<ICameraControls> camera_controls,
             std::unique_ptr<IToolbar> toolbar,
-            const std::weak_ptr<IMessageSystem>& messaging);
+            const std::weak_ptr<IMessageSystem>& messaging,
+            std::unique_ptr<ILevelInfo> level_info);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual bool is_input_active() const override;
@@ -88,7 +88,7 @@ namespace trview
         std::unique_ptr<RoomNavigator> _room_navigator;
         std::unique_ptr<IViewOptions> _view_options;
         std::unique_ptr<IToolbar> _toolbar;
-        std::unique_ptr<LevelInfo> _level_info;
+        std::unique_ptr<ILevelInfo> _level_info;
         std::shared_ptr<ISettingsWindow> _settings_window;
         std::unique_ptr<ICameraControls> _camera_controls;
         std::unique_ptr<CameraPosition> _camera_position;

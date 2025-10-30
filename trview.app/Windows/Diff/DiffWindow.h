@@ -20,7 +20,7 @@ namespace trview
         {
         };
 
-        explicit DiffWindow(const std::shared_ptr<IDialogs>& dialogs, const ILevel::Source& level_source, std::unique_ptr<IFileMenu> file_menu, const std::weak_ptr<IMessageSystem>& messaging);
+        explicit DiffWindow(const std::shared_ptr<IDialogs>& dialogs, const ILevel::Source& level_source, const std::shared_ptr<IFileMenu>& file_menu, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~DiffWindow() = default;
         void render() override;
         void set_level(const std::weak_ptr<ILevel>& level) override;
@@ -86,7 +86,7 @@ namespace trview
         std::optional<LoadOperation> _diff;
         std::shared_ptr<IDialogs> _dialogs;
         std::weak_ptr<ILevel> _level;
-        std::unique_ptr<IFileMenu> _file_menu;
+        std::shared_ptr<IFileMenu> _file_menu;
         TokenStore _token_store;
         std::optional<UserSettings> _settings;
         bool _only_show_changes{ false };

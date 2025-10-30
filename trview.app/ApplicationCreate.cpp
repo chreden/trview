@@ -3,6 +3,7 @@
 #include <trlevel/Level.h>
 #include <trlevel/Decrypter.h>
 #include <trlevel/Pack.h>
+#include <trlevel/Hasher.h>
 #include <trview.common/Files.h>
 #include <trview.common/Logs/Log.h>
 #include <trview.common/windows/Clipboard.h>
@@ -94,6 +95,8 @@
 #include "Windows/Diff/DiffWindow.h"
 #include "Windows/Pack/PackWindowManager.h"
 #include "Windows/Pack/PackWindow.h"
+#include "UI/LevelInfo.h"
+#include "Elements/Level/LevelNameLookup.h"
 
 #include <trview.common/Messages/MessageSystem.h>
 
@@ -258,14 +261,16 @@ namespace trview
             };
 
         auto decrypter = std::make_shared<trlevel::Decrypter>();
-        auto trlevel_pack_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log); };
+        auto hasher = std::make_shared<trlevel::Hasher>();
+
+        auto trlevel_pack_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log, hasher); };
         const auto pack_source = [=](auto&&... args)
             { 
                 auto pack = std::make_shared<trlevel::Pack>(args..., trlevel_pack_source);
                 pack->load();
                 return pack;
             };
-        auto trlevel_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log, pack_source); };
+        auto trlevel_source = [=](auto&&... args) { return std::make_shared<trlevel::Level>(args..., files, decrypter, log, hasher, pack_source); };
 
         D3D11_SAMPLER_DESC sampler_desc;
         memset(&sampler_desc, 0, sizeof(sampler_desc));
@@ -404,9 +409,11 @@ namespace trview
         auto settings_window = std::make_shared<SettingsWindow>(dialogs, shell, fonts, texture_storage, messaging);
         messaging->add_recipient(settings_window);
 
+        Resource level_hashes = get_resource_memory(IDR_LEVEL_HASHES, L"TEXT");
+        auto level_name_lookup = std::make_shared<LevelNameLookup>(files, std::string(level_hashes.data, level_hashes.data + level_hashes.size));
+
         auto viewer_ui = std::make_shared<ViewerUI>(
             window,
-            texture_storage,
             shortcuts,
             map_renderer_source,
             settings_window,
@@ -414,7 +421,8 @@ namespace trview
             std::make_unique<ContextMenu>(items_window_manager),
             std::make_unique<CameraControls>(),
             std::make_unique<Toolbar>(plugins),
-            messaging);
+            messaging,
+            std::make_unique<LevelInfo>(*texture_storage, level_name_lookup));
         messaging->add_recipient(viewer_ui);
 
         const auto camera = std::make_shared<Camera>(window.size());
@@ -455,14 +463,35 @@ namespace trview
         auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard, messaging); };
         auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(messaging); };
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
-        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, std::make_unique<ImGuiFileMenu>(dialogs, files), messaging); };
+
+        auto level_name_source = [=](auto&& filename, auto&& pack) -> std::optional<ILevelNameLookup::Name>
+            {
+                try
+                {
+                    auto level = trlevel_source(filename, pack);
+                    level->load(trlevel::ILevel::LoadCallbacks{ .open_mode = trlevel::ILevel::LoadCallbacks::OpenMode::Preview });
+                    return level_name_lookup->lookup(level);
+                }
+                catch (...)
+                {
+                }
+                return std::nullopt;
+            };
+
+        auto imgui_file_menu = std::make_shared<ImGuiFileMenu>(dialogs, files, level_name_source);
+        messaging->add_recipient(imgui_file_menu);
+
+        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, imgui_file_menu, messaging); };
         auto pack_window_source = [=]() { return std::make_shared<PackWindow>(files, dialogs); };
+
+        auto file_menu = std::make_shared<FileMenu>(window, shortcuts, dialogs, files, level_name_source, messaging);
+        messaging->add_recipient(file_menu);
 
         auto application = std::make_shared<Application>(
             window,
             std::make_unique<UpdateChecker>(window),
             settings_loader,
-            std::make_unique<FileMenu>(window, shortcuts, dialogs, files),
+            file_menu,
             viewer,
             route_source,
             shortcuts,
