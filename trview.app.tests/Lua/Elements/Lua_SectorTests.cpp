@@ -250,6 +250,52 @@ TEST(Lua_Sector, Room)
     ASSERT_EQ(10, lua_tointeger(L, -1));
 }
 
+TEST(Lua_Sector, SectorAbove)
+{
+    auto other_sector = mock_shared<MockSector>()->with_id(123);
+    auto other_room = mock_shared<MockRoom>();
+    EXPECT_CALL(*other_room, sector).WillRepeatedly(testing::Return(other_sector));
+
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, room(10)).WillRepeatedly(testing::Return(other_room));
+
+    auto room = mock_shared<MockRoom>()->with_level(level);
+    auto sector = mock_shared<MockSector>()->with_room(room)->with_room_above(10);
+
+    LuaState L;
+    lua::create_sector(L, sector);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return s.sector_above"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return s.sector_above.number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(123, lua_tointeger(L, -1));
+}
+
+TEST(Lua_Sector, SectorBelow)
+{
+    auto other_sector = mock_shared<MockSector>()->with_id(123);
+    auto other_room = mock_shared<MockRoom>();
+    EXPECT_CALL(*other_room, sector).WillRepeatedly(testing::Return(other_sector));
+
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, room(10)).WillRepeatedly(testing::Return(other_room));
+
+    auto room = mock_shared<MockRoom>()->with_level(level);
+    auto sector = mock_shared<MockSector>()->with_room(room)->with_room_below(10);
+
+    LuaState L;
+    lua::create_sector(L, sector);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "return s.sector_below"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return s.sector_below.number"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_EQ(123, lua_tointeger(L, -1));
+}
+
 TEST(Lua_Sector, Trigger)
 {
     auto trigger = mock_shared<MockTrigger>()->with_number(10);
