@@ -343,5 +343,15 @@ namespace trview
 
     std::string light_mode_name(int16_t light_mode);
     uint32_t room_number(const std::weak_ptr<IRoom>& room);
+
+    struct VerticalPortalInfo
+    {
+        std::shared_ptr<ISector>        sector;
+        DirectX::SimpleMath::Vector3    offset;
+        std::shared_ptr<IRoom>          room;
+    };
+
+    std::optional<VerticalPortalInfo> sector_above(const std::shared_ptr<ISector>& sector);
+    std::optional<VerticalPortalInfo> sector_below(const std::shared_ptr<ISector>& sector);
 }
 

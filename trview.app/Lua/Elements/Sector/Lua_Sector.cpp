@@ -199,6 +199,14 @@ namespace trview
                 {
                     return create_room(L, sector->room().lock());
                 }
+                else if (key == "sector_above")
+                {
+                    return create_sector(L, sector_above(sector).value_or({}).sector);
+                }
+                else if (key == "sector_below")
+                {
+                    return create_sector(L, sector_below(sector).value_or({}).sector);
+                }
                 else if (key == "tilt_x")
                 {
                     lua_pushnumber(L, sector->tilt_x());

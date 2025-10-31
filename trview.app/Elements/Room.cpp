@@ -52,6 +52,66 @@ namespace trview
                 }
             }
         }
+
+        enum class VerticalPortalDirection
+        {
+            Above,
+            Below
+        };
+
+        std::optional<VerticalPortalInfo> vertical_sector(const std::shared_ptr<ISector>& sector, VerticalPortalDirection direction)
+        {
+            if ((sector->room_above() == 0xff && direction == VerticalPortalDirection::Above) ||
+                (sector->room_below() == 0xff && direction == VerticalPortalDirection::Below))
+            {
+                return std::nullopt;
+            }
+
+            const auto room = sector->room().lock();
+            if (!room)
+            {
+                return std::nullopt;
+            }
+
+            const auto level = room->level().lock();
+            if (!level)
+            {
+                return std::nullopt;
+            }
+
+            const auto other_room = level->room(direction == VerticalPortalDirection::Above ? sector->room_above() : sector->room_below()).lock();
+            if (!other_room)
+            {
+                return std::nullopt;
+            }
+
+            const int32_t x = sector->x();
+            const int32_t z = sector->z();
+            const Vector3 sector_position = Vector3(static_cast<float>(x), 0, static_cast<float>(z));
+
+            const auto diff = (room->position() - other_room->position()) + sector_position;
+            if (auto other_sector = other_room->sector(x, z).lock())
+            {
+                return VerticalPortalInfo
+                {
+                    .sector = other_sector,
+                    .offset = sector_position - diff,
+                    .room = other_room
+                };
+            }
+
+            return std::nullopt;
+        }
+    }
+
+    std::optional<VerticalPortalInfo> sector_above(const std::shared_ptr<ISector>& sector)
+    {
+        return vertical_sector(sector, VerticalPortalDirection::Above);
+    }
+
+    std::optional<VerticalPortalInfo> sector_below(const std::shared_ptr<ISector>& sector)
+    {
+        return vertical_sector(sector, VerticalPortalDirection::Below);
     }
 
     IRoom::~IRoom()
@@ -1075,32 +1135,18 @@ namespace trview
         }
 
         auto sector = _sectors[get_sector_id(x1, z1)];
-        if (sector->room_above() != 0xff)
+        if (auto above = sector_above(sector))
         {
-            const auto other_room = level->room(sector->room_above()).lock();
-            const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x1), 0, static_cast<float>(z1));
-            const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
-            const auto sectors = other_room->sectors();
-            if (other_id >= 0 && other_id < std::ssize(sectors))
-            {
-                portal.sector_above = other_room->sectors()[other_id];
-                portal.above_offset = Vector3(static_cast<float>(x1), 0, static_cast<float>(z1)) - diff;
-                portal.room_above = other_room;
-            }
+            portal.sector_above = above->sector;
+            portal.above_offset = above->offset;
+            portal.room_above = above->room;
         }
 
-        if (sector->room_below() != 0xff)
+        if (auto below = sector_below(sector))
         {
-            const auto other_room = level->room(sector->room_below()).lock();
-            const auto diff = (position() - other_room->position()) + Vector3(static_cast<float>(x1), 0, static_cast<float>(z1));
-            const int other_id = static_cast<int>(diff.x * other_room->num_z_sectors() + diff.z);
-            const auto sectors = other_room->sectors();
-            if (other_id >= 0 && other_id < std::ssize(sectors))
-            {
-                portal.sector_below = other_room->sectors()[other_id];
-                portal.below_offset = Vector3(static_cast<float>(x1), 0, static_cast<float>(z1)) - diff;
-                portal.room_below = other_room;
-            }
+            portal.sector_below = below->sector;
+            portal.below_offset = below->offset;
+            portal.room_below = below->room;
         }
 
         if (x2 >= _num_x_sectors || x2 < 0 || z2 >= _num_z_sectors || z2 < 0)
