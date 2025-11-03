@@ -113,7 +113,7 @@ namespace trview
         _global_selected_trigger = trigger;
         if (_sync_trigger)
         {
-            _scroll_to_trigger = true;
+            _filters.scroll_to_item();
             set_local_selected_trigger(trigger);
         }
     }
@@ -123,7 +123,7 @@ namespace trview
         if (_sync_trigger != value)
         {
             _sync_trigger = value;
-            _scroll_to_trigger = true;
+            _filters.scroll_to_item();
             if (_sync_trigger && _global_selected_trigger.lock())
             {
                 set_selected_trigger(_global_selected_trigger);

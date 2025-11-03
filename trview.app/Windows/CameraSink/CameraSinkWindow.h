@@ -79,7 +79,6 @@ namespace trview
 
         std::weak_ptr<ITrigger> _selected_trigger;
         bool _sync{ true };
-        bool _scroll_to{ false };
         std::weak_ptr<IRoom> _current_room;
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
         Track<Type::Room> _track;

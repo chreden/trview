@@ -77,7 +77,6 @@ namespace trview
         std::optional<VirtualCommand> _selected_command;
         std::weak_ptr<ITrigger> _selected_trigger;
         std::weak_ptr<ITrigger> _global_selected_trigger;
-        bool _scroll_to_trigger{ false };
         std::optional<float> _tooltip_timer;
         std::vector<Command> _local_selected_trigger_commands;
         std::vector<std::weak_ptr<IItem>> _local_selected_trigger_trigger_triggerers;
