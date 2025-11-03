@@ -98,7 +98,6 @@ namespace trview
     RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _map_renderer(map_renderer_source()), _clipboard(clipboard), _messaging(messaging)
     {
-        _map_renderer->on_room_selected += on_room_selected;
         _map_renderer->on_trigger_selected += on_trigger_selected;
         _map_renderer->on_sector_hover += on_sector_hover;
         _token_store += _map_renderer->on_sector_selected += [&](auto sector) { _local_selected_sector = sector; };
@@ -153,7 +152,8 @@ namespace trview
 
     void RoomsWindow::load_room_details(std::weak_ptr<IRoom> room)
     {
-        _map_renderer->load(room.lock());
+        room;
+        // _map_renderer->load(room.lock());
     }
 
     void RoomsWindow::set_items(const std::vector<std::weak_ptr<IItem>>& items)
@@ -328,7 +328,7 @@ namespace trview
                     _map_renderer->load(room.lock());
                     if (_sync_room)
                     {
-                        on_room_selected(_selected_room);
+                        messages::send_select_room(_messaging, _selected_room);
                     }
                 }, default_hide(filtered_rooms));
         }
@@ -638,7 +638,7 @@ namespace trview
                     { 
                         if (auto level = room->level().lock())
                         {
-                            on_room_selected(level->room(room->alternate_room()));
+                            messages::send_select_room(_messaging, level->room(room->alternate_room()));
                         }
                     });
                 if (room->alternate_group() != 0xff)
@@ -717,7 +717,7 @@ namespace trview
                         select_room(neighbour_room);
                         if (_sync_room)
                         {
-                            on_room_selected(neighbour_room);
+                            messages::send_select_room(_messaging, neighbour_room);
                         }
                     }
                 }
@@ -1188,10 +1188,15 @@ namespace trview
                 _columns_set = true;
             }
         }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            select_room(selected_room.value());
+        }
     }
 
     void RoomsWindow::initialise()
     {
+        messages::get_selected_room(_messaging, weak_from_this());
         messages::get_selected_item(_messaging, weak_from_this());
     }
 }

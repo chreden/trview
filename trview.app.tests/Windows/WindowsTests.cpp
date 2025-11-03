@@ -310,9 +310,6 @@ TEST(Windows, RoomsEventsForwarded)
     auto light = mock_shared<MockLight>();
     rooms.on_light_selected(light);
 
-    auto room = mock_shared<MockRoom>();
-    rooms.on_room_selected(room);
-
     auto sector = mock_shared<MockSector>();
     rooms.on_sector_hover(sector);
 
@@ -324,7 +321,6 @@ TEST(Windows, RoomsEventsForwarded)
 
     ASSERT_EQ(raised_camera, camera);
     ASSERT_EQ(raised_light, light);
-    ASSERT_EQ(raised_room, room);
     ASSERT_EQ(raised_sector, sector);
     ASSERT_EQ(raised_static, static_mesh);
     ASSERT_EQ(raised_trigger, trigger);

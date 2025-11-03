@@ -58,6 +58,7 @@ namespace trview
         Size size() const override;
         void reposition() override;
         void receive_message(const Message& message) override;
+        void initialise();
     private:
         std::shared_ptr<ISector> sector_at(const Point& p) const;
         // Determines the position (on screen) to draw a sector 

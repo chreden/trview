@@ -81,7 +81,6 @@ namespace trview
 
         _rooms_windows->on_camera_sink_selected += on_camera_sink_selected;
         _rooms_windows->on_light_selected += on_light_selected;
-        _rooms_windows->on_room_selected += on_room_selected;
         _rooms_windows->on_sector_hover += on_sector_hover;
         _rooms_windows->on_static_mesh_selected += on_static_selected;
         _rooms_windows->on_trigger_selected += on_trigger_selected;

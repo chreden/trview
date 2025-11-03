@@ -133,7 +133,6 @@ namespace trview
 
         _map_renderer = map_renderer_source();
         _map_renderer->on_sector_hover += on_sector_hover;
-        _map_renderer->on_room_selected += on_select_room;
         _map_renderer->on_trigger_selected += on_select_trigger;
     }
 #pragma warning(pop)
@@ -316,7 +315,7 @@ namespace trview
     {
         _room_navigator->set_selected_room(room->number());
         _selected_room = room->number();
-        _map_renderer->load(room);
+        // _map_renderer->load(room);
     }
 
     void ViewerUI::set_show_context_menu(bool value)
@@ -508,6 +507,10 @@ namespace trview
             {
                 set_toggle(toggle.first, toggle.second);
             }
+        }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_selected_room(selected_room.value().lock());
         }
     }
 }

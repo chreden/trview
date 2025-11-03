@@ -399,6 +399,7 @@ namespace trview
             { 
                 auto renderer = std::make_shared<MapRenderer>(fonts, messaging);
                 messaging->add_recipient(renderer);
+                renderer->initialise();
                 return renderer;
             };
         auto clipboard = std::make_shared<Clipboard>(window);

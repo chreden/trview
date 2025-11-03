@@ -965,6 +965,20 @@ namespace trview
                 }
             }
         }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            select_room(selected_room.value());
+        }
+        else if (message.type == "get_selected_room")
+        {
+            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
+            {
+                if (_level)
+                {
+                    requester->receive_message({ .type = "select_room", .data = std::make_shared<MessageData<std::weak_ptr<IRoom>>>(_level->selected_room()) });
+                }
+            }
+        }
         else if (auto settings = messages::read_settings(message))
         {
             _settings = settings.value();

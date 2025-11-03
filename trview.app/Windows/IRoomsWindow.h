@@ -18,9 +18,6 @@ namespace trview
 
         virtual ~IRoomsWindow() = 0;
 
-        /// Event raised when the user has selected a room in the room window.
-        Event<std::weak_ptr<IRoom>> on_room_selected;
-
         /// Event raised when the user has selected a trigger in the room window.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 

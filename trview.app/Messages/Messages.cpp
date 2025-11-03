@@ -57,5 +57,30 @@ namespace trview
                 ms->send_message({ .type = "select_item", .data = std::make_shared<MessageData<std::weak_ptr<IItem>>>(item) });
             }
         }
+
+        void get_selected_room(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
+        {
+            if (auto ms = messaging.lock())
+            {
+                ms->send_message(Message{ .type = "get_selected_room", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(reply_to) });
+            }
+        }
+
+        std::optional<std::weak_ptr<IRoom>> read_select_room(const Message& message)
+        {
+            if (message.type != "select_room")
+            {
+                return std::nullopt;
+            }
+            return std::static_pointer_cast<MessageData<std::weak_ptr<IRoom>>>(message.data)->value;
+        }
+
+        void send_select_room(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRoom>& room)
+        {
+            if (auto ms = messaging.lock())
+            {
+                ms->send_message({ .type = "select_room", .data = std::make_shared<MessageData<std::weak_ptr<IRoom>>>(room) });
+            }
+        }
     }
 }
