@@ -197,7 +197,7 @@ namespace trview
         if (_sync != value)
         {
             _sync = value;
-            _scroll_to = true;
+            _filters.scroll_to_item();
             if (_sync && _global_selected_camera_sink.lock())
             {
                 set_selected_camera_sink(_global_selected_camera_sink);
@@ -406,7 +406,7 @@ namespace trview
         _global_selected_camera_sink = camera_sink;
         if (_sync)
         {
-            _scroll_to = true;
+            _filters.scroll_to_item();
             set_local_selected_camera_sink(camera_sink);
         }
     }

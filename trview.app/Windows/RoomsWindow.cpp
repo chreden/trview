@@ -1088,6 +1088,7 @@ namespace trview
     void RoomsWindow::select_room(std::weak_ptr<IRoom> room)
     {
         _selected_room = room;
+        _filters.scroll_to_item();
         if (auto room_ptr = room.lock())
         {
             set_triggers(room_ptr->triggers());
