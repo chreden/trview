@@ -2,8 +2,6 @@
 #include "Resources/resource.h"
 
 #include <trlevel/ILevel.h>
-#include <trview.graphics/RenderTargetStore.h>
-#include <trview.graphics/ISprite.h>
 #include <trview.graphics/ViewportStore.h>
 #include <trview.common/Strings.h>
 #include <trview.common/Messages/Message.h>
@@ -24,19 +22,17 @@ namespace trview
     }
 
     Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<IViewerUI>& ui, std::unique_ptr<IPicking> picking,
-        std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::Source& sprite_source,
-        std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure, const graphics::IRenderTarget::SizeSource& render_target_source, const graphics::IDeviceWindow::Source& device_window_source,
-        std::unique_ptr<ISectorHighlight> sector_highlight, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<ICamera>& camera, const graphics::ISamplerState::Source& sampler_source,
+        std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, std::unique_ptr<ICompass> compass,
+        std::unique_ptr<IMeasure> measure, const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ISectorHighlight> sector_highlight,
+        const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<ICamera>& camera, const graphics::ISamplerState::Source& sampler_source,
         const std::weak_ptr<IMessageSystem>& messaging)
         : MessageHandler(window), _shortcuts(shortcuts), _timer(default_time_source()), _keyboard(window), _mouse(std::move(mouse)), _window_resizer(window),
         _alternate_group_toggler(window), _menu_detector(window), _device(device), _route(route), _ui(ui), _picking(std::move(picking)),
-        _compass(std::move(compass)), _measure(std::move(measure)), _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight)),
+        _compass(std::move(compass)), _measure(std::move(measure)), _sector_highlight(std::move(sector_highlight)),
         _clipboard(clipboard), _camera(camera), _sampler_source(sampler_source), _messaging(messaging)
     {
         apply_camera_settings();
 
-        _scene_target = _render_target_source(static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::IRenderTarget::DepthStencilMode::Enabled);
-        _scene_sprite = sprite_source(window.size());
         _token_store += _camera->on_mode_changed += [&](auto mode)
             {
                 _ui->set_camera_mode(mode);
@@ -801,16 +797,8 @@ namespace trview
         _device->begin();
         _main_window->begin();
         _main_window->clear(Colour(_settings.background_colour));
+        render_scene();
 
-        {
-            _scene_target->clear(Colour::Transparent);
-            graphics::RenderTargetStore rs_store(_device->context());
-            graphics::ViewportStore vp_store(_device->context());
-            _scene_target->apply();
-            render_scene();
-        }
-
-        _scene_sprite->render(_scene_target->texture(), 0, 0, window().size().width, window().size().height);
         _ui->set_camera_position(_camera->position());
         _ui->set_camera_rotation(_camera->rotation_yaw(), _camera->rotation_pitch());
     }
@@ -837,7 +825,6 @@ namespace trview
         if (auto level = _level.lock())
         {
             level->render(*_camera, _show_selection);
-            auto texture_storage = level->texture_storage();
 
             _sector_highlight->render(*_camera);
             _measure->render(*_camera);
@@ -1027,8 +1014,6 @@ namespace trview
         // Inform elements that need to know that the device has been resized.
         _camera->set_view_size(size);
         _ui->set_host_size_changed();
-        _scene_target = _render_target_source(static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height), graphics::IRenderTarget::DepthStencilMode::Enabled);
-        _scene_sprite->set_host_size(size);
     }
 
     // Set up keyboard and mouse input for the camera.
