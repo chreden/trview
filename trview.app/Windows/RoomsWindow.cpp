@@ -143,7 +143,7 @@ namespace trview
 
         _local_selected_sector.reset();
         _current_room = room;
-        _scroll_to_room = true;
+        _filters.scroll_to_item();
         if (_sync_room && room_ptr)
         {
             select_room(_current_room);
@@ -193,7 +193,7 @@ namespace trview
                 if (auto item_ptr = item.lock())
                 {
                     select_room(item_ptr->room());
-                    _scroll_to_room = true;
+                    _filters.scroll_to_item();
                     load_room_details(item_ptr->room());
                 }
             }
@@ -213,7 +213,7 @@ namespace trview
                 if (_selected_room.lock() != _current_room.lock())
                 {
                     select_room(trigger_ptr->room());
-                    _scroll_to_room = true;
+                    _filters.scroll_to_item();
                     load_room_details(trigger_ptr->room());
                 }
 
@@ -394,10 +394,10 @@ namespace trview
                         _scroll_to_light = false;
                     }
 
-                    if (ImGui::BeginTabItem("Floordata"))
+                    if (ImGui::BeginTabItem("Sector"))
                     {
                         _map_renderer->set_mode(IMapRenderer::Mode::Select);
-                        render_floordata_tab(room);
+                        render_sector_tab(room);
                         ImGui::EndTabItem();
                     }
                     else
@@ -828,72 +828,116 @@ namespace trview
         }
     }
 
-    void RoomsWindow::render_floordata_tab(const std::shared_ptr<IRoom>&)
+    void RoomsWindow::render_sector_tab(const std::shared_ptr<IRoom>&)
     {
-        ImGui::Checkbox(Names::simple_mode.c_str(), &_simple_mode);
-
         auto selected_sector = _local_selected_sector.lock();
         if (!selected_sector)
         {
             ImGui::Text("Select a sector to view floordata");
         }
-        else if (ImGui::BeginTable("##floordata", _simple_mode ? 2 : 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingStretchProp))
+        else 
         {
-            ImGui::TableSetupColumn("#");
-            ImGui::TableSetupColumn("Value");
-            if (!_simple_mode)
+            // Some stats table
+            const auto add_stat = [&]<typename T>(const std::string & name, const T && value, std::function<void()> click = {})
             {
-                ImGui::TableSetupColumn("Meaning");
-            }
-            ImGui::TableSetupScrollFreeze(0, 1);
-            ImGui::TableHeadersRow();
-
-            if (selected_sector)
-            {
-                const Floordata floordata = parse_floordata(_floordata, selected_sector->floordata_index(), FloordataMeanings::Generate, _all_items, _trng);
-
-                uint32_t index = selected_sector->floordata_index();
-                for (const auto& command : floordata.commands)
+                const auto string_value = get_string(value);
+                ImGui::TableNextColumn();
+                if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                 {
-                    for (std::size_t i = 0; i < command.data.size(); ++i, ++index)
+                    if (click)
                     {
-                        ImGui::TableNextRow();
-                        ImGui::TableNextColumn();
-                        bool selected = _selected_floordata == index;
-                        if (ImGui::Selectable(std::format("{}", index).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns))
+                        click();
+                    }
+                }
+                ImGui::TableNextColumn();
+                ImGui::Text(string_value.c_str());
+            };
+
+            if (ImGui::BeginTable(Names::properties.c_str(), 2, ImGuiTableFlags_SizingStretchSame))
+            {
+                ImGui::TableSetupColumn("Name");
+                ImGui::TableSetupColumn("Value");
+                ImGui::TableNextRow();
+
+                add_stat("Floordata Index", selected_sector->floordata_index());
+                if (_level_version >= trlevel::LevelVersion::Tomb3)
+                {
+                    add_stat("Material", selected_sector->material());
+                }
+                add_stat("Box Index", selected_sector->box_index());
+                if (_level_version >= trlevel::LevelVersion::Tomb3)
+                {
+                    add_stat("Stopper", selected_sector->stopper());
+                }
+                add_stat("Room Below", selected_sector->room_below());
+                add_stat("Floor", selected_sector->floor());
+                add_stat("Room Above", selected_sector->room_above());
+                add_stat("Ceiling", selected_sector->ceiling());
+
+                ImGui::EndTable();
+            }
+
+            ImGui::NewLine();
+
+            ImGui::Checkbox(Names::simple_mode.c_str(), &_simple_mode);
+            if (ImGui::BeginTable("##floordata", _simple_mode ? 2 : 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingStretchProp))
+            {
+                ImGui::TableSetupColumn("#");
+                ImGui::TableSetupColumn("Value");
+                if (!_simple_mode)
+                {
+                    ImGui::TableSetupColumn("Meaning");
+                }
+                ImGui::TableSetupScrollFreeze(0, 1);
+                ImGui::TableHeadersRow();
+
+                if (selected_sector)
+                {
+                    const Floordata floordata = parse_floordata(_floordata, selected_sector->floordata_index(), FloordataMeanings::Generate, _all_items, _trng);
+
+                    uint32_t index = selected_sector->floordata_index();
+                    for (const auto& command : floordata.commands)
+                    {
+                        for (std::size_t i = 0; i < command.data.size(); ++i, ++index)
                         {
-                            _selected_floordata = index;
-                        }
-                        if (ImGui::BeginPopupContextItem())
-                        {
-                            if (ImGui::MenuItem("Copy"))
-                            {
-                                _clipboard->write(to_utf16(std::format("{} {:04X} {}", index, command.data[i],
-                                    _simple_mode ? "" : command.meanings[i])));
-                            }
-                            if (ImGui::MenuItem("Copy All"))
-                            {
-                                std::string data;
-                                for (uint32_t d = 0; d < command.data.size(); ++d)
-                                {
-                                    data += std::format("{} {:04X} {}\n", index, command.data[d],
-                                        _simple_mode ? "" : command.meanings[d]);
-                                }
-                                _clipboard->write(to_utf16(data));
-                            }
-                            ImGui::EndPopup();
-                        }
-                        ImGui::TableNextColumn();
-                        ImGui::Text("%04X", command.data[i]);
-                        if (!_simple_mode)
-                        {
+                            ImGui::TableNextRow();
                             ImGui::TableNextColumn();
-                            ImGui::Text(command.meanings[i].c_str());
+                            bool selected = _selected_floordata == index;
+                            if (ImGui::Selectable(std::format("{}", index).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns))
+                            {
+                                _selected_floordata = index;
+                            }
+                            if (ImGui::BeginPopupContextItem())
+                            {
+                                if (ImGui::MenuItem("Copy"))
+                                {
+                                    _clipboard->write(to_utf16(std::format("{} {:04X} {}", index, command.data[i],
+                                        _simple_mode ? "" : command.meanings[i])));
+                                }
+                                if (ImGui::MenuItem("Copy All"))
+                                {
+                                    std::string data;
+                                    for (uint32_t d = 0; d < command.data.size(); ++d)
+                                    {
+                                        data += std::format("{} {:04X} {}\n", index, command.data[d],
+                                            _simple_mode ? "" : command.meanings[d]);
+                                    }
+                                    _clipboard->write(to_utf16(data));
+                                }
+                                ImGui::EndPopup();
+                            }
+                            ImGui::TableNextColumn();
+                            ImGui::Text("%04X", command.data[i]);
+                            if (!_simple_mode)
+                            {
+                                ImGui::TableNextColumn();
+                                ImGui::Text(command.meanings[i].c_str());
+                            }
                         }
                     }
                 }
+                ImGui::EndTable();
             }
-            ImGui::EndTable();
         }
     }
 
@@ -913,7 +957,7 @@ namespace trview
                 {
                     const auto actual = sector_ptr->room();
                     select_room(actual);
-                    _scroll_to_room = true;
+                    _filters.scroll_to_item();
                     load_room_details(actual);
                 }
                 _local_selected_sector = sector;
@@ -932,7 +976,7 @@ namespace trview
                 if (_selected_room.lock() != _current_room.lock())
                 {
                     select_room(light_ptr->room());
-                    _scroll_to_room = true;
+                    _filters.scroll_to_item();
                     load_room_details(light_ptr->room());
                 }
 
@@ -953,7 +997,7 @@ namespace trview
                 {
                     const auto actual = actual_room(*camera_sink_ptr);
                     select_room(actual);
-                    _scroll_to_room = true;
+                    _filters.scroll_to_item();
                     load_room_details(actual);
                 }
 

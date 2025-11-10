@@ -66,7 +66,7 @@ namespace trview
         void render_neighbours_tab(const std::shared_ptr<IRoom>& room);
         void render_items_tab(const std::shared_ptr<IRoom>& room);
         void render_triggers_tab();
-        void render_floordata_tab(const std::shared_ptr<IRoom>& room);
+        void render_sector_tab(const std::shared_ptr<IRoom>& room);
         void render_camera_sink_tab();
         void render_lights_tab();
         void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
@@ -115,7 +115,6 @@ namespace trview
         std::shared_ptr<IClipboard> _clipboard;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb1 };
         std::string _id{ "Rooms 0" };
-        bool _scroll_to_room{ false };
         std::optional<float> _tooltip_timer;
 
         Filters<IRoom> _filters;

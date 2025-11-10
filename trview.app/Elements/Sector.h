@@ -31,6 +31,7 @@ namespace trview
         virtual std::array<float, 4> corners() const override;
         virtual std::array<float, 4> ceiling_corners() const override;
         virtual DirectX::SimpleMath::Vector3 corner(Corner corner) const override;
+        int8_t ceiling() const override;
         virtual DirectX::SimpleMath::Vector3 ceiling(Corner corner) const override;
         std::weak_ptr<IRoom> room() const override;
         int8_t tilt_x() const override;
@@ -50,6 +51,10 @@ namespace trview
         std::weak_ptr<ITrigger> trigger() const override;
         TriangulationDirection ceiling_triangulation() const override;
         uint32_t number() const override;
+        int8_t floor() const override;
+        uint16_t material() const override;
+        uint16_t box_index() const override;
+        bool stopper() const override;
     private:
         bool parse(const trlevel::ILevel& level);
         void parse_slope();
@@ -107,5 +112,10 @@ namespace trview
         trlevel::tr_room_info _info;
         std::vector<Triangle> _triangles;
         uint32_t _number;
+        int8_t _floor{ 0 };
+        int8_t _ceiling{ 0 };
+        uint16_t _box_index{ 0 };
+        uint16_t _material{ 0 };
+        bool _stopper{ false };
     };
 }
