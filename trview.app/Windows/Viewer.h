@@ -52,10 +52,8 @@ namespace trview
             std::unique_ptr<input::IMouse> mouse,
             const std::shared_ptr<IShortcuts>& shortcuts,
             const std::shared_ptr<IRoute> route,
-            const graphics::ISprite::Source& sprite_source,
             std::unique_ptr<ICompass> compass,
             std::unique_ptr<IMeasure> measure,
-            const graphics::IRenderTarget::SizeSource& render_target_source,
             const graphics::IDeviceWindow::Source& device_window_source,
             std::unique_ptr<ISectorHighlight> sector_highlight,
             const std::shared_ptr<IClipboard>& clipboard,
@@ -171,10 +169,6 @@ namespace trview
 
         /// Was the room just changed due to an alternate group or flip being performed?
         bool _was_alternate_select{ false };
-
-        graphics::IRenderTarget::SizeSource _render_target_source;
-        std::unique_ptr<graphics::IRenderTarget> _scene_target;
-        std::unique_ptr<graphics::ISprite> _scene_sprite;
 
         std::vector<PickResult> _recent_orbits;
         std::size_t _recent_orbit_index{ 0u };

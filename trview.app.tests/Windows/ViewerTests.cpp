@@ -12,8 +12,6 @@
 #include <trview.input/Mocks/IMouse.h>
 #include <trview.app/Mocks/Tools/ICompass.h>
 #include <trview.app/Mocks/Tools/IMeasure.h>
-#include <trview.graphics/mocks/ISprite.h>
-#include <trview.graphics/mocks/IRenderTarget.h>
 #include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.app/Mocks/Graphics/ISectorHighlight.h>
@@ -141,10 +139,8 @@ namespace
             std::unique_ptr<IMouse> mouse{ mock_unique<MockMouse>() };
             std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
             std::shared_ptr<IRoute> route{ mock_shared<MockRoute>() };
-            ISprite::Source sprite_source{ [](auto&&...) { return mock_unique<MockSprite>(); } };
             std::unique_ptr<ICompass> compass{ mock_unique<MockCompass>() };
             std::unique_ptr<IMeasure> measure{ mock_unique<MockMeasure>() };
-            IRenderTarget::SizeSource render_target_source{ [](auto&&...) { return mock_unique<MockRenderTarget>(); } };
             IDeviceWindow::Source device_window_source{ [](auto&&...) { return mock_unique<MockDeviceWindow>(); } };
             std::unique_ptr<ISectorHighlight> sector_highlight{ mock_unique<MockSectorHighlight>() };
             std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
@@ -156,8 +152,8 @@ namespace
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 ON_CALL(*camera, idle_rotation).WillByDefault(Return(true));
-                return std::make_unique<Viewer>(window, device, std::move(ui), std::move(picking), std::move(mouse), shortcuts, route, sprite_source,
-                    std::move(compass), std::move(measure), render_target_source, device_window_source, std::move(sector_highlight), clipboard, camera,
+                return std::make_unique<Viewer>(window, device, std::move(ui), std::move(picking), std::move(mouse), shortcuts, route,
+                    std::move(compass), std::move(measure), device_window_source, std::move(sector_highlight), clipboard, camera,
                     sampler_source, messaging);
             }
 
