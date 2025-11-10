@@ -87,9 +87,9 @@ namespace trview
 
         if (level.platform_and_version().version >= trlevel::LevelVersion::Tomb3)
         {
-            _material = (_box_index & 0xF000) >> 12;
-            _stopper = (_box_index & 0x1) != 0;
-            _box_index = (_box_index & 0xFFE) >> 1;
+            _material = _box_index & 0x000F;
+            _stopper = (_box_index & 0x8000) != 0;
+            _box_index = (_box_index & 0x77F0) >> 4;
         }
     }
 
