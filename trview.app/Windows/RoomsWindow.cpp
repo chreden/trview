@@ -12,6 +12,28 @@ namespace trview
 {
     namespace
     {
+        std::string material_name(uint16_t material)
+        {
+            switch (material)
+            {
+            case 0: return "Mud";
+            case 1: return "Snow";
+            case 2: return "Sand";
+            case 3: return "Gravel";
+            case 4: return "Ice";
+            case 5: return "Water";
+            case 6: return "Stone";
+            case 7: return "Wood";
+            case 8: return "Metal";
+            case 9: return "Marble";
+            case 10: return "Grass";
+            case 11: return "Concrete";
+            case 12: return "Old Wood";
+            case 13: return "Old Metal";
+            }
+            return std::to_string(material);
+        }
+
         bool room_is_no_space(const IRoom& room)
         {
             for (const auto& sector : room.sectors())
@@ -862,7 +884,7 @@ namespace trview
                 add_stat("Floordata Index", selected_sector->floordata_index());
                 if (_level_version >= trlevel::LevelVersion::Tomb3)
                 {
-                    add_stat("Material", selected_sector->material());
+                    add_stat("Material", std::format("{} ({})", selected_sector->material(), material_name(selected_sector->material())));
                 }
                 add_stat("Box Index", selected_sector->box_index());
                 if (_level_version >= trlevel::LevelVersion::Tomb3)
