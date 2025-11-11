@@ -427,7 +427,7 @@ namespace trview
                     if (ImGui::BeginTabItem("Sector"))
                     {
                         _map_renderer->set_mode(IMapRenderer::Mode::Select);
-                        render_sector_tab(room);
+                        render_sector_tab();
                         ImGui::EndTabItem();
                     }
                     else
@@ -914,7 +914,7 @@ namespace trview
         }
     }
 
-    void RoomsWindow::render_sector_tab(const std::shared_ptr<IRoom>&)
+    void RoomsWindow::render_sector_tab()
     {
         auto selected_sector = _local_selected_sector.lock();
         if (!selected_sector)
@@ -923,6 +923,9 @@ namespace trview
         }
         else 
         {
+            const auto selected_room = _selected_room.lock();
+            const std::shared_ptr<ILevel> level = selected_room == nullptr ? nullptr : selected_room->level().lock();
+
             // Some stats table
             const auto add_stat = [&]<typename T>(const std::string & name, const T && value, std::function<void()> click = {})
             {
@@ -955,9 +958,21 @@ namespace trview
                 {
                     add_stat("Stopper", selected_sector->stopper());
                 }
-                add_stat("Room Below", selected_sector->room_below());
+                add_stat("Room Below", selected_sector->room_below(), [this, selected_sector, level]()
+                    {
+                        if (level)
+                        {
+                            on_room_selected(level->room(selected_sector->room_below()));
+                        }
+                    });
                 add_stat("Floor", selected_sector->floor());
-                add_stat("Room Above", selected_sector->room_above());
+                add_stat("Room Above", selected_sector->room_above(), [this, selected_sector, level]()
+                    {
+                        if (level)
+                        {
+                            on_room_selected(level->room(selected_sector->room_above()));
+                        }
+                    });
                 add_stat("Ceiling", selected_sector->ceiling());
 
                 ImGui::EndTable();

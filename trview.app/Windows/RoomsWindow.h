@@ -66,7 +66,7 @@ namespace trview
         void render_neighbours_tab(const std::shared_ptr<IRoom>& room);
         void render_items_tab(const std::shared_ptr<IRoom>& room);
         void render_triggers_tab();
-        void render_sector_tab(const std::shared_ptr<IRoom>& room);
+        void render_sector_tab();
         void render_camera_sink_tab();
         void render_lights_tab();
         void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
