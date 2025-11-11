@@ -203,6 +203,7 @@ namespace trview
         _force_sort = true;
         _filters.force_sort();
         _local_selected_sector.reset();
+        _map_renderer->set_selection(std::vector<std::shared_ptr<ISector>>{});
     }
 
     void RoomsWindow::set_selected_item(const std::weak_ptr<IItem>& item)
@@ -313,6 +314,7 @@ namespace trview
             _auto_hider.check_focus();
 
             _filters.render();
+            bool filter_changed = _filters.test_and_reset_changed();
 
             ImGui::SameLine();
             _track.render();
@@ -336,7 +338,7 @@ namespace trview
                 std::views::transform([](auto&& room) { return room.lock(); }) |
                 std::ranges::to<std::vector>();
 
-            _auto_hider.apply(_all_rooms, filtered_rooms, _filters);
+            _auto_hider.apply(_all_rooms, filtered_rooms, filter_changed);
 
             ImGui::SameLine();
             _filters.render_settings();
@@ -348,11 +350,17 @@ namespace trview
                 {
                     select_room(room);
                     _map_renderer->load(room.lock());
+                    filter_changed = true;
                     if (_sync_room)
                     {
                         on_room_selected(_selected_room);
                     }
                 }, default_hide(filtered_rooms));
+
+            if (filter_changed)
+            {
+                apply_sector_filters();
+            }
         }
         ImGui::EndChild();
     }
@@ -619,6 +627,62 @@ namespace trview
                     | std::views::transform([](auto&& c) { return c.type; })
                     | std::ranges::to<std::unordered_set>()
                     | std::views::transform([](auto&& s) { return to_string(s); })
+                    | std::ranges::to<std::vector>();
+            });
+
+        _filters.add_multi_getter<int>("Floordata Index", [&](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->floordata_index()); })
+                    | std::ranges::to<std::vector>();
+            });
+
+        _filters.add_multi_getter<int>("Material", [&](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->material()); })
+                    | std::ranges::to<std::vector>();
+            });
+
+        _filters.add_multi_getter<int>("Box Index", [&](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->box_index()); })
+                    | std::ranges::to<std::vector>();
+            });
+
+        _filters.add_multi_getter<bool>("Stopper", [&](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return s->stopper(); })
+                    | std::ranges::to<std::vector>();
+            });
+
+        _filters.add_multi_getter<int>("Room Below", [&](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->room_below()); })
+                    | std::ranges::to<std::vector>();
+            });
+
+        _filters.add_multi_getter<int>("Floor", [&](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->floor()); })
+                    | std::ranges::to<std::vector>();
+            });
+
+        _filters.add_multi_getter<int>("Room Above", [&](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->room_above()); })
+                    | std::ranges::to<std::vector>();
+            });
+
+        _filters.add_multi_getter<int>("Ceiling", [&](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->ceiling()); })
                     | std::ranges::to<std::vector>();
             });
     }
@@ -1250,6 +1314,71 @@ namespace trview
                 _filters.set_columns(_settings->rooms_window_columns);
                 _columns_set = true;
             }
+        }
+    }
+
+    std::optional<Filters<ISector>> RoomsWindow::convert_to_sector_filters() const
+    {
+        Filters<ISector> sector_filters;
+        for (const auto& filter : _filters.filters())
+        {
+            if (equals_any(filter.key, "Floordata Type", "Floordata Index", "Material", "Box Index", "Stopper", "Room Below", "Floor", "Room Above", "Ceiling"))
+            {
+                sector_filters.add_filter({ .key = filter.key, .compare = filter.compare, .value = filter.value, .value2 = filter.value, .op = filter.op });
+            }
+        }
+
+        if (!sector_filters.filters().empty())
+        {
+            const auto available_floordata_types =
+                std::views::iota(std::to_underlying(Floordata::Command::Function::None) + 1, std::to_underlying(Floordata::Command::Function::Count) + 0)
+                | std::views::transform([](auto c) { return to_string(static_cast<Floordata::Command::Function>(c)); })
+                | std::ranges::to<std::set>();
+
+            sector_filters.add_multi_getter<std::string>("Floordata Type", { available_floordata_types.begin(), available_floordata_types.end() }, [&](auto&& sector)
+                {
+                    return parse_floordata(_floordata, sector.floordata_index(), FloordataMeanings::None, _trng).commands
+                        | std::views::transform([](auto&& c) { return c.type; })
+                        | std::ranges::to<std::unordered_set>()
+                        | std::views::transform([](auto&& s) { return to_string(s); })
+                        | std::ranges::to<std::vector>();
+                });
+
+            sector_filters.add_getter<int>("Floordata Index", [&](auto&& sector) { return sector.floordata_index(); });
+            sector_filters.add_getter<int>("Material", [&](auto&& sector) { return sector.material(); });
+            sector_filters.add_getter<int>("Box Index", [&](auto&& sector) { return sector.box_index(); });
+            sector_filters.add_getter<bool>("Stopper", [&](auto&& sector) { return sector.stopper(); });
+            sector_filters.add_getter<int>("Room Above", [&](auto&& sector) { return sector.room_above(); });
+            sector_filters.add_getter<int>("Floor", [&](auto&& sector) { return sector.floor(); });
+            sector_filters.add_getter<int>("Room Below", [&](auto&& sector) { return sector.room_below(); });
+            sector_filters.add_getter<int>("Ceiling", [&](auto&& sector) { return sector.ceiling(); });
+            return sector_filters;
+        }
+        
+        return std::nullopt;
+    }
+
+    void RoomsWindow::apply_sector_filters()
+    {
+        if (auto room_ptr = _selected_room.lock())
+        {
+            // Temporary experiment for sector highlighting on the map renderer.
+            // Re-test the room against floordata only filters - if it matches
+            // pass the results through to the map renderer for highlighting.
+            if (auto sector_filters = convert_to_sector_filters())
+            {
+                _map_renderer->set_selection(room_ptr->sectors()
+                    | std::views::filter([&](auto&& s) { return sector_filters->match(*s); })
+                    | std::ranges::to<std::vector>());
+            }
+            else
+            {
+                _map_renderer->set_selection(std::vector<std::shared_ptr<ISector>>{});
+            }
+        }
+        else
+        {
+            _map_renderer->set_selection(std::vector<std::shared_ptr<ISector>>{});
         }
     }
 }

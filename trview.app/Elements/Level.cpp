@@ -597,13 +597,16 @@ namespace trview
                 if (auto room = sector->room().lock())
                 {
                     auto portal = room->sector_portal(sector->x(), sector->z(), -1, -1);
-                    if (has_flag(portal.sector_above->flags(), SectorFlag::MonkeySwing))
+                    if (portal.sector_above)
                     {
-                        return;
-                    }
+                        if (has_flag(portal.sector_above->flags(), SectorFlag::MonkeySwing))
+                        {
+                            return;
+                        }
 
-                    portal.sector_above->add_flag(SectorFlag::MonkeySwing);
-                    add_monkey_swing(portal.sector_above);
+                        portal.sector_above->add_flag(SectorFlag::MonkeySwing);
+                        add_monkey_swing(portal.sector_above);
+                    }
                 }
             }
         };

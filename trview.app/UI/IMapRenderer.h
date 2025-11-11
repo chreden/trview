@@ -42,5 +42,6 @@ namespace trview
         virtual void set_show_tooltip(bool value) = 0;
         virtual Size size() const = 0;
         virtual void reposition() = 0;
+        virtual void set_selection(const std::vector<std::shared_ptr<ISector>>& sectors) = 0;
     };
 }

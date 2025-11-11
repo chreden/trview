@@ -161,6 +161,18 @@ namespace trview
                         text.c_str());
                 }
 
+                for (const auto& selected_sector : _selected_sectors)
+                {
+                    if (selected_sector.lock() == tile.sector)
+                    {
+                        draw(list, tile.position, { tile.size.width, 1.0f }, Colour::White);
+                        draw(list, tile.position + Point(0, 1.0f), { 1.0f, tile.size.height - 2.0f }, Colour::White);
+                        draw(list, tile.position + Point(0, tile.size.height - 1.0f), { tile.size.width, 1.0f }, Colour::White);
+                        draw(list, tile.position + Point(tile.size.width - 1.0f, 1.0f), { 1.0f, tile.size.height - 2.0f }, Colour::White);
+                        break;
+                    }
+                }
+
                 if (_selected_sector.lock() == tile.sector)
                 {
                     draw(list, tile.position, { tile.size.width, 1.0f }, Colour::Yellow);
@@ -384,5 +396,10 @@ namespace trview
         {
             _settings = settings.value();
         }
+    }
+
+    void MapRenderer::set_selection(const std::vector<std::shared_ptr<ISector>>& sectors)
+    {
+        _selected_sectors = sectors | std::views::transform([](auto&& s) -> std::weak_ptr<ISector> { return s; } ) | std::ranges::to<std::vector>();
     }
 }

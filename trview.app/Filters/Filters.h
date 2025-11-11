@@ -188,6 +188,7 @@ namespace trview
         /// <returns>Whether filters were changed.</returns>
         bool test_and_reset_changed();
         std::vector<std::string> columns() const;
+        std::vector<Filter> filters() const;
     private:
         int column_count() const;
 
