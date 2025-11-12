@@ -58,6 +58,7 @@ namespace trview
         Size size() const override;
         void reposition() override;
         void receive_message(const Message& message) override;
+        void set_selection(const std::vector<std::shared_ptr<ISector>>& sectors) override;
     private:
         std::shared_ptr<ISector> sector_at(const Point& p) const;
         // Determines the position (on screen) to draw a sector 
@@ -80,6 +81,7 @@ namespace trview
         Mode _mode{ Mode::Normal };
         std::optional<UserSettings> _settings;
         std::weak_ptr<ISector> _selected_sector;
+        std::vector<std::weak_ptr<ISector>> _selected_sectors;
         std::shared_ptr<IFonts> _fonts;
         bool _show_tooltip{ true };
         ImGuiAnchor _anchor;

@@ -78,12 +78,19 @@ namespace trview
 
     Sector::Sector(const trlevel::ILevel& level, const trlevel::tr3_room& room, const trlevel::tr_room_sector& sector, int sector_id, const std::weak_ptr<IRoom>& room_ptr, uint32_t sector_number)
         : _sector(sector), _sector_id(static_cast<uint16_t>(sector_id)), _room_above(sector.room_above), _room_below(sector.room_below), _room(room_number(room_ptr)), _info(room.info), _room_ptr(room_ptr),
-        _floordata_index(sector.floordata_index), _number(sector_number)
+        _floordata_index(sector.floordata_index), _number(sector_number), _floor(sector.floor), _ceiling(sector.ceiling), _box_index(sector.box_index)
     {
         _x = static_cast<int16_t>(sector_id / room.num_z_sectors);
         _z = static_cast<int16_t>(sector_id % room.num_z_sectors);
         parse(level);
         calculate_neighbours(level);
+
+        if (level.platform_and_version().version >= trlevel::LevelVersion::Tomb3)
+        {
+            _material = _box_index & 0x000F;
+            _stopper = (_box_index & 0x8000) != 0;
+            _box_index = (_box_index & 0x7FF0) >> 4;
+        }
     }
 
     std::vector<std::uint16_t> Sector::portals() const
@@ -888,6 +895,31 @@ namespace trview
                 }
             }
         }
+    }
+
+    int8_t Sector::floor() const
+    {
+        return _floor;
+    }
+
+    int8_t Sector::ceiling() const
+    {
+        return _ceiling;
+    }
+
+    uint16_t Sector::material() const
+    {
+        return _material;
+    }
+
+    uint16_t Sector::box_index() const
+    {
+        return _box_index;
+    }
+
+    bool Sector::stopper() const
+    {
+        return _stopper;
     }
 }
 

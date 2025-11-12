@@ -965,4 +965,10 @@ namespace trview
             }
         };
     }
+
+    template <typename T>
+    std::vector<typename Filters<T>::Filter> Filters<T>::filters() const
+    {
+        return _filters;
+    }
 }

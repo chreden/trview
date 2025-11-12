@@ -41,6 +41,11 @@ namespace trview
             MOCK_METHOD(std::weak_ptr<ITrigger>, trigger, (), (const, override));
             MOCK_METHOD(TriangulationDirection, ceiling_triangulation, (), (const, override));
             MOCK_METHOD(uint32_t, number, (), (const, override));
+            MOCK_METHOD(uint16_t, material, (), (const, override));
+            MOCK_METHOD(uint16_t, box_index, (), (const, override));
+            MOCK_METHOD(bool, stopper, (), (const, override));
+            MOCK_METHOD(int8_t, floor, (), (const, override));
+            MOCK_METHOD(int8_t, ceiling, (), (const, override));
 
             std::shared_ptr<MockSector> with_ceiling_triangulation(TriangulationDirection triangulation)
             {

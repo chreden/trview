@@ -109,6 +109,7 @@ namespace trview
         virtual std::array<float, 4> corners() const = 0;
         virtual std::array<float, 4> ceiling_corners() const = 0;
         virtual DirectX::SimpleMath::Vector3 corner(Corner corner) const = 0;
+        virtual int8_t ceiling() const = 0;
         virtual DirectX::SimpleMath::Vector3 ceiling(Corner corner) const = 0;
         virtual std::weak_ptr<IRoom> room() const = 0;
         virtual int8_t tilt_x() const = 0;
@@ -131,6 +132,10 @@ namespace trview
 
         virtual TriangulationDirection ceiling_triangulation() const = 0;
         virtual uint32_t number() const = 0;
+        virtual int8_t floor() const = 0;
+        virtual uint16_t material() const = 0;
+        virtual uint16_t box_index() const = 0;
+        virtual bool stopper() const = 0;
     };
 
     bool is_no_space(SectorFlag flags);
