@@ -89,7 +89,7 @@ namespace trview
         {
             _material = _box_index & 0x000F;
             _stopper = (_box_index & 0x8000) != 0;
-            _box_index = (_box_index & 0x77F0) >> 4;
+            _box_index = (_box_index & 0x7FF0) >> 4;
         }
     }
 
