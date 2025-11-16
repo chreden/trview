@@ -90,7 +90,6 @@ namespace trview
     bool ModelsWindow::render_meshes_window()
     {
         using namespace DirectX::SimpleMath;
-        // lemoa
 
         auto selected_model = _selected_model.lock();
 
@@ -117,19 +116,21 @@ namespace trview
                 Matrix world = Matrix::Identity;
                 Matrix camera_rotation = Matrix::CreateRotationY(_rotation);
 
-                Matrix view = Matrix::CreateLookAt(box.Center + Vector3::Transform(camera_pos, camera_rotation), box.Center, Vector3(0, -1, 0));
+                const auto eye = Vector3::Transform(camera_pos, camera_rotation);
+
+                Matrix view = Matrix::CreateLookAt(eye, box.Center, Vector3(0, -1, 0));
                 Matrix projection = Matrix::CreatePerspectiveFieldOfView(DirectX::XM_PIDIV4, 1.0f, 0.1f, 1000.0f);
                 Matrix view_projection = view * projection;
 
                 graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });
                 _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
-                
+
                 selected_model->render(world, view_projection, Colour::White);
 
                 _transparency_buffer->reset();
                 selected_model->render_transparency(world, *_transparency_buffer, Colour::White);
-                _transparency_buffer->sort(camera_pos);
-                
+                _transparency_buffer->sort(eye);
+
                 graphics::set_data(*_pixel_shader_data, context, PixelShaderData{ false });
                 _pixel_shader_data->apply(context, graphics::IBuffer::ApplyTo::PS);
                 _transparency_buffer->render(view_projection);
