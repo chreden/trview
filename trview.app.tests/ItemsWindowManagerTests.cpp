@@ -20,9 +20,9 @@ namespace
         {
             Window window{ create_test_window(L"ItemsWindowManagerTests") };
             std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
-            ItemsWindow::Source window_source{ [](auto&&...) { return mock_shared<MockItemsWindow>(); } };
+            IItemsWindow::Source window_source{ [](auto&&...) { return mock_shared<MockItemsWindow>(); } };
 
-            test_module& with_window_source(const ItemsWindow::Source& source)
+            test_module& with_window_source(const IItemsWindow::Source& source)
             {
                 this->window_source = source;
                 return *this;
