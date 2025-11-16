@@ -489,7 +489,7 @@ namespace trview
         messaging->add_recipient(file_menu);
 
         auto transparency_buffer_source = [=](auto&& lts) { return std::make_unique<TransparencyBuffer>(device, lts); };
-        auto meshes_window_source = [=]() { return std::make_shared<ModelsWindow>(device, render_target_source, shader_storage, buffer_source, transparency_buffer_source, sampler_source); };
+        auto meshes_window_source = [=]() { return std::make_shared<ModelsWindow>(device, render_target_source, shader_storage, buffer_source, transparency_buffer_source, sampler_source, std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window))); };
 
         auto application = std::make_shared<Application>(
             window,

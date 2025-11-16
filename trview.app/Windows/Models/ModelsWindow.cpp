@@ -29,9 +29,10 @@ namespace trview
         const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
         const graphics::IBuffer::ConstantSource& buffer_source,
         ITransparencyBuffer::Source transparency_buffer_source,
-        const graphics::ISamplerState::Source& sampler_source)
+        const graphics::ISamplerState::Source& sampler_source,
+        std::unique_ptr<input::IMouse> mouse)
         : _device(device), _render_target(render_target_source(512, 512, graphics::IRenderTarget::DepthStencilMode::Enabled)), _transparency_buffer_source(transparency_buffer_source),
-        _sampler_state(sampler_source(graphics::ISamplerState::AddressMode::Clamp))
+        _sampler_state(sampler_source(graphics::ISamplerState::AddressMode::Clamp)), _mouse(std::move(mouse))
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -55,6 +56,21 @@ namespace trview
         _depth_stencil_state = device->create_depth_stencil_state(stencil_desc);
 
         _pixel_shader_data = buffer_source(sizeof(PixelShaderData));
+
+        _token_store += _mouse->mouse_down += [&](auto button) { _camera_input.mouse_down(button); };
+        _token_store += _mouse->mouse_up += [&](auto button) { _camera_input.mouse_up(button); };
+        _token_store += _mouse->mouse_move += [&](long x, long y) { _camera_input.mouse_move(x, y); };
+        _token_store += _camera_input.on_rotate += [&](float x, float y)
+            {
+                if (_mouse_over)
+                {
+                    const float low_sensitivity = 200.0f;
+                    const float high_sensitivity = 25.0f;
+                    const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity);
+                    _rotation += x / sensitivity;
+                    _rotation_pitch += y / sensitivity;
+                }
+            };
     }
 
     void ModelsWindow::render()
@@ -82,13 +98,14 @@ namespace trview
         _id = std::format("Models {}", number);
     }
 
-    void ModelsWindow::update(float delta)
+    void ModelsWindow::update(float)
     {
-        _rotation += delta;
     }
 
     bool ModelsWindow::render_meshes_window()
     {
+        _mouse_over = false;
+
         using namespace DirectX::SimpleMath;
 
         auto selected_model = _selected_model.lock();
@@ -114,7 +131,7 @@ namespace trview
                 const auto camera_pos = Vector3(0, box.Center.y - 0.25f, ex * 3.5f);
 
                 Matrix world = Matrix::Identity;
-                Matrix camera_rotation = Matrix::CreateRotationY(_rotation);
+                Matrix camera_rotation = Matrix::CreateFromYawPitchRoll(_rotation, _rotation_pitch, 0);
 
                 const auto eye = Vector3::Transform(camera_pos, camera_rotation);
 
@@ -169,6 +186,7 @@ namespace trview
 
             const auto texture = _render_target->texture();
             ImGui::Image(texture.view().Get(), ImVec2(texture.size().width, texture.size().height));
+            _mouse_over = ImGui::GetIO().WantCaptureMouse && ImGui::IsItemHovered();
         }
         ImGui::End();
         ImGui::PopStyleVar();

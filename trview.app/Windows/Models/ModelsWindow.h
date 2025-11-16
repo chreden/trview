@@ -5,6 +5,8 @@
 #include <trview.graphics/IBuffer.h>
 #include "../../Geometry/ITransparencyBuffer.h"
 #include <trview.graphics/Sampler/ISamplerState.h>
+#include <trview.common/TokenStore.h>
+#include "../../Camera/CameraInput.h"
 
 namespace trview
 {
@@ -17,7 +19,8 @@ namespace trview
             const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
             const graphics::IBuffer::ConstantSource& buffer_source,
             ITransparencyBuffer::Source transparency_buffer_source,
-            const graphics::ISamplerState::Source& sampler_source);
+            const graphics::ISamplerState::Source& sampler_source,
+            std::unique_ptr<input::IMouse> mouse);
         virtual ~ModelsWindow() = default;
         void render() override;
         void set_level_texture_storage(const std::weak_ptr<ILevelTextureStorage>& level_texture_storage) override;
@@ -36,9 +39,14 @@ namespace trview
         graphics::IShader* _vertex_shader;
         graphics::IShader* _pixel_shader;
         float _rotation{ 0.0f };
+        float _rotation_pitch{ 0.0f };
         std::unique_ptr<graphics::IBuffer> _pixel_shader_data;
         std::unique_ptr<ITransparencyBuffer> _transparency_buffer;
         ITransparencyBuffer::Source _transparency_buffer_source;
         std::shared_ptr<graphics::ISamplerState> _sampler_state;
+        std::unique_ptr<input::IMouse> _mouse;
+        TokenStore _token_store;
+        CameraInput _camera_input;
+        bool _mouse_over{ false };
     };
 }
