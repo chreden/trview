@@ -92,7 +92,7 @@ namespace trview
             }
             else if (std::holds_alternative<std::weak_ptr<IRoom>>(item.item))
             {
-                on_select_room(std::get<std::weak_ptr<IRoom>>(item.item));
+                messages::send_select_room(_messaging, std::get<std::weak_ptr<IRoom>>(item.item));
             }
         };
 
@@ -163,7 +163,7 @@ namespace trview
             {
                 if (auto level = _level.lock())
                 {
-                    on_select_room(level->room(index));
+                    messages::send_select_room(_messaging, level->room(index));
                 }
             };
 
@@ -315,7 +315,6 @@ namespace trview
     {
         _room_navigator->set_selected_room(room->number());
         _selected_room = room->number();
-        // _map_renderer->load(room);
     }
 
     void ViewerUI::set_show_context_menu(bool value)

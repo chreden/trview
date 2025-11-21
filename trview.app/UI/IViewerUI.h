@@ -70,9 +70,6 @@ namespace trview
         /// Event raised when a minimap sector is hovered over.
         Event<std::weak_ptr<ISector>> on_sector_hover;
 
-        /// Event raised when a room is selected.
-        Event<std::weak_ptr<IRoom>> on_select_room;
-
         /// Event raised when a tool is selected.
         Event<Tool> on_tool_selected;
 

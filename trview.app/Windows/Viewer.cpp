@@ -94,7 +94,6 @@ namespace trview
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (auto level = _level.lock()) { level->set_neighbour_depth(value); } };
 
-        _token_store += _ui->on_select_room += [&](const auto& room) { on_room_selected(room); };
         _token_store += _ui->on_toggle_changed += [this, toggles, persist_toggle_value](const std::string& name, bool value)
         {
             auto toggle = toggles.find(name);
@@ -267,7 +266,7 @@ namespace trview
         _token_store += _ui->on_orbit += [&]()
         {
             bool was_alternate_select = _was_alternate_select;
-            on_room_selected(room_from_pick(_context_pick));
+            messages::send_select_room(_messaging, room_from_pick(_context_pick));
             if (!was_alternate_select)
             {
                 set_camera_mode(ICamera::Mode::Orbit);
@@ -751,7 +750,7 @@ namespace trview
             }
             else
             {
-                on_room_selected(new_level->room(0));
+                messages::send_select_room(_messaging, new_level->room(0));
             }
 
             if (auto selected_room = new_level->selected_room().lock())
@@ -1318,12 +1317,14 @@ namespace trview
         switch (pick.type)
         {
         case PickResult::Type::Room:
-            on_room_selected(pick.room);
+        {
+            messages::send_select_room(_messaging, pick.room);
             if (pick.override_centre)
             {
                 set_target(pick.position);
             }
             break;
+        }
         case PickResult::Type::Entity:
         {
             messages::send_select_item(_messaging, pick.item);

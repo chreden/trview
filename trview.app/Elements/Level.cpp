@@ -925,7 +925,7 @@ namespace trview
         {
             if (auto level = current_room->level().lock())
             {
-                on_room_selected(level->room(current_room->alternate_room()));
+                messages::send_select_room(_messaging, level->room(current_room->alternate_room()));
             }
         }
 
@@ -952,7 +952,7 @@ namespace trview
         {
             if (auto level = current_room->level().lock())
             {
-                on_room_selected(level->room(current_room->alternate_room()));
+                messages::send_select_room(_messaging, level->room(current_room->alternate_room()));
             }
         }
 

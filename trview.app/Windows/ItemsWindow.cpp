@@ -474,6 +474,10 @@ namespace trview
         {
             set_selected_item(selected_item.value());
         }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_current_room(selected_room.value());
+        }
         else if (auto settings = messages::read_settings(message))
         {
             _settings = settings.value();
