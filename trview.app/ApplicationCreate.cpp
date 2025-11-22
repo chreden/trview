@@ -467,6 +467,7 @@ namespace trview
             { 
                 auto lights_window = std::make_shared<LightsWindow>(clipboard, messaging);
                 messaging->add_recipient(lights_window);
+                lights_window->initialise();
                 return lights_window;
             };
 

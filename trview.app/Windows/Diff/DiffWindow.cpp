@@ -855,7 +855,7 @@ namespace trview
 
             if (ImGui::BeginTabItem(std::format("Lights{}", any_lights ? "*" : "").c_str()))
             {
-                show_table("Lights List", _diff->diff.lights, on_light_selected, [](auto&& l) { return to_string(l->type()); });
+                show_table("Lights List", _diff->diff.lights, [&](auto&& light) { messages::send_select_light(_messaging, light); }, [](auto&& l) { return to_string(l->type()); });
                 ImGui::EndTabItem();
             }
 

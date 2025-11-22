@@ -53,7 +53,6 @@ namespace trview
         _camera_sink_windows->on_flyby_node_selected += on_flyby_node_selected;
         _camera_sink_windows->on_trigger_selected += on_trigger_selected;
 
-        _diff_windows->on_light_selected += on_light_selected;
         _diff_windows->on_trigger_selected += on_trigger_selected;
         _diff_windows->on_diff_ended += on_diff_ended;
         _diff_windows->on_camera_sink_selected += on_camera_sink_selected;
@@ -74,13 +73,10 @@ namespace trview
                 }
             };
         _items_windows->on_trigger_selected += on_trigger_selected;
-
-        _lights_windows->on_light_selected += on_light_selected;
             
         _pack_windows->on_level_open += on_level_open;
 
         _rooms_windows->on_camera_sink_selected += on_camera_sink_selected;
-        _rooms_windows->on_light_selected += on_light_selected;
         _rooms_windows->on_sector_hover += on_sector_hover;
         _rooms_windows->on_static_mesh_selected += on_static_selected;
         _rooms_windows->on_trigger_selected += on_trigger_selected;
@@ -157,12 +153,6 @@ namespace trview
     void Windows::select(const std::weak_ptr<IFlybyNode>& flyby_node)
     {
         _camera_sink_windows->set_selected_flyby_node(flyby_node);
-    }
-
-    void Windows::select(const std::weak_ptr<ILight>& light)
-    {
-        _lights_windows->set_selected_light(light);
-        _rooms_windows->set_selected_light(light);
     }
 
     void Windows::select(const std::weak_ptr<ISoundSource>& sound_source)

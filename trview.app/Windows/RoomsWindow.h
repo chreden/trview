@@ -45,7 +45,7 @@ namespace trview
         void update(float delta) override;
         void set_number(int32_t number) override;
         void set_floordata(const std::vector<uint16_t>& data) override;
-        void set_selected_light(const std::weak_ptr<ILight>& light) override;
+        void set_selected_light(const std::weak_ptr<ILight>& light);
         void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void clear_selected_light() override;
         void clear_selected_camera_sink() override;

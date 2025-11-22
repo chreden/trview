@@ -6,6 +6,7 @@
 namespace trview
 {
     struct IItem;
+    struct ILight;
     struct IMessageSystem;
     struct IRecipient;
     struct IRoom;
@@ -22,8 +23,12 @@ namespace trview
         std::optional<std::weak_ptr<IItem>> read_select_item(const Message& message);
         void send_select_item(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IItem>& item);
 
-        void get_selected_room(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reploy_to);
+        void get_selected_room(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
         std::optional<std::weak_ptr<IRoom>> read_select_room(const Message& message);
         void send_select_room(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRoom>& room);
+
+        void get_selected_light(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
+        std::optional<std::weak_ptr<ILight>> read_select_light(const Message& message);
+        void send_select_light(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ILight>& light);
     }
 }

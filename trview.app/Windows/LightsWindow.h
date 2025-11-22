@@ -33,11 +33,12 @@ namespace trview
         virtual void render() override;
         virtual void update(float delta) override;
         virtual void set_lights(const std::vector<std::weak_ptr<ILight>>& lights) override;
-        virtual void set_selected_light(const std::weak_ptr<ILight>& light) override;
+        void set_selected_light(const std::weak_ptr<ILight>& light);
         virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_number(int32_t number) override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
         void receive_message(const Message& message) override;
+        void initialise();
     private:
         void set_sync_light(bool value);
         void set_local_selected_light(const std::weak_ptr<ILight>& light);

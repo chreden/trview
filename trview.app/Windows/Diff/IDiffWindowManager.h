@@ -22,7 +22,6 @@ namespace trview
         virtual void render() = 0;
         virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
 
-        Event<std::weak_ptr<ILight>> on_light_selected;
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
         Event<std::weak_ptr<ILevel>> on_diff_ended;
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;

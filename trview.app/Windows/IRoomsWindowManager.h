@@ -12,7 +12,6 @@ namespace trview
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
         Event<std::weak_ptr<ISector>> on_sector_hover;
-        Event<std::weak_ptr<ILight>> on_light_selected;
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
         Event<std::weak_ptr<IStaticMesh>> on_static_mesh_selected;
 
@@ -47,7 +46,6 @@ namespace trview
         virtual void update(float delta) = 0;
 
         virtual void set_floordata(const std::vector<uint16_t>& data) = 0;
-        virtual void set_selected_light(const std::weak_ptr<ILight>& light) = 0;
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
         virtual void set_selected_sector(const std::weak_ptr<ISector>& sector) = 0;
         virtual void set_ng_plus(bool value) = 0;

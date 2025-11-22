@@ -100,7 +100,6 @@ namespace trview
         _token_store += _windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
         _token_store += _windows->on_flyby_node_selected += [this](const auto& node) { select_flyby_node(node); };
         _token_store += _windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _windows->on_light_selected += [this](const auto& light) { select_light(light); };
         _token_store += _windows->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _windows->on_sector_hover += [this](const auto& sector) { select_sector(sector); };
         _token_store += _windows->on_waypoint_selected += [&](const auto& waypoint) { select_waypoint(waypoint); };
@@ -311,7 +310,6 @@ namespace trview
     {
         _token_store += _viewer->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _viewer->on_light_selected += [this](const auto& light) { select_light(light); };
         _token_store += _viewer->on_waypoint_added += [this](const auto& position, const auto& normal, auto room, auto type, auto index) { add_waypoint(position, normal, room, type, index); };
         _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
@@ -449,8 +447,6 @@ namespace trview
         _viewer->open(level, ILevel::OpenMode::Reload);
         select_room(light_ptr->room());
         level->set_selected_light(light_ptr->number());
-        _viewer->select_light(light);
-        _windows->select(light);
     }
 
     void Application::select_sector(const std::weak_ptr<ISector>& sector)
@@ -989,6 +985,24 @@ namespace trview
             if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
             {
                 requester->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(_settings) });
+            }
+        }
+        else if (auto selected_light = messages::read_select_light(message))
+        {
+            select_light(selected_light.value());
+        }
+        else if (message.type == "get_selected_light")
+        {
+            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
+            {
+                if (_level)
+                {
+                    if (auto current_selected_light = _level->selected_light())
+                    {
+                        auto light = _level->lights()[current_selected_light.value()];
+                        requester->receive_message({ .type = "select_light", .data = std::make_shared<MessageData<std::weak_ptr<ILight>>>(light) });
+                    }
+                }
             }
         }
     }

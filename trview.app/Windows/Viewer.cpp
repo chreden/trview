@@ -1342,7 +1342,7 @@ namespace trview
         }
         case PickResult::Type::Light:
         {
-            on_light_selected(pick.light);
+            messages::send_select_light(_messaging, pick.light);
             break;
         }
         case PickResult::Type::CameraSink:
@@ -1616,15 +1616,22 @@ namespace trview
                 }
             }
         }
+        else if (auto selected_light = messages::read_select_light(message))
+        {
+            select_light(selected_light.value());
+        }
         else if (auto settings = messages::read_settings(message))
         {
             _settings = settings.value();
             apply_camera_settings();
         }
+
+        // TODO: Select room?
     }
 
     void Viewer::initialise()
     {
         messages::get_selected_item(_messaging, weak_from_this());
+        messages::get_selected_light(_messaging, weak_from_this());
     }
 }

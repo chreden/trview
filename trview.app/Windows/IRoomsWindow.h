@@ -26,7 +26,6 @@ namespace trview
 
         Event<std::weak_ptr<ISector>> on_sector_hover;
 
-        Event<std::weak_ptr<ILight>> on_light_selected;
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
         Event<std::weak_ptr<IStaticMesh>> on_static_mesh_selected;
 

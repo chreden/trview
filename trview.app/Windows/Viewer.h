@@ -83,7 +83,7 @@ namespace trview
         virtual void set_show_tooltip(bool value) override;
         virtual void set_show_ui(bool value) override;
         virtual bool ui_input_active() const override;
-        virtual void select_light(const std::weak_ptr<ILight>& light) override;
+        void select_light(const std::weak_ptr<ILight>& light);
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual DirectX::SimpleMath::Vector3 target() const override;
         virtual void set_target(const DirectX::SimpleMath::Vector3& target) override;

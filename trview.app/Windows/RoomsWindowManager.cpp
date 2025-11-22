@@ -83,7 +83,6 @@ namespace trview
         auto rooms_window = _rooms_window_source();
         rooms_window->on_trigger_selected += on_trigger_selected;
         rooms_window->on_sector_hover += on_sector_hover;
-        rooms_window->on_light_selected += on_light_selected;
         rooms_window->on_camera_sink_selected += on_camera_sink_selected;
         rooms_window->on_static_mesh_selected += on_static_mesh_selected;
         rooms_window->set_level_version(_level_version);
@@ -93,7 +92,6 @@ namespace trview
         rooms_window->set_floordata(_floordata);
         rooms_window->set_selected_trigger(_selected_trigger);
         rooms_window->set_selected_camera_sink(_selected_camera_sink);
-        rooms_window->set_selected_light(_selected_light);
         rooms_window->set_selected_sector(_selected_sector);
         rooms_window->set_ng_plus(_ng_plus);
         rooms_window->set_trng(_trng);
@@ -111,15 +109,6 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_floordata(data);
-        }
-    }
-
-    void RoomsWindowManager::set_selected_light(const std::weak_ptr<ILight>& light)
-    {
-        _selected_light = light;
-        for (auto& window : _windows)
-        {
-            window.second->set_selected_light(light);
         }
     }
 

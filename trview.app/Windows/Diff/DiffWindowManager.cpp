@@ -17,7 +17,6 @@ namespace trview
     {
         const auto window = _diff_window_source();
         window->set_level(_level);
-        window->on_light_selected += on_light_selected;
         window->on_trigger_selected += on_trigger_selected;
         window->on_diff_ended += on_diff_ended;
         window->on_camera_sink_selected += on_camera_sink_selected;

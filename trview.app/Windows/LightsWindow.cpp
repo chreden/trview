@@ -137,7 +137,7 @@ namespace trview
                     set_local_selected_light(light);
                     if (_sync_light)
                     {
-                        on_light_selected(light);
+                        messages::send_select_light(_messaging, light);
                     }
                 }, default_hide(filtered_lights));
         }
@@ -334,7 +334,14 @@ namespace trview
                 _columns_set = true;
             }
         }
+        else if (auto selected_light = messages::read_select_light(message))
+        {
+            set_selected_light(selected_light.value());
+        }
+    }
+
+    void LightsWindow::initialise()
+    {
+        messages::get_selected_light(_messaging, weak_from_this());
     }
 }
-
-

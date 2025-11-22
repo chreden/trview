@@ -1046,7 +1046,7 @@ namespace trview
                     {
                         scroller.fix_scroll();
                         _local_selected_light = light_ptr;
-                        on_light_selected(light);
+                        messages::send_select_light(_messaging, light);
                         _scroll_to_light = false;
                     }
 
@@ -1192,11 +1192,16 @@ namespace trview
         {
             select_room(selected_room.value());
         }
+        else if (auto selected_light = messages::read_select_light(message))
+        {
+            set_selected_light(selected_light.value());
+        }
     }
 
     void RoomsWindow::initialise()
     {
         messages::get_selected_room(_messaging, weak_from_this());
         messages::get_selected_item(_messaging, weak_from_this());
+        messages::get_selected_light(_messaging, weak_from_this());
     }
 }

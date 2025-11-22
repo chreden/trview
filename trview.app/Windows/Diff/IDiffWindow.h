@@ -26,7 +26,6 @@ namespace trview
         /// </summary>
         Event<> on_window_closed;
 
-        Event<std::weak_ptr<ILight>> on_light_selected;
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
         Event<std::weak_ptr<ILevel>> on_diff_ended;
         Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;

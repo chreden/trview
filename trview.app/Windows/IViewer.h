@@ -44,11 +44,6 @@ namespace trview
         /// Event raised when the viewer wants to select a trigger.
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
-        /// <summary>
-        /// Event raised when the viewer wants to select a light.
-        /// </summary>
-        Event<std::weak_ptr<ILight>> on_light_selected;
-
         /// Event raised when the viewer wants to select a waypoint.
         Event<std::weak_ptr<IWaypoint>> on_waypoint_selected;
 
@@ -126,8 +121,6 @@ namespace trview
         virtual void set_show_ui(bool value) = 0;
 
         virtual bool ui_input_active() const = 0;
-
-        virtual void select_light(const std::weak_ptr<ILight>& light) = 0;
 
         virtual DirectX::SimpleMath::Vector3 target() const = 0;
 

@@ -41,7 +41,6 @@ namespace trview
         std::weak_ptr<IRoomsWindow> create_window() override;
         void update(float delta) override;
         void set_floordata(const std::vector<uint16_t>& data) override;
-        void set_selected_light(const std::weak_ptr<ILight>& light) override;
         void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void set_selected_sector(const std::weak_ptr<ISector>& sector) override;
         void set_ng_plus(bool value) override;
