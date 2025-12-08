@@ -961,7 +961,7 @@ namespace trview
                     {
                         if (level)
                         {
-                            on_room_selected(level->room(selected_sector->room_below()));
+                            messages::send_select_room(_messaging, level->room(selected_sector->room_below()));
                         }
                     });
                 add_stat("Floor", selected_sector->floor());
@@ -969,7 +969,7 @@ namespace trview
                     {
                         if (level)
                         {
-                            on_room_selected(level->room(selected_sector->room_above()));
+                            messages::send_select_room(_messaging, level->room(selected_sector->room_above()));
                         }
                     });
                 add_stat("Ceiling", selected_sector->ceiling());
