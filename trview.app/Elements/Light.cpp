@@ -60,9 +60,9 @@ namespace trview
 
         if (_type == trlevel::LightType::Spot || _type == trlevel::LightType::Sun)
         {
-            // Invert direction - it's stored negated in Tomb4
+            // Invert direction - it's stored negated in Tomb3/4
             auto d = _direction;
-            if (_level_version == trlevel::LevelVersion::Tomb4)
+            if (equals_any(_level_version, trlevel::LevelVersion::Tomb3, trlevel::LevelVersion::Tomb4))
             {
                 d = -d;
             }
