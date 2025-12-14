@@ -60,6 +60,6 @@ namespace trview
         float _cutoff{ 0 };
         float _radius{ 0 };
         float _density{ 0 };
-        trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
+        trlevel::PlatformAndVersion _version;
     };
 }

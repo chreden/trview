@@ -1,16 +1,41 @@
 #include "Light.h"
+#include "../Elements/ILevel.h"
 
 namespace trview
 {
     using namespace DirectX;
     using namespace DirectX::SimpleMath;
 
+    namespace
+    {
+        using namespace trlevel;
+
+        /// <summary>
+        /// Light directions are backwards except for TR5 PC/Dreamcast.
+        /// </summary>
+        Vector3 get_direction(const Vector3& direction, PlatformAndVersion version)
+        {
+            auto d = direction;
+            if (equals_any(version.version, LevelVersion::Tomb3, LevelVersion::Tomb4) ||
+               (version.version == LevelVersion::Tomb5 && version.platform == Platform::PSX))
+            {
+                d = -d;
+            }
+            d.Normalize();
+            return d;
+        }
+    }
+
     Light::Light(const std::shared_ptr<IMesh>& mesh, uint32_t number, const std::weak_ptr<IRoom>& room, const trlevel::tr_x_room_light& light, const std::weak_ptr<ILevel>& level)
         : _mesh(mesh), _number(number), _room(room), _position(light.position()), _colour(light.colour()), _type(light.type()),
         _intensity(light.intensity()), _fade(light.fade()), _direction(light.direction()), _in(light.in()), _out(light.out()),
         _rad_in(light.rad_in()), _rad_out(light.rad_out()), _length(light.length()), _cutoff(light.cutoff()), _range(light.range()),
-        _radius(light.radius()), _density(light.density()), _level_version(light.level_version), _level(level)
+        _radius(light.radius()), _density(light.density()), _level(level)
     {
+        if (auto level_ptr = _level.lock())
+        {
+            _version = level_ptr->platform_and_version();
+        }
     }
 
     uint32_t Light::number() const
@@ -60,13 +85,7 @@ namespace trview
 
         if (_type == trlevel::LightType::Spot || _type == trlevel::LightType::Sun)
         {
-            // Invert direction - it's stored negated in Tomb3/4
-            auto d = _direction;
-            if (equals_any(_level_version, trlevel::LevelVersion::Tomb3, trlevel::LevelVersion::Tomb4))
-            {
-                d = -d;
-            }
-            d.Normalize();
+            const auto d = get_direction(_direction, _version);
 
             const int steps = 4;
             const Vector3 step = d * (1.0f / static_cast<float>(steps));
@@ -190,6 +209,6 @@ namespace trview
 
     trlevel::LevelVersion Light::level_version() const
     {
-        return _level_version;
+        return _version.version;
     }
 }
