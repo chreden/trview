@@ -199,17 +199,8 @@ namespace trview
         for (auto i = 0; i < _object_textures.size(); ++i)
         {
             const trlevel::tr_object_texture& ot = _object_textures[i];
-            auto valid = ot.Vertices
-                | std::views::filter([](auto&& v) { return !(v.x_frac == 0 && v.x_whole == 0 && v.y_frac == 0 && v.y_whole == 0); })
-                | std::ranges::to<std::vector>();
-
-            // Some Playstation levels at least have all 0 textures - in this case put something in so minmax doesn't error.
-            if (valid.empty())
-            {
-                valid.push_back({});
-            }
-            const auto [min_x, max_x] = std::ranges::minmax(valid | std::views::transform([](auto&& v) { return v.x_whole; }));
-            const auto [min_y, max_y] = std::ranges::minmax(valid | std::views::transform([](auto&& v) { return v.y_whole; }));
+            const auto [min_x, max_x] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.x_whole; }));
+            const auto [min_y, max_y] = std::ranges::minmax(ot.Vertices | std::views::transform([](auto&& v) { return v.y_whole; }));
             const uint32_t width = std::max(max_x - min_x, 1);
             const uint32_t height = std::max(max_y - min_y, 1);
 
