@@ -24,7 +24,7 @@ namespace trview
 
         const std::unordered_map<MapColours::Special, Colour> default_special_colours = {
             { MapColours::Special::Default, { 0.0f, 0.7f, 0.7f } },
-            { MapColours::Special::NoSpace, { 0.2f, 0.2f, 0.9f } },
+            { MapColours::Special::NoSpace, { 0.4f, 0.4f, 0.4f } },
             { MapColours::Special::RoomAbove, { 0.0f, 0.0f, 0.0f } },
             { MapColours::Special::RoomBelow, { 0.6f, 0.0f, 0.0f, 0.0f } },
             { MapColours::Special::GeometryWall, { 0.0f, 0.6f, 0.15f } }
