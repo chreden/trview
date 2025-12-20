@@ -82,7 +82,7 @@ namespace trview
             if (mesh_result.hit)
             {
                 // Transform back out of model space to remove any scaling that may have been applied.
-                const auto world_hit_pos = Vector3::Transform(result.position, _world_transforms[i] * world);
+                const auto world_hit_pos = Vector3::Transform(mesh_result.position, _world_transforms[i] * world);
                 const auto world_distance = (position - world_hit_pos).Length();
                 if (world_distance < result.distance)
                 {

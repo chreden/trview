@@ -441,7 +441,8 @@ namespace trview
             clipboard,
             camera,
             sampler_source,
-            messaging);
+            messaging,
+            create_sphere_mesh(default_mesh_source, 24, 24));
         messaging->add_recipient(viewer);
 
         auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard, messaging); };

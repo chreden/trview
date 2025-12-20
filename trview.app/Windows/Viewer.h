@@ -59,7 +59,8 @@ namespace trview
             const std::shared_ptr<IClipboard>& clipboard,
             const std::shared_ptr<ICamera>& camera,
             const graphics::ISamplerState::Source& sampler_source,
-            const std::weak_ptr<IMessageSystem>& messaging);
+            const std::weak_ptr<IMessageSystem>& messaging,
+            const std::shared_ptr<IMesh>& blob);
         virtual ~Viewer() = default;
         std::weak_ptr<ICamera> camera() const override;
         virtual ICamera::Mode camera_mode() const override;
@@ -179,6 +180,7 @@ namespace trview
         bool _camera_moved{ false };
         graphics::ISamplerState::Source _sampler_source;
         std::weak_ptr<IMessageSystem> _messaging;
+        std::shared_ptr<IMesh> _blob;
     };
 }
 

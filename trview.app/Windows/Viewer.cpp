@@ -25,11 +25,11 @@ namespace trview
         std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, std::unique_ptr<ICompass> compass,
         std::unique_ptr<IMeasure> measure, const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ISectorHighlight> sector_highlight,
         const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<ICamera>& camera, const graphics::ISamplerState::Source& sampler_source,
-        const std::weak_ptr<IMessageSystem>& messaging)
+        const std::weak_ptr<IMessageSystem>& messaging, const std::shared_ptr<IMesh>& blob)
         : MessageHandler(window), _shortcuts(shortcuts), _timer(default_time_source()), _keyboard(window), _mouse(std::move(mouse)), _window_resizer(window),
         _alternate_group_toggler(window), _menu_detector(window), _device(device), _route(route), _ui(ui), _picking(std::move(picking)),
         _compass(std::move(compass)), _measure(std::move(measure)), _sector_highlight(std::move(sector_highlight)),
-        _clipboard(clipboard), _camera(camera), _sampler_source(sampler_source), _messaging(messaging)
+        _clipboard(clipboard), _camera(camera), _sampler_source(sampler_source), _messaging(messaging), _blob(blob)
     {
         apply_camera_settings();
 
@@ -801,6 +801,15 @@ namespace trview
 
         _ui->set_camera_position(_camera->position());
         _ui->set_camera_rotation(_camera->rotation_yaw(), _camera->rotation_pitch());
+
+        // TODO: Blobber
+        if (_current_pick.hit)
+        {
+            Matrix world = 
+                Matrix::CreateScale(0.05f) *
+                Matrix::CreateTranslation(_current_pick.position);
+            _blob->render(world * _camera->view_projection(), Colour::Green);
+        }
     }
 
     void Viewer::render_ui()
