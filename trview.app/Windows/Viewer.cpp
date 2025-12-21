@@ -805,7 +805,7 @@ namespace trview
         // TODO: Blobber
         if (_current_pick.hit)
         {
-            Matrix world = 
+            const Matrix world = 
                 Matrix::CreateScale(0.05f) *
                 Matrix::CreateTranslation(_current_pick.position);
             _blob->render(world * _camera->view_projection(), Colour::Green);
