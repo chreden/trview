@@ -135,7 +135,6 @@ namespace trview
         _camera_sink_windows->set_flybys(new_level->flybys());
         _camera_sink_windows->set_platform_and_version(new_level->platform_and_version());
         _diff_windows->set_level(new_level);
-        _items_windows->set_model_checker([=](uint32_t id) { return new_level->has_model(id); });
         _items_windows->set_ng_plus(new_level->ng_plus());
         _pack_windows->set_level(new_level);
         _pack_windows->set_pack(new_level->pack());

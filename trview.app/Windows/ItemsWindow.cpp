@@ -209,11 +209,13 @@ namespace trview
                         return std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z);
                     };
 
+                    const auto level = item->level().lock();
                     auto is_bad_mutant_egg = [&]() 
                     { 
                         return _level_version == trlevel::LevelVersion::Tomb1 &&
                             is_mutant_egg(*item) &&
-                            !_model_checker(mutant_egg_contents(*item));
+                            level &&
+                            level->has_model(mutant_egg_contents(*item));
                     };
 
                     add_stat(std::format("Type{}", is_bad_mutant_egg() ? "*" : ""), item->type());
@@ -408,11 +410,6 @@ namespace trview
     void ItemsWindow::set_level_version(trlevel::LevelVersion version)
     {
         _level_version = version;
-    }
-
-    void ItemsWindow::set_model_checker(const std::function<bool(uint32_t)>& checker)
-    {
-        _model_checker = checker;
     }
 
     void ItemsWindow::set_ng_plus(bool value)

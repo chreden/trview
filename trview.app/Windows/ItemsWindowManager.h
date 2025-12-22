@@ -27,7 +27,6 @@ namespace trview
         virtual ~ItemsWindowManager() = default;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual void render() override;
-        virtual void set_model_checker(const std::function<bool(uint32_t)>& checker) override;
         void set_ng_plus(bool value) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
         virtual std::weak_ptr<IItemsWindow> create_window() override;

@@ -32,18 +32,8 @@ namespace trview
         auto items_window = _items_window_source();
         items_window->on_add_to_route += on_add_to_route;
         items_window->set_current_room(_current_room);
-        items_window->set_model_checker(_model_checker);
         items_window->set_ng_plus(_ng_plus);
         return add_window(items_window);
-    }
-
-    void ItemsWindowManager::set_model_checker(const std::function<bool(uint32_t)>& checker)
-    {
-        _model_checker = checker;
-        for (auto& window : _windows)
-        {
-            window.second->set_model_checker(checker);
-        }
     }
 
     void ItemsWindowManager::set_ng_plus(bool value)
