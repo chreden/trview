@@ -32,23 +32,13 @@ namespace trview
         virtual ~RoomsWindowManager() = default;
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void render() override;
-        void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
-        void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) override;
         std::weak_ptr<IRoomsWindow> create_window() override;
         void update(float delta) override;
-        void set_floordata(const std::vector<uint16_t>& data) override;
-        void set_trng(bool value) override;
         std::vector<std::weak_ptr<IRoomsWindow>> windows() const override;
     private:
-        std::vector<std::weak_ptr<IItem>> _all_items;
-        std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::weak_ptr<IRoom> _current_room;
         IRoomsWindow::Source _rooms_window_source;
-        UserSettings _settings;
-        std::vector<uint16_t> _floordata;
-        std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
-        bool _trng{ false };
     };
 }
 

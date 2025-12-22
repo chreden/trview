@@ -35,14 +35,6 @@ namespace trview
         /// @param room The current room.
         virtual void set_current_room(const std::weak_ptr<IRoom>& room) = 0;
 
-        /// Set the items in the level.
-        /// @param items The items in the level.
-        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
-
-        /// Set the rooms to display in the window.
-        /// @param rooms The rooms to show.
-        virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) = 0;
-
         /// <summary>
         /// Update the window.
         /// </summary>
@@ -51,14 +43,11 @@ namespace trview
 
         virtual void set_number(int32_t number) = 0;
 
-        virtual void set_floordata(const std::vector<uint16_t>& data) = 0;
-
         virtual void set_selected_light(const std::weak_ptr<ILight>& light) = 0;
         virtual void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
 
         virtual void clear_selected_light() = 0;
         virtual void clear_selected_camera_sink() = 0;
-        virtual void set_trng(bool value) = 0;
         virtual std::string name() const = 0;
         virtual void set_filters(std::vector<Filters<IRoom>::Filter> filters) = 0;
     };
