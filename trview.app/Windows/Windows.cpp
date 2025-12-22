@@ -137,7 +137,6 @@ namespace trview
         _diff_windows->set_level(new_level);
         _pack_windows->set_level(new_level);
         _pack_windows->set_pack(new_level->pack());
-        _rooms_windows->set_floordata(new_level->floor_data());
         _route_window->set_items(new_level->items());
         _route_window->set_triggers(new_level->triggers());
         _route_window->set_rooms(new_level->rooms());
