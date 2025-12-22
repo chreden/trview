@@ -27,7 +27,6 @@ namespace trview
         virtual ~ItemsWindowManager() = default;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual void render() override;
-        void set_ng_plus(bool value) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
         virtual std::weak_ptr<IItemsWindow> create_window() override;
         virtual void update(float delta) override;
@@ -35,7 +34,5 @@ namespace trview
     private:
         std::weak_ptr<IRoom> _current_room;
         IItemsWindow::Source _items_window_source;
-        std::function<bool(uint32_t)> _model_checker;
-        bool _ng_plus{ false };
     };
 }

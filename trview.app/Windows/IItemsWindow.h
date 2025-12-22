@@ -35,7 +35,6 @@ namespace trview
         /// <param name="delta">Elapsed time since previous update.</param>
         virtual void update(float delta) = 0;
         virtual void set_number(int32_t number) = 0;
-        virtual void set_ng_plus(bool value) = 0;
         virtual std::string name() const = 0;
     };
 }

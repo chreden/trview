@@ -28,26 +28,12 @@ namespace trview
         WindowManager::render();
     }
 
-    std::weak_ptr<ITrigger> RoomsWindowManager::selected_trigger() const
-    {
-        return _selected_trigger;
-    }
-
     void RoomsWindowManager::set_items(const std::vector<std::weak_ptr<IItem>>& items)
     {
         _all_items = items;
         for (auto& window : _windows)
         {
             window.second->set_items(_all_items);
-        }
-    }
-
-    void RoomsWindowManager::set_level_version(trlevel::LevelVersion version)
-    {
-        _level_version = version;
-        for (auto& window : _windows)
-        {
-            window.second->set_level_version(_level_version);
         }
     }
 
@@ -74,12 +60,10 @@ namespace trview
         auto rooms_window = _rooms_window_source();
         rooms_window->on_sector_hover += on_sector_hover;
         rooms_window->on_static_mesh_selected += on_static_mesh_selected;
-        rooms_window->set_level_version(_level_version);
         rooms_window->set_items(_all_items);
         rooms_window->set_rooms(_all_rooms);
         rooms_window->set_current_room(_current_room);
         rooms_window->set_floordata(_floordata);
-        rooms_window->set_ng_plus(_ng_plus);
         rooms_window->set_trng(_trng);
         return add_window(rooms_window);
     }
@@ -95,15 +79,6 @@ namespace trview
         for (auto& window : _windows)
         {
             window.second->set_floordata(data);
-        }
-    }
-
-    void RoomsWindowManager::set_ng_plus(bool value)
-    {
-        _ng_plus = value;
-        for (auto& [_, window] : _windows)
-        {
-            window->set_ng_plus(value);
         }
     }
 

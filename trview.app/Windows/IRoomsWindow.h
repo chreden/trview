@@ -38,11 +38,6 @@ namespace trview
         /// Set the items in the level.
         /// @param items The items in the level.
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
-        /// <summary>
-        /// Set the level version. This will control which information is displayed.
-        /// </summary>
-        /// <param name="version">The level version</param>
-        virtual void set_level_version(trlevel::LevelVersion version) = 0;
 
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.
@@ -63,7 +58,6 @@ namespace trview
 
         virtual void clear_selected_light() = 0;
         virtual void clear_selected_camera_sink() = 0;
-        virtual void set_ng_plus(bool value) = 0;
         virtual void set_trng(bool value) = 0;
         virtual std::string name() const = 0;
         virtual void set_filters(std::vector<Filters<IRoom>::Filter> filters) = 0;

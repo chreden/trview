@@ -32,32 +32,22 @@ namespace trview
         virtual ~RoomsWindowManager() = default;
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void render() override;
-        std::weak_ptr<ITrigger> selected_trigger() const;
         void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
-        void set_level_version(trlevel::LevelVersion version) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
         void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) override;
         std::weak_ptr<IRoomsWindow> create_window() override;
         void update(float delta) override;
         void set_floordata(const std::vector<uint16_t>& data) override;
-        void set_ng_plus(bool value) override;
         void set_trng(bool value) override;
         std::vector<std::weak_ptr<IRoomsWindow>> windows() const override;
     private:
         std::vector<std::weak_ptr<IItem>> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::weak_ptr<IRoom> _current_room;
-        std::weak_ptr<ITrigger> _selected_trigger;
-        std::weak_ptr<IItem> _selected_item;
         IRoomsWindow::Source _rooms_window_source;
-        trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         UserSettings _settings;
         std::vector<uint16_t> _floordata;
         std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
-        std::weak_ptr<ICameraSink> _selected_camera_sink;
-        std::weak_ptr<ILight> _selected_light;
-        std::weak_ptr<ISector> _selected_sector;
-        bool _ng_plus{ false };
         bool _trng{ false };
     };
 }

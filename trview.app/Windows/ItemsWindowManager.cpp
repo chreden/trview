@@ -32,17 +32,7 @@ namespace trview
         auto items_window = _items_window_source();
         items_window->on_add_to_route += on_add_to_route;
         items_window->set_current_room(_current_room);
-        items_window->set_ng_plus(_ng_plus);
         return add_window(items_window);
-    }
-
-    void ItemsWindowManager::set_ng_plus(bool value)
-    {
-        _ng_plus = value;
-        for (auto& [_, window] : _windows)
-        {
-            window->set_ng_plus(value);
-        }
     }
 
     void ItemsWindowManager::set_room(const std::weak_ptr<IRoom>& room)

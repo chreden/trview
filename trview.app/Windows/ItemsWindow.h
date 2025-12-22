@@ -45,7 +45,7 @@ namespace trview
         virtual void update(float delta) override;
         virtual void set_number(int32_t number) override;
         void set_level_version(trlevel::LevelVersion version);
-        void set_ng_plus(bool value) override;
+        void set_ng_plus(bool value);
         std::string name() const override;
         void receive_message(const Message& message) override;
         void initialise();

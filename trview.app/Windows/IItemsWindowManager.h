@@ -15,8 +15,6 @@ namespace trview
         /// Render all of the item windows.
         virtual void render() = 0;
 
-        virtual void set_ng_plus(bool value) = 0;
-
         /// <summary>
         /// Set the current room to filter item windows.
         /// </summary>

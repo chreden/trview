@@ -493,7 +493,12 @@ namespace trview
                 set_items(level_ptr->items());
                 set_triggers(level_ptr->triggers());
                 set_level_version(level_ptr->version());
+                set_ng_plus(level_ptr->ng_plus());
             }
+        }
+        else if (auto ng_plus = messages::read_ng_plus(message))
+        {
+            set_ng_plus(ng_plus.value());
         }
     }
 

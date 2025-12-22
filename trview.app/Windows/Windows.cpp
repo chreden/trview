@@ -135,14 +135,11 @@ namespace trview
         _camera_sink_windows->set_flybys(new_level->flybys());
         _camera_sink_windows->set_platform_and_version(new_level->platform_and_version());
         _diff_windows->set_level(new_level);
-        _items_windows->set_ng_plus(new_level->ng_plus());
         _pack_windows->set_level(new_level);
         _pack_windows->set_pack(new_level->pack());
-        _rooms_windows->set_level_version(new_level->version());
         _rooms_windows->set_items(new_level->items());
         _rooms_windows->set_floordata(new_level->floor_data());
         _rooms_windows->set_rooms(new_level->rooms());
-        _rooms_windows->set_ng_plus(new_level->ng_plus());
         _rooms_windows->set_trng(new_level->trng());
         _route_window->set_items(new_level->items());
         _route_window->set_triggers(new_level->triggers());
@@ -156,13 +153,6 @@ namespace trview
         _triggers_windows->set_triggers(new_level->triggers());
         _triggers_windows->set_platform_and_version(new_level->platform_and_version());
         _textures_windows->set_texture_storage(new_level->texture_storage());
-
-        _level_token_store.clear();
-        _level_token_store += new_level->on_ng_plus += [this, level](bool value)
-            {
-                _items_windows->set_ng_plus(value);
-                _rooms_windows->set_ng_plus(value);
-            };
     }
 
     void Windows::set_room(const std::weak_ptr<IRoom>& room)

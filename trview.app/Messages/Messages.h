@@ -26,6 +26,9 @@ namespace trview
         std::optional<UserSettings> read_settings(const Message& message);
         void send_settings(const std::weak_ptr<IMessageSystem>& messaging, const UserSettings& settings);
 
+        std::optional<bool> read_ng_plus(const Message& message);
+        void send_ng_plus(const std::weak_ptr<IMessageSystem>& messaging, bool value);
+
         void get_open_level(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
         std::optional<std::weak_ptr<ILevel>> read_open_level(const Message& message);
         void send_open_level(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ILevel>& level);

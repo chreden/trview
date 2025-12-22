@@ -1353,10 +1353,26 @@ namespace trview
         {
             set_selected_sector(selected_sector.value());
         }
+        else if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                set_rooms(level_ptr->rooms());
+                set_items(level_ptr->items());
+                set_triggers(level_ptr->triggers());
+                set_level_version(level_ptr->version());
+                set_ng_plus(level_ptr->ng_plus());
+            }
+        }
+        else if (auto ng_plus = messages::read_ng_plus(message))
+        {
+            set_ng_plus(ng_plus.value());
+        }
     }
 
     void RoomsWindow::initialise()
     {
+        messages::get_open_level(_messaging, weak_from_this());
         messages::get_selected_room(_messaging, weak_from_this());
         messages::get_selected_item(_messaging, weak_from_this());
         messages::get_selected_light(_messaging, weak_from_this());

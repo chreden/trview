@@ -53,6 +53,16 @@ namespace trview
             send_message(messaging, settings, "settings");
         }
 
+        std::optional<bool> read_ng_plus(const Message& message)
+        {
+            return read_message<bool>(message, "ng_plus");
+        }
+
+        void send_ng_plus(const std::weak_ptr<IMessageSystem>& messaging, bool value)
+        {
+            send_message(messaging, value, "ng_plus");
+        }
+
         void get_open_level(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
         {
             get_message(messaging, reply_to, "get_open_level");

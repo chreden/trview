@@ -16,11 +16,6 @@ namespace trview
 
         /// Set the items in the current level.
         virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
-        /// <summary>
-        /// Set the level version for the current level. This will control which information is displayed.
-        /// </summary>
-        /// <param name="version">The level version.</param>
-        virtual void set_level_version(trlevel::LevelVersion version) = 0;
         /// Set the current room that the viewer is focusing on.
         /// @param room The current room.
         virtual void set_room(const std::weak_ptr<IRoom>& room) = 0;
@@ -38,7 +33,6 @@ namespace trview
         virtual void update(float delta) = 0;
 
         virtual void set_floordata(const std::vector<uint16_t>& data) = 0;
-        virtual void set_ng_plus(bool value) = 0;
         virtual void set_trng(bool value) = 0;
         virtual std::vector<std::weak_ptr<IRoomsWindow>> windows() const = 0;
     };
