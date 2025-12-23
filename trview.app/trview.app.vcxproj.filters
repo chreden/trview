@@ -116,7 +116,6 @@
     <ClCompile Include="Sound\SoundStorage.cpp" Filter="Sound" />
     <ClCompile Include="Sound\Sound.cpp" Filter="Sound" />
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" Filter="Windows\Sounds" />
-    <ClCompile Include="Windows\Sounds\SoundsWindowManager.cpp" Filter="Windows\Sounds" />
     <ClCompile Include="Elements\SoundSource\SoundSource.cpp" Filter="Elements\SoundSource" />
     <ClCompile Include="Elements\Remastered\NgPlusSwitcher.cpp" Filter="Elements\Remastered" />
     <ClCompile Include="Windows\AutoHider.cpp" Filter="Windows" />
@@ -395,12 +394,7 @@
     <ClInclude Include="Sound\SoundStorage.h" Filter="Sound" />
     <ClInclude Include="Sound\ISound.h" Filter="Sound" />
     <ClInclude Include="Sound\Sound.h" Filter="Sound" />
-    <ClInclude Include="Windows\Sounds\ISoundsWindow.h" Filter="Windows\Sounds" />
     <ClInclude Include="Windows\Sounds\SoundsWindow.h" Filter="Windows\Sounds" />
-    <ClInclude Include="Windows\Sounds\ISoundsWindowManager.h" Filter="Windows\Sounds" />
-    <ClInclude Include="Windows\Sounds\SoundsWindowManager.h" Filter="Windows\Sounds" />
-    <ClInclude Include="Mocks\Windows\ISoundsWindow.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\ISoundsWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Elements\SoundSource\ISoundSource.h" Filter="Elements\SoundSource" />
     <ClInclude Include="Elements\SoundSource\SoundSource.h" Filter="Elements\SoundSource" />
     <ClInclude Include="Mocks\Elements\ISoundSource.h" Filter="Mocks\Elements" />
@@ -449,6 +443,9 @@
     <ClInclude Include="Mocks\Elements\ILevelNameLookup.h" Filter="Mocks\Elements" />
     <ClInclude Include="Menus\LevelSortingMode.h" Filter="Menus" />
     <ClInclude Include="Menus\LevelSortingMode.hpp" Filter="Menus" />
+    <ClInclude Include="Windows\IWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

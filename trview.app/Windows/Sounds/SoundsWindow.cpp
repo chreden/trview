@@ -12,10 +12,6 @@
 
 namespace trview
 {
-    ISoundsWindow::~ISoundsWindow()
-    {
-    }
-
     SoundsWindow::SoundsWindow(const std::weak_ptr<IMessageSystem>& messaging)
         : _messaging(messaging)
     {
@@ -37,6 +33,10 @@ namespace trview
                     }
                 }
             };
+    }
+
+    void SoundsWindow::update(float)
+    {
     }
 
     void SoundsWindow::render()

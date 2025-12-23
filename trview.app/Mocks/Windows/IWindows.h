@@ -15,7 +15,6 @@ namespace trview
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, select, (const std::weak_ptr<IWaypoint>&), (override));
             MOCK_METHOD(void, set_level, (const std::weak_ptr<ILevel>&), (override));
-            MOCK_METHOD(void, set_room, (const std::weak_ptr<IRoom>&), (override));
             MOCK_METHOD(void, set_route, (const std::weak_ptr<IRoute>&), (override));
             MOCK_METHOD(void, setup, (const UserSettings&), (override));
         };

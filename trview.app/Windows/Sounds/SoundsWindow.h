@@ -3,7 +3,6 @@
 #include <trview.common/TokenStore.h>
 #include <trview.common/Messages/IMessageSystem.h>
 
-#include "ISoundsWindow.h"
 #include "../../Filters/Filters.h"
 #include "../AutoHider.h"
 #include "../../Settings/UserSettings.h"
@@ -12,11 +11,13 @@
 #include "../../Elements/SoundSource/ISoundSource.h"
 #include "../../Sound/ISoundStorage.h"
 
+#include "../IWindow.h"
+
 namespace trview
 {
     struct ILevel;
 
-    class SoundsWindow final : public ISoundsWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class SoundsWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -32,6 +33,7 @@ namespace trview
 
         explicit SoundsWindow(const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~SoundsWindow() = default;
+        void update(float delta) override;
         void render() override;
         void set_level_platform(trlevel::Platform platform);
         void set_level_version(trlevel::LevelVersion version);

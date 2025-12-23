@@ -4,6 +4,8 @@
 #include "../Routing/IWaypoint.h"
 
 #include "IWindows.h"
+#include "IWindow.h"
+#include "WindowManager.h"
 
 namespace trview
 {
@@ -23,10 +25,11 @@ namespace trview
     struct ITriggersWindowManager;
     struct IPackWindowManager;
 
-    class Windows final : public IWindows
+    class Windows final : public IWindows, public WindowManager<IWindow>, public MessageHandler
     {
     public:
         explicit Windows(
+            const Window& window,
             std::unique_ptr<IAboutWindowManager> about_window_manager,
             std::unique_ptr<ICameraSinkWindowManager> camera_sink_windows,
             std::unique_ptr<IConsoleManager> console_manager,
@@ -38,13 +41,14 @@ namespace trview
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
             std::shared_ptr<IRoomsWindowManager> rooms_window_manager,
             std::unique_ptr<IRouteWindowManager> route_window_manager,
-            std::unique_ptr<ISoundsWindowManager> sounds_window_manager,
+            IWindow::Source sounds_window_source,
             std::unique_ptr<IStaticsWindowManager> statics_window_manager,
             std::unique_ptr<ITexturesWindowManager> textures_window_manager,
             std::unique_ptr<ITriggersWindowManager> triggers_window_manager);
         virtual ~Windows() = default;
         bool is_route_window_open() const override;
         void update(float elapsed) override;
+        std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void render() override;
         void select(const std::weak_ptr<IWaypoint>& waypoint) override;
         void set_level(const std::weak_ptr<ILevel>& level) override;
@@ -53,8 +57,6 @@ namespace trview
     private:
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index);
 
-        TokenStore _token_store;
-        TokenStore _level_token_store;
         std::unique_ptr<IAboutWindowManager> _about_windows;
         std::unique_ptr<ICameraSinkWindowManager> _camera_sink_windows;
         std::unique_ptr<IConsoleManager> _console_manager;
@@ -67,7 +69,7 @@ namespace trview
         std::shared_ptr<IRoomsWindowManager> _rooms_windows;
         std::weak_ptr<IRoute> _route;
         std::unique_ptr<IRouteWindowManager> _route_window;
-        std::unique_ptr<ISoundsWindowManager> _sounds_windows;
+        IWindow::Source _sounds_window_source;
         std::unique_ptr<IStaticsWindowManager> _statics_windows;
         std::unique_ptr<ITexturesWindowManager> _textures_windows;
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;

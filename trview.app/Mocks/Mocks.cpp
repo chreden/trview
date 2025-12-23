@@ -74,8 +74,6 @@
 #include "Windows/IStaticsWindow.h"
 #include "Windows/IStaticsWindowManager.h"
 #include "Windows/IWindows.h"
-#include "Windows/ISoundsWindow.h"
-#include "Windows/ISoundsWindowManager.h"
 #include "Windows/IAboutWindow.h"
 #include "Windows/IAboutWindowManager.h"
 #include "Windows/IDiffWindowManager.h"
@@ -284,12 +282,6 @@ namespace trview
 
         MockScriptable::MockScriptable() {}
         MockScriptable::~MockScriptable() {}
-
-        MockSoundsWindow::MockSoundsWindow() {}
-        MockSoundsWindow::~MockSoundsWindow() {}
-
-        MockSoundsWindowManager::MockSoundsWindowManager() {}
-        MockSoundsWindowManager::~MockSoundsWindowManager() {}
 
         MockSoundSource::MockSoundSource() {};
         MockSoundSource::~MockSoundSource() {};

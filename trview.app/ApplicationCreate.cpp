@@ -558,6 +558,7 @@ namespace trview
             randomizer_route_source,
             fonts,
             std::make_unique<Windows>(
+                window,
                 std::make_unique<AboutWindowManager>(window, about_window_source),
                 std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
                 std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
@@ -569,7 +570,7 @@ namespace trview
                 std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
                 rooms_window_manager,
                 std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
-                std::make_unique<SoundsWindowManager>(window, sounds_window_source),
+                sounds_window_source,
                 std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source),
                 std::make_unique<TexturesWindowManager>(window, textures_window_source),
                 std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source)),

@@ -342,17 +342,6 @@ namespace trview
         }
     }
 
-    void Application::select_item(std::weak_ptr<IItem> item)
-    {
-        const auto [item_ptr, level] = get_entity_and_level(item);
-        if (!item_ptr || !level)
-        {
-            return;
-        }
-
-        _windows->set_room(item_ptr->room());
-    }
-
     void Application::select_room(std::weak_ptr<IRoom> room)
     {
         const auto [room_ptr, level] = get_entity_and_level(room);
@@ -364,7 +353,6 @@ namespace trview
         level->set_selected_room(room);
         _viewer->open(level, ILevel::OpenMode::Reload);
         _viewer->select_room(room);
-        _windows->set_room(room);
     }
 
     void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)
@@ -913,11 +901,7 @@ namespace trview
 
     void Application::receive_message(const Message& message)
     {
-        if (auto selected_item = messages::read_select_item(message))
-        {
-            select_item(selected_item.value());
-        }
-        else if (message.type == "get_selected_item")
+        if (message.type == "get_selected_item")
         {
             if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
             {
