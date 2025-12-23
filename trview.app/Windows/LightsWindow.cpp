@@ -343,19 +343,21 @@ namespace trview
         {
             if (auto level_ptr = level->lock())
             {
-                // clear_selected_item();
-                // set_items(level_ptr->items());
-                // set_triggers(level_ptr->triggers());
                 clear_selected_light();
                 set_lights(level_ptr->lights());
                 set_level_version(level_ptr->version());
             }
+        }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_current_room(selected_room.value());
         }
     }
 
     void LightsWindow::initialise()
     {
         messages::get_open_level(_messaging, weak_from_this());
+        messages::get_selected_room(_messaging, weak_from_this());
         messages::get_selected_light(_messaging, weak_from_this());
     }
 }

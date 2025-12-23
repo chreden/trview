@@ -25,7 +25,6 @@ namespace trview
     std::weak_ptr<ILightsWindow> LightsWindowManager::create_window()
     {
         auto lights_window = _lights_window_source();
-        lights_window->set_current_room(_current_room);
         return add_window(lights_window);
     }
 
@@ -37,14 +36,5 @@ namespace trview
     void LightsWindowManager::update(float delta)
     {
         WindowManager::update(delta);
-    }
-
-    void LightsWindowManager::set_room(const std::weak_ptr<IRoom>& room)
-    {
-        _current_room = room;
-        for (auto& window : _windows)
-        {
-            window.second->set_current_room(room);
-        }
     }
 }

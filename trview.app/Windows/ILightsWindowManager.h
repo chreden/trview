@@ -13,6 +13,5 @@ namespace trview
         virtual std::weak_ptr<ILightsWindow> create_window() = 0;
         virtual void render() = 0;
         virtual void update(float delta) = 0;
-        virtual void set_room(const std::weak_ptr<IRoom>& room) = 0;
     };
 }

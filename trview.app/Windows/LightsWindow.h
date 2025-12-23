@@ -36,7 +36,7 @@ namespace trview
         void set_selected_light(const std::weak_ptr<ILight>& light);
         void set_level_version(trlevel::LevelVersion version);
         virtual void set_number(int32_t number) override;
-        void set_current_room(const std::weak_ptr<IRoom>& room) override;
+        void set_current_room(const std::weak_ptr<IRoom>& room);
         void receive_message(const Message& message) override;
         void initialise();
     private:
