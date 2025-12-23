@@ -505,6 +505,7 @@ namespace trview
     void ItemsWindow::initialise()
     {
         messages::get_open_level(_messaging, weak_from_this());
+        messages::get_selected_room(_messaging, weak_from_this());
         messages::get_selected_item(_messaging, weak_from_this());
     }
 }

@@ -21,11 +21,6 @@ namespace trview
         virtual void render() = 0;
         /// Clear the currently selected item from the details panel.
         virtual void clear_selected_item() = 0;
-        /// <summary>
-        /// Set the current room. This will be used when the track room setting is on.
-        /// </summary>
-        /// <param name="room">The current room.</param>
-        virtual void set_current_room(const std::weak_ptr<IRoom>& room) = 0;
         /// Get the selected item.
         /// @returns The selected item, if present.
         virtual std::weak_ptr<IItem> selected_item() const = 0;

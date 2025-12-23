@@ -14,13 +14,6 @@ namespace trview
 
         /// Render all of the item windows.
         virtual void render() = 0;
-
-        /// <summary>
-        /// Set the current room to filter item windows.
-        /// </summary>
-        /// <param name="room">The current room.</param>
-        virtual void set_room(const std::weak_ptr<IRoom>& room) = 0;
-
         /// Create a new items window.
         virtual std::weak_ptr<IItemsWindow> create_window() = 0;
         /// <summary>

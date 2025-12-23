@@ -27,12 +27,10 @@ namespace trview
         virtual ~ItemsWindowManager() = default;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual void render() override;
-        void set_room(const std::weak_ptr<IRoom>& room) override;
         virtual std::weak_ptr<IItemsWindow> create_window() override;
         virtual void update(float delta) override;
         std::vector<std::weak_ptr<IItemsWindow>> windows() const override;
     private:
-        std::weak_ptr<IRoom> _current_room;
         IItemsWindow::Source _items_window_source;
     };
 }

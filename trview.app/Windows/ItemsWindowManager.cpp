@@ -31,17 +31,7 @@ namespace trview
     {
         auto items_window = _items_window_source();
         items_window->on_add_to_route += on_add_to_route;
-        items_window->set_current_room(_current_room);
         return add_window(items_window);
-    }
-
-    void ItemsWindowManager::set_room(const std::weak_ptr<IRoom>& room)
-    {
-        _current_room = room;
-        for (auto& window : _windows)
-        {
-            window.second->set_current_room(room);
-        }
     }
 
     void ItemsWindowManager::update(float delta)
