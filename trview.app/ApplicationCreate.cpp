@@ -64,7 +64,6 @@
 #include "Windows/ItemsWindow.h"
 #include "Windows/ItemsWindowManager.h"
 #include "Windows/LightsWindow.h"
-#include "Windows/LightsWindowManager.h"
 #include "Windows/RouteWindowManager.h"
 #include "Windows/RoomsWindowManager.h"
 #include "Windows/TriggersWindowManager.h"
@@ -562,7 +561,7 @@ namespace trview
                 std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
                 std::make_unique<DiffWindowManager>(window, shortcuts, diff_window_source),
                 items_window_manager,
-                std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
+                lights_window_source,
                 std::make_unique<LogWindowManager>(window, log_window_source),
                 std::make_unique<PackWindowManager>(window, pack_window_source),
                 std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),

@@ -50,7 +50,6 @@
     <ClCompile Include="Routing\IWaypoint.cpp" Filter="Routing" />
     <ClCompile Include="Settings\RandomizerSettings.cpp" Filter="Settings" />
     <ClCompile Include="trview_imgui.cpp" />
-    <ClCompile Include="Windows\LightsWindowManager.cpp" Filter="Windows\Lights" />
     <ClCompile Include="Windows\LightsWindow.cpp" Filter="Windows\Lights" />
     <ClCompile Include="Windows\ItemsWindow.cpp" Filter="Windows\Items" />
     <ClCompile Include="Windows\ItemsWindowManager.cpp" Filter="Windows\Items" />
@@ -247,11 +246,7 @@
     <ClInclude Include="Mocks\UI\ICameraControls.h" Filter="Mocks\UI" />
     <ClInclude Include="Settings\RandomizerSettings.h" Filter="Settings" />
     <ClInclude Include="Mocks\UI\IMapRenderer.h" Filter="Mocks\UI" />
-    <ClInclude Include="Windows\ILightsWindowManager.h" Filter="Windows\Lights" />
-    <ClInclude Include="Windows\LightsWindowManager.h" Filter="Windows\Lights" />
     <ClInclude Include="Windows\LightsWindow.h" Filter="Windows\Lights" />
-    <ClInclude Include="Windows\ILightsWindow.h" Filter="Windows\Lights" />
-    <ClInclude Include="Mocks\Windows\ILightsWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Mocks\Elements\ILight.h" Filter="Mocks\Elements" />
     <ClInclude Include="trview_imgui.h" />
     <ClInclude Include="trview_imgui.hpp" />
@@ -279,7 +274,6 @@
     <ClInclude Include="Elements\ILight.h" Filter="Elements\Light" />
     <ClInclude Include="UI\MapColours.h" Filter="UI\Minimap" />
     <ClInclude Include="Elements\Light.h" Filter="Elements\Light" />
-    <ClInclude Include="Mocks\Windows\ILightsWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="UI\ISettingsWindow.h" Filter="UI\Settings" />
     <ClInclude Include="UI\SettingsWindow.h" Filter="UI\Settings" />
     <ClInclude Include="Elements\Floordata.h" Filter="Elements" />

@@ -8,7 +8,6 @@
 #include "Console/IConsoleManager.h"
 #include "Diff/IDiffWindowManager.h"
 #include "IItemsWindowManager.h"
-#include "ILightsWindowManager.h"
 #include "Log/ILogWindowManager.h"
 #include "Plugins/IPluginsWindowManager.h"
 #include "IRoomsWindowManager.h"
@@ -38,7 +37,7 @@ namespace trview
         std::unique_ptr<IConsoleManager> console_manager,
         std::unique_ptr<IDiffWindowManager> diff_window_manager,
         std::shared_ptr<IItemsWindowManager> items_window_manager,
-        std::unique_ptr<ILightsWindowManager> lights_window_manager,
+        const IWindow::Source& lights_window_source,
         std::unique_ptr<ILogWindowManager> log_window_manager,
         std::unique_ptr<IPackWindowManager> pack_window_manager,
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
@@ -51,12 +50,13 @@ namespace trview
         const std::shared_ptr<IShortcuts>& shortcuts)
         : MessageHandler(window),
         _about_windows(std::move(about_window_manager)), _camera_sink_windows(std::move(camera_sink_windows)), _console_manager(std::move(console_manager)),
-        _diff_windows(std::move(diff_window_manager)), _items_windows(items_window_manager), _lights_windows(std::move(lights_window_manager)),
+        _diff_windows(std::move(diff_window_manager)), _items_windows(items_window_manager), _lights_window_source(lights_window_source),
         _log_windows(std::move(log_window_manager)), _plugins_windows(std::move(plugins_window_manager)), _rooms_windows(rooms_window_manager),
         _route_window(std::move(route_window_manager)), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
         _textures_windows(std::move(textures_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _pack_windows(std::move(pack_window_manager))
     {
         // TODO: Maybe move somewhere else:
+        _token_store += shortcuts->add_shortcut(true, 'L') += [&]() { add_window(_lights_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'S') += [&]() { add_window(_statics_window_source()); };
 
         _diff_windows->on_diff_ended += on_diff_ended;
@@ -113,6 +113,11 @@ namespace trview
                     add_window(_statics_window_source());
                     break;
                 }
+                case ID_WINDOWS_LIGHTS:
+                {
+                    add_window(_lights_window_source());
+                    break;
+                }
             }
         }
         return {};
@@ -124,7 +129,6 @@ namespace trview
 
         _camera_sink_windows->update(elapsed);
         _items_windows->update(elapsed);
-        _lights_windows->update(elapsed);
         _plugins_windows->update(elapsed);
         _rooms_windows->update(elapsed);
         _route_window->update(elapsed);
@@ -140,7 +144,6 @@ namespace trview
         _console_manager->render();
         _diff_windows->render();
         _items_windows->render();
-        _lights_windows->render();
         _log_windows->render();
         _pack_windows->render();
         _plugins_windows->render();

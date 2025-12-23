@@ -35,7 +35,6 @@
     <ClCompile Include="NullImGuiBackend.cpp" Filter="ImGui" />
     <ClCompile Include="UI\MapColoursTests.cpp" Filter="UI" />
     <ClCompile Include="Elements\LightTests.cpp" Filter="Elements" />
-    <ClCompile Include="Windows\LightsWindowManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="Filters\FiltersTests.cpp" Filter="Filters" />
     <ClCompile Include="Elements\TriggerTests.cpp" Filter="Elements" />
     <ClCompile Include="Windows\LogWindowManagerTests.cpp" Filter="Windows" />

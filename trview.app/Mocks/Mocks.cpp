@@ -47,8 +47,6 @@
 #include "UI/IViewOptions.h"
 #include "Windows/IItemsWindow.h"
 #include "Windows/IItemsWindowManager.h"
-#include "Windows/ILightsWindow.h"
-#include "Windows/ILightsWindowManager.h"
 #include "Windows/ILogWindow.h"
 #include "Windows/ILogWindowManager.h"
 #include "Windows/IRoomsWindow.h"
@@ -190,12 +188,6 @@ namespace trview
 
         MockItemsWindowManager::MockItemsWindowManager() {}
         MockItemsWindowManager::~MockItemsWindowManager() {}
-
-        MockLightsWindow::MockLightsWindow() {}
-        MockLightsWindow::~MockLightsWindow() {}
-
-        MockLightsWindowManager::MockLightsWindowManager() {}
-        MockLightsWindowManager::~MockLightsWindowManager() {}
 
         MockLogWindow::MockLogWindow() {}
         MockLogWindow::~MockLogWindow() {}

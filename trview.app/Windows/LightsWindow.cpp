@@ -7,10 +7,6 @@
 
 namespace trview
 {
-    ILightsWindow::~ILightsWindow()
-    {
-    }
-
     LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _messaging(messaging)
     {

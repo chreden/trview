@@ -219,7 +219,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\ItemsWindow.cpp" />
     <ClCompile Include="Windows\ItemsWindowManager.cpp" />
     <ClCompile Include="Windows\LightsWindow.cpp" />
-    <ClCompile Include="Windows\LightsWindowManager.cpp" />
     <ClCompile Include="Windows\Log\LogWindow.cpp" />
     <ClCompile Include="Windows\Log\LogWindowManager.cpp" />
     <ClCompile Include="Windows\Plugins\PluginsWindow.cpp" />
@@ -361,8 +360,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Windows\ICameraSinkWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindow.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
-    <ClInclude Include="Mocks\Windows\ILightsWindow.h" />
-    <ClInclude Include="Mocks\Windows\ILightsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\ILogWindow.h" />
     <ClInclude Include="Mocks\Windows\ILogWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IRoomsWindow.h" />
@@ -427,8 +424,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\CameraSink\ICameraSinkWindowManager.h" />
     <ClInclude Include="Windows\IItemsWindow.h" />
     <ClInclude Include="Windows\IItemsWindowManager.h" />
-    <ClInclude Include="Windows\ILightsWindow.h" />
-    <ClInclude Include="Windows\ILightsWindowManager.h" />
     <ClInclude Include="Windows\IRoomsWindow.h" />
     <ClInclude Include="Windows\IRoomsWindowManager.h" />
     <ClInclude Include="Windows\IRouteWindow.h" />
@@ -440,7 +435,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\IViewer.h" />
     <ClInclude Include="Windows\IWindows.h" />
     <ClInclude Include="Windows\LightsWindow.h" />
-    <ClInclude Include="Windows\LightsWindowManager.h" />
     <ClInclude Include="Windows\Log\ILogWindow.h" />
     <ClInclude Include="Windows\Log\ILogWindowManager.h" />
     <ClInclude Include="Windows\Log\LogWindow.h" />

@@ -15,13 +15,10 @@ namespace trview
     struct IConsoleManager;
     struct IDiffWindowManager;
     struct IItemsWindowManager;
-    struct ILightsWindowManager;
     struct ILogWindowManager;
     struct IPluginsWindowManager;
     struct IRoomsWindowManager;
     struct IRouteWindowManager;
-    struct ISoundsWindowManager;
-    struct IStaticsWindowManager;
     struct ITexturesWindowManager;
     struct ITriggersWindowManager;
     struct IPackWindowManager;
@@ -36,7 +33,7 @@ namespace trview
             std::unique_ptr<IConsoleManager> console_manager,
             std::unique_ptr<IDiffWindowManager> diff_window_manager,
             std::shared_ptr<IItemsWindowManager> items_window_manager,
-            std::unique_ptr<ILightsWindowManager> lights_window_manager,
+            const IWindow::Source& lights_window_source,
             std::unique_ptr<ILogWindowManager> log_window_manager,
             std::unique_ptr<IPackWindowManager> pack_window_manager,
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
@@ -64,7 +61,7 @@ namespace trview
         std::unique_ptr<IConsoleManager> _console_manager;
         std::unique_ptr<IDiffWindowManager> _diff_windows;
         std::shared_ptr<IItemsWindowManager> _items_windows;
-        std::unique_ptr<ILightsWindowManager> _lights_windows;
+        IWindow::Source _lights_window_source;
         std::unique_ptr<ILogWindowManager> _log_windows;
         std::unique_ptr<IPackWindowManager> _pack_windows;
         std::unique_ptr<IPluginsWindowManager> _plugins_windows;
