@@ -253,6 +253,10 @@ namespace trview
         {
             set_selected_static(selected_static_mesh.value());
         }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_current_room(selected_room.value());
+        }
         else if (auto level = messages::read_open_level(message))
         {
             if (auto level_ptr = level->lock())
@@ -265,6 +269,7 @@ namespace trview
     void StaticsWindow::initialise()
     {
         messages::get_open_level(_messaging, weak_from_this());
+        messages::get_selected_room(_messaging, weak_from_this());
         messages::get_selected_static_mesh(_messaging, weak_from_this());
     }
 }

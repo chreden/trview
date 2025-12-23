@@ -12,7 +12,6 @@ namespace trview
         virtual ~IStaticsWindowManager() = 0;
         virtual std::weak_ptr<IStaticsWindow> create_window() = 0;
         virtual void render() = 0;
-        virtual void set_room(const std::weak_ptr<IRoom>& room) = 0;
         virtual void update(float dt) = 0;
     };
 }

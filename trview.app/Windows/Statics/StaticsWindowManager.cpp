@@ -30,21 +30,11 @@ namespace trview
     std::weak_ptr<IStaticsWindow> StaticsWindowManager::create_window()
     {
         auto window = _source();
-        window->set_current_room(_current_room);
         return add_window(window);
     }
 
     void StaticsWindowManager::update(float delta)
     {
         WindowManager::update(delta);
-    }
-
-    void StaticsWindowManager::set_room(const std::weak_ptr<IRoom>& room)
-    {
-        _current_room = room;
-        for (auto& window : _windows)
-        {
-            window.second->set_current_room(room);
-        }
     }
 }

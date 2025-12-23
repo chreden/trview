@@ -136,7 +136,6 @@ namespace trview
 
     void Windows::set_room(const std::weak_ptr<IRoom>& room)
     {
-        _statics_windows->set_room(room);
         _triggers_windows->set_room(room);
     }
 

@@ -33,7 +33,7 @@ namespace trview
         void initialise();
         void render() override;
         std::weak_ptr<IStaticMesh> selected_static() const override;
-        void set_current_room(const std::weak_ptr<IRoom>& room) override;
+        void set_current_room(const std::weak_ptr<IRoom>& room);
         void set_number(int32_t number) override;
         void set_selected_static(const std::weak_ptr<IStaticMesh>& static_mesh);
         void set_statics(const std::vector<std::weak_ptr<IStaticMesh>>& statics);
