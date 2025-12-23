@@ -131,8 +131,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Windows\IDiffWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IPackWindow.h" />
     <ClInclude Include="Mocks\Windows\IPackWindowManager.h" />
-    <ClInclude Include="Mocks\Windows\IStaticsWindow.h" />
-    <ClInclude Include="Mocks\Windows\IStaticsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IWindows.h" />
     <ClInclude Include="Mocks\Windows\IAboutWindowManager.h" />
     <ClInclude Include="Settings\FontSetting.h" />
@@ -232,7 +230,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\RouteWindowManager.cpp" />
     <ClCompile Include="Windows\RowCounter.cpp" />
     <ClCompile Include="Windows\Statics\StaticsWindow.cpp" />
-    <ClCompile Include="Windows\Statics\StaticsWindowManager.cpp" />
     <ClCompile Include="Windows\Textures\TexturesWindow.cpp" />
     <ClCompile Include="Windows\Textures\TexturesWindowManager.cpp" />
     <ClCompile Include="Windows\TriggersWindow.cpp" />
@@ -457,10 +454,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\RouteWindow.h" />
     <ClInclude Include="Windows\RouteWindowManager.h" />
     <ClInclude Include="Windows\RowCounter.h" />
-    <ClInclude Include="Windows\Statics\IStaticsWindow.h" />
-    <ClInclude Include="Windows\Statics\IStaticsWindowManager.h" />
     <ClInclude Include="Windows\Statics\StaticsWindow.h" />
-    <ClInclude Include="Windows\Statics\StaticsWindowManager.h" />
     <ClInclude Include="Windows\Textures\ITexturesWindow.h" />
     <ClInclude Include="Windows\Textures\ITexturesWindowManager.h" />
     <ClInclude Include="Windows\Textures\TexturesWindow.h" />

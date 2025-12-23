@@ -85,9 +85,7 @@
 #include "Windows/Plugins/PluginsWindow.h"
 #include "Tools/Toolbar.h"
 #include "UI/Fonts/Fonts.h"
-#include "Windows/Sounds/SoundsWindowManager.h"
 #include "Windows/Sounds/SoundsWindow.h"
-#include "Windows/Statics/StaticsWindowManager.h"
 #include "Windows/Statics/StaticsWindow.h"
 #include "Windows/Windows.h"
 #include "Windows/About/AboutWindowManager.h"
@@ -571,9 +569,10 @@ namespace trview
                 rooms_window_manager,
                 std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
                 sounds_window_source,
-                std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source),
+                statics_window_source,
                 std::make_unique<TexturesWindowManager>(window, textures_window_source),
-                std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source)),
+                std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source),
+                shortcuts),
             Application::LoadMode::Async,
             messaging);
         messaging->add_recipient(application);

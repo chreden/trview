@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trview.common/TokenStore.h>
+#include <trview.common/Windows/IShortcuts.h>
 #include "../Routing/IWaypoint.h"
 
 #include "IWindows.h"
@@ -41,10 +42,11 @@ namespace trview
             std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
             std::shared_ptr<IRoomsWindowManager> rooms_window_manager,
             std::unique_ptr<IRouteWindowManager> route_window_manager,
-            IWindow::Source sounds_window_source,
-            std::unique_ptr<IStaticsWindowManager> statics_window_manager,
+            const IWindow::Source& sounds_window_source,
+            const IWindow::Source& statics_window_source,
             std::unique_ptr<ITexturesWindowManager> textures_window_manager,
-            std::unique_ptr<ITriggersWindowManager> triggers_window_manager);
+            std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
+            const std::shared_ptr<IShortcuts>& shortcuts);
         virtual ~Windows() = default;
         bool is_route_window_open() const override;
         void update(float elapsed) override;
@@ -70,7 +72,7 @@ namespace trview
         std::weak_ptr<IRoute> _route;
         std::unique_ptr<IRouteWindowManager> _route_window;
         IWindow::Source _sounds_window_source;
-        std::unique_ptr<IStaticsWindowManager> _statics_windows;
+        IWindow::Source _statics_window_source;
         std::unique_ptr<ITexturesWindowManager> _textures_windows;
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;
     };

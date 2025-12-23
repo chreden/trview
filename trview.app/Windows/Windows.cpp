@@ -13,7 +13,6 @@
 #include "Plugins/IPluginsWindowManager.h"
 #include "IRoomsWindowManager.h"
 #include "IRouteWindowManager.h"
-#include "Statics/IStaticsWindowManager.h"
 #include "Textures/ITexturesWindowManager.h"
 #include "ITriggersWindowManager.h"
 #include "Pack/IPackWindowManager.h"
@@ -45,17 +44,21 @@ namespace trview
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
         std::shared_ptr<IRoomsWindowManager> rooms_window_manager,
         std::unique_ptr<IRouteWindowManager> route_window_manager,
-        IWindow::Source sounds_window_source,
-        std::unique_ptr<IStaticsWindowManager> statics_window_manager,
+        const IWindow::Source& sounds_window_source,
+        const IWindow::Source& statics_window_source,
         std::unique_ptr<ITexturesWindowManager> textures_window_manager,
-        std::unique_ptr<ITriggersWindowManager> triggers_window_manager)
+        std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
+        const std::shared_ptr<IShortcuts>& shortcuts)
         : MessageHandler(window),
         _about_windows(std::move(about_window_manager)), _camera_sink_windows(std::move(camera_sink_windows)), _console_manager(std::move(console_manager)),
         _diff_windows(std::move(diff_window_manager)), _items_windows(items_window_manager), _lights_windows(std::move(lights_window_manager)),
         _log_windows(std::move(log_window_manager)), _plugins_windows(std::move(plugins_window_manager)), _rooms_windows(rooms_window_manager),
-        _route_window(std::move(route_window_manager)), _sounds_window_source(sounds_window_source), _statics_windows(std::move(statics_window_manager)),
+        _route_window(std::move(route_window_manager)), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
         _textures_windows(std::move(textures_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _pack_windows(std::move(pack_window_manager))
     {
+        // TODO: Maybe move somewhere else:
+        _token_store += shortcuts->add_shortcut(true, 'S') += [&]() { add_window(_statics_window_source()); };
+
         _diff_windows->on_diff_ended += on_diff_ended;
 
         _token_store += _items_windows->on_add_to_route += [this](auto item)
@@ -105,6 +108,11 @@ namespace trview
                     add_window(_sounds_window_source());
                     break;
                 }
+                case ID_WINDOWS_STATICS:
+                {
+                    add_window(_statics_window_source());
+                    break;
+                }
             }
         }
         return {};
@@ -120,7 +128,6 @@ namespace trview
         _plugins_windows->update(elapsed);
         _rooms_windows->update(elapsed);
         _route_window->update(elapsed);
-        _statics_windows->update(elapsed);
         _triggers_windows->update(elapsed);
     }
 
@@ -139,7 +146,6 @@ namespace trview
         _plugins_windows->render();
         _rooms_windows->render();
         _route_window->render();
-        _statics_windows->render();
         _textures_windows->render();
         _triggers_windows->render();
     }
@@ -190,7 +196,7 @@ namespace trview
 
         if (settings.statics_startup)
         {
-            _statics_windows->create_window();
+            add_window(_statics_window_source());
         }
 
         if (settings.triggers_startup)

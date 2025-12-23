@@ -6,17 +6,17 @@
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.common/Messages/IMessageSystem.h>
 
-#include "IStaticsWindow.h"
 #include "../../Elements/IRoom.h"
 #include "../../Elements/IStaticMesh.h"
 #include "../../Filters/Filters.h"
 #include "../../Settings/UserSettings.h"
 #include "../../Track/Track.h"
 #include "../AutoHider.h"
+#include "../IWindow.h"
 
 namespace trview
 {
-    class StaticsWindow final : public IStaticsWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class StaticsWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -32,7 +32,7 @@ namespace trview
         virtual ~StaticsWindow() = default;
         void initialise();
         void render() override;
-        std::weak_ptr<IStaticMesh> selected_static() const override;
+        std::weak_ptr<IStaticMesh> selected_static() const;
         void set_current_room(const std::weak_ptr<IRoom>& room);
         void set_number(int32_t number) override;
         void set_selected_static(const std::weak_ptr<IStaticMesh>& static_mesh);

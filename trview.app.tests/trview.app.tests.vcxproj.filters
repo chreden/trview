@@ -71,10 +71,8 @@
     <ClCompile Include="..\external\imgui\misc\cpp\imgui_stdlib.cpp" Filter="ImGui" />
     <ClCompile Include="..\external\shared\imgui_app.cpp" Filter="ImGui" />
     <ClCompile Include="..\external\imgui\misc\freetype\imgui_freetype.cpp" Filter="ImGui" />
-    <ClCompile Include="Windows\StaticsWindowManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="Windows\WindowsTests.cpp" Filter="Windows" />
     <ClCompile Include="Lua\Camera\Lua_CameraTests.cpp" Filter="Lua\Camera" />
-    <ClCompile Include="Windows\SoundsWindowManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="Sound\SoundStorageTests.cpp" Filter="Sound" />
     <ClCompile Include="Windows\AboutWindowManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="Elements\FlybyTests.cpp" Filter="Elements" />

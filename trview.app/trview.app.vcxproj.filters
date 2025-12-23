@@ -108,7 +108,6 @@
     <ClCompile Include="Routing\RandomizerRoute.cpp" Filter="Routing" />
     <ClCompile Include="Windows\RowCounter.cpp" Filter="Windows" />
     <ClCompile Include="UI\Fonts\Fonts.cpp" Filter="UI\Fonts" />
-    <ClCompile Include="Windows\Statics\StaticsWindowManager.cpp" Filter="Windows\Statics" />
     <ClCompile Include="Windows\Statics\StaticsWindow.cpp" Filter="Windows\Statics" />
     <ClCompile Include="Windows\Windows.cpp" Filter="Windows" />
     <ClCompile Include="Lua\Scriptable\Scriptable.cpp" Filter="Lua\Scriptable" />
@@ -377,12 +376,7 @@
     <ClInclude Include="UI\Fonts\IFonts.h" Filter="UI\Fonts" />
     <ClInclude Include="UI\Fonts\Fonts.h" Filter="UI\Fonts" />
     <ClInclude Include="Mocks\UI\IFonts.h" Filter="Mocks\UI" />
-    <ClInclude Include="Windows\Statics\IStaticsWindowManager.h" Filter="Windows\Statics" />
-    <ClInclude Include="Windows\Statics\IStaticsWindow.h" Filter="Windows\Statics" />
-    <ClInclude Include="Windows\Statics\StaticsWindowManager.h" Filter="Windows\Statics" />
     <ClInclude Include="Windows\Statics\StaticsWindow.h" Filter="Windows\Statics" />
-    <ClInclude Include="Mocks\Windows\IStaticsWindow.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IStaticsWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Windows\IWindows.h" Filter="Windows" />
     <ClInclude Include="Windows\Windows.h" Filter="Windows" />
     <ClInclude Include="Mocks\Windows\IWindows.h" Filter="Mocks\Windows" />
