@@ -32,12 +32,10 @@ namespace trview
         virtual ~RoomsWindowManager() = default;
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void render() override;
-        void set_room(const std::weak_ptr<IRoom>& room) override;
         std::weak_ptr<IRoomsWindow> create_window() override;
         void update(float delta) override;
         std::vector<std::weak_ptr<IRoomsWindow>> windows() const override;
     private:
-        std::weak_ptr<IRoom> _current_room;
         IRoomsWindow::Source _rooms_window_source;
     };
 }

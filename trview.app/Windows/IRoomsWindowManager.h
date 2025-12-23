@@ -13,11 +13,6 @@ namespace trview
 
         /// Render all of the rooms windows.
         virtual void render() = 0;
-
-        /// Set the current room that the viewer is focusing on.
-        /// @param room The current room.
-        virtual void set_room(const std::weak_ptr<IRoom>& room) = 0;
-
         /// Create a new rooms window.
         virtual std::weak_ptr<IRoomsWindow> create_window() = 0;
         /// <summary>

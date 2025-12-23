@@ -36,7 +36,7 @@ namespace trview
         virtual ~RoomsWindow() = default;
         void clear_selected_trigger() override;
         void render() override;
-        void set_current_room(const std::weak_ptr<IRoom>& room) override;
+        void set_current_room(const std::weak_ptr<IRoom>& room);
         void set_items(const std::vector<std::weak_ptr<IItem>>& items);
         void set_level_version(trlevel::LevelVersion version);
         void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms);
@@ -46,7 +46,7 @@ namespace trview
         void set_number(int32_t number) override;
         void set_floordata(const std::vector<uint16_t>& data);
         void set_selected_light(const std::weak_ptr<ILight>& light);
-        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
+        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
         void clear_selected_light() override;
         void clear_selected_camera_sink() override;
         void set_ng_plus(bool value);
