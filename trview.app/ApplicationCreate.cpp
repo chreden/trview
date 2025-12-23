@@ -533,7 +533,7 @@ namespace trview
             };
         auto pack_window_source = [=]()
             {
-                auto pack_window = std::make_shared<PackWindow>(files, dialogs);
+                auto pack_window = std::make_shared<PackWindow>(files, dialogs, messaging);
                 pack_window->initialise();
                 return pack_window;
             };

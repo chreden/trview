@@ -17,7 +17,6 @@ namespace trview
     {
         auto window = _pack_window_source();
         window->on_level_open += on_level_open;
-        window->set_pack(_pack);
         return add_window(window);
     }
 
@@ -45,15 +44,6 @@ namespace trview
             {
                 create_window();
             }
-        }
-    }
-
-    void PackWindowManager::set_pack(const std::weak_ptr<trlevel::IPack>& pack)
-    {
-        _pack = pack;
-        for (auto& window : _windows)
-        {
-            window.second->set_pack(_pack);
         }
     }
 }

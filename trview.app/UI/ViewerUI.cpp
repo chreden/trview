@@ -312,8 +312,15 @@ namespace trview
 
     void ViewerUI::set_selected_room(const std::shared_ptr<IRoom>& room)
     {
-        _room_navigator->set_selected_room(room->number());
-        _selected_room = room->number();
+        if (room)
+        {
+            _room_navigator->set_selected_room(room->number());
+            _selected_room = room->number();
+        }
+        else
+        {
+            _selected_room = 0;
+        }
     }
 
     void ViewerUI::set_show_context_menu(bool value)

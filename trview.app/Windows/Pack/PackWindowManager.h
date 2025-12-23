@@ -17,7 +17,6 @@ namespace trview
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void render() override;
         void set_level(const std::weak_ptr<ILevel>& level) override;
-        void set_pack(const std::weak_ptr<trlevel::IPack>& pack) override;
     private:
         IPackWindow::Source _pack_window_source;
         std::weak_ptr<trlevel::IPack> _pack;

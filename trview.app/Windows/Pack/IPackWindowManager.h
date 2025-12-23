@@ -12,7 +12,6 @@ namespace trview
         virtual std::weak_ptr<IPackWindow> create_window() = 0;
         virtual void render() = 0;
         virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
-        virtual void set_pack(const std::weak_ptr<trlevel::IPack>& pack) = 0;
 
         Event<std::string> on_level_open;
     };

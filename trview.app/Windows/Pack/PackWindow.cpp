@@ -1,5 +1,7 @@
 #include "PackWindow.h"
 #include <trlevel/Level.h>
+#include "../../Messages/Messages.h"
+#include "../../Elements/ILevel.h"
 
 namespace trview
 {
@@ -7,8 +9,8 @@ namespace trview
     {
     }
 
-    PackWindow::PackWindow(const std::shared_ptr<IFiles>& files, const std::shared_ptr<IDialogs>& dialogs)
-        : _files(files), _dialogs(dialogs)
+    PackWindow::PackWindow(const std::shared_ptr<IFiles>& files, const std::shared_ptr<IDialogs>& dialogs, const std::weak_ptr<IMessageSystem>& messaging)
+        : _files(files), _dialogs(dialogs), _messaging(messaging)
     {
     }
 
@@ -91,6 +93,22 @@ namespace trview
         ImGui::End();
         ImGui::PopStyleVar();
         return stay_open;
+    }
+
+    void PackWindow::initialise()
+    {
+        messages::get_open_level(_messaging, weak_from_this());
+    }
+
+    void PackWindow::receive_message(const Message& message)
+    {
+        if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                set_pack(level_ptr->pack());
+            }
+        }
     }
 }
 

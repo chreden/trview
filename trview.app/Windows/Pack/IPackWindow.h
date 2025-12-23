@@ -13,7 +13,6 @@ namespace trview
         virtual ~IPackWindow() = 0;
         virtual void render() = 0;
         virtual void set_number(int32_t number) = 0;
-        virtual void set_pack(const std::weak_ptr<trlevel::IPack>& pack) = 0;
 
         /// <summary>
         /// Event raised when the window is closed.
