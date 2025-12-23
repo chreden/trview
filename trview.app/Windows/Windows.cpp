@@ -140,11 +140,6 @@ namespace trview
         _route_window->set_items(new_level->items());
         _route_window->set_triggers(new_level->triggers());
         _route_window->set_rooms(new_level->rooms());
-        _statics_windows->set_statics(new_level->static_meshes());
-        _triggers_windows->set_items(new_level->items());
-        _triggers_windows->set_triggers(new_level->triggers());
-        _triggers_windows->set_platform_and_version(new_level->platform_and_version());
-        _textures_windows->set_texture_storage(new_level->texture_storage());
     }
 
     void Windows::set_room(const std::weak_ptr<IRoom>& room)

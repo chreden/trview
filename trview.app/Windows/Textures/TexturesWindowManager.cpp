@@ -15,7 +15,6 @@ namespace trview
     std::weak_ptr<ITexturesWindow> TexturesWindowManager::create_window()
     {
         auto window = _textures_window_source();
-        window->set_texture_storage(_texture_storage);
         return add_window(window);
     }
 
@@ -31,14 +30,5 @@ namespace trview
     void TexturesWindowManager::render()
     {
         WindowManager::render();
-    }
-
-    void TexturesWindowManager::set_texture_storage(const std::shared_ptr<ILevelTextureStorage>& texture_storage)
-    {
-        _texture_storage = texture_storage;
-        for (auto& window : _windows)
-        {
-            window.second->set_texture_storage(_texture_storage);
-        }
     }
 }

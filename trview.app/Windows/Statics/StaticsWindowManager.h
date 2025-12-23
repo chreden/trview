@@ -23,12 +23,9 @@ namespace trview
         void render() override;
         std::weak_ptr<IStaticsWindow> create_window() override;
         void update(float delta) override;
-        void set_statics(const std::vector<std::weak_ptr<IStaticMesh>>& statics) override;
         void set_room(const std::weak_ptr<IRoom>& room) override;
     private:
         IStaticsWindow::Source _source;
-        std::vector<std::weak_ptr<IStaticMesh>> _statics;
         std::weak_ptr<IRoom> _current_room;
-        std::weak_ptr<IStaticMesh> _selected_static;
     };
 }

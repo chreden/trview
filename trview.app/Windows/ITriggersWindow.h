@@ -33,17 +33,7 @@ namespace trview
         /// </summary>
         /// <param name="room">The current room number</param>
         virtual void set_current_room(const std::weak_ptr<IRoom>& room) = 0;
-
-        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
-
         virtual void set_number(int32_t number) = 0;
-
-        virtual void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) = 0;
-
-        /// Set the triggers to display in the window.
-        /// @param triggers The triggers.
-        /// @param reset_filters Whether to reset the trigger filters.
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
         /// <summary>
         /// Update the window.
         /// </summary>

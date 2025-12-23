@@ -484,9 +484,21 @@ namespace trview
                 return camera_sink_window;
             };
 
-        auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
+        auto textures_window_source = [=]() 
+            { 
+                auto textures_window = std::make_shared<TexturesWindow>(messaging);
+                messaging->add_recipient(textures_window);
+                textures_window->initialise();
+                return textures_window;
+            };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };
-        auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard, messaging); };
+        auto statics_window_source = [=]() 
+            { 
+                auto statics_window = std::make_shared<StaticsWindow>(clipboard, messaging);
+                messaging->add_recipient(statics_window);
+                statics_window->initialise();
+                return statics_window;
+            };
         auto sounds_window_source = [=]()
             {
                 auto sounds_window = std::make_shared<SoundsWindow>(messaging);

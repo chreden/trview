@@ -37,13 +37,13 @@ namespace trview
         explicit TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~TriggersWindow() = default;
         virtual void render() override;
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
+        void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
         virtual void clear_selected_trigger() override;
         void set_current_room(const std::weak_ptr<IRoom>& room) override;
         virtual void set_number(int32_t number) override;
         void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
-        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
-        void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) override;
+        void set_items(const std::vector<std::weak_ptr<IItem>>& items);
+        void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version);
         virtual std::weak_ptr<ITrigger> selected_trigger() const override;
         virtual void update(float delta) override;
         void receive_message(const Message& message) override;

@@ -636,10 +636,20 @@ namespace trview
         {
             set_selected_trigger(selected_trigger.value());
         }
+        else if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                set_items(level_ptr->items());
+                set_triggers(level_ptr->triggers());
+                set_platform_and_version(level_ptr->platform_and_version());
+            }
+        }
     }
 
     void TriggersWindow::initialise()
     {
         messages::get_selected_trigger(_messaging, weak_from_this());
+        messages::get_open_level(_messaging, weak_from_this());
     }
 }
