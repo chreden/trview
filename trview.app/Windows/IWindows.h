@@ -23,7 +23,6 @@ namespace trview
         virtual void render() = 0;
         virtual void select(const std::weak_ptr<IWaypoint>& waypoint) = 0;
         virtual void set_level(const std::weak_ptr<ILevel>& level) = 0;
-        virtual void set_room(const std::weak_ptr<IRoom>& room) = 0;
         virtual void set_route(const std::weak_ptr<IRoute>& route) = 0;
         virtual void setup(const UserSettings& settings) = 0;
 

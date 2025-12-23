@@ -134,11 +134,6 @@ namespace trview
         _pack_windows->set_level(new_level);
     }
 
-    void Windows::set_room(const std::weak_ptr<IRoom>& room)
-    {
-        _triggers_windows->set_room(room);
-    }
-
     void Windows::set_route(const std::weak_ptr<IRoute>& route)
     {
         _route = route;

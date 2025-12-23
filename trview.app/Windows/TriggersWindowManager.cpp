@@ -31,17 +31,7 @@ namespace trview
     {
         auto triggers_window = _triggers_window_source();
         triggers_window->on_add_to_route += on_add_to_route;
-        triggers_window->set_current_room(_current_room);
         return add_window(triggers_window);
-    }
-
-    void TriggersWindowManager::set_room(const std::weak_ptr<IRoom>& room)
-    {
-        _current_room = room;
-        for (auto& window : _windows)
-        {
-            window.second->set_current_room(room);
-        }
     }
 
     void TriggersWindowManager::update(float delta)

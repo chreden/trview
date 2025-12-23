@@ -23,11 +23,9 @@ namespace trview
         virtual ~TriggersWindowManager() = default;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual void render() override;
-        void set_room(const std::weak_ptr<IRoom>& room) override;
         virtual std::weak_ptr<ITriggersWindow> create_window() override;
         virtual void update(float delta) override;
     private:
-        std::weak_ptr<IRoom> _current_room;
         ITriggersWindow::Source _triggers_window_source;
     };
 }
