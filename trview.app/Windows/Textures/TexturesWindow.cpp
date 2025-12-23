@@ -1,16 +1,10 @@
 #include "TexturesWindow.h"
-#include "../../Graphics/ILevelTextureStorage.h"
 #include "../../Messages/Messages.h"
 #include "../../Elements/ILevel.h"
 #include <format>
 
-
 namespace trview
 {
-    ITexturesWindow::~ITexturesWindow()
-    {
-    }
-
     TexturesWindow::TexturesWindow(const std::weak_ptr<IMessageSystem>& messaging)
         : _messaging(messaging)
     {
@@ -23,6 +17,10 @@ namespace trview
             on_window_closed();
             return;
         }
+    }
+
+    void TexturesWindow::update(float)
+    {
     }
 
     bool TexturesWindow::render_textures_window()

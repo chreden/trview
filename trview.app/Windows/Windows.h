@@ -19,7 +19,6 @@ namespace trview
     struct IPluginsWindowManager;
     struct IRoomsWindowManager;
     struct IRouteWindowManager;
-    struct ITexturesWindowManager;
     struct ITriggersWindowManager;
     struct IPackWindowManager;
 
@@ -41,7 +40,7 @@ namespace trview
             std::unique_ptr<IRouteWindowManager> route_window_manager,
             const IWindow::Source& sounds_window_source,
             const IWindow::Source& statics_window_source,
-            std::unique_ptr<ITexturesWindowManager> textures_window_manager,
+            const IWindow::Source& textures_window_source,
             std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
             const std::shared_ptr<IShortcuts>& shortcuts);
         virtual ~Windows() = default;
@@ -70,7 +69,7 @@ namespace trview
         std::unique_ptr<IRouteWindowManager> _route_window;
         IWindow::Source _sounds_window_source;
         IWindow::Source _statics_window_source;
-        std::unique_ptr<ITexturesWindowManager> _textures_windows;
+        IWindow::Source _textures_window_source;
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;
     };
 }

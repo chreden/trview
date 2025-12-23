@@ -12,7 +12,6 @@
 #include "Plugins/IPluginsWindowManager.h"
 #include "IRoomsWindowManager.h"
 #include "IRouteWindowManager.h"
-#include "Textures/ITexturesWindowManager.h"
 #include "ITriggersWindowManager.h"
 #include "Pack/IPackWindowManager.h"
 
@@ -45,7 +44,7 @@ namespace trview
         std::unique_ptr<IRouteWindowManager> route_window_manager,
         const IWindow::Source& sounds_window_source,
         const IWindow::Source& statics_window_source,
-        std::unique_ptr<ITexturesWindowManager> textures_window_manager,
+        const IWindow::Source& textures_window_source,
         std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
         const std::shared_ptr<IShortcuts>& shortcuts)
         : MessageHandler(window),
@@ -53,7 +52,7 @@ namespace trview
         _diff_windows(std::move(diff_window_manager)), _items_windows(items_window_manager), _lights_window_source(lights_window_source),
         _log_windows(std::move(log_window_manager)), _plugins_windows(std::move(plugins_window_manager)), _rooms_windows(rooms_window_manager),
         _route_window(std::move(route_window_manager)), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
-        _textures_windows(std::move(textures_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _pack_windows(std::move(pack_window_manager))
+        _textures_window_source(textures_window_source), _triggers_windows(std::move(triggers_window_manager)), _pack_windows(std::move(pack_window_manager))
     {
         // TODO: Maybe move somewhere else:
         _token_store += shortcuts->add_shortcut(true, 'L') += [&]() { add_window(_lights_window_source()); };
@@ -118,6 +117,11 @@ namespace trview
                     add_window(_lights_window_source());
                     break;
                 }
+                case ID_WINDOWS_TEXTURES:
+                {
+                    add_window(_textures_window_source());
+                    break;
+                }
             }
         }
         return {};
@@ -149,7 +153,6 @@ namespace trview
         _plugins_windows->render();
         _rooms_windows->render();
         _route_window->render();
-        _textures_windows->render();
         _triggers_windows->render();
     }
 

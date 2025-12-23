@@ -72,7 +72,6 @@
 #include "Windows/Log/LogWindow.h"
 #include "Windows/Log/LogWindowManager.h"
 #include "UI/DX11ImGuiBackend.h"
-#include "Windows/Textures/TexturesWindowManager.h"
 #include "Windows/Textures/TexturesWindow.h"
 #include "Windows/CameraSink/CameraSinkWindowManager.h"
 #include "Windows/CameraSink/CameraSinkWindow.h"
@@ -569,7 +568,7 @@ namespace trview
                 std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
                 sounds_window_source,
                 statics_window_source,
-                std::make_unique<TexturesWindowManager>(window, textures_window_source),
+                textures_window_source,
                 std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source),
                 shortcuts),
             Application::LoadMode::Async,

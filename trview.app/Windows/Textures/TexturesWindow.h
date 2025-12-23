@@ -1,12 +1,12 @@
 #pragma once
 
-#include "ITexturesWindow.h"
-
+#include "../IWindow.h"
 #include <trview.common/Messages/IMessageSystem.h>
+#include "../../Graphics/ILevelTextureStorage.h"
 
 namespace trview
 {
-    class TexturesWindow final : public ITexturesWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class TexturesWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -18,8 +18,9 @@ namespace trview
         explicit TexturesWindow(const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~TexturesWindow() = default;
         void initialise();
-        virtual void render() override;
-        virtual void set_number(int32_t number) override;
+        void render() override;
+        void update(float delta) override;
+        void set_number(int32_t number) override;
         void receive_message(const Message& message) override;
         void set_texture_storage(const std::shared_ptr<ILevelTextureStorage>& texture_storage);
     private:
