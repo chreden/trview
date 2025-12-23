@@ -16,7 +16,6 @@ namespace trview
     std::weak_ptr<ICameraSinkWindow> CameraSinkWindowManager::create_window()
     {
         auto window = _camera_sink_window_source();
-        window->set_current_room(_current_room);
         return add_window(window);
     }
 
@@ -32,15 +31,6 @@ namespace trview
             create_window();
         }
         return {};
-    }
-
-    void CameraSinkWindowManager::set_room(const std::weak_ptr<IRoom>& room)
-    {
-        _current_room = room;
-        for (auto& window : _windows)
-        {
-            window.second->set_current_room(_current_room);
-        }
     }
 
     void CameraSinkWindowManager::update(float delta)

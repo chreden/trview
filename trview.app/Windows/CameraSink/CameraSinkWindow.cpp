@@ -984,11 +984,16 @@ namespace trview
                 set_platform_and_version(level_ptr->platform_and_version());
             }
         }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_current_room(selected_room.value());
+        }
     }
 
     void CameraSinkWindow::initialise()
     {
         messages::get_open_level(_messaging, weak_from_this());
+        messages::get_selected_room(_messaging, weak_from_this());
         messages::get_selected_camera_sink(_messaging, weak_from_this());
         messages::get_selected_flyby_node(_messaging, weak_from_this());
     }

@@ -14,10 +14,8 @@ namespace trview
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         std::weak_ptr<ICameraSinkWindow> create_window() override;
         void render() override;
-        void set_room(const std::weak_ptr<IRoom>& room) override;
         void update(float delta) override;
     private:
         ICameraSinkWindow::Source _camera_sink_window_source;
-        std::weak_ptr<IRoom> _current_room;
     };
 }
