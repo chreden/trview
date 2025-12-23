@@ -347,10 +347,21 @@ namespace trview
         {
             set_selected_sound_source(selected_sound.value());
         }
+        else if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                set_level_platform(level_ptr->platform());
+                set_level_version(level_ptr->version());
+                set_sound_sources(level_ptr->sound_sources());
+                set_sound_storage(level_ptr->sound_storage());
+            }
+        }
     }
 
     void SoundsWindow::initialise()
     {
         messages::get_selected_sound_source(_messaging, weak_from_this());
+        messages::get_open_level(_messaging, weak_from_this());
     }
 }
