@@ -17,9 +17,6 @@ namespace trview
         virtual void render() override;
         virtual void set_route(const std::weak_ptr<IRoute>& route) override;
         virtual void create_window() override;
-        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
-        virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) override;
         virtual void update(float delta) override;
         virtual bool is_window_open() const override;
@@ -28,9 +25,6 @@ namespace trview
         std::shared_ptr<IRouteWindow> _route_window;
         bool _closing{ false };
         std::weak_ptr<IRoute> _route;
-        std::vector<std::weak_ptr<IItem>> _all_items;
-        std::vector<std::weak_ptr<IRoom>> _all_rooms;
-        std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         std::weak_ptr<IWaypoint> _selected_waypoint;
         IRouteWindow::Source _route_window_source;
     };

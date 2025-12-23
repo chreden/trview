@@ -16,10 +16,7 @@ namespace trview
     std::weak_ptr<ICameraSinkWindow> CameraSinkWindowManager::create_window()
     {
         auto window = _camera_sink_window_source();
-        window->set_camera_sinks(_camera_sinks);
-        window->set_flybys(_flybys);
         window->set_current_room(_current_room);
-        window->set_platform_and_version(_platform_and_version);
         return add_window(window);
     }
 
@@ -35,33 +32,6 @@ namespace trview
             create_window();
         }
         return {};
-    }
-
-    void CameraSinkWindowManager::set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks)
-    {
-        _camera_sinks = camera_sinks;
-        for (auto& window : _windows)
-        {
-            window.second->set_camera_sinks(_camera_sinks);
-        }
-    }
-
-    void CameraSinkWindowManager::set_flybys(const std::vector<std::weak_ptr<IFlyby>>& flybys)
-    {
-        _flybys = flybys;
-        for (auto& window : _windows)
-        {
-            window.second->set_flybys(_flybys);
-        }
-    }
-
-    void CameraSinkWindowManager::set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version)
-    {
-        _platform_and_version = platform_and_version;
-        for (auto& window : _windows)
-        {
-            window.second->set_platform_and_version(_platform_and_version);
-        }
     }
 
     void CameraSinkWindowManager::set_room(const std::weak_ptr<IRoom>& room)

@@ -4,6 +4,7 @@
 #include "../RowCounter.h"
 #include "../../Elements/Flyby/IFlybyNode.h"
 #include "../../Messages/Messages.h"
+#include "../../Elements/ILevel.h"
 
 namespace trview
 {
@@ -974,10 +975,20 @@ namespace trview
         {
             set_selected_flyby_node(selected_flyby_node.value());
         }
+        else if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                set_camera_sinks(level_ptr->camera_sinks());
+                set_flybys(level_ptr->flybys());
+                set_platform_and_version(level_ptr->platform_and_version());
+            }
+        }
     }
 
     void CameraSinkWindow::initialise()
     {
+        messages::get_open_level(_messaging, weak_from_this());
         messages::get_selected_camera_sink(_messaging, weak_from_this());
         messages::get_selected_flyby_node(_messaging, weak_from_this());
     }

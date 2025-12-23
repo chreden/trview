@@ -16,9 +16,7 @@ namespace trview
         std::weak_ptr<IDiffWindow> create_window() override;
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void render() override;
-        void set_level(const std::weak_ptr<ILevel>& level) override;
     private:
         IDiffWindow::Source _diff_window_source;
-        std::weak_ptr<ILevel> _level;
     };
 }

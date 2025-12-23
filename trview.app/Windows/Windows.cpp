@@ -131,15 +131,8 @@ namespace trview
             return;
         }
 
-        _camera_sink_windows->set_camera_sinks(new_level->camera_sinks());
-        _camera_sink_windows->set_flybys(new_level->flybys());
-        _camera_sink_windows->set_platform_and_version(new_level->platform_and_version());
-        _diff_windows->set_level(new_level);
         _pack_windows->set_level(new_level);
         _pack_windows->set_pack(new_level->pack());
-        _route_window->set_items(new_level->items());
-        _route_window->set_triggers(new_level->triggers());
-        _route_window->set_rooms(new_level->rooms());
     }
 
     void Windows::set_room(const std::weak_ptr<IRoom>& room)

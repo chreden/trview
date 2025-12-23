@@ -38,16 +38,6 @@ namespace trview
         /// Create a new route window.
         virtual void create_window() = 0;
 
-        /// Set the items to that are in the level.
-        /// @param items The items to show.
-        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) = 0;
-
-        virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) = 0;
-
-        /// Set the triggers in the level.
-        /// @param triggers The triggers.
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
-
         virtual void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) = 0;
         /// <summary>
         /// Update the windows.

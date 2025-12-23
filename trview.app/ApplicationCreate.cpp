@@ -525,8 +525,18 @@ namespace trview
         auto imgui_file_menu = std::make_shared<ImGuiFileMenu>(dialogs, files, level_name_source);
         messaging->add_recipient(imgui_file_menu);
 
-        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, imgui_file_menu, messaging); };
-        auto pack_window_source = [=]() { return std::make_shared<PackWindow>(files, dialogs); };
+        auto diff_window_source = [=]() 
+            {
+                auto diff_window = std::make_shared<DiffWindow>(dialogs, level_source, imgui_file_menu, messaging);
+                diff_window->initialise();
+                return diff_window;
+            };
+        auto pack_window_source = [=]()
+            {
+                auto pack_window = std::make_shared<PackWindow>(files, dialogs);
+                pack_window->initialise();
+                return pack_window;
+            };
 
         auto file_menu = std::make_shared<FileMenu>(window, shortcuts, dialogs, files, level_name_source, messaging);
         messaging->add_recipient(file_menu);

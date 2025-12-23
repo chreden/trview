@@ -43,9 +43,6 @@ namespace trview
         _route_window->on_new_randomizer_route += on_new_randomizer_route;
         _token_store += _route_window->on_window_closed += [&]() { _closing = true; };
 
-        _route_window->set_items(_all_items);
-        _route_window->set_rooms(_all_rooms);
-        _route_window->set_triggers(_all_triggers);
         _route_window->set_route(_route);
         _route_window->select_waypoint(_selected_waypoint);
         on_window_created();
@@ -71,34 +68,6 @@ namespace trview
         if (_route_window)
         {
             _route_window->set_route(route);
-        }
-    }
-
-    void RouteWindowManager::set_items(const std::vector<std::weak_ptr<IItem>>& items)
-    {
-        _all_items = items;
-
-        if (_route_window)
-        {
-            _route_window->set_items(items);
-        }
-    }
-
-    void RouteWindowManager::set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms)
-    {
-        _all_rooms = rooms;
-        if (_route_window)
-        {
-            _route_window->set_rooms(rooms);
-        }
-    }
-
-    void RouteWindowManager::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
-    {
-        _all_triggers = triggers;
-        if (_route_window)
-        {
-            _route_window->set_triggers(triggers);
         }
     }
 

@@ -12,12 +12,8 @@ namespace trview
 
         virtual ~ICameraSinkWindow() = 0;
         virtual void render() = 0;
-        virtual void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) = 0;
-        virtual void set_flybys(const std::vector<std::weak_ptr<IFlyby>>& flybys) = 0;
         virtual void set_number(int32_t number) = 0;
         virtual void set_current_room(const std::weak_ptr<IRoom>& room) = 0;
-
-        virtual void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) = 0;
         virtual void update(float delta) = 0;
         /// <summary>
         /// Event raised when the window is closed.

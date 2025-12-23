@@ -672,5 +672,19 @@ namespace trview
             _randomizer_enabled = settings->randomizer_tools;
             _randomizer_settings = settings->randomizer;
         }
+        else if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                set_items(level_ptr->items());
+                set_triggers(level_ptr->triggers());
+                set_rooms(level_ptr->rooms());
+            }
+        }
+    }
+
+    void RouteWindow::initialise()
+    {
+        messages::get_open_level(_messaging, weak_from_this());
     }
 }

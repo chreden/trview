@@ -22,8 +22,9 @@ namespace trview
 
         explicit DiffWindow(const std::shared_ptr<IDialogs>& dialogs, const ILevel::Source& level_source, const std::shared_ptr<IFileMenu>& file_menu, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~DiffWindow() = default;
+        void initialise();
         void render() override;
-        void set_level(const std::weak_ptr<ILevel>& level) override;
+        void set_level(const std::weak_ptr<ILevel>& level);
         void set_number(int32_t number) override;
 
         struct Diff

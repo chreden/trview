@@ -899,5 +899,14 @@ namespace trview
         {
             _settings = settings.value();
         }
+        else if (auto level = messages::read_open_level(message))
+        {
+            set_level(level.value());
+        }
+    }
+
+    void DiffWindow::initialise()
+    {
+        messages::get_open_level(_messaging, weak_from_this());
     }
 }

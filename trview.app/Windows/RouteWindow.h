@@ -35,12 +35,13 @@ namespace trview
         explicit RouteWindow(const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
             const std::shared_ptr<IFiles>& files, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~RouteWindow() = default;
+        void initialise();
         virtual void render() override;
         virtual void set_route(const std::weak_ptr<IRoute>& route) override;
         void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) override;
-        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
-        virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
+        void set_items(const std::vector<std::weak_ptr<IItem>>& items);
+        void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms);
+        void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
         virtual void focus() override;
         virtual void update(float delta) override;
         void receive_message(const Message& message) override;
