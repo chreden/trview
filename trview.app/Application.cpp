@@ -103,7 +103,6 @@ namespace trview
         _token_store += _windows->on_route_save += [&]() { this->save_route(); };
         _token_store += _windows->on_route_save_as += [&]() { this->save_route_as(); };
         _token_store += _windows->on_route_window_created += [&]() { open_recent_route(); };
-        _token_store += _windows->on_level_open += [&](const auto& filename) { open(filename, ILevel::OpenMode::Full); };
         _token_store += _windows->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
         _token_store += _windows->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
         _token_store += _windows->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
@@ -725,7 +724,6 @@ namespace trview
 
         _file_menu->open_file(level->filename(), level->pack());
         _level->set_map_colours(_settings.map_colours);
-        _windows->set_level(_level);
         if (open_mode == ILevel::OpenMode::Full)
         {
             _route->clear();
@@ -1044,6 +1042,10 @@ namespace trview
                     add_waypoint(item_ptr->position(), Vector3::Down, item_room(item_ptr), IWaypoint::Type::Entity, item_ptr->number());
                 }
             }
+        }
+        else if (auto open_filename = messages::read_open_level_filename(message))
+        {
+            open(open_filename.value(), ILevel::OpenMode::Full);
         }
     }
 }

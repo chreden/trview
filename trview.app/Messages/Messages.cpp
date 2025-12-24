@@ -93,6 +93,16 @@ namespace trview
             send_message(messaging, level, "open_level");
         }
 
+        std::optional<std::string> read_open_level_filename(const Message& message)
+        {
+            return read_message<std::string>(message, "open_level_filename");
+        }
+
+        void send_open_level_filename(const std::weak_ptr<IMessageSystem>& messaging, const std::string& path)
+        {
+            send_message(messaging, path, "open_level_filename");
+        }
+
         std::optional<std::weak_ptr<ILevel>> read_end_diff(const Message& message)
         {
             return read_message<std::weak_ptr<ILevel>>(message, "end_diff");

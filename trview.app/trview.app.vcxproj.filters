@@ -113,7 +113,6 @@
     <ClCompile Include="Windows\Diff\DiffWindow.cpp" Filter="Windows\Diff" />
     <ClCompile Include="Menus\ImGuiFileMenu.cpp" Filter="Menus" />
     <ClCompile Include="Windows\Pack\PackWindow.cpp" Filter="Windows\Pack" />
-    <ClCompile Include="Windows\Pack\PackWindowManager.cpp" Filter="Windows\Pack" />
     <ClCompile Include="Geometry\Model\Model.cpp" Filter="Geometry\Model" />
     <ClCompile Include="Geometry\Model\ModelStorage.cpp" Filter="Geometry\Model" />
     <ClCompile Include="Elements\Flyby\Flyby.cpp" Filter="Elements\Flyby" />
@@ -346,12 +345,7 @@
     <ClInclude Include="Windows\Diff\DiffWindow.h" Filter="Windows\Diff" />
     <ClInclude Include="Menus\ImGuiFileMenu.h" Filter="Menus" />
     <ClInclude Include="Settings\PluginSetting.h" Filter="Settings" />
-    <ClInclude Include="Windows\Pack\IPackWindow.h" Filter="Windows\Pack" />
     <ClInclude Include="Windows\Pack\PackWindow.h" Filter="Windows\Pack" />
-    <ClInclude Include="Windows\Pack\IPackWindowManager.h" Filter="Windows\Pack" />
-    <ClInclude Include="Windows\Pack\PackWindowManager.h" Filter="Windows\Pack" />
-    <ClInclude Include="Mocks\Windows\IPackWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IPackWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Geometry\Model\IModel.h" Filter="Geometry\Model" />
     <ClInclude Include="Geometry\Model\Model.h" Filter="Geometry\Model" />
     <ClInclude Include="Geometry\Model\IModelStorage.h" Filter="Geometry\Model" />

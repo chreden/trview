@@ -54,8 +54,6 @@
 #include "Plugins/IPlugin.h"
 #include "Tools/IToolbar.h"
 #include "Windows/IWindows.h"
-#include "Windows/IPackWindowManager.h"
-#include "Windows/IPackWindow.h"
 
 namespace trview
 {
@@ -162,12 +160,6 @@ namespace trview
 
         MockViewOptions::MockViewOptions() {}
         MockViewOptions::~MockViewOptions() {}
-
-        MockPackWindow::MockPackWindow() {}
-        MockPackWindow::~MockPackWindow() {}
-
-        MockPackWindowManager::MockPackWindowManager() {}
-        MockPackWindowManager::~MockPackWindowManager() {}
 
         MockRouteWindow::MockRouteWindow() {}
         MockRouteWindow::~MockRouteWindow() {}

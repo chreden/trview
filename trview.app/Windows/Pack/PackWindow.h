@@ -1,15 +1,17 @@
 #pragma once
 
-#include "IPackWindow.h"
+#include "../IWindow.h"
 #include <trview.common/Messages/IMessageSystem.h>
+#include <trlevel/IPack.h>
 
 namespace trview
 {
-    class PackWindow final : public IPackWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class PackWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         explicit PackWindow(const std::shared_ptr<IFiles>& files, const std::shared_ptr<IDialogs>& dialogs, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~PackWindow() = default;
+        void update(float delta) override;
         void render() override;
         void set_number(int32_t number) override;
         void set_pack(const std::weak_ptr<trlevel::IPack>& pack);

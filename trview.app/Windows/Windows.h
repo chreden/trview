@@ -10,11 +10,7 @@
 
 namespace trview
 {
-    struct IDiffWindowManager;
-    struct IItemsWindowManager;
-    struct IRoomsWindowManager;
     struct IRouteWindowManager;
-    struct IPackWindowManager;
 
     class Windows final : public IWindows, public WindowManager<IWindow>, public MessageHandler
     {
@@ -28,7 +24,7 @@ namespace trview
             const IWindow::Source& items_window_manager,
             const IWindow::Source& lights_window_source,
             const IWindow::Source& log_window_source,
-            std::unique_ptr<IPackWindowManager> pack_window_manager,
+            const IWindow::Source& pack_window_source,
             const IWindow::Source& plugins_window_source,
             const IWindow::Source& rooms_window_source,
             std::unique_ptr<IRouteWindowManager> route_window_manager,
@@ -43,7 +39,6 @@ namespace trview
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void render() override;
         void select(const std::weak_ptr<IWaypoint>& waypoint) override;
-        void set_level(const std::weak_ptr<ILevel>& level) override;
         void set_route(const std::weak_ptr<IRoute>& route) override;
         void setup(const UserSettings& settings) override;
     private:
@@ -56,7 +51,7 @@ namespace trview
         IWindow::Source _items_window_source;
         IWindow::Source _lights_window_source;
         IWindow::Source _log_window_source;
-        std::unique_ptr<IPackWindowManager> _pack_windows;
+        IWindow::Source _pack_window_source;
         IWindow::Source _plugins_window_source;
         IWindow::Source _rooms_window_source;
         std::weak_ptr<IRoute> _route;

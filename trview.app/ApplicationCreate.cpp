@@ -82,7 +82,6 @@
 #include "Windows/Windows.h"
 #include "Windows/About/AboutWindow.h"
 #include "Windows/Diff/DiffWindow.h"
-#include "Windows/Pack/PackWindowManager.h"
 #include "Windows/Pack/PackWindow.h"
 #include "UI/LevelInfo.h"
 #include "Elements/Level/LevelNameLookup.h"
@@ -507,7 +506,7 @@ namespace trview
             items_window_source,
             lights_window_source,
             log_window_source,
-            std::make_unique<PackWindowManager>(window, pack_window_source),
+            pack_window_source,
             plugins_window_source,
             rooms_window_source,
             std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),

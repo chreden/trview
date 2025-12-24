@@ -5,12 +5,12 @@
 
 namespace trview
 {
-    IPackWindow::~IPackWindow()
+    PackWindow::PackWindow(const std::shared_ptr<IFiles>& files, const std::shared_ptr<IDialogs>& dialogs, const std::weak_ptr<IMessageSystem>& messaging)
+        : _files(files), _dialogs(dialogs), _messaging(messaging)
     {
     }
 
-    PackWindow::PackWindow(const std::shared_ptr<IFiles>& files, const std::shared_ptr<IDialogs>& dialogs, const std::weak_ptr<IMessageSystem>& messaging)
-        : _files(files), _dialogs(dialogs), _messaging(messaging)
+    void PackWindow::update(float)
     {
     }
 
@@ -58,7 +58,7 @@ namespace trview
                         bool selected = false;
                         if (ImGui::Selectable(std::format("{}##{}", part.start, index++).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                         {
-                            on_level_open(std::format("pack://{}\\{}", pack->filename(), part.start));
+                            messages::send_open_level_filename(_messaging, std::format("pack://{}\\{}", pack->filename(), part.start));
                         }
                         if (ImGui::BeginPopupContextItem())
                         {

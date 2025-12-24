@@ -89,7 +89,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\About\AboutWindow.cpp" />
     <ClCompile Include="Windows\Diff\DiffWindow.cpp" />
     <ClCompile Include="Windows\Pack\PackWindow.cpp" />
-    <ClCompile Include="Windows\Pack\PackWindowManager.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
     <ClInclude Include="Elements\Level\ILevelNameLookup.h" />
@@ -124,8 +123,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" />
     <ClInclude Include="Mocks\UI\IFonts.h" />
     <ClInclude Include="Mocks\UI\ILevelInfo.h" />
-    <ClInclude Include="Mocks\Windows\IPackWindow.h" />
-    <ClInclude Include="Mocks\Windows\IPackWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IWindows.h" />
     <ClInclude Include="Settings\FontSetting.h" />
     <ClCompile Include="trview_imgui.cpp" />
@@ -226,10 +223,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\Console\Console.h" />
     <ClInclude Include="Windows\Diff\DiffWindow.h" />
     <ClInclude Include="Windows\IWindow.h" />
-    <ClInclude Include="Windows\Pack\IPackWindow.h" />
-    <ClInclude Include="Windows\Pack\IPackWindowManager.h" />
     <ClInclude Include="Windows\Pack\PackWindow.h" />
-    <ClInclude Include="Windows\Pack\PackWindowManager.h" />
     <ClInclude Include="Windows\Sounds\SoundsWindow.h" />
     <ClInclude Include="Windows\Windows.h" />
   </ItemGroup>
