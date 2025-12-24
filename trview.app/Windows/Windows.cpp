@@ -1,9 +1,5 @@
 #include "Windows.h"
-#include "Elements/ILevel.h"
-#include "Elements/IRoom.h"
 #include "Settings/UserSettings.h"
-
-#include "IRouteWindowManager.h"
 
 #include "../Resources/resource.h"
 
@@ -31,7 +27,7 @@ namespace trview
         const IWindow::Source& pack_window_source,
         const IWindow::Source& plugins_window_source,
         const IWindow::Source& rooms_window_source,
-        std::unique_ptr<IRouteWindowManager> route_window_manager,
+        const IWindow::Source& route_window_source,
         const IWindow::Source& sounds_window_source,
         const IWindow::Source& statics_window_source,
         const IWindow::Source& textures_window_source,
@@ -41,7 +37,7 @@ namespace trview
         _about_window_source(about_window_source), _camera_sink_window_source(camera_sink_window_source), _console_window_source(console_window_source),
         _diff_window_source(diff_window_source), _items_window_source(items_window_source), _lights_window_source(lights_window_source),
         _log_window_source(log_window_source), _plugins_window_source(plugins_window_source), _rooms_window_source(rooms_window_source),
-        _route_window(std::move(route_window_manager)), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
+        _route_window_source(route_window_source), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
         _textures_window_source(textures_window_source), _triggers_window_source(triggers_window_source), _pack_window_source(pack_window_source)
     {
         // TODO: Maybe move somewhere else:
@@ -52,23 +48,9 @@ namespace trview
         _token_store += shortcuts->add_shortcut(true, 'L') += [&]() { add_window(_lights_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'M') += [&]() { add_window(_rooms_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'P') += [&]() { add_window(_plugins_window_source()); };
+        _token_store += shortcuts->add_shortcut(true, 'R') += [&]() { add_window(_route_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'S') += [&]() { add_window(_statics_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'T') += [&]() { add_window(_triggers_window_source()); };
-
-        _route_window->on_waypoint_selected += on_waypoint_selected;
-        _route_window->on_route_open += on_route_open;
-        _route_window->on_route_reload += on_route_reload;
-        _route_window->on_route_save += on_route_save;
-        _route_window->on_route_save_as += on_route_save_as;
-        _route_window->on_window_created += on_route_window_created;
-        _route_window->on_level_switch += on_level_switch;
-        _route_window->on_new_route += on_new_route;
-        _route_window->on_new_randomizer_route += on_new_randomizer_route;
-    }
-
-    bool Windows::is_route_window_open() const
-    {
-        return _route_window->is_window_open();
     }
 
     std::optional<int> Windows::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -122,6 +104,11 @@ namespace trview
                     add_window(_rooms_window_source());
                     break;
                 }
+                case ID_WINDOWS_ROUTE:
+                {
+                    add_window(_route_window_source());
+                    break;
+                }
                 case ID_WINDOWS_SOUNDS:
                 {
                     add_window(_sounds_window_source());
@@ -150,26 +137,17 @@ namespace trview
     void Windows::update(float elapsed)
     {
         WindowManager<IWindow>::update(elapsed);
-
-        _route_window->update(elapsed);
     }
 
     void Windows::render()
     {
         WindowManager<IWindow>::render();
-
-        _route_window->render();
     }
 
-    void Windows::select(const std::weak_ptr<IWaypoint>& waypoint)
+    void Windows::select(const std::weak_ptr<IWaypoint>&)
     {
-        _route_window->select_waypoint(waypoint);
-    }
-
-    void Windows::set_route(const std::weak_ptr<IRoute>& route)
-    {
-        _route = route;
-        _route_window->set_route(route);
+        // TODO: Restore?
+        // _route_window->select_waypoint(waypoint);
     }
 
     void Windows::setup(const UserSettings& settings)
@@ -191,7 +169,7 @@ namespace trview
 
         if (settings.route_startup)
         {
-            _route_window->create_window();
+            add_window(_route_window_source());
         }
 
         if (settings.statics_startup)
@@ -202,15 +180,6 @@ namespace trview
         if (settings.triggers_startup)
         {
             add_window(_triggers_window_source());
-        }
-    }
-
-    void Windows::add_waypoint(const Vector3& position, const Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
-    {
-        if (auto route = _route.lock())
-        {
-            uint32_t new_index = route->insert(position, normal, room, type, index);
-            on_waypoint_selected(route->waypoint(new_index));
         }
     }
 }

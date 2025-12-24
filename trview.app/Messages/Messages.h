@@ -14,10 +14,12 @@ namespace trview
     struct IMessageSystem;
     struct IRecipient;
     struct IRoom;
+    struct IRoute;
     struct ISector;
     struct ISoundSource;
     struct IStaticMesh;
     struct ITrigger;
+    struct IWaypoint;
     struct Message;
     struct UserSettings;
 
@@ -28,6 +30,27 @@ namespace trview
             // TODO: Interfaces
             std::variant<std::weak_ptr<ITrigger>, std::weak_ptr<IItem>> element;
         };
+
+        namespace commands
+        {
+            std::optional<bool> read_route_open(const Message& message);
+            void send_route_open(const std::weak_ptr<IMessageSystem>& messaging);
+
+            std::optional<bool> read_route_reload(const Message& message);
+            void send_route_reload(const std::weak_ptr<IMessageSystem>& messaging);
+
+            std::optional<bool> read_route_save(const Message& message);
+            void send_route_save(const std::weak_ptr<IMessageSystem>& messaging);
+
+            std::optional<bool> read_route_save_as(const Message& message);
+            void send_route_save_as(const std::weak_ptr<IMessageSystem>& messaging);
+
+            std::optional<bool> read_new_route(const Message& message);
+            void send_new_route(const std::weak_ptr<IMessageSystem>& messaging);
+
+            std::optional<bool> read_new_randomizer_route(const Message& message);
+            void send_new_randomizer_route(const std::weak_ptr<IMessageSystem>& messaging);
+        }
 
         void get_settings(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
         std::optional<UserSettings> read_settings(const Message& message);
@@ -47,11 +70,18 @@ namespace trview
         std::optional<std::string> read_open_level_filename(const Message& message);
         void send_open_level_filename(const std::weak_ptr<IMessageSystem>& messaging, const std::string& path);
 
+        std::optional<std::string> read_switch_level_filename(const Message& message);
+        void send_switch_level_filename(const std::weak_ptr<IMessageSystem>& messaging, const std::string& path);
+
         std::optional<std::weak_ptr<ILevel>> read_end_diff(const Message& message);
         void send_end_diff(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ILevel>& level);
 
         std::optional<std::weak_ptr<ISector>> read_hover_sector(const Message& message);
         void send_hover_sector(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ISector>& sector);
+
+        void get_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
+        std::optional<std::weak_ptr<IRoute>> read_route(const Message& message);
+        void send_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRoute>& sector);
 
         void get_selected_camera_sink(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
         std::optional<std::weak_ptr<ICameraSink>> read_select_camera_sink(const Message& message);
@@ -88,5 +118,9 @@ namespace trview
         void get_selected_trigger(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
         std::optional<std::weak_ptr<ITrigger>> read_select_trigger(const Message& message);
         void send_select_trigger(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ITrigger>& trigger);
+
+        void get_selected_waypoint(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
+        std::optional<std::weak_ptr<IWaypoint>> read_select_waypoint(const Message& message);
+        void send_select_waypoint(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IWaypoint>& trigger);
     }
 }

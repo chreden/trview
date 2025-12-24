@@ -8,15 +8,17 @@
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/IFiles.h>
-#include "IRouteWindow.h"
 #include <trview.common/Windows/IShell.h>
 #include <trview.common/Messages/IMessageSystem.h>
+#include "IWindow.h"
+
+#include "../Settings/RandomizerSettings.h"
 
 namespace trview
 {
     struct IRoute;
 
-    class RouteWindow final : public IRouteWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class RouteWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -36,14 +38,15 @@ namespace trview
             const std::shared_ptr<IFiles>& files, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~RouteWindow() = default;
         void initialise();
-        virtual void render() override;
-        virtual void set_route(const std::weak_ptr<IRoute>& route) override;
-        void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) override;
+        void render() override;
+        void set_route(const std::weak_ptr<IRoute>& route);
+        void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint);
         void set_items(const std::vector<std::weak_ptr<IItem>>& items);
         void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms);
         void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
-        virtual void focus() override;
-        virtual void update(float delta) override;
+        void set_number(int32_t number) override;
+        void focus();
+        void update(float delta);
         void receive_message(const Message& message) override;
     private:
         void load_randomiser_settings(IWaypoint& waypoint);
@@ -53,6 +56,7 @@ namespace trview
         void render_menu_bar();
         std::string waypoint_text(const IWaypoint& waypoint) const;
 
+        std::string _id{ "Route 0" };
         std::weak_ptr<IRoute> _route;
         std::vector<std::weak_ptr<IItem>> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;

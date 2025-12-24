@@ -55,7 +55,6 @@
     <ClCompile Include="Windows\TriggersWindow.cpp" Filter="Windows\Triggers" />
     <ClCompile Include="Windows\RoomsWindow.cpp" Filter="Windows\Rooms" />
     <ClCompile Include="Windows\RouteWindow.cpp" Filter="Windows\Route" />
-    <ClCompile Include="Windows\RouteWindowManager.cpp" Filter="Windows\Route" />
     <ClCompile Include="UI\DX11ImGuiBackend.cpp" Filter="UI" />
     <ClCompile Include="UI\MapRenderer.cpp" Filter="UI\Minimap" />
     <ClCompile Include="Elements\ILight.cpp" Filter="Elements\Light" />
@@ -186,7 +185,6 @@
     <ClInclude Include="Mocks\Graphics\ITextureStorage.h" Filter="Mocks\Graphics" />
     <ClInclude Include="Routing\IRoute.h" Filter="Routing" />
     <ClInclude Include="Mocks\Routing\IRoute.h" Filter="Mocks\Routing" />
-    <ClInclude Include="Mocks\Windows\IRouteWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Tools\ICompass.h" Filter="Tools" />
     <ClInclude Include="Mocks\Tools\ICompass.h" Filter="Mocks\Tools" />
     <ClInclude Include="Tools\IMeasure.h" Filter="Tools" />
@@ -218,7 +216,6 @@
     <ClInclude Include="Routing\IActions.h" Filter="Routing" />
     <ClInclude Include="Routing\Actions.h" Filter="Routing" />
     <ClInclude Include="Mocks\UI\ISettingsWindow.h" Filter="Mocks\UI" />
-    <ClInclude Include="Mocks\Windows\IRouteWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Routing\IWaypoint.h" Filter="Routing" />
     <ClInclude Include="Mocks\Routing\IWaypoint.h" Filter="Mocks\Routing" />
     <ClInclude Include="UI\IViewOptions.h" Filter="UI" />
@@ -236,10 +233,7 @@
     <ClInclude Include="Windows\ItemsWindow.h" Filter="Windows\Items" />
     <ClInclude Include="Windows\TriggersWindow.h" Filter="Windows\Triggers" />
     <ClInclude Include="Windows\RoomsWindow.h" Filter="Windows\Rooms" />
-    <ClInclude Include="Windows\IRouteWindow.h" Filter="Windows\Route" />
-    <ClInclude Include="Windows\IRouteWindowManager.h" Filter="Windows\Route" />
     <ClInclude Include="Windows\RouteWindow.h" Filter="Windows\Route" />
-    <ClInclude Include="Windows\RouteWindowManager.h" Filter="Windows\Route" />
     <ClInclude Include="UI\IImGuiBackend.h" Filter="UI" />
     <ClInclude Include="UI\DX11ImGuiBackend.h" Filter="UI" />
     <ClInclude Include="Mocks\UI\IImGuiBackend.h" Filter="Mocks\UI" />

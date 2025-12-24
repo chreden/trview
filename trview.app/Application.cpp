@@ -626,7 +626,8 @@ namespace trview
 
     void Application::open_recent_route()
     {
-        if (!_level || _recent_route_prompted  || !_windows->is_route_window_open() || std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
+        // TODO: Restore is route window open check?
+        if (!_level || _recent_route_prompted  || /* !_windows->is_route_window_open() ||*/ std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
         {
             return;
         }
@@ -811,10 +812,8 @@ namespace trview
     void Application::set_route(const std::shared_ptr<IRoute>& route)
     {
         _route = route;
-        _token_store += _route->on_waypoint_selected += [&](auto&& r) { select_waypoint(r); };
         _route->set_level(_level);
         _viewer->set_route(_route);
-        _windows->set_route(_route);
     }
 
     void Application::select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh)
@@ -1046,6 +1045,51 @@ namespace trview
         else if (auto open_filename = messages::read_open_level_filename(message))
         {
             open(open_filename.value(), ILevel::OpenMode::Full);
+        }
+        else if (auto switch_filename = messages::read_switch_level_filename(message))
+        {
+            _file_menu->switch_to(switch_filename.value());
+        }
+        else if (auto route_open = messages::commands::read_route_open(message))
+        {
+            open_route();
+        }
+        else if (auto route_reload = messages::commands::read_route_reload(message))
+        {
+            reload_route();
+        }
+        else if (auto route_save = messages::commands::read_route_save(message))
+        {
+            save_route();
+        }
+        else if (auto route_save_as = messages::commands::read_route_save_as(message))
+        {
+            save_route_as();
+        }
+        else if (auto route_new = messages::commands::read_new_route(message))
+        {
+            if (should_discard_changes())
+            { 
+                set_route(_route_source(std::nullopt)); 
+            }
+        }
+        else if (auto route_new_randomizer = messages::commands::read_new_route(message))
+        {
+            if (should_discard_changes())
+            {
+                set_route(_randomizer_route_source(std::nullopt));
+            }
+        }
+        else if (auto waypoint = messages::read_select_waypoint(message))
+        {
+            select_waypoint(waypoint.value());
+        }
+        else if (message.type == "get_route")
+        {
+            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
+            {
+                requester->receive_message({ .type = "route", .data = std::make_shared<MessageData<std::weak_ptr<IRoute>>>(_route) });
+            }
         }
     }
 }

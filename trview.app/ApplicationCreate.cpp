@@ -63,8 +63,8 @@
 #include "UI/MapRenderer.h"
 #include "Windows/ItemsWindow.h"
 #include "Windows/LightsWindow.h"
-#include "Windows/RouteWindowManager.h"
 #include "Windows/RoomsWindow.h"
+#include "Windows/RouteWindow.h"
 #include "Windows/TriggersWindow.h"
 #include "Windows/Viewer.h"
 #include "Windows/Log/LogWindow.h"
@@ -87,6 +87,7 @@
 #include "Elements/Level/LevelNameLookup.h"
 
 #include <trview.common/Messages/MessageSystem.h>
+#include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {
@@ -509,7 +510,7 @@ namespace trview
             pack_window_source,
             plugins_window_source,
             rooms_window_source,
-            std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
+            route_window_source,
             sounds_window_source,
             statics_window_source,
             textures_window_source,

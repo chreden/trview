@@ -18,11 +18,9 @@ namespace trview
     struct IWindows
     {
         virtual ~IWindows() = 0;
-        virtual bool is_route_window_open() const = 0;
         virtual void update(float elapsed) = 0;
         virtual void render() = 0;
         virtual void select(const std::weak_ptr<IWaypoint>& waypoint) = 0;
-        virtual void set_route(const std::weak_ptr<IRoute>& route) = 0;
         virtual void setup(const UserSettings& settings) = 0;
 
         Event<std::string> on_level_switch;

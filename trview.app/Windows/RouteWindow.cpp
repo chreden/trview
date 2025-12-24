@@ -24,10 +24,6 @@ namespace trview
         }
     }
 
-    IRouteWindow::~IRouteWindow()
-    {
-    }
-
     RouteWindow::RouteWindow(const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IDialogs>& dialogs,
         const std::shared_ptr<IFiles>& files, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _dialogs(dialogs), _files(files), _messaging(messaging)
@@ -73,7 +69,7 @@ namespace trview
                         bool selected = file == selected_level;
                         if (ImGui::Selectable(file.c_str(), &selected))
                         {
-                            on_level_switch(file);
+                            messages::send_switch_level_filename(_messaging, file);
                         }
 
                         ImGuiDragDropFlags src_flags = 0;
@@ -146,7 +142,7 @@ namespace trview
                                 scroller.fix_scroll();
 
                                 _selected_waypoint = waypoint;
-                                on_waypoint_selected(waypoint);
+                                messages::send_select_waypoint(_messaging, waypoint);
 
                                 _scroll_to_waypoint = false;
                             }
@@ -185,7 +181,7 @@ namespace trview
                 route->move(move_from.value(), move_to.value());
                 if (selected_index == move_from.value())
                 {
-                    on_waypoint_selected(_selected_waypoint);
+                    messages::send_select_waypoint(_messaging, _selected_waypoint);
                 }
             }
         }
@@ -338,7 +334,7 @@ namespace trview
                     if (ImGui::Button(Names::delete_waypoint.c_str(), ImVec2(-1, 0)))
                     {
                         route->remove(waypoint);
-                        on_waypoint_selected(route->waypoint(route->selected_waypoint()));
+                        messages::send_select_waypoint(_messaging, route->waypoint(route->selected_waypoint()));
                     }
                     else
                     {
@@ -443,6 +439,11 @@ namespace trview
     void RouteWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _all_triggers = triggers;
+    }
+
+    void RouteWindow::set_number(int32_t number)
+    {
+        _id = std::format("Route {}", number);
     }
 
     void RouteWindow::focus()
@@ -589,40 +590,40 @@ namespace trview
                     {
                         if (ImGui::MenuItem("Route"))
                         {
-                            on_new_route();
+                            messages::commands::send_new_route(_messaging);
                         }
 
                         if (ImGui::MenuItem("Randomizer Route"))
                         {
-                            on_new_randomizer_route();
+                            messages::commands::send_new_randomizer_route(_messaging);
                         }
                         ImGui::EndMenu();
                     }
                 }
                 else if(ImGui::MenuItem("New"))
                 {
-                    on_new_route();
+                    messages::commands::send_new_route(_messaging);
                 }
 
                 if (ImGui::MenuItem("Open"))
                 {
-                    on_route_open();
+                    messages::commands::send_route_open(_messaging);
                 }
 
                 const auto route = _route.lock();
                 if (ImGui::MenuItem("Reload", nullptr, nullptr, route && route->filename().has_value()))
                 {
-                    on_route_reload();
+                    messages::commands::send_route_reload(_messaging);
                 }
 
                 if (ImGui::MenuItem("Save"))
                 {
-                    on_route_save();
+                    messages::commands::send_route_save(_messaging);
                 }
 
                 if (ImGui::MenuItem("Save As"))
                 {
-                    on_route_save_as();
+                    messages::commands::send_route_save_as(_messaging);
                 }
                 ImGui::EndMenu();
             }
@@ -681,10 +682,15 @@ namespace trview
                 set_rooms(level_ptr->rooms());
             }
         }
+        else if (auto route = messages::read_route(message))
+        {
+            set_route(route.value());
+        }
     }
 
     void RouteWindow::initialise()
     {
         messages::get_open_level(_messaging, weak_from_this());
+        messages::get_route(_messaging, weak_from_this());
     }
 }

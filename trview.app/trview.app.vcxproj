@@ -207,7 +207,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\Plugins\PluginsWindow.cpp" />
     <ClCompile Include="Windows\RoomsWindow.cpp" />
     <ClCompile Include="Windows\RouteWindow.cpp" />
-    <ClCompile Include="Windows\RouteWindowManager.cpp" />
     <ClCompile Include="Windows\RowCounter.cpp" />
     <ClCompile Include="Windows\Statics\StaticsWindow.cpp" />
     <ClCompile Include="Windows\Textures\TexturesWindow.cpp" />
@@ -323,8 +322,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\UI\ISettingsWindow.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Mocks\UI\IViewOptions.h" />
-    <ClInclude Include="Mocks\Windows\IRouteWindow.h" />
-    <ClInclude Include="Mocks\Windows\IRouteWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IViewer.h" />
     <ClInclude Include="Resources\DefaultShaders.h" />
     <ClInclude Include="Resources\DefaultTextures.h" />
@@ -374,8 +371,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UI\ViewOptions.h" />
     <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h" />
-    <ClInclude Include="Windows\IRouteWindow.h" />
-    <ClInclude Include="Windows\IRouteWindowManager.h" />
     <ClInclude Include="Windows\ItemsWindow.h" />
     <ClInclude Include="Windows\IViewer.h" />
     <ClInclude Include="Windows\IWindows.h" />
@@ -384,7 +379,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\Plugins\PluginsWindow.h" />
     <ClInclude Include="Windows\RoomsWindow.h" />
     <ClInclude Include="Windows\RouteWindow.h" />
-    <ClInclude Include="Windows\RouteWindowManager.h" />
     <ClInclude Include="Windows\RowCounter.h" />
     <ClInclude Include="Windows\Statics\StaticsWindow.h" />
     <ClInclude Include="Windows\Textures\TexturesWindow.h" />

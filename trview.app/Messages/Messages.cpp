@@ -38,6 +38,69 @@ namespace trview
             }
         }
 
+        namespace commands
+        {
+            std::optional<bool> read_route_open(const Message& message)
+            {
+                return read_message<bool>(message, "route_open");
+            }
+
+            void send_route_open(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "route_open");
+            }
+
+            std::optional<bool> read_route_reload(const Message& message)
+            {
+                return read_message<bool>(message, "route_reload");
+            }
+
+            void send_route_reload(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "route_reload");
+            }
+
+            std::optional<bool> read_route_save(const Message& message)
+            {
+                return read_message<bool>(message, "route_save");
+            }
+
+            void send_route_save(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "route_save");
+            }
+
+            std::optional<bool> read_route_save_as(const Message& message)
+            {
+                return read_message<bool>(message, "route_save_as");
+            }
+
+            void send_route_save_as(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "route_save_as");
+            }
+
+            std::optional<bool> read_new_route(const Message& message)
+            {
+                return read_message<bool>(message, "new_route");
+            }
+
+            void send_new_route(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "new_route");
+            }
+
+            std::optional<bool> read_new_randomizer_route(const Message& message)
+            {
+                return read_message<bool>(message, "new_randomizer_route");
+            }
+
+            void send_new_randomizer_route(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "new_randomizer_route");
+            }
+        }
+
         void get_settings(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
         {
             get_message(messaging, reply_to, "get_settings");
@@ -103,6 +166,16 @@ namespace trview
             send_message(messaging, path, "open_level_filename");
         }
 
+        std::optional<std::string> read_switch_level_filename(const Message& message)
+        {
+            return read_message<std::string>(message, "switch_level_filename");
+        }
+
+        void send_switch_level_filename(const std::weak_ptr<IMessageSystem>& messaging, const std::string& path)
+        {
+            send_message(messaging, path, "switch_level_filename");
+        }
+
         std::optional<std::weak_ptr<ILevel>> read_end_diff(const Message& message)
         {
             return read_message<std::weak_ptr<ILevel>>(message, "end_diff");
@@ -121,6 +194,21 @@ namespace trview
         void send_hover_sector(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ISector>& sector)
         {
             send_message(messaging, sector, "hover_sector");
+        }
+
+        void get_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
+        {
+            get_message(messaging, reply_to, "get_route");
+        }
+
+        std::optional<std::weak_ptr<IRoute>> read_route(const Message& message)
+        {
+            return read_message<std::weak_ptr<IRoute>>(message, "route");
+        }
+
+        void send_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRoute>& route)
+        {
+            send_message(messaging, route, "route");
         }
 
         void get_selected_camera_sink(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
@@ -256,6 +344,21 @@ namespace trview
         void send_select_trigger(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ITrigger>& trigger)
         {
             send_message(messaging, trigger, "select_trigger");
+        }
+
+        void get_selected_waypoint(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
+        {
+            get_message(messaging, reply_to, "get_selected_waypoint");
+        }
+
+        std::optional<std::weak_ptr<IWaypoint>> read_select_waypoint(const Message& message)
+        {
+            return read_message<std::weak_ptr<IWaypoint>>(message, "select_waypoint");
+        }
+
+        void send_select_waypoint(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IWaypoint>& waypoint)
+        {
+            send_message(messaging, waypoint, "select_waypoint");
         }
     }
 }
