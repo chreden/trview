@@ -11,7 +11,6 @@
 namespace trview
 {
     struct IAboutWindowManager;
-    struct ICameraSinkWindowManager;
     struct IConsoleManager;
     struct IDiffWindowManager;
     struct IItemsWindowManager;
@@ -28,7 +27,7 @@ namespace trview
         explicit Windows(
             const Window& window,
             std::unique_ptr<IAboutWindowManager> about_window_manager,
-            std::unique_ptr<ICameraSinkWindowManager> camera_sink_windows,
+            const IWindow::Source& camera_sink_window_source,
             std::unique_ptr<IConsoleManager> console_manager,
             std::unique_ptr<IDiffWindowManager> diff_window_manager,
             std::shared_ptr<IItemsWindowManager> items_window_manager,
@@ -56,7 +55,7 @@ namespace trview
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index);
 
         std::unique_ptr<IAboutWindowManager> _about_windows;
-        std::unique_ptr<ICameraSinkWindowManager> _camera_sink_windows;
+        IWindow::Source _camera_sink_window_source;
         std::unique_ptr<IConsoleManager> _console_manager;
         std::unique_ptr<IDiffWindowManager> _diff_windows;
         std::shared_ptr<IItemsWindowManager> _items_windows;

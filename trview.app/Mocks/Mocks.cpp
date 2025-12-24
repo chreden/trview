@@ -56,8 +56,6 @@
 #include "Windows/ITriggersWindow.h"
 #include "Windows/ITriggersWindowManager.h"
 #include "Windows/IViewer.h"
-#include "Windows/ICameraSinkWindow.h"
-#include "Windows/ICameraSinkWindowManager.h"
 #include "Windows/IConsoleManager.h"
 #include "Windows/IConsole.h"
 #include "IApplication.h"
@@ -219,12 +217,6 @@ namespace trview
 
         MockViewer::MockViewer() {}
         MockViewer::~MockViewer() {}
-
-        MockCameraSinkWindowManager::MockCameraSinkWindowManager() {}
-        MockCameraSinkWindowManager::~MockCameraSinkWindowManager() {}
-
-        MockCameraSinkWindow::MockCameraSinkWindow() {}
-        MockCameraSinkWindow::~MockCameraSinkWindow() {}
 
         MockConsoleManager::MockConsoleManager() {}
         MockConsoleManager::~MockConsoleManager() {}

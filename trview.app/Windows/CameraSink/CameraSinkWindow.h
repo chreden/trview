@@ -3,15 +3,22 @@
 #include <trview.common/TokenStore.h>
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.common/Messages/IMessageSystem.h>
+
 #include "../../Filters/Filters.h"
+
+#include <trlevel/LevelVersion.h>
+
 #include "../../Track/Track.h"
-#include "ICameraSinkWindow.h"
 #include "../AutoHider.h"
 #include "../../Settings/UserSettings.h"
+#include "../IWindow.h"
+
+#include "../../Elements/CameraSink/ICameraSink.h"
+#include "../../Elements/Flyby/IFlyby.h"
 
 namespace trview
 {
-    class CameraSinkWindow final : public ICameraSinkWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class CameraSinkWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

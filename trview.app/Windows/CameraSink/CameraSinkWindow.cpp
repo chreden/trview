@@ -123,10 +123,6 @@ namespace trview
         }
     }
 
-    ICameraSinkWindow::~ICameraSinkWindow()
-    {
-    }
-
     CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _camera(camera), _messaging(messaging)
     {

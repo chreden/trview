@@ -40,7 +40,6 @@
     <ClCompile Include="Windows\LogWindowManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="Elements\ItemTests.cpp" Filter="Elements" />
     <ClCompile Include="Elements\SectorTests.cpp" Filter="Elements" />
-    <ClCompile Include="CameraSinkWindowManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="Elements\CameraSinkTests.cpp" Filter="Elements" />
     <ClCompile Include="Lua\Elements\Lua_LevelTests.cpp" Filter="Lua\Elements" />
     <ClCompile Include="Lua\Elements\Lua_ItemTests.cpp" Filter="Lua\Elements" />

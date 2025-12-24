@@ -75,7 +75,6 @@
     <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
     <ClCompile Include="Elements\CameraSink\CameraSink.cpp" Filter="Elements\CameraSink" />
     <ClCompile Include="Windows\Textures\TexturesWindow.cpp" Filter="Windows\Textures" />
-    <ClCompile Include="Windows\CameraSink\CameraSinkWindowManager.cpp" Filter="Windows\CameraSink" />
     <ClCompile Include="Windows\CameraSink\CameraSinkWindow.cpp" Filter="Windows\CameraSink" />
     <ClCompile Include="Lua\trview\trview.cpp" Filter="Lua\trview" />
     <ClCompile Include="Lua\Elements\Level\Lua_Level.cpp" Filter="Lua\Elements\Level" />
@@ -299,14 +298,9 @@
     <ClInclude Include="Elements\CameraSink\CameraSink.h" Filter="Elements\CameraSink" />
     <ClInclude Include="Mocks\Elements\ICameraSink.h" Filter="Mocks\Elements" />
     <ClInclude Include="Windows\Textures\TexturesWindow.h" Filter="Windows\Textures" />
-    <ClInclude Include="Windows\CameraSink\ICameraSinkWindowManager.h" Filter="Windows\CameraSink" />
-    <ClInclude Include="Windows\CameraSink\ICameraSinkWindow.h" Filter="Windows\CameraSink" />
-    <ClInclude Include="Windows\CameraSink\CameraSinkWindowManager.h" Filter="Windows\CameraSink" />
     <ClInclude Include="Lua\trview\trview.h" Filter="Lua\trview" />
     <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h" Filter="Windows\CameraSink" />
-    <ClInclude Include="Mocks\Windows\ICameraSinkWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Lua\Elements\Level\Lua_Level.h" Filter="Lua\Elements\Level" />
-    <ClInclude Include="Mocks\Windows\ICameraSinkWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Track\Track.h" Filter="Track" />
     <ClInclude Include="Type.h" />
     <ClInclude Include="Type.inl" />

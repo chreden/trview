@@ -215,7 +215,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\ViewerUI.cpp" />
     <ClCompile Include="UI\ViewOptions.cpp" />
     <ClCompile Include="Windows\CameraSink\CameraSinkWindow.cpp" />
-    <ClCompile Include="Windows\CameraSink\CameraSinkWindowManager.cpp" />
     <ClCompile Include="Windows\ItemsWindow.cpp" />
     <ClCompile Include="Windows\ItemsWindowManager.cpp" />
     <ClCompile Include="Windows\LightsWindow.cpp" />
@@ -355,8 +354,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\UI\ISettingsWindow.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Mocks\UI\IViewOptions.h" />
-    <ClInclude Include="Mocks\Windows\ICameraSinkWindow.h" />
-    <ClInclude Include="Mocks\Windows\ICameraSinkWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindow.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\ILogWindow.h" />
@@ -416,9 +413,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UI\ViewOptions.h" />
     <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h" />
-    <ClInclude Include="Windows\CameraSink\CameraSinkWindowManager.h" />
-    <ClInclude Include="Windows\CameraSink\ICameraSinkWindow.h" />
-    <ClInclude Include="Windows\CameraSink\ICameraSinkWindowManager.h" />
     <ClInclude Include="Windows\IItemsWindow.h" />
     <ClInclude Include="Windows\IItemsWindowManager.h" />
     <ClInclude Include="Windows\IRoomsWindow.h" />
