@@ -50,7 +50,6 @@
     <ClCompile Include="Lua\Lua_trviewTests.cpp" Filter="Lua" />
     <ClCompile Include="Plugins\PluginTests.cpp" Filter="Plugins" />
     <ClCompile Include="Plugins\PluginsTests.cpp" Filter="Plugins" />
-    <ClCompile Include="PluginsWindowManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="Lua\Elements\Lua_StaticMeshTests.cpp" Filter="Lua\Elements" />
     <ClCompile Include="Lua\Route\Lua_RouteTests.cpp" Filter="Lua\Route" />
     <ClCompile Include="Lua\Lua_ColourTests.cpp" Filter="Lua" />

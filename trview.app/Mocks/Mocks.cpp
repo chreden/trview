@@ -58,8 +58,6 @@
 #include "Lua/ILua.h"
 #include "Plugins/IPlugins.h"
 #include "Plugins/IPlugin.h"
-#include "Windows/IPluginsWindow.h"
-#include "Windows/IPluginsWindowManager.h"
 #include "Tools/IToolbar.h"
 #include "Windows/IWindows.h"
 #include "Windows/IAboutWindow.h"
@@ -219,12 +217,6 @@ namespace trview
 
         MockPlugin::MockPlugin() {}
         MockPlugin::~MockPlugin() {}
-
-        MockPluginsWindow::MockPluginsWindow() {}
-        MockPluginsWindow::~MockPluginsWindow() {}
-
-        MockPluginsWindowManager::MockPluginsWindowManager() {}
-        MockPluginsWindowManager::~MockPluginsWindowManager() {}
 
         MockToolbar::MockToolbar() {}
         MockToolbar::~MockToolbar() {}

@@ -94,7 +94,6 @@
     <ClCompile Include="Plugins\Plugins.cpp" Filter="Plugins" />
     <ClCompile Include="Plugins\Plugin.cpp" Filter="Plugins" />
     <ClCompile Include="Windows\Plugins\PluginsWindow.cpp" Filter="Windows\Plugins" />
-    <ClCompile Include="Windows\Plugins\PluginsWindowManager.cpp" Filter="Windows\Plugins" />
     <ClCompile Include="Lua\Elements\StaticMesh\Lua_StaticMesh.cpp" Filter="Lua\Elements\StaticMesh" />
     <ClCompile Include="Elements\StaticMesh.cpp" Filter="Elements\StaticMesh" />
     <ClCompile Include="Lua\BoundingBox.cpp" Filter="Lua" />
@@ -323,12 +322,7 @@
     <ClInclude Include="Plugins\IPlugin.h" Filter="Plugins" />
     <ClInclude Include="Plugins\Plugin.h" Filter="Plugins" />
     <ClInclude Include="Mocks\Plugins\IPlugin.h" Filter="Mocks\Plugins" />
-    <ClInclude Include="Windows\Plugins\IPluginsWindow.h" Filter="Windows\Plugins" />
-    <ClInclude Include="Windows\Plugins\IPluginsWindowManager.h" Filter="Windows\Plugins" />
-    <ClInclude Include="Windows\Plugins\PluginsWindowManager.h" Filter="Windows\Plugins" />
     <ClInclude Include="Windows\Plugins\PluginsWindow.h" Filter="Windows\Plugins" />
-    <ClInclude Include="Mocks\Windows\IPluginsWindow.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IPluginsWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Lua\Elements\StaticMesh\Lua_StaticMesh.h" Filter="Lua\Elements\StaticMesh" />
     <ClInclude Include="Elements\IStaticMesh.h" Filter="Elements\StaticMesh" />
     <ClInclude Include="Elements\StaticMesh.h" Filter="Elements\StaticMesh" />

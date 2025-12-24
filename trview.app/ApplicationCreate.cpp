@@ -76,7 +76,6 @@
 #include "Windows/Console/Console.h"
 #include "Plugins/Plugins.h"
 #include "Plugins/Plugin.h"
-#include "Windows/Plugins/PluginsWindowManager.h"
 #include "Windows/Plugins/PluginsWindow.h"
 #include "Tools/Toolbar.h"
 #include "UI/Fonts/Fonts.h"
@@ -560,7 +559,7 @@ namespace trview
                 lights_window_source,
                 log_window_source,
                 std::make_unique<PackWindowManager>(window, pack_window_source),
-                std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
+                plugins_window_source,
                 rooms_window_manager,
                 std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
                 sounds_window_source,

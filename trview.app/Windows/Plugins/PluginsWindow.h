@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../Plugins/IPlugins.h"
-#include "IPluginsWindow.h"
+#include "../IWindow.h"
 #include <trview.common/Windows/IShell.h>
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/Messages/IMessageSystem.h>
@@ -9,7 +9,7 @@
 
 namespace trview
 {
-    class PluginsWindow final : public IPluginsWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class PluginsWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

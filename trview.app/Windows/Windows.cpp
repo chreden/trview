@@ -6,7 +6,6 @@
 #include "About/AboutWindowManager.h"
 #include "Diff/IDiffWindowManager.h"
 #include "IItemsWindowManager.h"
-#include "Plugins/IPluginsWindowManager.h"
 #include "IRoomsWindowManager.h"
 #include "IRouteWindowManager.h"
 #include "ITriggersWindowManager.h"
@@ -36,7 +35,7 @@ namespace trview
         const IWindow::Source& lights_window_source,
         const IWindow::Source& log_window_source,
         std::unique_ptr<IPackWindowManager> pack_window_manager,
-        std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
+        const IWindow::Source& plugins_window_source,
         std::shared_ptr<IRoomsWindowManager> rooms_window_manager,
         std::unique_ptr<IRouteWindowManager> route_window_manager,
         const IWindow::Source& sounds_window_source,
@@ -47,7 +46,7 @@ namespace trview
         : MessageHandler(window),
         _about_windows(std::move(about_window_manager)), _camera_sink_window_source(camera_sink_window_source), _console_window_source(console_window_source),
         _diff_windows(std::move(diff_window_manager)), _items_windows(items_window_manager), _lights_window_source(lights_window_source),
-        _log_window_source(log_window_source), _plugins_windows(std::move(plugins_window_manager)), _rooms_windows(rooms_window_manager),
+        _log_window_source(log_window_source), _plugins_window_source(plugins_window_source), _rooms_windows(rooms_window_manager),
         _route_window(std::move(route_window_manager)), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
         _textures_window_source(textures_window_source), _triggers_windows(std::move(triggers_window_manager)), _pack_windows(std::move(pack_window_manager))
     {
@@ -55,6 +54,7 @@ namespace trview
         _token_store += shortcuts->add_shortcut(false, VK_F11) += [&]() { add_window(_console_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'K') += [&]() { add_window(_camera_sink_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'L') += [&]() { add_window(_lights_window_source()); };
+        _token_store += shortcuts->add_shortcut(true, 'P') += [&]() { add_window(_plugins_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'S') += [&]() { add_window(_statics_window_source()); };
 
         _diff_windows->on_diff_ended += on_diff_ended;
@@ -116,6 +116,11 @@ namespace trview
                     add_window(_log_window_source());
                     break;
                 }
+                case ID_WINDOWS_PLUGINS:
+                {
+                    add_window(_plugins_window_source());
+                    break;
+                }
                 case ID_WINDOWS_SOUNDS:
                 {
                     add_window(_sounds_window_source());
@@ -141,7 +146,6 @@ namespace trview
         WindowManager<IWindow>::update(elapsed);
 
         _items_windows->update(elapsed);
-        _plugins_windows->update(elapsed);
         _rooms_windows->update(elapsed);
         _route_window->update(elapsed);
         _triggers_windows->update(elapsed);
@@ -155,7 +159,6 @@ namespace trview
         _diff_windows->render();
         _items_windows->render();
         _pack_windows->render();
-        _plugins_windows->render();
         _rooms_windows->render();
         _route_window->render();
         _triggers_windows->render();

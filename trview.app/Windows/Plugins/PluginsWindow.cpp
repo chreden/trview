@@ -3,10 +3,6 @@
 
 namespace trview
 {
-    IPluginsWindow::~IPluginsWindow()
-    {
-    }
-
     PluginsWindow::PluginsWindow(const std::weak_ptr<IPlugins>& plugins, const std::shared_ptr<IShell>& shell, const std::shared_ptr<IDialogs>& dialogs,
         const std::weak_ptr<IMessageSystem>& messaging)
         : _plugins(plugins), _shell(shell), _dialogs(dialogs), _messaging(messaging)
