@@ -455,7 +455,13 @@ namespace trview
                 triggers_window->initialise();
                 return triggers_window;
             };
-        auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files, messaging); };
+        auto route_window_source = [=]() 
+            {
+                auto route_window = std::make_shared<RouteWindow>(clipboard, dialogs, files, messaging);
+                messaging->add_recipient(route_window);
+                route_window->initialise();
+                return route_window;
+            };
         auto lights_window_source = [=]()
             { 
                 auto lights_window = std::make_shared<LightsWindow>(clipboard, messaging);
