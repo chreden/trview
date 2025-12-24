@@ -3,7 +3,6 @@
 #include "Elements/IRoom.h"
 #include "Settings/UserSettings.h"
 
-#include "About/AboutWindowManager.h"
 #include "Diff/IDiffWindowManager.h"
 #include "IItemsWindowManager.h"
 #include "IRoomsWindowManager.h"
@@ -27,7 +26,7 @@ namespace trview
 
     Windows::Windows(
         const Window& window,
-        std::unique_ptr<IAboutWindowManager> about_window_manager,
+        const IWindow::Source& about_window_source,
         const IWindow::Source& camera_sink_window_source,
         const IWindow::Source& console_window_source,
         std::unique_ptr<IDiffWindowManager> diff_window_manager,
@@ -44,7 +43,7 @@ namespace trview
         std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
         const std::shared_ptr<IShortcuts>& shortcuts)
         : MessageHandler(window),
-        _about_windows(std::move(about_window_manager)), _camera_sink_window_source(camera_sink_window_source), _console_window_source(console_window_source),
+        _about_window_source(about_window_source), _camera_sink_window_source(camera_sink_window_source), _console_window_source(console_window_source),
         _diff_windows(std::move(diff_window_manager)), _items_windows(items_window_manager), _lights_window_source(lights_window_source),
         _log_window_source(log_window_source), _plugins_window_source(plugins_window_source), _rooms_windows(rooms_window_manager),
         _route_window(std::move(route_window_manager)), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
@@ -101,6 +100,11 @@ namespace trview
         {
             switch (LOWORD(wParam))
             {
+                case IDM_ABOUT:
+                {
+                    add_window(_about_window_source());
+                    break;
+                }
                 case ID_WINDOWS_CONSOLE:
                 {
                     add_window(_console_window_source());
@@ -155,7 +159,6 @@ namespace trview
     {
         WindowManager<IWindow>::render();
 
-        _about_windows->render();
         _diff_windows->render();
         _items_windows->render();
         _pack_windows->render();

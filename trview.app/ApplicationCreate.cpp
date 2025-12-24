@@ -82,7 +82,6 @@
 #include "Windows/Sounds/SoundsWindow.h"
 #include "Windows/Statics/StaticsWindow.h"
 #include "Windows/Windows.h"
-#include "Windows/About/AboutWindowManager.h"
 #include "Windows/About/AboutWindow.h"
 #include "Windows/Diff/DiffWindowManager.h"
 #include "Windows/Diff/DiffWindow.h"
@@ -551,7 +550,7 @@ namespace trview
             fonts,
             std::make_unique<Windows>(
                 window,
-                std::make_unique<AboutWindowManager>(window, about_window_source),
+                about_window_source,
                 camera_sink_window_source,
                 console_source,
                 std::make_unique<DiffWindowManager>(window, shortcuts, diff_window_source),

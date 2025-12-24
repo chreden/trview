@@ -87,7 +87,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Sound\SoundStorage.cpp" />
     <ClCompile Include="Windows\AutoHider.cpp" />
     <ClCompile Include="Windows\About\AboutWindow.cpp" />
-    <ClCompile Include="Windows\About\AboutWindowManager.cpp" />
     <ClCompile Include="Windows\Diff\DiffWindow.cpp" />
     <ClCompile Include="Windows\Diff\DiffWindowManager.cpp" />
     <ClCompile Include="Windows\Pack\PackWindow.cpp" />
@@ -126,13 +125,11 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" />
     <ClInclude Include="Mocks\UI\IFonts.h" />
     <ClInclude Include="Mocks\UI\ILevelInfo.h" />
-    <ClInclude Include="Mocks\Windows\IAboutWindow.h" />
     <ClInclude Include="Mocks\Windows\IDiffWindow.h" />
     <ClInclude Include="Mocks\Windows\IDiffWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IPackWindow.h" />
     <ClInclude Include="Mocks\Windows\IPackWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IWindows.h" />
-    <ClInclude Include="Mocks\Windows\IAboutWindowManager.h" />
     <ClInclude Include="Settings\FontSetting.h" />
     <ClCompile Include="trview_imgui.cpp" />
     <ClCompile Include="Lua\Lua.cpp" />
@@ -232,9 +229,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UserCancelledException.h" />
     <ClInclude Include="Windows\AutoHider.h" />
     <ClInclude Include="Windows\About\AboutWindow.h" />
-    <ClInclude Include="Windows\About\AboutWindowManager.h" />
-    <ClInclude Include="Windows\About\IAboutWindow.h" />
-    <ClInclude Include="Windows\About\IAboutWindowManager.h" />
     <ClInclude Include="Windows\Console\Console.h" />
     <ClInclude Include="Windows\Diff\DiffWindow.h" />
     <ClInclude Include="Windows\Diff\DiffWindowManager.h" />

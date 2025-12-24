@@ -10,7 +10,6 @@
 
 namespace trview
 {
-    struct IAboutWindowManager;
     struct IDiffWindowManager;
     struct IItemsWindowManager;
     struct IRoomsWindowManager;
@@ -23,7 +22,7 @@ namespace trview
     public:
         explicit Windows(
             const Window& window,
-            std::unique_ptr<IAboutWindowManager> about_window_manager,
+            const IWindow::Source& about_window_source,
             const IWindow::Source& camera_sink_window_source,
             const IWindow::Source& console_window_source,
             std::unique_ptr<IDiffWindowManager> diff_window_manager,
@@ -51,7 +50,7 @@ namespace trview
     private:
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index);
 
-        std::unique_ptr<IAboutWindowManager> _about_windows;
+        IWindow::Source _about_window_source;
         IWindow::Source _camera_sink_window_source;
         IWindow::Source _console_window_source;
         std::unique_ptr<IDiffWindowManager> _diff_windows;

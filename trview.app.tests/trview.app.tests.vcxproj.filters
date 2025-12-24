@@ -68,7 +68,6 @@
     <ClCompile Include="Windows\WindowsTests.cpp" Filter="Windows" />
     <ClCompile Include="Lua\Camera\Lua_CameraTests.cpp" Filter="Lua\Camera" />
     <ClCompile Include="Sound\SoundStorageTests.cpp" Filter="Sound" />
-    <ClCompile Include="Windows\AboutWindowManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="Elements\FlybyTests.cpp" Filter="Elements" />
   </ItemGroup>
   <ItemGroup>
