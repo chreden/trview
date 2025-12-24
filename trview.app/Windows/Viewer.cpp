@@ -111,7 +111,6 @@ namespace trview
         _token_store += _ui->on_camera_reset += [&]() { _camera->reset(); };
         _token_store += _ui->on_camera_mode += [&](auto mode) { set_camera_mode(mode); };
         _token_store += _ui->on_camera_projection_mode += [&](ProjectionMode mode) { set_camera_projection_mode(mode); };
-        _token_store += _ui->on_sector_hover += [&](auto sector) { set_sector_highlight(sector.lock()); };
         _token_store += _ui->on_add_waypoint += [&]()
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? IWaypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? IWaypoint::Type::Trigger : IWaypoint::Type::Position;
@@ -1661,6 +1660,10 @@ namespace trview
                     select_flyby_node(flyby_node);
                 }
             }
+        }
+        else if (auto hovered_sector = messages::read_hover_sector(message))
+        {
+            select_sector(hovered_sector.value());
         }
     }
 

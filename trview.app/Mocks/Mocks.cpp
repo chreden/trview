@@ -45,8 +45,6 @@
 #include "UI/ISettingsWindow.h"
 #include "UI/IViewerUI.h"
 #include "UI/IViewOptions.h"
-#include "Windows/IRoomsWindow.h"
-#include "Windows/IRoomsWindowManager.h"
 #include "Windows/IRouteWindow.h"
 #include "Windows/IRouteWindowManager.h"
 #include "Windows/IViewer.h"
@@ -170,12 +168,6 @@ namespace trview
 
         MockPackWindowManager::MockPackWindowManager() {}
         MockPackWindowManager::~MockPackWindowManager() {}
-
-        MockRoomsWindow::MockRoomsWindow() {}
-        MockRoomsWindow::~MockRoomsWindow() {}
-
-        MockRoomsWindowManager::MockRoomsWindowManager() {}
-        MockRoomsWindowManager::~MockRoomsWindowManager() {}
 
         MockRouteWindow::MockRouteWindow() {}
         MockRouteWindow::~MockRouteWindow() {}

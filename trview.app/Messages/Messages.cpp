@@ -103,6 +103,16 @@ namespace trview
             send_message(messaging, level, "end_diff");
         }
 
+        std::optional<std::weak_ptr<ISector>> read_hover_sector(const Message& message)
+        {
+            return read_message<std::weak_ptr<ISector>>(message, "hover_sector");
+        }
+
+        void send_hover_sector(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ISector>& sector)
+        {
+            send_message(messaging, sector, "hover_sector");
+        }
+
         void get_selected_camera_sink(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
         {
             get_message(messaging, reply_to, "get_selected_camera_sink");

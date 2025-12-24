@@ -34,7 +34,6 @@ namespace trview
         Event<> on_route_reload;
         Event<> on_route_save;
         Event<> on_route_save_as;
-        Event<std::weak_ptr<ISector>> on_sector_hover;
         Event<std::weak_ptr<IWaypoint>> on_waypoint_selected;
         Event<> on_route_window_created;
     };

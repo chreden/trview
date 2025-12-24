@@ -58,7 +58,6 @@
     <ClCompile Include="FileMenuTests.cpp" />
     <ClCompile Include="Plugins\PluginsTests.cpp" />
     <ClCompile Include="Plugins\PluginTests.cpp" />
-    <ClCompile Include="RoomsWindowManagerTests.cpp" />
     <ClCompile Include="RoomsWindowTests.cpp" />
     <ClCompile Include="Routing\ActionsTests.cpp" />
     <ClCompile Include="Routing\ActionTests.cpp" />

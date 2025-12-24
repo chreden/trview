@@ -15,7 +15,6 @@
     <ClCompile Include="ViewMenuTests.cpp" Filter="Menus" />
     <ClCompile Include="Windows\ViewerTests.cpp" Filter="Windows" />
     <ClCompile Include="ApplicationTests.cpp" />
-    <ClCompile Include="RoomsWindowManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="RoomsWindowTests.cpp" Filter="Windows" />
     <ClCompile Include="Settings\StartupOptionsTests.cpp" Filter="Settings" />
     <ClCompile Include="Graphics\MeshStorageTests.cpp" Filter="Graphics" />

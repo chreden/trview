@@ -5,7 +5,7 @@
 
 namespace trview
 {
-    struct IRoomsWindowManager;
+    struct IWindows;
 
     class ViewOptions final : public IViewOptions
     {
@@ -15,7 +15,7 @@ namespace trview
             static const inline std::string flags = "flags";
         };
 
-        explicit ViewOptions(const std::weak_ptr<IRoomsWindowManager>& rooms_window_manager);
+        explicit ViewOptions(const std::weak_ptr<IWindows>& windows);
         void render() override;
         void set_alternate_group(uint32_t value, bool enabled) override;
         void set_alternate_groups(const std::set<uint32_t>& groups) override;
@@ -32,6 +32,6 @@ namespace trview
         bool _use_alternate_groups{ false };
         bool _flip_enabled{ false };
         bool _ng_plus_enabled{ false };
-        std::weak_ptr<IRoomsWindowManager> _rooms_window_manager;
+        std::weak_ptr<IWindows> _windows;
     };
 }

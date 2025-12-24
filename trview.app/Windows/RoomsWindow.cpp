@@ -113,14 +113,9 @@ namespace trview
         }
     }
 
-    IRoomsWindow::~IRoomsWindow()
-    {
-    }
-
     RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _map_renderer(map_renderer_source()), _clipboard(clipboard), _messaging(messaging)
     {
-        _map_renderer->on_sector_hover += on_sector_hover;
         _token_store += _map_renderer->on_sector_selected += [&](auto sector) { _local_selected_sector = sector; };
 
         generate_filters();
@@ -1278,7 +1273,7 @@ namespace trview
                     {
                         scroller.fix_scroll();
                         _local_selected_static_mesh = static_mesh_ptr;
-                        on_static_mesh_selected(static_mesh);
+                        messages::send_select_static_mesh(_messaging, static_mesh);
                         _scroll_to_static_mesh = false;
                     }
 

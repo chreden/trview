@@ -133,7 +133,6 @@ namespace trview
             };
 
         _map_renderer = map_renderer_source();
-        _map_renderer->on_sector_hover += on_sector_hover;
     }
 #pragma warning(pop)
 

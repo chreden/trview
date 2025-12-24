@@ -64,7 +64,7 @@
 #include "Windows/ItemsWindow.h"
 #include "Windows/LightsWindow.h"
 #include "Windows/RouteWindowManager.h"
-#include "Windows/RoomsWindowManager.h"
+#include "Windows/RoomsWindow.h"
 #include "Windows/TriggersWindow.h"
 #include "Windows/Viewer.h"
 #include "Windows/Log/LogWindow.h"
@@ -405,7 +405,6 @@ namespace trview
                 new_window->initialise();
                 return new_window;
             };
-        auto rooms_window_manager = std::make_shared<RoomsWindowManager>(window, shortcuts, rooms_window_source);
 
         auto settings_window = std::make_shared<SettingsWindow>(dialogs, shell, fonts, texture_storage, messaging);
         messaging->add_recipient(settings_window);
@@ -510,7 +509,7 @@ namespace trview
             log_window_source,
             std::make_unique<PackWindowManager>(window, pack_window_source),
             plugins_window_source,
-            rooms_window_manager,
+            rooms_window_source,
             std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
             sounds_window_source,
             statics_window_source,
@@ -523,7 +522,7 @@ namespace trview
             shortcuts,
             map_renderer_source,
             settings_window,
-            std::make_unique<ViewOptions>(rooms_window_manager),
+            std::make_unique<ViewOptions>(windows),
             std::make_unique<ContextMenu>(windows),
             std::make_unique<CameraControls>(),
             std::make_unique<Toolbar>(plugins),

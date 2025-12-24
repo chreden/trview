@@ -54,7 +54,6 @@
     <ClCompile Include="Windows\ItemsWindow.cpp" Filter="Windows\Items" />
     <ClCompile Include="Windows\TriggersWindow.cpp" Filter="Windows\Triggers" />
     <ClCompile Include="Windows\RoomsWindow.cpp" Filter="Windows\Rooms" />
-    <ClCompile Include="Windows\RoomsWindowManager.cpp" Filter="Windows\Rooms" />
     <ClCompile Include="Windows\RouteWindow.cpp" Filter="Windows\Route" />
     <ClCompile Include="Windows\RouteWindowManager.cpp" Filter="Windows\Route" />
     <ClCompile Include="UI\DX11ImGuiBackend.cpp" Filter="UI" />
@@ -189,7 +188,6 @@
     <ClInclude Include="Routing\IRoute.h" Filter="Routing" />
     <ClInclude Include="Mocks\Routing\IRoute.h" Filter="Mocks\Routing" />
     <ClInclude Include="Mocks\Windows\IRouteWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Tools\ICompass.h" Filter="Tools" />
     <ClInclude Include="Mocks\Tools\ICompass.h" Filter="Mocks\Tools" />
     <ClInclude Include="Tools\IMeasure.h" Filter="Tools" />
@@ -207,7 +205,6 @@
     <ClInclude Include="Graphics\ISectorHighlight.h" Filter="Graphics" />
     <ClInclude Include="Mocks\Graphics\ISectorHighlight.h" Filter="Mocks\Graphics" />
     <ClInclude Include="UI\IViewerUI.h" Filter="UI" />
-    <ClInclude Include="Mocks\Windows\IRoomsWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Mocks\Elements\IItem.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Elements\IRoom.h" Filter="Mocks\Elements" />
     <ClInclude Include="Settings\IStartupOptions.h" Filter="Settings" />
@@ -239,10 +236,7 @@
     <ClInclude Include="trview_imgui.hpp" />
     <ClInclude Include="Windows\ItemsWindow.h" Filter="Windows\Items" />
     <ClInclude Include="Windows\TriggersWindow.h" Filter="Windows\Triggers" />
-    <ClInclude Include="Windows\IRoomsWindow.h" Filter="Windows\Rooms" />
-    <ClInclude Include="Windows\IRoomsWindowManager.h" Filter="Windows\Rooms" />
     <ClInclude Include="Windows\RoomsWindow.h" Filter="Windows\Rooms" />
-    <ClInclude Include="Windows\RoomsWindowManager.h" Filter="Windows\Rooms" />
     <ClInclude Include="Windows\IRouteWindow.h" Filter="Windows\Route" />
     <ClInclude Include="Windows\IRouteWindowManager.h" Filter="Windows\Route" />
     <ClInclude Include="Windows\RouteWindow.h" Filter="Windows\Route" />

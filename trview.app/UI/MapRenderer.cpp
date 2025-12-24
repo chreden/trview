@@ -79,7 +79,7 @@ namespace trview
         if (sector != _previous_sector)
         {
             _previous_sector = sector;
-            on_sector_hover(sector);
+            messages::send_hover_sector(_messaging, sector);
         }
         tooltip();
 
@@ -211,7 +211,7 @@ namespace trview
     {
         _tiles.clear();
         _previous_sector.reset();
-        on_sector_hover({});
+        messages::send_hover_sector(_messaging, {});
 
         if (!room)
         {

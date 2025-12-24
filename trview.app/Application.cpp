@@ -97,7 +97,6 @@ namespace trview
         setup_shortcuts();
         setup_view_menu();
 
-        _token_store += _windows->on_sector_hover += [this](const auto& sector) { select_sector(sector); };
         _token_store += _windows->on_waypoint_selected += [&](const auto& waypoint) { select_waypoint(waypoint); };
         _token_store += _windows->on_route_open += [&]() { this->open_route(); };
         _token_store += _windows->on_route_reload += [&]() { this->reload_route(); };
@@ -407,11 +406,6 @@ namespace trview
             return;
         }
         select_room(light_ptr->room());
-    }
-
-    void Application::select_sector(const std::weak_ptr<ISector>& sector)
-    {
-        _viewer->select_sector(sector);
     }
 
     void Application::render()
@@ -834,7 +828,7 @@ namespace trview
         }
 
         _viewer->open(level, ILevel::OpenMode::Reload);
-        select_room(static_mesh_ptr->room());
+        // select_room(static_mesh_ptr->room());
     }
 
     void Application::select_sound_source(const std::weak_ptr<ISoundSource>& sound_source)

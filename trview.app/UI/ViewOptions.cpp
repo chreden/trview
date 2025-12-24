@@ -1,19 +1,24 @@
 #include "ViewOptions.h"
 #include "../Windows/IViewer.h"
-#include "../Windows/IRoomsWindowManager.h"
+#include "../Filters/Filters.h"
 
 namespace trview
 {
     namespace
     {
         void show_room_filter(
-            std::weak_ptr<IRoomsWindowManager> rooms_window_manager,
+            std::weak_ptr<IWindows> windows,
             const std::vector<Filters<IRoom>::Filter>& filters)
         {
             if (ImGui::BeginPopupContextItem())
             {
                 if (ImGui::BeginMenu("Filter"))
                 {
+                    windows;
+                    filters;
+
+                    // TODO: Restore this
+                    /*
                     if (auto rooms_windows = rooms_window_manager.lock())
                     {
                         if (ImGui::MenuItem("New Window"))
@@ -35,6 +40,7 @@ namespace trview
                             }
                         }
                     }
+                    */
                     ImGui::EndMenu();
                 }
                 ImGui::EndPopup();
@@ -46,8 +52,8 @@ namespace trview
     {
     }
 
-    ViewOptions::ViewOptions(const std::weak_ptr<IRoomsWindowManager>& rooms_window_manager)
-        : _rooms_window_manager(rooms_window_manager)
+    ViewOptions::ViewOptions(const std::weak_ptr<IWindows>& windows)
+        : _windows(windows)
     {
         _toggles[IViewer::Options::highlight] = false;
         _toggles[IViewer::Options::triggers] = true;
@@ -134,7 +140,7 @@ namespace trview
                             ImGui::Text("Click to toggle flip map, right click for filter options.");
                             ImGui::EndTooltip();
                         }
-                        show_room_filter(_rooms_window_manager, {{.key = "Alternate", .compare = CompareOp::Exists, .op = Op::And }});
+                        show_room_filter(_windows, {{.key = "Alternate", .compare = CompareOp::Exists, .op = Op::And }});
                     }
                 }
                 ImGui::EndTable();
@@ -169,7 +175,7 @@ namespace trview
                     {
                         ImGui::PopStyleColor();
                     }
-                    show_room_filter(_rooms_window_manager, { {.key = "Alternate Group", .compare = CompareOp::Equal, .value = std::to_string(group.first), .op = Op::And } });
+                    show_room_filter(_windows, { {.key = "Alternate Group", .compare = CompareOp::Equal, .value = std::to_string(group.first), .op = Op::And } });
                     ImGui::SameLine();
                 }
             }

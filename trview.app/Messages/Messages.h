@@ -47,7 +47,9 @@ namespace trview
         std::optional<std::weak_ptr<ILevel>> read_end_diff(const Message& message);
         void send_end_diff(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ILevel>& level);
 
-        // Selection:
+        std::optional<std::weak_ptr<ISector>> read_hover_sector(const Message& message);
+        void send_hover_sector(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ISector>& sector);
+
         void get_selected_camera_sink(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
         std::optional<std::weak_ptr<ICameraSink>> read_select_camera_sink(const Message& message);
         void send_select_camera_sink(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ICameraSink>& camera_sink);

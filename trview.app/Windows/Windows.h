@@ -30,7 +30,7 @@ namespace trview
             const IWindow::Source& log_window_source,
             std::unique_ptr<IPackWindowManager> pack_window_manager,
             const IWindow::Source& plugins_window_source,
-            std::shared_ptr<IRoomsWindowManager> rooms_window_manager,
+            const IWindow::Source& rooms_window_source,
             std::unique_ptr<IRouteWindowManager> route_window_manager,
             const IWindow::Source& sounds_window_source,
             const IWindow::Source& statics_window_source,
@@ -58,7 +58,7 @@ namespace trview
         IWindow::Source _log_window_source;
         std::unique_ptr<IPackWindowManager> _pack_windows;
         IWindow::Source _plugins_window_source;
-        std::shared_ptr<IRoomsWindowManager> _rooms_windows;
+        IWindow::Source _rooms_window_source;
         std::weak_ptr<IRoute> _route;
         std::unique_ptr<IRouteWindowManager> _route_window;
         IWindow::Source _sounds_window_source;
