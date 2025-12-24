@@ -26,7 +26,6 @@ namespace trview
         virtual void set_route(const std::weak_ptr<IRoute>& route) = 0;
         virtual void setup(const UserSettings& settings) = 0;
 
-        Event<std::weak_ptr<ILevel>> on_diff_ended;
         Event<std::string> on_level_open;
         Event<std::string> on_level_switch;
         Event<> on_new_route;

@@ -3,7 +3,6 @@
 #include "Elements/IRoom.h"
 #include "Settings/UserSettings.h"
 
-#include "Diff/IDiffWindowManager.h"
 #include "IItemsWindowManager.h"
 #include "IRoomsWindowManager.h"
 #include "IRouteWindowManager.h"
@@ -29,7 +28,7 @@ namespace trview
         const IWindow::Source& about_window_source,
         const IWindow::Source& camera_sink_window_source,
         const IWindow::Source& console_window_source,
-        std::unique_ptr<IDiffWindowManager> diff_window_manager,
+        const IWindow::Source& diff_window_source,
         std::shared_ptr<IItemsWindowManager> items_window_manager,
         const IWindow::Source& lights_window_source,
         const IWindow::Source& log_window_source,
@@ -44,19 +43,18 @@ namespace trview
         const std::shared_ptr<IShortcuts>& shortcuts)
         : MessageHandler(window),
         _about_window_source(about_window_source), _camera_sink_window_source(camera_sink_window_source), _console_window_source(console_window_source),
-        _diff_windows(std::move(diff_window_manager)), _items_windows(items_window_manager), _lights_window_source(lights_window_source),
+        _diff_window_source(diff_window_source), _items_windows(items_window_manager), _lights_window_source(lights_window_source),
         _log_window_source(log_window_source), _plugins_window_source(plugins_window_source), _rooms_windows(rooms_window_manager),
         _route_window(std::move(route_window_manager)), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
         _textures_window_source(textures_window_source), _triggers_windows(std::move(triggers_window_manager)), _pack_windows(std::move(pack_window_manager))
     {
         // TODO: Maybe move somewhere else:
         _token_store += shortcuts->add_shortcut(false, VK_F11) += [&]() { add_window(_console_window_source()); };
+        _token_store += shortcuts->add_shortcut(true, 'D') += [&]() { add_window(_diff_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'K') += [&]() { add_window(_camera_sink_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'L') += [&]() { add_window(_lights_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'P') += [&]() { add_window(_plugins_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'S') += [&]() { add_window(_statics_window_source()); };
-
-        _diff_windows->on_diff_ended += on_diff_ended;
 
         _token_store += _items_windows->on_add_to_route += [this](auto item)
             {
@@ -110,6 +108,11 @@ namespace trview
                     add_window(_console_window_source());
                     break;
                 }
+                case ID_WINDOWS_DIFF:
+                {
+                    add_window(_diff_window_source());
+                    break;
+                }
                 case ID_WINDOWS_LIGHTS:
                 {
                     add_window(_lights_window_source());
@@ -159,7 +162,6 @@ namespace trview
     {
         WindowManager<IWindow>::render();
 
-        _diff_windows->render();
         _items_windows->render();
         _pack_windows->render();
         _rooms_windows->render();

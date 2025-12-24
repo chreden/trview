@@ -108,7 +108,6 @@ namespace trview
         _token_store += _windows->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
         _token_store += _windows->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
         _token_store += _windows->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
-        _token_store += _windows->on_diff_ended += [this](auto&& level) { end_diff(level); };
 
         _windows->setup(_settings);
         setup_viewer(*startup_options);
@@ -1030,6 +1029,10 @@ namespace trview
                     _viewer->set_target(r->sector_centroid(s));
                 }
             }
+        }
+        else if (auto diff_level = messages::read_end_diff(message))
+        {
+            end_diff(diff_level.value());
         }
     }
 }

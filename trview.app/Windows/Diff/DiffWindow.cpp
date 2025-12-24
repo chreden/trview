@@ -414,15 +414,15 @@ namespace trview
         };
     }
 
-    IDiffWindow::~IDiffWindow()
-    {
-    }
-
     DiffWindow::DiffWindow(const std::shared_ptr<IDialogs>& dialogs, const ILevel::Source& level_source, const std::shared_ptr<IFileMenu>& file_menu,
         const std::weak_ptr<IMessageSystem>& messaging)
         : _dialogs(dialogs), _level_source(level_source), _file_menu(file_menu), _messaging(messaging)
     {
         _token_store += _file_menu->on_file_open += [this](auto&& filename) { start_load(filename); };
+    }
+
+    void DiffWindow::update(float)
+    {
     }
 
     void DiffWindow::render()
@@ -436,7 +436,7 @@ namespace trview
         {
             if (_diff.has_value())
             {
-                on_diff_ended(_diff->level);
+                messages::send_end_diff(_messaging, _diff->level);
             }
             on_window_closed();
             return;

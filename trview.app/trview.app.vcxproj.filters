@@ -114,7 +114,6 @@
     <ClCompile Include="Windows\AutoHider.cpp" Filter="Windows" />
     <ClCompile Include="Windows\About\AboutWindow.cpp" Filter="Windows\About" />
     <ClCompile Include="Windows\Diff\DiffWindow.cpp" Filter="Windows\Diff" />
-    <ClCompile Include="Windows\Diff\DiffWindowManager.cpp" Filter="Windows\Diff" />
     <ClCompile Include="Menus\ImGuiFileMenu.cpp" Filter="Menus" />
     <ClCompile Include="Windows\Pack\PackWindow.cpp" Filter="Windows\Pack" />
     <ClCompile Include="Windows\Pack\PackWindowManager.cpp" Filter="Windows\Pack" />
@@ -362,12 +361,7 @@
     <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h" Filter="Mocks\Elements" />
     <ClInclude Include="Windows\AutoHider.h" Filter="Windows" />
     <ClInclude Include="Windows\About\AboutWindow.h" Filter="Windows\About" />
-    <ClInclude Include="Windows\Diff\IDiffWindowManager.h" Filter="Windows\Diff" />
-    <ClInclude Include="Windows\Diff\DiffWindowManager.h" Filter="Windows\Diff" />
-    <ClInclude Include="Windows\Diff\IDiffWindow.h" Filter="Windows\Diff" />
     <ClInclude Include="Windows\Diff\DiffWindow.h" Filter="Windows\Diff" />
-    <ClInclude Include="Mocks\Windows\IDiffWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IDiffWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Menus\ImGuiFileMenu.h" Filter="Menus" />
     <ClInclude Include="Settings\PluginSetting.h" Filter="Settings" />
     <ClInclude Include="Windows\Pack\IPackWindow.h" Filter="Windows\Pack" />

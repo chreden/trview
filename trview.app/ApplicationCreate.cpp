@@ -83,7 +83,6 @@
 #include "Windows/Statics/StaticsWindow.h"
 #include "Windows/Windows.h"
 #include "Windows/About/AboutWindow.h"
-#include "Windows/Diff/DiffWindowManager.h"
 #include "Windows/Diff/DiffWindow.h"
 #include "Windows/Pack/PackWindowManager.h"
 #include "Windows/Pack/PackWindow.h"
@@ -553,7 +552,7 @@ namespace trview
                 about_window_source,
                 camera_sink_window_source,
                 console_source,
-                std::make_unique<DiffWindowManager>(window, shortcuts, diff_window_source),
+                diff_window_source,
                 items_window_manager,
                 lights_window_source,
                 log_window_source,

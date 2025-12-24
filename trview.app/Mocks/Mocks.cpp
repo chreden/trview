@@ -60,8 +60,6 @@
 #include "Plugins/IPlugin.h"
 #include "Tools/IToolbar.h"
 #include "Windows/IWindows.h"
-#include "Windows/IDiffWindowManager.h"
-#include "Windows/IDiffWindow.h"
 #include "Windows/IPackWindowManager.h"
 #include "Windows/IPackWindow.h"
 
@@ -236,12 +234,6 @@ namespace trview
 
         MockNgPlusSwitcher::MockNgPlusSwitcher() {};
         MockNgPlusSwitcher::~MockNgPlusSwitcher() {};
-
-        MockDiffWindow::MockDiffWindow() {};
-        MockDiffWindow::~MockDiffWindow() {};
-
-        MockDiffWindowManager::MockDiffWindowManager() {};
-        MockDiffWindowManager::~MockDiffWindowManager() {};
 
         MockLevelInfo::MockLevelInfo() {}
         MockLevelInfo::~MockLevelInfo() {}

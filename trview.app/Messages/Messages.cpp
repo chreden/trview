@@ -78,6 +78,16 @@ namespace trview
             send_message(messaging, level, "open_level");
         }
 
+        std::optional<std::weak_ptr<ILevel>> read_end_diff(const Message& message)
+        {
+            return read_message<std::weak_ptr<ILevel>>(message, "end_diff");
+        }
+
+        void send_end_diff(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ILevel>& level)
+        {
+            send_message(messaging, level, "end_diff");
+        }
+
         void get_selected_camera_sink(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
         {
             get_message(messaging, reply_to, "get_selected_camera_sink");
