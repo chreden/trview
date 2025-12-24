@@ -89,7 +89,6 @@
     <ClCompile Include="Elements\Sector.cpp" Filter="Elements\Sector" />
     <ClCompile Include="Lua\Elements\Sector\Lua_Sector.cpp" Filter="Lua\Elements\Sector" />
     <ClCompile Include="Lua\Elements\CameraSink\Lua_CameraSink.cpp" Filter="Lua\Elements\CameraSink" />
-    <ClCompile Include="Windows\Console\ConsoleManager.cpp" Filter="Windows\Console" />
     <ClCompile Include="Windows\Console\Console.cpp" Filter="Windows\Console" />
     <ClCompile Include="Lua\Elements\Light\Lua_Light.cpp" Filter="Lua\Elements\Light" />
     <ClCompile Include="Lua\Colour.cpp" Filter="Lua" />
@@ -316,12 +315,7 @@
     <ClInclude Include="Elements\Sector.h" Filter="Elements\Sector" />
     <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h" Filter="Lua\Elements\Sector" />
     <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h" Filter="Lua\Elements\CameraSink" />
-    <ClInclude Include="Windows\Console\IConsole.h" Filter="Windows\Console" />
-    <ClInclude Include="Windows\Console\IConsoleManager.h" Filter="Windows\Console" />
-    <ClInclude Include="Windows\Console\ConsoleManager.h" Filter="Windows\Console" />
-    <ClInclude Include="Mocks\Windows\IConsoleManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Windows\Console\Console.h" Filter="Windows\Console" />
-    <ClInclude Include="Mocks\Windows\IConsole.h" Filter="Mocks\Windows" />
     <ClInclude Include="Lua\Elements\Light\Lua_Light.h" Filter="Lua\Elements\Light" />
     <ClInclude Include="Lua\Colour.h" Filter="Lua" />
     <ClInclude Include="UserCancelledException.h" />

@@ -56,8 +56,6 @@
 #include "Windows/ITriggersWindow.h"
 #include "Windows/ITriggersWindowManager.h"
 #include "Windows/IViewer.h"
-#include "Windows/IConsoleManager.h"
-#include "Windows/IConsole.h"
 #include "IApplication.h"
 #include "Lua/ILua.h"
 #include "Plugins/IPlugins.h"
@@ -217,12 +215,6 @@ namespace trview
 
         MockViewer::MockViewer() {}
         MockViewer::~MockViewer() {}
-
-        MockConsoleManager::MockConsoleManager() {}
-        MockConsoleManager::~MockConsoleManager() {}
-
-        MockConsole::MockConsole() {}
-        MockConsole::~MockConsole() {}
 
         MockApplication::MockApplication() {}
         MockApplication::~MockApplication() {}

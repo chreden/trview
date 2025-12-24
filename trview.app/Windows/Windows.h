@@ -11,7 +11,6 @@
 namespace trview
 {
     struct IAboutWindowManager;
-    struct IConsoleManager;
     struct IDiffWindowManager;
     struct IItemsWindowManager;
     struct ILogWindowManager;
@@ -28,7 +27,7 @@ namespace trview
             const Window& window,
             std::unique_ptr<IAboutWindowManager> about_window_manager,
             const IWindow::Source& camera_sink_window_source,
-            std::unique_ptr<IConsoleManager> console_manager,
+            const IWindow::Source& console_window_source,
             std::unique_ptr<IDiffWindowManager> diff_window_manager,
             std::shared_ptr<IItemsWindowManager> items_window_manager,
             const IWindow::Source& lights_window_source,
@@ -56,7 +55,7 @@ namespace trview
 
         std::unique_ptr<IAboutWindowManager> _about_windows;
         IWindow::Source _camera_sink_window_source;
-        std::unique_ptr<IConsoleManager> _console_manager;
+        IWindow::Source _console_window_source;
         std::unique_ptr<IDiffWindowManager> _diff_windows;
         std::shared_ptr<IItemsWindowManager> _items_windows;
         IWindow::Source _lights_window_source;

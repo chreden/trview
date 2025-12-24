@@ -13,10 +13,6 @@ namespace trview
         }
     }
 
-    IConsole::~IConsole()
-    {
-    }
-
     Console::Console(const std::shared_ptr<IDialogs>& dialogs, const std::weak_ptr<IPlugins>& plugins, const std::shared_ptr<IFonts>& fonts)
         : _dialogs(dialogs), _plugins(plugins), _fonts(fonts)
     {
@@ -34,6 +30,10 @@ namespace trview
                 }
             }
         }
+    }
+
+    void Console::update(float)
+    {
     }
 
     void Console::render()

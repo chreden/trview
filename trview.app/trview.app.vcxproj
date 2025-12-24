@@ -175,15 +175,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Vector3.h" />
     <ClCompile Include="UI\Fonts\Fonts.cpp" />
     <ClCompile Include="Windows\Console\Console.cpp" />
-    <ClCompile Include="Windows\Console\ConsoleManager.cpp" />
     <ClInclude Include="Mocks\IApplication.h" />
     <ClInclude Include="Mocks\Lua\ILua.h" />
     <ClInclude Include="Mocks\Plugins\IPlugin.h" />
     <ClInclude Include="Mocks\Plugins\IPlugins.h" />
     <ClInclude Include="Mocks\Routing\IRandomizerRoute.h" />
     <ClInclude Include="Mocks\Tools\IToolbar.h" />
-    <ClInclude Include="Mocks\Windows\IConsole.h" />
-    <ClInclude Include="Mocks\Windows\IConsoleManager.h" />
     <ClInclude Include="Mocks\Windows\IPluginsWindow.h" />
     <ClInclude Include="Mocks\Windows\IPluginsWindowManager.h" />
     <ClInclude Include="Plugins\IPlugin.h" />
@@ -243,9 +240,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\About\IAboutWindow.h" />
     <ClInclude Include="Windows\About\IAboutWindowManager.h" />
     <ClInclude Include="Windows\Console\Console.h" />
-    <ClInclude Include="Windows\Console\ConsoleManager.h" />
-    <ClInclude Include="Windows\Console\IConsole.h" />
-    <ClInclude Include="Windows\Console\IConsoleManager.h" />
     <ClInclude Include="Windows\Diff\DiffWindow.h" />
     <ClInclude Include="Windows\Diff\DiffWindowManager.h" />
     <ClInclude Include="Windows\Diff\IDiffWindow.h" />

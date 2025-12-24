@@ -74,7 +74,6 @@
 #include "UI/DX11ImGuiBackend.h"
 #include "Windows/Textures/TexturesWindow.h"
 #include "Windows/CameraSink/CameraSinkWindow.h"
-#include "Windows/Console/ConsoleManager.h"
 #include "Windows/Console/Console.h"
 #include "Plugins/Plugins.h"
 #include "Plugins/Plugin.h"
@@ -556,7 +555,7 @@ namespace trview
                 window,
                 std::make_unique<AboutWindowManager>(window, about_window_source),
                 camera_sink_window_source,
-                std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
+                console_source,
                 std::make_unique<DiffWindowManager>(window, shortcuts, diff_window_source),
                 items_window_manager,
                 lights_window_source,

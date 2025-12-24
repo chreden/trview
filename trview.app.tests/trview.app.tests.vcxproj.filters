@@ -46,7 +46,6 @@
     <ClCompile Include="Lua\Elements\Lua_RoomTests.cpp" Filter="Lua\Elements" />
     <ClCompile Include="Lua\Elements\Lua_TriggerTests.cpp" Filter="Lua\Elements" />
     <ClCompile Include="Lua\Elements\Lua_SectorTests.cpp" Filter="Lua\Elements" />
-    <ClCompile Include="Windows\ConsoleManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="Lua\Elements\Lua_CameraSinkTests.cpp" Filter="Lua\Elements" />
     <ClCompile Include="Lua\Elements\Lua_LightTests.cpp" Filter="Lua\Elements" />
     <ClCompile Include="Lua\Lua_trviewTests.cpp" Filter="Lua" />
