@@ -1,5 +1,5 @@
 #include "ContextMenu.h"
-#include "../Windows/IItemsWindowManager.h"
+#include "../Windows/IWindows.h"
 
 namespace trview
 {
@@ -7,8 +7,8 @@ namespace trview
     {
     }
 
-    ContextMenu::ContextMenu(const std::weak_ptr<IItemsWindowManager>& items_window_manager)
-        : _items_window_manager(items_window_manager)
+    ContextMenu::ContextMenu(const std::weak_ptr<IWindows>& windows)
+        : _windows(windows)
     {
     }
 
@@ -72,8 +72,10 @@ namespace trview
                 {
                     if (ImGui::BeginMenu("Items..."))
                     {
-                        if (auto items_windows = _items_window_manager.lock())
+                        // TODO: Item window finding.
+                        if (auto windows = _windows.lock())
                         {
+                            /*
                             if (ImGui::MenuItem("New Window"))
                             {
                                 on_filter_items_to_tile(items_windows->create_window());
@@ -89,6 +91,7 @@ namespace trview
                                     }
                                 }
                             }
+                            */
                         }
                         ImGui::EndMenu();
                     }

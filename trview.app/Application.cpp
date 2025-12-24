@@ -72,14 +72,14 @@ namespace trview
         std::shared_ptr<IPlugins> plugins,
         const IRandomizerRoute::Source& randomizer_route_source,
         std::shared_ptr<IFonts> fonts,
-        std::unique_ptr<IWindows> windows,
+        const std::shared_ptr<IWindows>& windows,
         LoadMode load_mode,
         const std::shared_ptr<IMessageSystem>& messaging)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(file_menu), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _viewer(viewer),
         _route_source(route_source), _shortcuts(shortcuts), _level_source(level_source), _dialogs(dialogs), _files(files), _timer(default_time_source()),
         _imgui_backend(std::move(imgui_backend)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
-        _windows(std::move(windows)), _messaging(messaging)
+        _windows(windows), _messaging(messaging)
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -1041,6 +1041,13 @@ namespace trview
                 if (auto trigger_ptr = trigger->lock())
                 {
                     add_waypoint(trigger_ptr->position(), Vector3::Down, trigger_room(trigger_ptr), IWaypoint::Type::Trigger, trigger_ptr->number());
+                }
+            }
+            else if (auto item = std::get_if<std::weak_ptr<IItem>>(&add_to_route->element))
+            {
+                if (auto item_ptr = item->lock())
+                {
+                    add_waypoint(item_ptr->position(), Vector3::Down, item_room(item_ptr), IWaypoint::Type::Entity, item_ptr->number());
                 }
             }
         }

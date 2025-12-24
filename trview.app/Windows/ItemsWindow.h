@@ -8,7 +8,7 @@
 #include <trview.common/Messages/IMessageSystem.h>
 #include "../Filters/Filters.h"
 
-#include "IItemsWindow.h"
+#include "IWindow.h"
 #include "../Elements/IItem.h"
 #include "../Track/Track.h"
 #include "AutoHider.h"
@@ -17,7 +17,7 @@
 namespace trview
 {
     /// Used to show and filter the items in the level.
-    class ItemsWindow final : public IItemsWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class ItemsWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -34,19 +34,19 @@ namespace trview
 
         explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~ItemsWindow() = default;
-        void set_filters(std::vector<Filters<IItem>::Filter> filters) override;
+        void set_filters(std::vector<Filters<IItem>::Filter> filters);
         virtual void render() override;
         void set_items(const std::vector<std::weak_ptr<IItem>>& items);
         void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
-        virtual void clear_selected_item() override;
+        void clear_selected_item();
         void set_current_room(const std::weak_ptr<IRoom>& room);
         void set_selected_item(const std::weak_ptr<IItem>& item);
-        virtual std::weak_ptr<IItem> selected_item() const override;
-        virtual void update(float delta) override;
-        virtual void set_number(int32_t number) override;
+        std::weak_ptr<IItem> selected_item() const;
+        void update(float delta) override;
+        void set_number(int32_t number) override;
         void set_level_version(trlevel::LevelVersion version);
         void set_ng_plus(bool value);
-        std::string name() const override;
+        std::string name() const;
         void receive_message(const Message& message) override;
         void initialise();
     private:

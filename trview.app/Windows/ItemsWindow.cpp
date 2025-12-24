@@ -28,10 +28,6 @@ namespace trview
         return v;
     }
 
-    IItemsWindow::~IItemsWindow()
-    {
-    }
-
     ItemsWindow::ItemsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _messaging(messaging)
     {
@@ -273,7 +269,7 @@ namespace trview
 
             if (ImGui::Button(Names::add_to_route_button.c_str(), ImVec2(-1, 30)))
             {
-                on_add_to_route(_selected_item);
+                messages::send_add_to_route(_messaging, _selected_item);
             }
 
             render_trigger_references();

@@ -113,7 +113,8 @@ namespace trview
         _context_menu->on_hide += on_hide;
         _context_menu->on_copy += on_copy;
         _token_store += _context_menu->on_trigger_selected += [this](auto&& trigger) { messages::send_select_trigger(_messaging, trigger); };
-        _context_menu->on_filter_items_to_tile += on_filter_items_to_tile;
+        // TODO: Restore this
+        // _context_menu->on_filter_items_to_tile += on_filter_items_to_tile;
         _context_menu->set_remove_enabled(false);
         _context_menu->set_hide_enabled(false);
 

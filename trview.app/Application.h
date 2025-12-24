@@ -69,7 +69,7 @@ namespace trview
             std::shared_ptr<IPlugins> plugins,
             const IRandomizerRoute::Source& randomizer_route_source,
             std::shared_ptr<IFonts> fonts,
-            std::unique_ptr<IWindows> windows,
+            const std::shared_ptr<IWindows>& windows,
             LoadMode load_mode,
             const std::shared_ptr<IMessageSystem>& messaging);
         virtual ~Application();
@@ -149,7 +149,7 @@ namespace trview
 
         // Windows
         std::shared_ptr<IViewer> _viewer;
-        std::unique_ptr<IWindows> _windows;
+        std::shared_ptr<IWindows> _windows;
         Timer _timer;
         std::optional<std::pair<std::string, FontSetting>> _new_font;
 

@@ -52,7 +52,6 @@
     <ClCompile Include="trview_imgui.cpp" />
     <ClCompile Include="Windows\LightsWindow.cpp" Filter="Windows\Lights" />
     <ClCompile Include="Windows\ItemsWindow.cpp" Filter="Windows\Items" />
-    <ClCompile Include="Windows\ItemsWindowManager.cpp" Filter="Windows\Items" />
     <ClCompile Include="Windows\TriggersWindow.cpp" Filter="Windows\Triggers" />
     <ClCompile Include="Windows\RoomsWindow.cpp" Filter="Windows\Rooms" />
     <ClCompile Include="Windows\RoomsWindowManager.cpp" Filter="Windows\Rooms" />
@@ -189,10 +188,8 @@
     <ClInclude Include="Mocks\Graphics\ITextureStorage.h" Filter="Mocks\Graphics" />
     <ClInclude Include="Routing\IRoute.h" Filter="Routing" />
     <ClInclude Include="Mocks\Routing\IRoute.h" Filter="Mocks\Routing" />
-    <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Mocks\Windows\IRouteWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IItemsWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Tools\ICompass.h" Filter="Tools" />
     <ClInclude Include="Mocks\Tools\ICompass.h" Filter="Mocks\Tools" />
     <ClInclude Include="Tools\IMeasure.h" Filter="Tools" />
@@ -240,10 +237,7 @@
     <ClInclude Include="Mocks\Elements\ILight.h" Filter="Mocks\Elements" />
     <ClInclude Include="trview_imgui.h" />
     <ClInclude Include="trview_imgui.hpp" />
-    <ClInclude Include="Windows\IItemsWindow.h" Filter="Windows\Items" />
-    <ClInclude Include="Windows\IItemsWindowManager.h" Filter="Windows\Items" />
     <ClInclude Include="Windows\ItemsWindow.h" Filter="Windows\Items" />
-    <ClInclude Include="Windows\ItemsWindowManager.h" Filter="Windows\Items" />
     <ClInclude Include="Windows\TriggersWindow.h" Filter="Windows\Triggers" />
     <ClInclude Include="Windows\IRoomsWindow.h" Filter="Windows\Rooms" />
     <ClInclude Include="Windows\IRoomsWindowManager.h" Filter="Windows\Rooms" />

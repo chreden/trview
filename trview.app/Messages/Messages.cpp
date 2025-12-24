@@ -58,6 +58,11 @@ namespace trview
             return read_message<RouteMessage>(message, "add_to_route");
         }
 
+        void send_add_to_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IItem>& item)
+        {
+            send_message(messaging, RouteMessage{ .element = item }, "add_to_route");
+        }
+
         void send_add_to_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ITrigger>& trigger)
         {
             send_message(messaging, RouteMessage{ .element = trigger }, "add_to_route");

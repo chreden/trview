@@ -6,12 +6,10 @@
 #include <trview.common/Strings.h>
 #include <trview.common/Messages/Message.h>
 
-#include "../Windows/IItemsWindow.h"
 #include "../Elements/Flyby/IFlybyNode.h"
 #include "../Messages/Messages.h"
 #include "../Elements/SoundSource/ISoundSource.h"
 #include "../Elements/ILevel.h"
-#include "../Messages/Messages.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -338,6 +336,9 @@ namespace trview
             }
         };
         _ui->on_font += on_font;
+
+        // TODO: Restore this:
+        /*
         _token_store += _ui->on_filter_items_to_tile += [&](auto&& window_ptr)
             {
                 if (!_context_pick.hit)
@@ -396,6 +397,8 @@ namespace trview
                     }
                 }
             };
+        */
+
         _token_store += _ui->on_linear_filtering += [&](bool value)
             {
                 const auto mode = value ? graphics::ISamplerState::FilterMode::Linear : graphics::ISamplerState::FilterMode::Point;

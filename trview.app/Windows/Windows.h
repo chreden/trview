@@ -25,7 +25,7 @@ namespace trview
             const IWindow::Source& camera_sink_window_source,
             const IWindow::Source& console_window_source,
             const IWindow::Source& diff_window_manager,
-            std::shared_ptr<IItemsWindowManager> items_window_manager,
+            const IWindow::Source& items_window_manager,
             const IWindow::Source& lights_window_source,
             const IWindow::Source& log_window_source,
             std::unique_ptr<IPackWindowManager> pack_window_manager,
@@ -53,7 +53,7 @@ namespace trview
         IWindow::Source _camera_sink_window_source;
         IWindow::Source _console_window_source;
         IWindow::Source _diff_window_source;
-        std::shared_ptr<IItemsWindowManager> _items_windows;
+        IWindow::Source _items_window_source;
         IWindow::Source _lights_window_source;
         IWindow::Source _log_window_source;
         std::unique_ptr<IPackWindowManager> _pack_windows;

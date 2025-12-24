@@ -3,7 +3,6 @@
 #include "Elements/IRoom.h"
 #include "Settings/UserSettings.h"
 
-#include "IItemsWindowManager.h"
 #include "IRoomsWindowManager.h"
 #include "IRouteWindowManager.h"
 #include "Pack/IPackWindowManager.h"
@@ -28,7 +27,7 @@ namespace trview
         const IWindow::Source& camera_sink_window_source,
         const IWindow::Source& console_window_source,
         const IWindow::Source& diff_window_source,
-        std::shared_ptr<IItemsWindowManager> items_window_manager,
+        const IWindow::Source& items_window_source,
         const IWindow::Source& lights_window_source,
         const IWindow::Source& log_window_source,
         std::unique_ptr<IPackWindowManager> pack_window_manager,
@@ -42,7 +41,7 @@ namespace trview
         const std::shared_ptr<IShortcuts>& shortcuts)
         : MessageHandler(window),
         _about_window_source(about_window_source), _camera_sink_window_source(camera_sink_window_source), _console_window_source(console_window_source),
-        _diff_window_source(diff_window_source), _items_windows(items_window_manager), _lights_window_source(lights_window_source),
+        _diff_window_source(diff_window_source), _items_window_source(items_window_source), _lights_window_source(lights_window_source),
         _log_window_source(log_window_source), _plugins_window_source(plugins_window_source), _rooms_windows(rooms_window_manager),
         _route_window(std::move(route_window_manager)), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
         _textures_window_source(textures_window_source), _triggers_window_source(triggers_window_source), _pack_windows(std::move(pack_window_manager))
@@ -50,20 +49,13 @@ namespace trview
         // TODO: Maybe move somewhere else:
         _token_store += shortcuts->add_shortcut(false, VK_F11) += [&]() { add_window(_console_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'D') += [&]() { add_window(_diff_window_source()); };
+        _token_store += shortcuts->add_shortcut(true, 'I') += [&]() { add_window(_items_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'K') += [&]() { add_window(_camera_sink_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'L') += [&]() { add_window(_lights_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'P') += [&]() { add_window(_plugins_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'S') += [&]() { add_window(_statics_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'T') += [&]() { add_window(_triggers_window_source()); };
 
-        _token_store += _items_windows->on_add_to_route += [this](auto item)
-            {
-                if (auto item_ptr = item.lock())
-                {
-                    add_waypoint(item_ptr->position(), Vector3::Down, item_room(item_ptr), IWaypoint::Type::Entity, item_ptr->number());
-                }
-            };
-            
         _pack_windows->on_level_open += on_level_open;
 
         _rooms_windows->on_sector_hover += on_sector_hover;
@@ -103,6 +95,11 @@ namespace trview
                 case ID_WINDOWS_DIFF:
                 {
                     add_window(_diff_window_source());
+                    break;
+                }
+                case ID_WINDOWS_ITEMS:
+                {
+                    add_window(_items_window_source());
                     break;
                 }
                 case ID_WINDOWS_LIGHTS:
@@ -149,7 +146,6 @@ namespace trview
     {
         WindowManager<IWindow>::update(elapsed);
 
-        _items_windows->update(elapsed);
         _rooms_windows->update(elapsed);
         _route_window->update(elapsed);
     }
@@ -158,7 +154,6 @@ namespace trview
     {
         WindowManager<IWindow>::render();
 
-        _items_windows->render();
         _pack_windows->render();
         _rooms_windows->render();
         _route_window->render();
@@ -195,7 +190,7 @@ namespace trview
 
         if (settings.items_startup)
         {
-            _items_windows->create_window();
+            add_window(_items_window_source());
         }
 
         if (settings.rooms_startup)

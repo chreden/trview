@@ -13,7 +13,6 @@
 namespace trview
 {
     struct IRoom;
-    struct IItemsWindow;
 
     enum class Tool
     {
@@ -93,7 +92,6 @@ namespace trview
 
         Event<std::string, FontSetting> on_font;
 
-        Event<std::weak_ptr<IItemsWindow>> on_filter_items_to_tile;
         Event<bool> on_linear_filtering;
 
         /// Render the UI.
