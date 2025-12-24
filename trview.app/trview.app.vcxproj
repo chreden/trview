@@ -216,7 +216,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\ItemsWindowManager.cpp" />
     <ClCompile Include="Windows\LightsWindow.cpp" />
     <ClCompile Include="Windows\Log\LogWindow.cpp" />
-    <ClCompile Include="Windows\Log\LogWindowManager.cpp" />
     <ClCompile Include="Windows\Plugins\PluginsWindow.cpp" />
     <ClCompile Include="Windows\Plugins\PluginsWindowManager.cpp" />
     <ClCompile Include="Windows\RoomsWindow.cpp" />
@@ -350,8 +349,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\UI\IViewOptions.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindow.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
-    <ClInclude Include="Mocks\Windows\ILogWindow.h" />
-    <ClInclude Include="Mocks\Windows\ILogWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IRoomsWindow.h" />
     <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IRouteWindow.h" />
@@ -420,10 +417,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\IViewer.h" />
     <ClInclude Include="Windows\IWindows.h" />
     <ClInclude Include="Windows\LightsWindow.h" />
-    <ClInclude Include="Windows\Log\ILogWindow.h" />
-    <ClInclude Include="Windows\Log\ILogWindowManager.h" />
     <ClInclude Include="Windows\Log\LogWindow.h" />
-    <ClInclude Include="Windows\Log\LogWindowManager.h" />
     <ClInclude Include="Windows\Plugins\IPluginsWindow.h" />
     <ClInclude Include="Windows\Plugins\IPluginsWindowManager.h" />
     <ClInclude Include="Windows\Plugins\PluginsWindow.h" />

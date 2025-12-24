@@ -71,7 +71,6 @@
     <ClCompile Include="Elements\Level.cpp" Filter="Elements\Level" />
     <ClCompile Include="Menus\FileMenu.cpp" Filter="Menus" />
     <ClCompile Include="Windows\Log\LogWindow.cpp" Filter="Windows\Log" />
-    <ClCompile Include="Windows\Log\LogWindowManager.cpp" Filter="Windows\Log" />
     <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
     <ClCompile Include="Elements\CameraSink\CameraSink.cpp" Filter="Elements\CameraSink" />
     <ClCompile Include="Windows\Textures\TexturesWindow.cpp" Filter="Windows\Textures" />
@@ -286,12 +285,7 @@
     <ClInclude Include="Menus\FileMenu.h" Filter="Menus" />
     <ClInclude Include="Menus\IFileMenu.h" Filter="Menus" />
     <ClInclude Include="Mocks\Menus\IFileMenu.h" Filter="Mocks\Menus" />
-    <ClInclude Include="Windows\Log\ILogWindow.h" Filter="Windows\Log" />
     <ClInclude Include="Windows\Log\LogWindow.h" Filter="Windows\Log" />
-    <ClInclude Include="Windows\Log\ILogWindowManager.h" Filter="Windows\Log" />
-    <ClInclude Include="Windows\Log\LogWindowManager.h" Filter="Windows\Log" />
-    <ClInclude Include="Mocks\Windows\ILogWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\ILogWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Elements\RenderFilter.h" Filter="Elements" />
     <ClInclude Include="Elements\CameraSink\ICameraSink.h" Filter="Elements\CameraSink" />
     <ClInclude Include="Elements\CameraSink\CameraSink.h" Filter="Elements\CameraSink" />

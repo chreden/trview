@@ -6,7 +6,6 @@
 #include "About/AboutWindowManager.h"
 #include "Diff/IDiffWindowManager.h"
 #include "IItemsWindowManager.h"
-#include "Log/ILogWindowManager.h"
 #include "Plugins/IPluginsWindowManager.h"
 #include "IRoomsWindowManager.h"
 #include "IRouteWindowManager.h"
@@ -35,7 +34,7 @@ namespace trview
         std::unique_ptr<IDiffWindowManager> diff_window_manager,
         std::shared_ptr<IItemsWindowManager> items_window_manager,
         const IWindow::Source& lights_window_source,
-        std::unique_ptr<ILogWindowManager> log_window_manager,
+        const IWindow::Source& log_window_source,
         std::unique_ptr<IPackWindowManager> pack_window_manager,
         std::unique_ptr<IPluginsWindowManager> plugins_window_manager,
         std::shared_ptr<IRoomsWindowManager> rooms_window_manager,
@@ -48,7 +47,7 @@ namespace trview
         : MessageHandler(window),
         _about_windows(std::move(about_window_manager)), _camera_sink_window_source(camera_sink_window_source), _console_window_source(console_window_source),
         _diff_windows(std::move(diff_window_manager)), _items_windows(items_window_manager), _lights_window_source(lights_window_source),
-        _log_windows(std::move(log_window_manager)), _plugins_windows(std::move(plugins_window_manager)), _rooms_windows(rooms_window_manager),
+        _log_window_source(log_window_source), _plugins_windows(std::move(plugins_window_manager)), _rooms_windows(rooms_window_manager),
         _route_window(std::move(route_window_manager)), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
         _textures_window_source(textures_window_source), _triggers_windows(std::move(triggers_window_manager)), _pack_windows(std::move(pack_window_manager))
     {
@@ -107,6 +106,16 @@ namespace trview
                     add_window(_console_window_source());
                     break;
                 }
+                case ID_WINDOWS_LIGHTS:
+                {
+                    add_window(_lights_window_source());
+                    break;
+                }
+                case ID_WINDOWS_LOG:
+                {
+                    add_window(_log_window_source());
+                    break;
+                }
                 case ID_WINDOWS_SOUNDS:
                 {
                     add_window(_sounds_window_source());
@@ -115,11 +124,6 @@ namespace trview
                 case ID_WINDOWS_STATICS:
                 {
                     add_window(_statics_window_source());
-                    break;
-                }
-                case ID_WINDOWS_LIGHTS:
-                {
-                    add_window(_lights_window_source());
                     break;
                 }
                 case ID_WINDOWS_TEXTURES:
@@ -150,7 +154,6 @@ namespace trview
         _about_windows->render();
         _diff_windows->render();
         _items_windows->render();
-        _log_windows->render();
         _pack_windows->render();
         _plugins_windows->render();
         _rooms_windows->render();

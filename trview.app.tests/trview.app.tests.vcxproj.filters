@@ -37,7 +37,6 @@
     <ClCompile Include="Elements\LightTests.cpp" Filter="Elements" />
     <ClCompile Include="Filters\FiltersTests.cpp" Filter="Filters" />
     <ClCompile Include="Elements\TriggerTests.cpp" Filter="Elements" />
-    <ClCompile Include="Windows\LogWindowManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="Elements\ItemTests.cpp" Filter="Elements" />
     <ClCompile Include="Elements\SectorTests.cpp" Filter="Elements" />
     <ClCompile Include="Elements\CameraSinkTests.cpp" Filter="Elements" />

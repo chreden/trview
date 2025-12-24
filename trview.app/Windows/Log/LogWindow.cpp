@@ -4,12 +4,12 @@
 
 namespace trview
 {
-    ILogWindow::~ILogWindow()
+    LogWindow::LogWindow(const std::shared_ptr<ILog>& log, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
+        : _log(log), _dialogs(dialogs), _files(files)
     {
     }
 
-    LogWindow::LogWindow(const std::shared_ptr<ILog>& log, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
-        : _log(log), _dialogs(dialogs), _files(files)
+    void LogWindow::update(float)
     {
     }
 

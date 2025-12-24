@@ -70,7 +70,6 @@
 #include "Windows/TriggersWindow.h"
 #include "Windows/Viewer.h"
 #include "Windows/Log/LogWindow.h"
-#include "Windows/Log/LogWindowManager.h"
 #include "UI/DX11ImGuiBackend.h"
 #include "Windows/Textures/TexturesWindow.h"
 #include "Windows/CameraSink/CameraSinkWindow.h"
@@ -559,7 +558,7 @@ namespace trview
                 std::make_unique<DiffWindowManager>(window, shortcuts, diff_window_source),
                 items_window_manager,
                 lights_window_source,
-                std::make_unique<LogWindowManager>(window, log_window_source),
+                log_window_source,
                 std::make_unique<PackWindowManager>(window, pack_window_source),
                 std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
                 rooms_window_manager,
