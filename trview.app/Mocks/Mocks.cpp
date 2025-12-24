@@ -51,8 +51,6 @@
 #include "Windows/IRoomsWindowManager.h"
 #include "Windows/IRouteWindow.h"
 #include "Windows/IRouteWindowManager.h"
-#include "Windows/ITriggersWindow.h"
-#include "Windows/ITriggersWindowManager.h"
 #include "Windows/IViewer.h"
 #include "IApplication.h"
 #include "Lua/ILua.h"
@@ -192,12 +190,6 @@ namespace trview
 
         MockRouteWindowManager::MockRouteWindowManager() {}
         MockRouteWindowManager::~MockRouteWindowManager() {}
-
-        MockTriggersWindow::MockTriggersWindow() {}
-        MockTriggersWindow::~MockTriggersWindow() {}
-
-        MockTriggersWindowManager::MockTriggersWindowManager() {}
-        MockTriggersWindowManager::~MockTriggersWindowManager() {}
 
         MockViewer::MockViewer() {}
         MockViewer::~MockViewer() {}

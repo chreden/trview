@@ -53,6 +53,16 @@ namespace trview
             send_message(messaging, settings, "settings");
         }
 
+        std::optional<RouteMessage> read_add_to_route(const Message& message)
+        {
+            return read_message<RouteMessage>(message, "add_to_route");
+        }
+
+        void send_add_to_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ITrigger>& trigger)
+        {
+            send_message(messaging, RouteMessage{ .element = trigger }, "add_to_route");
+        }
+
         std::optional<bool> read_ng_plus(const Message& message)
         {
             return read_message<bool>(message, "ng_plus");

@@ -14,7 +14,6 @@ namespace trview
     struct IItemsWindowManager;
     struct IRoomsWindowManager;
     struct IRouteWindowManager;
-    struct ITriggersWindowManager;
     struct IPackWindowManager;
 
     class Windows final : public IWindows, public WindowManager<IWindow>, public MessageHandler
@@ -36,7 +35,7 @@ namespace trview
             const IWindow::Source& sounds_window_source,
             const IWindow::Source& statics_window_source,
             const IWindow::Source& textures_window_source,
-            std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
+            const IWindow::Source& triggers_window_source,
             const std::shared_ptr<IShortcuts>& shortcuts);
         virtual ~Windows() = default;
         bool is_route_window_open() const override;
@@ -65,6 +64,6 @@ namespace trview
         IWindow::Source _sounds_window_source;
         IWindow::Source _statics_window_source;
         IWindow::Source _textures_window_source;
-        std::unique_ptr<ITriggersWindowManager> _triggers_windows;
+        IWindow::Source _triggers_window_source;
     };
 }

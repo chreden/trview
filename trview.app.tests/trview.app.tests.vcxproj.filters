@@ -12,7 +12,6 @@
     <ClCompile Include="Menus\MenuDetectorTests.cpp" Filter="Menus" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ItemsWindowManagerTests.cpp" Filter="Windows" />
-    <ClCompile Include="TriggersWindowManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" Filter="Menus" />
     <ClCompile Include="Windows\ViewerTests.cpp" Filter="Windows" />

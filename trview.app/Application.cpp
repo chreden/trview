@@ -1034,5 +1034,15 @@ namespace trview
         {
             end_diff(diff_level.value());
         }
+        else if (auto add_to_route = messages::read_add_to_route(message))
+        {
+            if (auto trigger = std::get_if<std::weak_ptr<ITrigger>>(&add_to_route->element))
+            {
+                if (auto trigger_ptr = trigger->lock())
+                {
+                    add_waypoint(trigger_ptr->position(), Vector3::Down, trigger_room(trigger_ptr), IWaypoint::Type::Trigger, trigger_ptr->number());
+                }
+            }
+        }
     }
 }

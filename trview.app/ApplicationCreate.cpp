@@ -66,7 +66,6 @@
 #include "Windows/LightsWindow.h"
 #include "Windows/RouteWindowManager.h"
 #include "Windows/RoomsWindowManager.h"
-#include "Windows/TriggersWindowManager.h"
 #include "Windows/TriggersWindow.h"
 #include "Windows/Viewer.h"
 #include "Windows/Log/LogWindow.h"
@@ -563,7 +562,7 @@ namespace trview
                 sounds_window_source,
                 statics_window_source,
                 textures_window_source,
-                std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source),
+                triggers_window_source,
                 shortcuts),
             Application::LoadMode::Async,
             messaging);

@@ -74,7 +74,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TriggersWindowManagerTests.cpp" />
     <ClCompile Include="UI\MapColoursTests.cpp" />
     <ClCompile Include="UI\ViewerUITests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />

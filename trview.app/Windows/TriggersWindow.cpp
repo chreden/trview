@@ -36,10 +36,6 @@ namespace trview
         }
     }
 
-    ITriggersWindow::~ITriggersWindow()
-    {
-    }
-
     TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _messaging(messaging)
     {
@@ -344,7 +340,7 @@ namespace trview
 
             if (ImGui::Button(Names::add_to_route.c_str(), ImVec2(-1, 30)))
             {
-                on_add_to_route(_selected_trigger);
+                messages::send_add_to_route(_messaging, _selected_trigger);
             }
 
             const bool any_extra = std::ranges::any_of(_local_selected_trigger_commands, [](auto&& c) { return c.data().size() > 1; });

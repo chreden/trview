@@ -217,7 +217,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\Statics\StaticsWindow.cpp" />
     <ClCompile Include="Windows\Textures\TexturesWindow.cpp" />
     <ClCompile Include="Windows\TriggersWindow.cpp" />
-    <ClCompile Include="Windows\TriggersWindowManager.cpp" />
     <ClCompile Include="Windows\Viewer.cpp" />
     <ClCompile Include="Windows\WindowResizer.cpp" />
     <ClInclude Include="UI\Fonts\Fonts.h" />
@@ -338,8 +337,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IRouteWindow.h" />
     <ClInclude Include="Mocks\Windows\IRouteWindowManager.h" />
-    <ClInclude Include="Mocks\Windows\ITriggersWindow.h" />
-    <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IViewer.h" />
     <ClInclude Include="Resources\DefaultShaders.h" />
     <ClInclude Include="Resources\DefaultTextures.h" />
@@ -397,8 +394,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\IRouteWindowManager.h" />
     <ClInclude Include="Windows\ItemsWindow.h" />
     <ClInclude Include="Windows\ItemsWindowManager.h" />
-    <ClInclude Include="Windows\ITriggersWindow.h" />
-    <ClInclude Include="Windows\ITriggersWindowManager.h" />
     <ClInclude Include="Windows\IViewer.h" />
     <ClInclude Include="Windows\IWindows.h" />
     <ClInclude Include="Windows\LightsWindow.h" />
@@ -412,7 +407,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\Statics\StaticsWindow.h" />
     <ClInclude Include="Windows\Textures\TexturesWindow.h" />
     <ClInclude Include="Windows\TriggersWindow.h" />
-    <ClInclude Include="Windows\TriggersWindowManager.h" />
     <ClInclude Include="Windows\Viewer.h" />
     <ClInclude Include="Windows\WindowManager.h" />
     <ClInclude Include="Windows\WindowManager.hpp" />
