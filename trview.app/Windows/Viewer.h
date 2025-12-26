@@ -136,6 +136,9 @@ namespace trview
         void set_ng_plus(bool show);
         void set_show_animation(bool show);
 
+        template <typename T>
+        std::shared_ptr<T> get_entity_and_sync_level(const std::weak_ptr<T>& entity);
+
         const std::shared_ptr<graphics::IDevice> _device;
         const std::shared_ptr<IShortcuts>& _shortcuts;
         std::unique_ptr<graphics::IDeviceWindow> _main_window;
@@ -180,6 +183,10 @@ namespace trview
         bool _camera_moved{ false };
         graphics::ISamplerState::Source _sampler_source;
         std::weak_ptr<IMessageSystem> _messaging;
+
+        // TODO: Changes due to messaging:
+        std::weak_ptr<IRoom> _latest_room;
     };
 }
 
+#include "Viewer.inl"

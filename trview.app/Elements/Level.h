@@ -197,6 +197,9 @@ namespace trview
         void record_static_meshes();
         void content_changed();
 
+        template <typename T>
+        void sync_room(const std::shared_ptr<T>& element) const;
+
         std::shared_ptr<graphics::IDevice> _device;
         std::vector<std::shared_ptr<IRoom>>   _rooms;
         std::vector<std::shared_ptr<ITrigger>> _triggers;
@@ -258,3 +261,5 @@ namespace trview
         std::weak_ptr<IMessageSystem> _messaging;
     };
 }
+
+#include "Level.inl"

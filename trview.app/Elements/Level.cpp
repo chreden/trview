@@ -273,6 +273,7 @@ namespace trview
         const auto selected_item = item.lock();
         if (_selected_item.lock() != selected_item)
         {
+            sync_room(selected_item);
             _selected_item = selected_item;
             on_item_selected(_selected_item);
         }
@@ -1078,6 +1079,7 @@ namespace trview
         const auto selected_trigger = trigger.lock();
         if (_selected_trigger.lock() != selected_trigger)
         {
+            sync_room(selected_trigger);
             _selected_trigger = selected_trigger;
             on_trigger_selected(_selected_trigger);
         }
@@ -1085,13 +1087,18 @@ namespace trview
 
     void Level::set_selected_light(uint32_t number)
     {
-        _selected_light = _lights[number];
+        set_selected_light(_lights[number]);
     }
 
     void Level::set_selected_light(const std::weak_ptr<ILight>& light)
     {
-        _selected_light = light;
-        on_level_changed();
+        const auto selected_light = light.lock();
+        if (_selected_light.lock() != selected_light)
+        {
+            sync_room(selected_light);
+            _selected_light = light;
+            on_level_changed();
+        }
     }
 
     void Level::set_selected_camera_sink(uint32_t number)
@@ -1671,6 +1678,10 @@ namespace trview
         else if (auto selected_room = messages::read_select_room(message))
         {
             set_selected_room(selected_room.value());
+        }
+        else if (auto selected_flyby_node = messages::read_select_flyby_node(message))
+        {
+            set_selected_flyby_node(selected_flyby_node.value());
         }
     }
 

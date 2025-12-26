@@ -411,10 +411,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
   </ItemGroup>
   <ItemGroup>
     <None Include="Elements\IStaticMesh.inl" />
+    <None Include="Elements\Level.inl" />
     <None Include="Lua\Lua.inl" />
     <None Include="Track\Track.inl" />
     <None Include="Windows\AutoHider.inl" />
     <None Include="Windows\CameraSink\CameraSinkWindow.inl" />
+    <None Include="Windows\Viewer.inl" />
     <Text Include="Resources\Files\actions.json">
       <FileType>Document</FileType>
     </Text>

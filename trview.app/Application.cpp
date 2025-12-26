@@ -291,7 +291,6 @@ namespace trview
         _token_store += _viewer->on_waypoint_added += [this](const auto& position, const auto& normal, auto room, auto type, auto index) { add_waypoint(position, normal, room, type, index); };
         _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
-        _token_store += _viewer->on_flyby_node_selected += [this](const auto& flyby_node) { select_flyby_node(flyby_node); };
         _token_store += _viewer->on_font += [this](auto&& name, auto&& font) { _new_font = { name, font }; };
 
         auto filename = startup_options.filename();
@@ -352,19 +351,6 @@ namespace trview
         _viewer->select_room(room);
     }
 
-    void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)
-    {
-        const auto [trigger_ptr, level] = get_entity_and_level(trigger);
-        if (!trigger_ptr || !level)
-        {
-            return;
-        }
-
-        _viewer->open(level, ILevel::OpenMode::Reload);
-        select_room(trigger_ptr->room());
-        level->set_selected_trigger(trigger_ptr->number());
-    }
-
     void Application::select_waypoint(const std::weak_ptr<IWaypoint>& waypoint)
     {
         if (!_level)
@@ -395,16 +381,6 @@ namespace trview
         {
             select_waypoint(_route->waypoint(_route->selected_waypoint() - 1));
         }
-    }
-
-    void Application::select_light(const std::weak_ptr<ILight>& light)
-    {
-        const auto light_ptr = light.lock();
-        if (!light_ptr)
-        {
-            return;
-        }
-        select_room(light_ptr->room());
     }
 
     void Application::render()
@@ -661,20 +637,6 @@ namespace trview
         }
     }
 
-    void Application::select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
-    {
-        const auto [camera_sink_ptr, level] = get_entity_and_level(camera_sink);
-        if (!camera_sink_ptr || !level)
-        {
-            return;
-        }
-
-        _viewer->open(level, ILevel::OpenMode::Reload);
-        select_room(actual_room(*camera_sink_ptr));
-        level->set_selected_camera_sink(camera_sink_ptr->number());
-        _viewer->select_camera_sink(camera_sink);
-    }
-
     std::weak_ptr<ILevel> Application::current_level() const
     {
         return _level;
@@ -758,19 +720,28 @@ namespace trview
             auto selected_trigger = old_level->selected_trigger();
             if (selected_trigger.has_value())
             {
-                select_trigger(_level->trigger(selected_trigger.value()));
+                if (const auto new_selected_trigger = _level->trigger(selected_trigger.value()).lock())
+                {
+                    messages::send_select_trigger(_messaging, new_selected_trigger);
+                }
             }
 
             auto selected_light = old_level->selected_light();
             if (selected_light.has_value())
             {
-                select_light(_level->light(selected_light.value()));
+                if (const auto new_selected_light = _level->light(selected_light.value()).lock())
+                {
+                    messages::send_select_light(_messaging, new_selected_light);
+                }
             }
 
             auto selected_camera_sink = old_level->selected_camera_sink();
             if (selected_camera_sink.has_value())
             {
-                select_camera_sink(_level->camera_sink(selected_camera_sink.value()));
+                if (const auto new_selected_camera_sink = _level->camera_sink(selected_camera_sink.value()).lock())
+                {
+                    messages::send_select_camera_sink(_messaging, new_selected_camera_sink);
+                }
             }
 
             if (auto selected_room = old_level->selected_room().lock())
@@ -816,29 +787,6 @@ namespace trview
         _viewer->set_route(_route);
     }
 
-    void Application::select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh)
-    {
-        const auto [static_mesh_ptr, level] = get_entity_and_level(static_mesh);
-        if (!static_mesh_ptr || !level)
-        {
-            return;
-        }
-
-        _viewer->open(level, ILevel::OpenMode::Reload);
-        // select_room(static_mesh_ptr->room());
-    }
-
-    void Application::select_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
-    {
-        const auto [sound_source_ptr, level] = get_entity_and_level(sound_source);
-        if (!sound_source_ptr || !level)
-        {
-            return;
-        }
-
-        _viewer->open(level, ILevel::OpenMode::Reload);
-    }
-
     void Application::check_load()
     {
         if (!_load.valid() || _load.wait_for(std::chrono::milliseconds(0)) != std::future_status::ready)
@@ -876,19 +824,6 @@ namespace trview
         }
     }
 
-    void Application::select_flyby_node(const std::weak_ptr<IFlybyNode>& node)
-    {
-        const auto [flyby_node_ptr, level] = get_entity_and_level(node);
-        if (!flyby_node_ptr || !level)
-        {
-            return;
-        }
-
-        _viewer->open(level, ILevel::OpenMode::Reload);
-        level->set_selected_flyby_node(node);
-        _viewer->select_flyby_node(node);
-    }
-
     void Application::receive_message(const Message& message)
     {
         if (message.type == "get_selected_item")
@@ -903,10 +838,6 @@ namespace trview
                     }
                 }
             }
-        }
-        else if (auto selected_room = messages::read_select_room(message))
-        {
-            select_room(selected_room.value());
         }
         else if (message.type == "get_selected_room")
         {
@@ -930,10 +861,6 @@ namespace trview
                 requester->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(_settings) });
             }
         }
-        else if (auto selected_light = messages::read_select_light(message))
-        {
-            select_light(selected_light.value());
-        }
         else if (message.type == "get_selected_light")
         {
             if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
@@ -947,10 +874,6 @@ namespace trview
                     }
                 }
             }
-        }
-        else if (auto selected_trigger = messages::read_select_trigger(message))
-        {
-            select_trigger(selected_trigger.value());
         }
         else if (message.type == "get_selected_trigger")
         {
@@ -966,10 +889,6 @@ namespace trview
                 }
             }
         }
-        else if (auto selected_camera_sink = messages::read_select_camera_sink(message))
-        {
-            select_camera_sink(selected_camera_sink.value());
-        }
         else if (message.type == "get_selected_camera_sink")
         {
             if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
@@ -984,24 +903,12 @@ namespace trview
                 }
             }
         }
-        else if (auto selected_sound_source = messages::read_select_sound_source(message))
-        {
-            select_sound_source(selected_sound_source.value());
-        }
         else if (message.type == "get_selected_sound_source")
         {
             if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
             {
                 // TODO: Who knows about this?
             }
-        }
-        else if (auto selected_static_mesh = messages::read_select_static_mesh(message))
-        {
-            select_static_mesh(selected_static_mesh.value());
-        }
-        else if (auto selected_flyby_node = messages::read_select_flyby_node(message))
-        {
-            select_flyby_node(selected_flyby_node.value());
         }
         else if (message.type == "get_open_level")
         {
