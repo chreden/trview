@@ -90,7 +90,7 @@ namespace trview
             const Vector3 sector_position = Vector3(static_cast<float>(x), 0, static_cast<float>(z));
 
             const auto diff = (room->position() - other_room->position()) + sector_position;
-            if (auto other_sector = other_room->sector(x, z).lock())
+            if (auto other_sector = other_room->sector(static_cast<int32_t>(diff.x), static_cast<int32_t>(diff.z)).lock())
             {
                 return VerticalPortalInfo
                 {
