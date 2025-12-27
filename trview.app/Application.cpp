@@ -97,15 +97,7 @@ namespace trview
         setup_shortcuts();
         setup_view_menu();
 
-        _token_store += _windows->on_waypoint_selected += [&](const auto& waypoint) { select_waypoint(waypoint); };
-        _token_store += _windows->on_route_open += [&]() { this->open_route(); };
-        _token_store += _windows->on_route_reload += [&]() { this->reload_route(); };
-        _token_store += _windows->on_route_save += [&]() { this->save_route(); };
-        _token_store += _windows->on_route_save_as += [&]() { this->save_route_as(); };
         _token_store += _windows->on_route_window_created += [&]() { open_recent_route(); };
-        _token_store += _windows->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
-        _token_store += _windows->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
-        _token_store += _windows->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
 
         _windows->setup(_settings);
         setup_viewer(*startup_options);
@@ -289,7 +281,6 @@ namespace trview
     void Application::setup_viewer(const IStartupOptions& startup_options)
     {
         _token_store += _viewer->on_waypoint_added += [this](const auto& position, const auto& normal, auto room, auto type, auto index) { add_waypoint(position, normal, room, type, index); };
-        _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
         _token_store += _viewer->on_font += [this](auto&& name, auto&& font) { _new_font = { name, font }; };
 
@@ -324,7 +315,7 @@ namespace trview
     void Application::add_waypoint(const Vector3& position, const Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
     {
         uint32_t new_index = _route->insert(position, normal, room, type, index);
-        select_waypoint(_route->waypoint(new_index));
+        messages::send_select_waypoint(_messaging, _route->waypoint(new_index));
     }
 
     void Application::remove_waypoint(uint32_t index)
@@ -334,7 +325,7 @@ namespace trview
 
         if (_route->waypoints() > 0)
         {
-            select_waypoint(_route->waypoint(_route->selected_waypoint()));
+            messages::send_select_waypoint(_messaging, _route->waypoint(_route->selected_waypoint()));
         }
     }
 
@@ -351,27 +342,11 @@ namespace trview
         _viewer->select_room(room);
     }
 
-    void Application::select_waypoint(const std::weak_ptr<IWaypoint>& waypoint)
-    {
-        if (!_level)
-        {
-            return;
-        }
-
-        if (auto waypoint_ptr = waypoint.lock())
-        {
-            select_room(_level->room(waypoint_ptr->room()));
-            _route->select_waypoint(waypoint_ptr);
-            _viewer->select_waypoint(waypoint_ptr);
-            _windows->select(waypoint_ptr);
-        }
-    }
-
     void Application::select_next_waypoint()
     {
         if (_route->selected_waypoint() + 1 < _route->waypoints())
         {
-            select_waypoint(_route->waypoint(_route->selected_waypoint() + 1));
+            messages::send_select_waypoint(_messaging, _route->waypoint(_route->selected_waypoint() + 1));
         }
     }
 
@@ -379,7 +354,7 @@ namespace trview
     {
         if (_route->selected_waypoint() > 0)
         {
-            select_waypoint(_route->waypoint(_route->selected_waypoint() - 1));
+            messages::send_select_waypoint(_messaging, _route->waypoint(_route->selected_waypoint() - 1));
         }
     }
 
@@ -986,10 +961,6 @@ namespace trview
             {
                 set_route(_randomizer_route_source(std::nullopt));
             }
-        }
-        else if (auto waypoint = messages::read_select_waypoint(message))
-        {
-            select_waypoint(waypoint.value());
         }
         else if (message.type == "get_route")
         {

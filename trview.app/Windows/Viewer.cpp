@@ -1318,7 +1318,7 @@ namespace trview
         }
         case PickResult::Type::Waypoint:
         {
-            on_waypoint_selected(pick.waypoint);
+            messages::send_select_waypoint(_messaging, pick.waypoint);
             break;
         }
         case PickResult::Type::Light:

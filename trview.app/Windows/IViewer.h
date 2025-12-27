@@ -38,9 +38,6 @@ namespace trview
 
         virtual ~IViewer() = 0;
 
-        /// Event raised when the viewer wants to select a waypoint.
-        Event<std::weak_ptr<IWaypoint>> on_waypoint_selected;
-
         /// Event raised when the viewer wants to remove a waypoint.
         Event<uint32_t> on_waypoint_removed;
 

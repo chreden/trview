@@ -37,7 +37,6 @@ namespace trview
         void update(float elapsed) override;
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void render() override;
-        void select(const std::weak_ptr<IWaypoint>& waypoint) override;
         void setup(const UserSettings& settings) override;
     private:
         IWindow::Source _about_window_source;

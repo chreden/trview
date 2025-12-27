@@ -64,6 +64,11 @@ namespace trview
                     add_window(_about_window_source());
                     break;
                 }
+                case ID_WINDOWS_CAMERA_SINK:
+                {
+                    add_window(_camera_sink_window_source());
+                    break;
+                }
                 case ID_WINDOWS_CONSOLE:
                 {
                     add_window(_console_window_source());
@@ -142,12 +147,6 @@ namespace trview
     void Windows::render()
     {
         WindowManager<IWindow>::render();
-    }
-
-    void Windows::select(const std::weak_ptr<IWaypoint>&)
-    {
-        // TODO: Restore?
-        // _route_window->select_waypoint(waypoint);
     }
 
     void Windows::setup(const UserSettings& settings)
