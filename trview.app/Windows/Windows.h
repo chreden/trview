@@ -20,7 +20,6 @@ namespace trview
             const IWindow::Source& camera_sink_window_source,
             const IWindow::Source& console_window_source,
             const IWindow::Source& diff_window_manager,
-            const IWindow::Source& items_window_manager,
             const IWindow::Source& lights_window_source,
             const IWindow::Source& log_window_source,
             const IWindow::Source& pack_window_source,

@@ -21,7 +21,6 @@ namespace trview
         const IWindow::Source& camera_sink_window_source,
         const IWindow::Source& console_window_source,
         const IWindow::Source& diff_window_source,
-        const IWindow::Source& items_window_source,
         const IWindow::Source& lights_window_source,
         const IWindow::Source& log_window_source,
         const IWindow::Source& pack_window_source,
@@ -34,14 +33,14 @@ namespace trview
         const std::shared_ptr<IShortcuts>& shortcuts)
         : MessageHandler(window),
         _about_window_source(about_window_source), _camera_sink_window_source(camera_sink_window_source), _console_window_source(console_window_source),
-        _diff_window_source(diff_window_source), _items_window_source(items_window_source), _lights_window_source(lights_window_source),
+        _diff_window_source(diff_window_source), _lights_window_source(lights_window_source),
         _log_window_source(log_window_source), _plugins_window_source(plugins_window_source), _route_window_source(route_window_source), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
         _textures_window_source(textures_window_source), _triggers_window_source(triggers_window_source), _pack_window_source(pack_window_source)
     {
         // TODO: Maybe move somewhere else:
         _token_store += shortcuts->add_shortcut(false, VK_F11) += [&]() { add_window(_console_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'D') += [&]() { add_window(_diff_window_source()); };
-        _token_store += shortcuts->add_shortcut(true, 'I') += [&]() { add_window(_items_window_source()); };
+        _token_store += shortcuts->add_shortcut(true, 'I') += [&]() { create("Items"); };
         _token_store += shortcuts->add_shortcut(true, 'K') += [&]() { add_window(_camera_sink_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'L') += [&]() { add_window(_lights_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'M') += [&]() { create("Rooms"); };
@@ -79,7 +78,7 @@ namespace trview
                 }
                 case ID_WINDOWS_ITEMS:
                 {
-                    add_window(_items_window_source());
+                    create("Items");
                     break;
                 }
                 case ID_WINDOWS_LIGHTS:
@@ -171,7 +170,7 @@ namespace trview
 
         if (settings.items_startup)
         {
-            add_window(_items_window_source());
+            create("Items");
         }
 
         if (settings.rooms_startup)

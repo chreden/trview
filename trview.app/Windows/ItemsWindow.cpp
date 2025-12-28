@@ -496,6 +496,10 @@ namespace trview
         {
             set_ng_plus(ng_plus.value());
         }
+        else if (message.type == "item_filters")
+        {
+            set_filters(std::static_pointer_cast<MessageData<std::vector<Filters<IItem>::Filter>>>(message.data)->value);
+        }
     }
 
     void ItemsWindow::initialise()

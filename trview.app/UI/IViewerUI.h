@@ -89,6 +89,7 @@ namespace trview
 
         Event<std::string, FontSetting> on_font;
 
+        Event<std::weak_ptr<IWindow>> on_filter_items_to_tile;
         Event<bool> on_linear_filtering;
 
         /// Render the UI.

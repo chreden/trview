@@ -504,7 +504,6 @@ namespace trview
             camera_sink_window_source,
             console_source,
             diff_window_source,
-            items_window_source,
             lights_window_source,
             log_window_source,
             pack_window_source,
@@ -516,6 +515,7 @@ namespace trview
             triggers_window_source,
             shortcuts);
 
+        windows->register_window("Items", items_window_source);
         windows->register_window("Rooms", rooms_window_source);
 
         auto viewer_ui = std::make_shared<ViewerUI>(

@@ -75,23 +75,23 @@ namespace trview
                         // TODO: Item window finding.
                         if (auto windows = _windows.lock())
                         {
-                            /*
                             if (ImGui::MenuItem("New Window"))
                             {
-                                on_filter_items_to_tile(items_windows->create_window());
+                                on_filter_items_to_tile(windows->create("Items"));
                             }
 
-                            for (const auto& window : items_windows->windows())
+                            int x = 0;
+                            for (const auto& window : windows->windows("Items"))
                             {
                                 if (auto actual_window = window.lock())
                                 {
-                                    if (ImGui::MenuItem(actual_window->name().c_str()))
+                                    if (ImGui::MenuItem(std::format("Items {}", x++).c_str()))
+                                    // if (ImGui::MenuItem(actual_window->name().c_str()))
                                     {
                                         on_filter_items_to_tile(window);
                                     }
                                 }
                             }
-                            */
                         }
                         ImGui::EndMenu();
                     }

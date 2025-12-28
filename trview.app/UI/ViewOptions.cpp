@@ -41,7 +41,6 @@ namespace trview
                                 {
                                     actual_window->receive_message(
                                         Message{ .type = "room_filters", .data = std::make_shared<MessageData<std::vector<Filters<IRoom>::Filter>>>(filters) });
-                                    // actual_window->set_filters(filters);
                                 }
                             }
                         }

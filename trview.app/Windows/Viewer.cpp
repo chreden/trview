@@ -9,6 +9,8 @@
 #include "../Messages/Messages.h"
 #include "../Elements/SoundSource/ISoundSource.h"
 #include "../Elements/ILevel.h"
+#include "../Windows/IWindow.h"
+#include "../Filters/Filters.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -336,7 +338,6 @@ namespace trview
         _ui->on_font += on_font;
 
         // TODO: Restore this:
-        /*
         _token_store += _ui->on_filter_items_to_tile += [&](auto&& window_ptr)
             {
                 if (!_context_pick.hit)
@@ -351,12 +352,14 @@ namespace trview
                             const auto info = room->info();
                             const auto sector_x = static_cast<int>(_context_pick.position.x - (info.x / trlevel::Scale_X));
                             const auto sector_z = static_cast<int>(_context_pick.position.z - (info.z / trlevel::Scale_Z));
-                            window->set_filters(
+                            window->receive_message(
+                                Message{ .type = "item_filters", .data = std::make_shared<MessageData<std::vector<Filters<IItem>::Filter>>>(
+                                std::vector<Filters<IItem>::Filter>
                                 {
                                     {.key = "Room", .compare = CompareOp::Equal, .value = std::to_string(room->number()), .op = Op::And },
                                     {.key = "X", .compare = CompareOp::Between, .value = std::to_string(info.x + sector_x * 1024), .value2 = std::to_string(info.x + (sector_x + 1) * 1024), .op = Op::And },
                                     {.key = "Z", .compare = CompareOp::Between, .value = std::to_string(info.z + sector_z * 1024), .value2 = std::to_string(info.z + (sector_z + 1) * 1024) }
-                                });
+                                }) });
                         };
 
                     const auto get_room = [&](auto&& ent)
@@ -395,7 +398,6 @@ namespace trview
                     }
                 }
             };
-        */
 
         _token_store += _ui->on_linear_filtering += [&](bool value)
             {
