@@ -337,7 +337,6 @@ namespace trview
         };
         _ui->on_font += on_font;
 
-        // TODO: Restore this:
         _token_store += _ui->on_filter_items_to_tile += [&](auto&& window_ptr)
             {
                 if (!_context_pick.hit)

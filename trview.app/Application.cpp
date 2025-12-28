@@ -577,8 +577,7 @@ namespace trview
 
     void Application::open_recent_route()
     {
-        // TODO: Restore is route window open check?
-        if (!_level || _recent_route_prompted  || /* !_windows->is_route_window_open() ||*/ std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
+        if (!_level || _recent_route_prompted  || _windows->windows("Route").empty() || std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
         {
             return;
         }

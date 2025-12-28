@@ -25,6 +25,5 @@ namespace trview
         std::vector<std::weak_ptr<IWindow>> windows(const std::string& type) const override;
     private:
         std::unordered_map<std::string, Creator> _creators;
-        IWindow::Source _triggers_window_source;
     };
 }
