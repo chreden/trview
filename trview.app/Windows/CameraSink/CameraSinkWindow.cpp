@@ -993,4 +993,9 @@ namespace trview
         messages::get_selected_camera_sink(_messaging, weak_from_this());
         messages::get_selected_flyby_node(_messaging, weak_from_this());
     }
+
+    std::string CameraSinkWindow::type() const
+    {
+        return "CameraSink";
+    }
 }

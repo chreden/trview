@@ -48,6 +48,7 @@ namespace trview
         virtual void update(float delta) override;
         void receive_message(const Message& message) override;
         void initialise();
+        std::string type() const override;
     private:
         void set_sync_trigger(bool value);
         void render_triggers_list();

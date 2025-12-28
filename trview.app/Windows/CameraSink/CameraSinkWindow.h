@@ -45,6 +45,7 @@ namespace trview
         void set_platform_and_version(const trlevel::PlatformAndVersion& version);
         void receive_message(const Message& message) override;
         void initialise();
+        std::string type() const override;
     private:
         bool render_camera_sink_window();
         void set_sync(bool value);

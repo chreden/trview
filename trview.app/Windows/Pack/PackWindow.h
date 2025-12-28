@@ -17,6 +17,7 @@ namespace trview
         void set_pack(const std::weak_ptr<trlevel::IPack>& pack);
         void initialise();
         void receive_message(const Message& message) override;
+        std::string type() const override;
     private:
         bool render_pack_window();
 

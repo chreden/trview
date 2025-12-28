@@ -23,6 +23,7 @@ namespace trview
         void set_number(int32_t number) override;
         void update(float dt) override;
         void receive_message(const Message& message) override;
+        std::string type() const override;
     private:
         bool render_plugins_window();
 

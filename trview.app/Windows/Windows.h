@@ -1,8 +1,6 @@
 #pragma once
 
-#include <trview.common/TokenStore.h>
 #include <trview.common/Windows/IShortcuts.h>
-#include "../Routing/IWaypoint.h"
 
 #include "IWindows.h"
 #include "IWindow.h"

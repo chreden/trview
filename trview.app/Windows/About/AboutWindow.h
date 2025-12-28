@@ -11,6 +11,7 @@ namespace trview
         void update(float delta) override;
         void render() override;
         void set_number(int32_t number) override;
+        std::string type() const override;
     private:
         std::string _id{ "About 0" };
     };

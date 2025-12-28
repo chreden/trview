@@ -43,6 +43,7 @@ namespace trview
         void set_sound_sources(const std::vector<std::weak_ptr<ISoundSource>>& sound_sources);
         void receive_message(const Message& message) override;
         void initialise();
+        std::string type() const override;
     private:
         bool render_sounds_window();
         void render_sound_sources_list();

@@ -268,4 +268,9 @@ namespace trview
         messages::get_selected_room(_messaging, weak_from_this());
         messages::get_selected_static_mesh(_messaging, weak_from_this());
     }
+
+    std::string StaticsWindow::type() const
+    {
+        return "Statics";
+    }
 }

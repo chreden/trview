@@ -23,6 +23,7 @@ namespace trview
         void set_number(int32_t number) override;
         void receive_message(const Message& message) override;
         void set_texture_storage(const std::shared_ptr<ILevelTextureStorage>& texture_storage);
+        std::string type() const override;
     private:
         bool render_textures_window();
         void clamp_index();

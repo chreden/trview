@@ -909,4 +909,9 @@ namespace trview
     {
         messages::get_open_level(_messaging, weak_from_this());
     }
+
+    std::string DiffWindow::type() const
+    {
+        return "Diff";
+    }
 }

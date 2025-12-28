@@ -144,5 +144,10 @@ namespace trview
             });
         _files->save_file(result.value().filename, stream.str());
     }
+
+    std::string LogWindow::type() const
+    {
+        return "Log";
+    }
 }
 

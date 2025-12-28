@@ -653,4 +653,9 @@ namespace trview
         messages::get_selected_room(_messaging, weak_from_this());
         messages::get_selected_trigger(_messaging, weak_from_this());
     }
+
+    std::string TriggersWindow::type() const
+    {
+        return "Triggers";
+    }
 }

@@ -141,4 +141,9 @@ namespace trview
             _settings = settings.value();
         }
     }
+
+    std::string PluginsWindow::type() const
+    {
+        return "Plugins";
+    }
 }

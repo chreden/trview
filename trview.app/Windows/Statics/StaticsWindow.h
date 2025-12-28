@@ -39,6 +39,7 @@ namespace trview
         void set_statics(const std::vector<std::weak_ptr<IStaticMesh>>& statics);
         void update(float dt) override;
         void receive_message(const Message& message) override;
+        std::string type() const override;
     private:
         bool render_statics_window();
         void render_statics_list();

@@ -110,5 +110,10 @@ namespace trview
             }
         }
     }
+
+    std::string PackWindow::type() const
+    {
+        return "Pack";
+    }
 }
 

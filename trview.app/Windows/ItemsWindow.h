@@ -49,6 +49,7 @@ namespace trview
         std::string name() const;
         void receive_message(const Message& message) override;
         void initialise();
+        std::string type() const override;
     private:
         void set_sync_item(bool value);
         void render_items_list();

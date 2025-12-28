@@ -1442,4 +1442,9 @@ namespace trview
             _map_renderer->set_selection(std::vector<std::shared_ptr<ISector>>{});
         }
     }
+
+    std::string RoomsWindow::type() const
+    {
+        return "Rooms";
+    }
 }

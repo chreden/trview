@@ -504,4 +504,9 @@ namespace trview
         messages::get_selected_room(_messaging, weak_from_this());
         messages::get_selected_item(_messaging, weak_from_this());
     }
+
+    std::string ItemsWindow::type() const
+    {
+        return "Items";
+    }
 }

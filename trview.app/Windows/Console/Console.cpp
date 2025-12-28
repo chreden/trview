@@ -245,4 +245,9 @@ namespace trview
         _need_scroll.erase(*iter);
         return true;
     }
+
+    std::string Console::type() const
+    {
+        return "Console";
+    }
 }

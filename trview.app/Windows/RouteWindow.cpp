@@ -693,4 +693,9 @@ namespace trview
         messages::get_open_level(_messaging, weak_from_this());
         messages::get_route(_messaging, weak_from_this());
     }
+
+    std::string RouteWindow::type() const
+    {
+        return "Route";
+    }
 }

@@ -39,6 +39,7 @@ namespace trview
         void set_current_room(const std::weak_ptr<IRoom>& room);
         void receive_message(const Message& message) override;
         void initialise();
+        std::string type() const override;
     private:
         void set_sync_light(bool value);
         void set_local_selected_light(const std::weak_ptr<ILight>& light);

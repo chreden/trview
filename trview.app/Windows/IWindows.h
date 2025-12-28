@@ -14,6 +14,7 @@ namespace trview
     struct IStaticMesh;
     struct ITrigger;
     struct IWaypoint;
+    struct UserSettings;
 
     struct IWindows
     {

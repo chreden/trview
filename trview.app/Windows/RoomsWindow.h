@@ -56,6 +56,7 @@ namespace trview
         void set_selected_sector(const std::weak_ptr<ISector>& sector);
         void receive_message(const Message& message) override;
         void initialise();
+        std::string type() const override;
     private:
         void set_sync_room(bool value);
         void render_rooms_list();

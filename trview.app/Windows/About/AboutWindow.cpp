@@ -39,4 +39,9 @@ namespace trview
     {
         _id = std::format("About {}", number);
     }
+
+    std::string AboutWindow::type() const
+    {
+        return "About";
+    }
 }

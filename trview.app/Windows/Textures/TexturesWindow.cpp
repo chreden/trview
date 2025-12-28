@@ -79,4 +79,9 @@ namespace trview
     {
         messages::get_open_level(_messaging, weak_from_this());
     }
+
+    std::string TexturesWindow::type() const
+    {
+        return "Textures";
+    }
 }
