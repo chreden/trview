@@ -26,7 +26,6 @@ namespace trview
         const IWindow::Source& log_window_source,
         const IWindow::Source& pack_window_source,
         const IWindow::Source& plugins_window_source,
-        const IWindow::Source& rooms_window_source,
         const IWindow::Source& route_window_source,
         const IWindow::Source& sounds_window_source,
         const IWindow::Source& statics_window_source,
@@ -36,8 +35,7 @@ namespace trview
         : MessageHandler(window),
         _about_window_source(about_window_source), _camera_sink_window_source(camera_sink_window_source), _console_window_source(console_window_source),
         _diff_window_source(diff_window_source), _items_window_source(items_window_source), _lights_window_source(lights_window_source),
-        _log_window_source(log_window_source), _plugins_window_source(plugins_window_source), _rooms_window_source(rooms_window_source),
-        _route_window_source(route_window_source), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
+        _log_window_source(log_window_source), _plugins_window_source(plugins_window_source), _route_window_source(route_window_source), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
         _textures_window_source(textures_window_source), _triggers_window_source(triggers_window_source), _pack_window_source(pack_window_source)
     {
         // TODO: Maybe move somewhere else:
@@ -46,7 +44,7 @@ namespace trview
         _token_store += shortcuts->add_shortcut(true, 'I') += [&]() { add_window(_items_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'K') += [&]() { add_window(_camera_sink_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'L') += [&]() { add_window(_lights_window_source()); };
-        _token_store += shortcuts->add_shortcut(true, 'M') += [&]() { add_window(_rooms_window_source()); };
+        _token_store += shortcuts->add_shortcut(true, 'M') += [&]() { create("Rooms"); };
         _token_store += shortcuts->add_shortcut(true, 'P') += [&]() { add_window(_plugins_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'R') += [&]() { add_window(_route_window_source()); };
         _token_store += shortcuts->add_shortcut(true, 'S') += [&]() { add_window(_statics_window_source()); };
@@ -106,7 +104,7 @@ namespace trview
                 }
                 case ID_WINDOWS_ROOMS:
                 {
-                    add_window(_rooms_window_source());
+                    create("Rooms");
                     break;
                 }
                 case ID_WINDOWS_ROUTE:
@@ -154,6 +152,11 @@ namespace trview
         WindowManager<IWindow>::update(elapsed);
     }
 
+    void Windows::register_window(const std::string& type, const Creator& creator)
+    {
+        _creators[type] = creator;
+    }
+
     void Windows::render()
     {
         WindowManager<IWindow>::render();
@@ -173,7 +176,7 @@ namespace trview
 
         if (settings.rooms_startup)
         {
-            add_window(_rooms_window_source());
+            create("Rooms");
         }
 
         if (settings.route_startup)

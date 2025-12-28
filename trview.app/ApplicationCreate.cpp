@@ -509,13 +509,14 @@ namespace trview
             log_window_source,
             pack_window_source,
             plugins_window_source,
-            rooms_window_source,
             route_window_source,
             sounds_window_source,
             statics_window_source,
             textures_window_source,
             triggers_window_source,
             shortcuts);
+
+        windows->register_window("Rooms", rooms_window_source);
 
         auto viewer_ui = std::make_shared<ViewerUI>(
             window,

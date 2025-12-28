@@ -14,8 +14,6 @@ namespace trview
     class Windows final : public IWindows, public WindowManager<IWindow>, public MessageHandler
     {
     public:
-        using Creator = std::function<std::shared_ptr<IWindow>()>;
-
         explicit Windows(
             const Window& window,
             const IWindow::Source& about_window_source,
@@ -27,7 +25,6 @@ namespace trview
             const IWindow::Source& log_window_source,
             const IWindow::Source& pack_window_source,
             const IWindow::Source& plugins_window_source,
-            const IWindow::Source& rooms_window_source,
             const IWindow::Source& route_window_source,
             const IWindow::Source& sounds_window_source,
             const IWindow::Source& statics_window_source,
@@ -38,6 +35,7 @@ namespace trview
         std::weak_ptr<IWindow> create(const std::string& type) override;
         void update(float elapsed) override;
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
+        void register_window(const std::string& type, const Creator& creator) override;
         void render() override;
         void setup(const UserSettings& settings) override;
         std::vector<std::weak_ptr<IWindow>> windows(const std::string& type) const override;
@@ -52,7 +50,6 @@ namespace trview
         IWindow::Source _log_window_source;
         IWindow::Source _pack_window_source;
         IWindow::Source _plugins_window_source;
-        IWindow::Source _rooms_window_source;
         IWindow::Source _route_window_source;
         IWindow::Source _sounds_window_source;
         IWindow::Source _statics_window_source;
