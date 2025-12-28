@@ -892,17 +892,6 @@ namespace trview
                 requester->receive_message({ .type = "open_level", .data = std::make_shared<MessageData<std::weak_ptr<ILevel>>>(_level) });
             }
         }
-        else if (auto selected_sector = messages::read_select_sector(message))
-        {
-            if (const auto s = selected_sector.value().lock())
-            {
-                if (const auto r = s->room().lock())
-                {
-                    select_room(r);
-                    _viewer->set_target(r->sector_centroid(s));
-                }
-            }
-        }
         else if (auto diff_level = messages::read_end_diff(message))
         {
             end_diff(diff_level.value());

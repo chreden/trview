@@ -850,19 +850,21 @@ namespace trview
 
     void Viewer::select_room(const std::weak_ptr<IRoom>& room)
     {
-        const auto room_ptr = room.lock();
-        if (!room_ptr || (room_ptr == _latest_room.lock()))
+        if (const auto room_ptr = get_entity_and_sync_level(room))
         {
-            return;
-        }
-        _latest_room = room;
+            if (room_ptr == _latest_room.lock())
+            {
+                return;
+            }
+            _latest_room = room;
 
-        _was_alternate_select = false;
-        _ui->set_selected_room(room_ptr);
-        set_target(room_ptr->centre());
-        if (_settings.auto_orbit)
-        {
-            set_camera_mode(ICamera::Mode::Orbit);
+            _was_alternate_select = false;
+            _ui->set_selected_room(room_ptr);
+            set_target(room_ptr->centre());
+            if (_settings.auto_orbit)
+            {
+                set_camera_mode(ICamera::Mode::Orbit);
+            }
         }
     }
 
@@ -1441,10 +1443,13 @@ namespace trview
 
     void Viewer::select_sector(const std::weak_ptr<ISector>& sector)
     {
-        if (auto sector_ptr = sector.lock())
+        if (const auto sector_ptr = sector.lock())
         {
-            set_sector_highlight(sector_ptr);
-            _ui->set_minimap_highlight(sector_ptr->x(), sector_ptr->z());
+            if (get_entity_and_sync_level(sector_ptr->room()))
+            {
+                set_sector_highlight(sector_ptr);
+                _ui->set_minimap_highlight(sector_ptr->x(), sector_ptr->z());
+            }
         }
     }
 
@@ -1636,6 +1641,17 @@ namespace trview
         else if (auto hovered_sector = messages::read_hover_sector(message))
         {
             select_sector(hovered_sector.value());
+        }
+        else if (auto selected_sector = messages::read_select_sector(message))
+        {
+            if (const auto s = selected_sector.value().lock())
+            {
+                if (const auto r = s->room().lock())
+                {
+                    select_room(r);
+                    set_target(r->sector_centroid(s));
+                }
+            }
         }
     }
 
