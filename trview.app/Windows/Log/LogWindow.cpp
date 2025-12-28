@@ -153,5 +153,10 @@ namespace trview
     void LogWindow::receive_message(const Message&)
     {
     }
+
+    std::string LogWindow::title() const
+    {
+        return _id;
+    }
 }
 

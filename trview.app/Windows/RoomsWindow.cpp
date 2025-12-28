@@ -1451,4 +1451,9 @@ namespace trview
     {
         return "Rooms";
     }
+
+    std::string RoomsWindow::title() const
+    {
+        return _id;
+    }
 }

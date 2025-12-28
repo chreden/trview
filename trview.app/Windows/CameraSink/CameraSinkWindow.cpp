@@ -998,4 +998,9 @@ namespace trview
     {
         return "CameraSink";
     }
+
+    std::string CameraSinkWindow::title() const
+    {
+        return _id;
+    }
 }

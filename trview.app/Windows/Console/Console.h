@@ -29,6 +29,7 @@ namespace trview
         void set_number(int32_t number) override;
         std::string type() const override;
         void receive_message(const Message&) override {};
+        std::string title() const override;
     private:
         static int callback(ImGuiInputTextCallbackData* data);
         bool render_console();

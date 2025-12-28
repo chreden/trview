@@ -12,6 +12,7 @@ namespace trview
         void render() override;
         void set_number(int32_t number) override;
         std::string type() const override;
+        std::string title() const override;
         void receive_message(const Message&) override;
     private:
         std::string _id{ "About 0" };

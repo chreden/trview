@@ -914,4 +914,9 @@ namespace trview
     {
         return "Diff";
     }
+
+    std::string DiffWindow::title() const
+    {
+        return _id;
+    }
 }

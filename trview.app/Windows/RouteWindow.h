@@ -49,6 +49,7 @@ namespace trview
         void update(float delta);
         void receive_message(const Message& message) override;
         std::string type() const override;
+        std::string title() const override;
     private:
         void load_randomiser_settings(IWaypoint& waypoint);
         void render_waypoint_list();

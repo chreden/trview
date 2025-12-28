@@ -1,5 +1,6 @@
 #include "ContextMenu.h"
 #include "../Windows/IWindows.h"
+#include "../Windows/IWindow.h"
 
 namespace trview
 {
@@ -80,13 +81,11 @@ namespace trview
                                 on_filter_items_to_tile(windows->create("Items"));
                             }
 
-                            int x = 0;
                             for (const auto& window : windows->windows("Items"))
                             {
                                 if (auto actual_window = window.lock())
                                 {
-                                    if (ImGui::MenuItem(std::format("Items {}", x++).c_str()))
-                                    // if (ImGui::MenuItem(actual_window->name().c_str()))
+                                    if (ImGui::MenuItem(actual_window->title().c_str()))
                                     {
                                         on_filter_items_to_tile(window);
                                     }

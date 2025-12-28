@@ -46,6 +46,7 @@ namespace trview
         void receive_message(const Message& message) override;
         void initialise();
         std::string type() const override;
+        std::string title() const override;
     private:
         bool render_camera_sink_window();
         void set_sync(bool value);

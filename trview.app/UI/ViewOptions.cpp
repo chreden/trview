@@ -31,13 +31,11 @@ namespace trview
                             }
                         }
 
-                        int x = 0;
                         for (const auto& window : windows_ptr->windows("Rooms"))
                         {
                             if (auto actual_window = window.lock())
                             {
-                                // if (ImGui::MenuItem("->name().c_str()))
-                                if (ImGui::MenuItem(std::format("Rooms {}", x++).c_str()))
+                                if (ImGui::MenuItem(actual_window->title().c_str()))
                                 {
                                     actual_window->receive_message(
                                         Message{ .type = "room_filters", .data = std::make_shared<MessageData<std::vector<Filters<IRoom>::Filter>>>(filters) });

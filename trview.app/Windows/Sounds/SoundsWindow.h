@@ -44,6 +44,7 @@ namespace trview
         void receive_message(const Message& message) override;
         void initialise();
         std::string type() const override;
+        std::string title() const override;
     private:
         bool render_sounds_window();
         void render_sound_sources_list();

@@ -250,4 +250,9 @@ namespace trview
     {
         return "Console";
     }
+
+    std::string Console::title() const
+    {
+        return _id;
+    }
 }

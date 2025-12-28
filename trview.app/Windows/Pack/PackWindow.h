@@ -18,6 +18,7 @@ namespace trview
         void initialise();
         void receive_message(const Message& message) override;
         std::string type() const override;
+        std::string title() const override;
     private:
         bool render_pack_window();
 

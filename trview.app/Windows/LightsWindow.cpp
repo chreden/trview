@@ -361,4 +361,9 @@ namespace trview
     {
         return "Lights";
     }
+
+    std::string LightsWindow::title() const
+    {
+        return _id;
+    }
 }

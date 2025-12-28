@@ -658,4 +658,9 @@ namespace trview
     {
         return "Triggers";
     }
+
+    std::string TriggersWindow::title() const
+    {
+        return _id;
+    }
 }

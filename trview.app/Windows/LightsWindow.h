@@ -40,6 +40,7 @@ namespace trview
         void receive_message(const Message& message) override;
         void initialise();
         std::string type() const override;
+        std::string title() const override;
     private:
         void set_sync_light(bool value);
         void set_local_selected_light(const std::weak_ptr<ILight>& light);

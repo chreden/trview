@@ -66,6 +66,7 @@ namespace trview
 
         void receive_message(const Message& message) override;
         std::string type() const override;
+        std::string title() const override;
     private:
         struct LoadOperation
         {

@@ -48,4 +48,9 @@ namespace trview
     void AboutWindow::receive_message(const Message&)
     {
     }
+
+    std::string AboutWindow::title() const
+    {
+        return _id;
+    }
 }

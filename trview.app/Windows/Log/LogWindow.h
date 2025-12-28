@@ -24,6 +24,7 @@ namespace trview
         void set_number(int32_t number) override;
         std::string type() const override;
         void receive_message(const Message&) override;
+        std::string title() const override;
     private:
         bool render_log_window();
         void save_to_file(const std::vector<LogMessage>& messages, int level_offset);

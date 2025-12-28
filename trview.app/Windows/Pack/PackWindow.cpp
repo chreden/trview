@@ -115,5 +115,10 @@ namespace trview
     {
         return "Pack";
     }
+
+    std::string PackWindow::title() const
+    {
+        return _id;
+    }
 }
 

@@ -146,4 +146,9 @@ namespace trview
     {
         return "Plugins";
     }
+
+    std::string PluginsWindow::title() const
+    {
+        return _id;
+    }
 }

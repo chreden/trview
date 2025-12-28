@@ -513,4 +513,9 @@ namespace trview
     {
         return "Items";
     }
+
+    std::string ItemsWindow::title() const
+    {
+        return _id;
+    }
 }

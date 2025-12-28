@@ -273,4 +273,9 @@ namespace trview
     {
         return "Statics";
     }
+
+    std::string StaticsWindow::title() const
+    {
+        return _id;
+    }
 }

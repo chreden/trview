@@ -369,4 +369,9 @@ namespace trview
     {
         return "Sounds";
     }
+
+    std::string SoundsWindow::title() const
+    {
+        return _id;
+    }
 }

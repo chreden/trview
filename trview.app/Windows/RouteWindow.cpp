@@ -698,4 +698,9 @@ namespace trview
     {
         return "Route";
     }
+
+    std::string RouteWindow::title() const
+    {
+        return _id;
+    }
 }

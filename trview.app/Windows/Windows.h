@@ -44,7 +44,6 @@ namespace trview
         IWindow::Source _camera_sink_window_source;
         IWindow::Source _console_window_source;
         IWindow::Source _diff_window_source;
-        IWindow::Source _items_window_source;
         IWindow::Source _lights_window_source;
         IWindow::Source _log_window_source;
         IWindow::Source _pack_window_source;

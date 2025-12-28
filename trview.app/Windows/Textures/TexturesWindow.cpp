@@ -84,4 +84,9 @@ namespace trview
     {
         return "Textures";
     }
+
+    std::string TexturesWindow::title() const
+    {
+        return _id;
+    }
 }
