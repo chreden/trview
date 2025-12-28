@@ -16,7 +16,7 @@
 
 namespace trview
 {
-    class RoomsWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class RoomsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

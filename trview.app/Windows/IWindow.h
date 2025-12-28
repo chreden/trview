@@ -1,12 +1,13 @@
 #pragma once
 
 #include <trview.common/Event.h>
+#include <trview.common/Messages/IRecipient.h>
 #include <string>
 #include <cstdint>
 
 namespace trview
 {
-    struct IWindow
+    struct IWindow : public IRecipient
     {
         using Source = std::function<std::shared_ptr<IWindow>()>;
 

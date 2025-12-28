@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include <trview.common/Windows/IShortcuts.h>
 
 #include "IWindows.h"
@@ -13,6 +14,8 @@ namespace trview
     class Windows final : public IWindows, public WindowManager<IWindow>, public MessageHandler
     {
     public:
+        using Creator = std::function<std::shared_ptr<IWindow>()>;
+
         explicit Windows(
             const Window& window,
             const IWindow::Source& about_window_source,
@@ -32,11 +35,14 @@ namespace trview
             const IWindow::Source& triggers_window_source,
             const std::shared_ptr<IShortcuts>& shortcuts);
         virtual ~Windows() = default;
+        std::weak_ptr<IWindow> create(const std::string& type) override;
         void update(float elapsed) override;
         std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void render() override;
         void setup(const UserSettings& settings) override;
+        std::vector<std::weak_ptr<IWindow>> windows(const std::string& type) const override;
     private:
+        std::unordered_map<std::string, Creator> _creators;
         IWindow::Source _about_window_source;
         IWindow::Source _camera_sink_window_source;
         IWindow::Source _console_window_source;

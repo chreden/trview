@@ -1,6 +1,9 @@
 #include "ViewOptions.h"
 #include "../Windows/IViewer.h"
 #include "../Filters/Filters.h"
+#include "../Windows/IWindows.h"
+#include "../Windows/IWindow.h"
+#include <trview.common/Messages/Message.h>
 
 namespace trview
 {
@@ -17,30 +20,32 @@ namespace trview
                     windows;
                     filters;
 
-                    // TODO: Restore this
-                    /*
-                    if (auto rooms_windows = rooms_window_manager.lock())
+                    if (auto windows_ptr = windows.lock())
                     {
                         if (ImGui::MenuItem("New Window"))
                         {
-                            if (const auto new_window = rooms_windows->create_window().lock())
+                            if (const auto new_window = windows_ptr->create("Rooms").lock())
                             {
-                                new_window->set_filters(filters);
+                                new_window->receive_message(
+                                    Message{ .type = "room_filters", .data = std::make_shared<MessageData<std::vector<Filters<IRoom>::Filter>>>(filters) });
                             }
                         }
 
-                        for (const auto& window : rooms_windows->windows())
+                        int x = 0;
+                        for (const auto& window : windows_ptr->windows("Rooms"))
                         {
                             if (auto actual_window = window.lock())
                             {
-                                if (ImGui::MenuItem(actual_window->name().c_str()))
+                                // if (ImGui::MenuItem("->name().c_str()))
+                                if (ImGui::MenuItem(std::format("Rooms {}", x++).c_str()))
                                 {
-                                    actual_window->set_filters(filters);
+                                    actual_window->receive_message(
+                                        Message{ .type = "room_filters", .data = std::make_shared<MessageData<std::vector<Filters<IRoom>::Filter>>>(filters) });
+                                    // actual_window->set_filters(filters);
                                 }
                             }
                         }
                     }
-                    */
                     ImGui::EndMenu();
                 }
                 ImGui::EndPopup();

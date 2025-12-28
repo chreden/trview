@@ -9,7 +9,7 @@
 
 namespace trview
 {
-    class PluginsWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class PluginsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

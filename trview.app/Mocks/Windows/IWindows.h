@@ -13,6 +13,7 @@ namespace trview
             MOCK_METHOD(void, update, (float), (override));
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, setup, (const UserSettings&), (override));
+            MOCK_METHOD(std::vector<std::weak_ptr<IWindow>>, windows, (const std::string&), (const, override));
         };
     }
 }

@@ -13,7 +13,7 @@
 
 namespace trview
 {
-    class DiffWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class DiffWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

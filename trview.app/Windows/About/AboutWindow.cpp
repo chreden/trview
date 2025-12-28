@@ -44,4 +44,8 @@ namespace trview
     {
         return "About";
     }
+
+    void AboutWindow::receive_message(const Message&)
+    {
+    }
 }

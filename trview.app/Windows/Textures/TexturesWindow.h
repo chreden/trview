@@ -6,7 +6,7 @@
 
 namespace trview
 {
-    class TexturesWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class TexturesWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

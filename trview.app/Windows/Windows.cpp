@@ -1,7 +1,7 @@
 #include "Windows.h"
 #include "Settings/UserSettings.h"
-
 #include "../Resources/resource.h"
+#include "IWindow.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -139,6 +139,16 @@ namespace trview
         return {};
     }
 
+    std::weak_ptr<IWindow> Windows::create(const std::string& type)
+    {
+        const auto creator = _creators.find(type);
+        if (creator == _creators.end())
+        {
+            return {};
+        }
+        return add_window(creator->second());
+    }
+
     void Windows::update(float elapsed)
     {
         WindowManager<IWindow>::update(elapsed);
@@ -180,5 +190,18 @@ namespace trview
         {
             add_window(_triggers_window_source());
         }
+    }
+
+    std::vector<std::weak_ptr<IWindow>> Windows::windows(const std::string& type) const
+    {
+        std::vector<std::weak_ptr<IWindow>> results;
+        for (const auto& window : _windows)
+        {
+            if (window.second->type() == type)
+            {
+                results.push_back(window.second);
+            }
+        }
+        return results;
     }
 }

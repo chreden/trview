@@ -17,7 +17,7 @@
 namespace trview
 {
     /// Used to show and filter the items in the level.
-    class ItemsWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class ItemsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

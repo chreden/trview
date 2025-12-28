@@ -149,5 +149,9 @@ namespace trview
     {
         return "Log";
     }
+
+    void LogWindow::receive_message(const Message&)
+    {
+    }
 }
 

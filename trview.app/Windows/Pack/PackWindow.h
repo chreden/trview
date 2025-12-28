@@ -6,7 +6,7 @@
 
 namespace trview
 {
-    class PackWindow final : public IWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class PackWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         explicit PackWindow(const std::shared_ptr<IFiles>& files, const std::shared_ptr<IDialogs>& dialogs, const std::weak_ptr<IMessageSystem>& messaging);
