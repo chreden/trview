@@ -498,25 +498,22 @@ namespace trview
                 return pack_window;
             };
 
-        auto windows = std::make_shared<Windows>(
-            window,
-            about_window_source,
-            camera_sink_window_source,
-            console_source,
-            diff_window_source,
-            lights_window_source,
-            log_window_source,
-            pack_window_source,
-            plugins_window_source,
-            route_window_source,
-            sounds_window_source,
-            statics_window_source,
-            textures_window_source,
-            triggers_window_source,
-            shortcuts);
-
+        auto windows = std::make_shared<Windows>(window, shortcuts);
+        windows->register_window("About", about_window_source);
+        windows->register_window("CameraSink", camera_sink_window_source);
+        windows->register_window("Console", console_source);
+        windows->register_window("Diff", diff_window_source);
         windows->register_window("Items", items_window_source);
+        windows->register_window("Lights", lights_window_source);
+        windows->register_window("Log", log_window_source);
+        windows->register_window("Pack", pack_window_source);
+        windows->register_window("Plugins", plugins_window_source);
         windows->register_window("Rooms", rooms_window_source);
+        windows->register_window("Route", route_window_source);
+        windows->register_window("Sounds", sounds_window_source);
+        windows->register_window("Statics", statics_window_source);
+        windows->register_window("Textures", textures_window_source);
+        windows->register_window("Triggers", triggers_window_source);
 
         auto viewer_ui = std::make_shared<ViewerUI>(
             window,

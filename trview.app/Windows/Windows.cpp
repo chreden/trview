@@ -15,39 +15,20 @@ namespace trview
     {
     }
 
-    Windows::Windows(
-        const Window& window,
-        const IWindow::Source& about_window_source,
-        const IWindow::Source& camera_sink_window_source,
-        const IWindow::Source& console_window_source,
-        const IWindow::Source& diff_window_source,
-        const IWindow::Source& lights_window_source,
-        const IWindow::Source& log_window_source,
-        const IWindow::Source& pack_window_source,
-        const IWindow::Source& plugins_window_source,
-        const IWindow::Source& route_window_source,
-        const IWindow::Source& sounds_window_source,
-        const IWindow::Source& statics_window_source,
-        const IWindow::Source& textures_window_source,
-        const IWindow::Source& triggers_window_source,
-        const std::shared_ptr<IShortcuts>& shortcuts)
-        : MessageHandler(window),
-        _about_window_source(about_window_source), _camera_sink_window_source(camera_sink_window_source), _console_window_source(console_window_source),
-        _diff_window_source(diff_window_source), _lights_window_source(lights_window_source),
-        _log_window_source(log_window_source), _plugins_window_source(plugins_window_source), _route_window_source(route_window_source), _sounds_window_source(sounds_window_source), _statics_window_source(statics_window_source),
-        _textures_window_source(textures_window_source), _triggers_window_source(triggers_window_source), _pack_window_source(pack_window_source)
+    Windows::Windows(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts)
+        : MessageHandler(window)
     {
         // TODO: Maybe move somewhere else:
-        _token_store += shortcuts->add_shortcut(false, VK_F11) += [&]() { add_window(_console_window_source()); };
-        _token_store += shortcuts->add_shortcut(true, 'D') += [&]() { add_window(_diff_window_source()); };
+        _token_store += shortcuts->add_shortcut(false, VK_F11) += [&]() { create("Console"); };
+        _token_store += shortcuts->add_shortcut(true, 'D') += [&]() { create("Diff"); };
         _token_store += shortcuts->add_shortcut(true, 'I') += [&]() { create("Items"); };
-        _token_store += shortcuts->add_shortcut(true, 'K') += [&]() { add_window(_camera_sink_window_source()); };
-        _token_store += shortcuts->add_shortcut(true, 'L') += [&]() { add_window(_lights_window_source()); };
+        _token_store += shortcuts->add_shortcut(true, 'K') += [&]() { create("CameraSink"); };
+        _token_store += shortcuts->add_shortcut(true, 'L') += [&]() { create("Lights"); };
         _token_store += shortcuts->add_shortcut(true, 'M') += [&]() { create("Rooms"); };
-        _token_store += shortcuts->add_shortcut(true, 'P') += [&]() { add_window(_plugins_window_source()); };
-        _token_store += shortcuts->add_shortcut(true, 'R') += [&]() { add_window(_route_window_source()); };
-        _token_store += shortcuts->add_shortcut(true, 'S') += [&]() { add_window(_statics_window_source()); };
-        _token_store += shortcuts->add_shortcut(true, 'T') += [&]() { add_window(_triggers_window_source()); };
+        _token_store += shortcuts->add_shortcut(true, 'P') += [&]() { create("Plugins"); };
+        _token_store += shortcuts->add_shortcut(true, 'R') += [&]() { create("Route"); };
+        _token_store += shortcuts->add_shortcut(true, 'S') += [&]() { create("Sounds"); };
+        _token_store += shortcuts->add_shortcut(true, 'T') += [&]() { create("Triggers"); };
     }
 
     std::optional<int> Windows::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -58,22 +39,22 @@ namespace trview
             {
                 case IDM_ABOUT:
                 {
-                    add_window(_about_window_source());
+                    create("About");
                     break;
                 }
                 case ID_WINDOWS_CAMERA_SINK:
                 {
-                    add_window(_camera_sink_window_source());
+                    create("CameraSink");
                     break;
                 }
                 case ID_WINDOWS_CONSOLE:
                 {
-                    add_window(_console_window_source());
+                    create("Console");
                     break;
                 }
                 case ID_WINDOWS_DIFF:
                 {
-                    add_window(_diff_window_source());
+                    create("Diff");
                     break;
                 }
                 case ID_WINDOWS_ITEMS:
@@ -83,22 +64,22 @@ namespace trview
                 }
                 case ID_WINDOWS_LIGHTS:
                 {
-                    add_window(_lights_window_source());
+                    create("Lights");
                     break;
                 }
                 case ID_WINDOWS_LOG:
                 {
-                    add_window(_log_window_source());
+                    create("Log");
                     break;
                 }
                 case ID_WINDOWS_PACK:
                 {
-                    add_window(_pack_window_source());
+                    create("Pack");
                     break;
                 }
                 case ID_WINDOWS_PLUGINS:
                 {
-                    add_window(_plugins_window_source());
+                    create("Plugins");
                     break;
                 }
                 case ID_WINDOWS_ROOMS:
@@ -108,27 +89,27 @@ namespace trview
                 }
                 case ID_WINDOWS_ROUTE:
                 {
-                    add_window(_route_window_source());
+                    create("Route");
                     break;
                 }
                 case ID_WINDOWS_SOUNDS:
                 {
-                    add_window(_sounds_window_source());
+                    create("Sounds");
                     break;
                 }
                 case ID_WINDOWS_STATICS:
                 {
-                    add_window(_statics_window_source());
+                    create("Statics");
                     break;
                 }
                 case ID_WINDOWS_TEXTURES:
                 {
-                    add_window(_textures_window_source());
+                    create("Textures");
                     break;
                 }
                 case ID_WINDOWS_TRIGGERS:
                 {
-                    add_window(_triggers_window_source());
+                    create("Triggers");
                     break;
                 }
             }
@@ -165,7 +146,7 @@ namespace trview
     {
         if (settings.camera_sink_startup)
         {
-            add_window(_camera_sink_window_source());
+            create("CameraSink");
         }
 
         if (settings.items_startup)
@@ -180,17 +161,17 @@ namespace trview
 
         if (settings.route_startup)
         {
-            add_window(_route_window_source());
+            create("Sounds");
         }
 
         if (settings.statics_startup)
         {
-            add_window(_statics_window_source());
+            create("Statics");
         }
 
         if (settings.triggers_startup)
         {
-            add_window(_triggers_window_source());
+            create("Textures");
         }
     }
 
