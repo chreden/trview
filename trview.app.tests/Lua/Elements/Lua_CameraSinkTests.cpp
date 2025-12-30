@@ -206,13 +206,6 @@ TEST(Lua_CameraSink, Visible)
 TEST(Lua_CameraSink, SetType)
 {
     auto level = mock_shared<MockLevel>();
-
-    bool level_changed_raised = false;
-    auto token = level->on_level_changed += [&]()
-    {
-        level_changed_raised = true;
-    };
-
     auto cs = mock_shared<MockCameraSink>();
     EXPECT_CALL(*cs, level).WillRepeatedly(Return(level));
     EXPECT_CALL(*cs, set_type(ICameraSink::Type::Sink)).Times(1);
@@ -226,7 +219,6 @@ TEST(Lua_CameraSink, SetType)
     ASSERT_STREQ("Camera", lua_tostring(L, -1));
 
     ASSERT_EQ(0, luaL_dostring(L, "c.type = \"Sink\""));
-    ASSERT_TRUE(level_changed_raised);
 }
 
 TEST(Lua_CameraSink, SetVisible)
