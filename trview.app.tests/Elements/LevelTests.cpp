@@ -366,17 +366,6 @@ TEST(Level, BoundingBoxesRenderedWhenEnabled)
     level->render(camera, false);
 }
 
-TEST(Level, SetShowBoundingBoxesRaisesLevelChangedEvent)
-{
-    auto level = register_test_module().build();
-
-    uint32_t times_called = 0;
-    auto token = level->on_level_changed += [&](auto&&...) { ++times_called; };
-
-    level->set_show_bounding_boxes(true);
-    ASSERT_EQ(times_called, 1u);
-}
-
 TEST(Level, ItemsNotRenderedWhenDisabled)
 {
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
@@ -713,17 +702,6 @@ TEST(Level, MeshSetBuilt)
     ASSERT_FALSE(level->has_model(123));
 }
 
-TEST(Level, SetShowRoomsRaisesLevelChangedEvent)
-{
-    auto level = register_test_module().build();
-
-    uint32_t times_called = 0;
-    auto token = level->on_level_changed += [&](auto&&...) { ++times_called; };
-
-    level->set_show_rooms(true);
-    ASSERT_EQ(times_called, 1u);
-}
-
 TEST(Level, CameraSinksNotRenderedWhenDisabled)
 {
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
@@ -790,17 +768,6 @@ TEST(Level, CameraSinksRenderedWhenEnabled)
     level->render(camera, false);
 }
 
-TEST(Level, SetShowLightingRaisesLevelChangedEvent)
-{
-    auto level = register_test_module().build();
-
-    uint32_t times_called = 0;
-    auto token = level->on_level_changed += [&](auto&&...) { ++times_called; };
-
-    level->set_show_lighting(true);
-    ASSERT_EQ(times_called, 1u);
-}
-
 TEST(Level, SkidooGenerated)
 {
     const tr2_entity driver { .TypeID = 52 };
@@ -824,41 +791,6 @@ TEST(Level, SkidooGenerated)
     ASSERT_EQ(entities.size(), 2);
     ASSERT_EQ(entities[0].TypeID, 52);
     ASSERT_EQ(entities[1].TypeID, 51);
-}
-
-TEST(Level, StaticMeshChangingRaisesLevelChangedEvent)
-{
-    auto static_mesh = mock_shared<MockStaticMesh>();
-
-    auto room = mock_shared<MockRoom>();
-    ON_CALL(*room, static_meshes).WillByDefault(Return(std::vector<std::weak_ptr<IStaticMesh>>{ static_mesh }));
-
-    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
-    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
-
-    auto level = register_test_module().with_level(std::move(mock_level_ptr))
-        .with_room_source(
-            [&](auto&&...)
-            {
-                return room;
-            }).build();
-
-    uint32_t times_called = 0;
-    auto token = level->on_level_changed += [&](auto&&...) { ++times_called; };
-
-    static_mesh->on_changed();
-    ASSERT_EQ(times_called, 1u);
-}
-
-TEST(Level, SetShowSoundSourcesRaisesLevelChangedEvent)
-{
-    auto level = register_test_module().build();
-
-    bool raised = false;
-    auto token = level->on_level_changed += capture_called(raised);
-
-    level->set_show_sound_sources(true);
-    ASSERT_EQ(raised, true);
 }
 
 TEST(Level, RoomNotUpdatedIfAnimationsDisabled)

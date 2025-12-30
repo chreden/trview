@@ -162,9 +162,6 @@ namespace trview
         Event<bool> on_alternate_mode_selected;
         /// Event raised when the level needs to change the alternate group mode.
         Event<uint16_t, bool> on_alternate_group_selected;
-        /// Event raised when something has changed in the appearance of the level or the
-        /// items that are contained within.
-        Event<> on_level_changed;
         mutable Event<> on_geometry_colours_changed;
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
         Event<bool> on_ng_plus;

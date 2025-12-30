@@ -230,7 +230,6 @@ namespace trview
 
         regenerate_neighbours();
         _regenerate_transparency = true;
-        on_level_changed();
     }
 
     bool Level::highlight_mode_enabled(RoomHighlightMode mode) const
@@ -266,7 +265,6 @@ namespace trview
             }
         }
 
-        on_level_changed();
         on_room_selected(room);
     }
 
@@ -276,7 +274,6 @@ namespace trview
         if (_selected_item.lock() != selected_item)
         {
             _selected_item = selected_item;
-            on_level_changed();
             on_item_selected(_selected_item);
         }
     }
@@ -285,7 +282,6 @@ namespace trview
     {
         _neighbour_depth = depth;
         regenerate_neighbours();
-        on_level_changed();
     }
 
     trlevel::Platform Level::platform() const
@@ -933,7 +929,6 @@ namespace trview
             }
         }
 
-        on_level_changed();
         on_alternate_mode_selected(enabled);
     }
 
@@ -959,8 +954,6 @@ namespace trview
                 on_room_selected(level->room(current_room->alternate_room()));
             }
         }
-
-        on_level_changed();
     }
 
     bool Level::alternate_group(uint32_t group) const
@@ -1000,14 +993,12 @@ namespace trview
     {
         _render_filters = set_flag(_render_filters, RenderFilter::Triggers, show);
         _regenerate_transparency = true;
-        on_level_changed();
     }
 
     void Level::set_show_geometry(bool show)
     {
         _render_filters = set_flag(_render_filters, RenderFilter::AllGeometry, show);
         _regenerate_transparency = true;
-        on_level_changed();
     }
 
     bool Level::show_geometry() const
@@ -1019,49 +1010,42 @@ namespace trview
     {
         _render_filters = set_flag(_render_filters, RenderFilter::Water, show);
         _regenerate_transparency = true;
-        on_level_changed();
     }
 
     void Level::set_show_wireframe(bool show)
     {
         _show_wireframe = show;
         _regenerate_transparency = true;
-        on_level_changed();
     }
 
     void Level::set_show_bounding_boxes(bool show)
     {
         _render_filters = set_flag(_render_filters, RenderFilter::BoundingBoxes, show);
         _regenerate_transparency = true;
-        on_level_changed();
     }
 
     void Level::set_show_lighting(bool show)
     {
         _render_filters = set_flag(_render_filters, RenderFilter::Lighting, show);
         _regenerate_transparency = true;
-        on_level_changed();
     }
 
     void Level::set_show_lights(bool show)
     {
         _render_filters = set_flag(_render_filters, RenderFilter::Lights, show);
         _regenerate_transparency = true;
-        on_level_changed();
     }
 
     void Level::set_show_items(bool show)
     {
         _render_filters = set_flag(_render_filters, RenderFilter::Entities, show);
         _regenerate_transparency = true;
-        on_level_changed();
     }
 
     void Level::set_show_rooms(bool show)
     {
         _render_filters = set_flag(_render_filters, RenderFilter::Rooms, show);
         _regenerate_transparency = true;
-        on_level_changed();
     }
 
     bool Level::show_triggers() const
@@ -1090,7 +1074,6 @@ namespace trview
         if (_selected_trigger.lock() != selected_trigger)
         {
             _selected_trigger = selected_trigger;
-            on_level_changed();
             on_trigger_selected(_selected_trigger);
         }
     }
@@ -1098,19 +1081,16 @@ namespace trview
     void Level::set_selected_light(uint32_t number)
     {
         _selected_light = _lights[number];
-        on_level_changed();
     }
 
     void Level::set_selected_camera_sink(uint32_t number)
     {
         _selected_camera_sink = _camera_sinks[number];
-        on_level_changed();
     }
 
     void Level::set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& node)
     {
         _selected_flyby_node = node;
-        on_level_changed();
     }
 
     std::shared_ptr<ILevelTextureStorage> Level::texture_storage() const
@@ -1424,7 +1404,6 @@ namespace trview
     {
         _render_filters = set_flag(_render_filters, RenderFilter::CameraSinks, show);
         _regenerate_transparency = true;
-        on_level_changed();
     }
 
     std::optional<uint32_t> Level::selected_camera_sink() const
@@ -1522,7 +1501,6 @@ namespace trview
     void Level::content_changed()
     {
         _regenerate_transparency = true;
-        on_level_changed();
     }
 
     std::weak_ptr<IStaticMesh> Level::static_mesh(uint32_t index) const
@@ -1579,7 +1557,6 @@ namespace trview
     {
         _render_filters = set_flag(_render_filters, RenderFilter::SoundSources, show);
         _regenerate_transparency = true;
-        on_level_changed();
     }
 
     bool Level::show_sound_sources() const
@@ -1616,7 +1593,6 @@ namespace trview
                     {
                         _selected_item = *alternate;
                         on_item_selected(_selected_item);
-                        on_level_changed();
                     }
                 }
             }
