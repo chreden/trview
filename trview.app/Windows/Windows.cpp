@@ -127,9 +127,28 @@ namespace trview
         return add_window(creator->second());
     }
 
+    std::weak_ptr<IWindow> Windows::add_window(const std::shared_ptr<IWindow>& window)
+    {
+        std::string type = window->type();
+        int32_t number = next_id(type);
+        window->set_number(number);
+        _token_store += window->on_window_closed += [number, this, type]()
+            {
+                _closing_windows.push_back({ type, number });
+            };
+        _windows[type][number] = window;
+        return window;
+    }
+
     void Windows::update(float elapsed)
     {
-        WindowManager<IWindow>::update(elapsed);
+        for (const auto& window_list : _windows)
+        {
+            for (auto& window : window_list.second)
+            {
+                window.second->update(elapsed);
+            }
+        }
     }
 
     void Windows::register_window(const std::string& type, const Creator& creator)
@@ -139,7 +158,23 @@ namespace trview
 
     void Windows::render()
     {
-        WindowManager<IWindow>::render();
+        if (!_closing_windows.empty())
+        {
+            for (const auto window_number : _closing_windows)
+            {
+                auto& window_list = _windows[window_number.first];
+                window_list.erase(window_number.second);
+            }
+            _closing_windows.clear();
+        }
+
+        for (const auto& window_list : _windows)
+        {
+            for (auto& window : window_list.second)
+            {
+                window.second->render();
+            }
+        }
     }
 
     void Windows::setup(const UserSettings& settings)
@@ -187,5 +222,21 @@ namespace trview
             }
         }
         return results;
+    }
+
+    int32_t Windows::next_id(const std::string& type) const
+    {
+        auto window_list = _windows.find(type);
+        if (window_list != _windows.end())
+        {
+            for (int32_t i = 1;; ++i)
+            {
+                if (window_list->second.find(i) == window_list->second.end())
+                {
+                    return i;
+                }
+            }
+        }
+        return 1;
     }
 }

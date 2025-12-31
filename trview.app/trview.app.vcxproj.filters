@@ -247,8 +247,6 @@
     <ClInclude Include="Elements\Floordata.h" Filter="Elements" />
     <ClInclude Include="Filters\Filters.h" Filter="Filters" />
     <ClInclude Include="Filters\Filters.hpp" Filter="Filters" />
-    <ClInclude Include="Windows\WindowManager.h" Filter="Windows" />
-    <ClInclude Include="Windows\WindowManager.hpp" Filter="Windows" />
     <ClInclude Include="Elements\IRoom.h" Filter="Elements\Room" />
     <ClInclude Include="Elements\Room.h" Filter="Elements\Room" />
     <ClInclude Include="Elements\RoomInfo.h" Filter="Elements\Room" />
