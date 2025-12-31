@@ -15,16 +15,16 @@ namespace
     {
         struct test_module
         {
-            std::shared_ptr<IItemsWindowManager> items_window_manager;
+            std::shared_ptr<IWindows> windows;
 
             std::unique_ptr<ContextMenu> build()
             {
-                return std::make_unique<ContextMenu>(items_window_manager);
+                return std::make_unique<ContextMenu>(windows);
             }
 
-            test_module& with_items_window_manager(const std::shared_ptr<IItemsWindowManager>& items_window_manager)
+            test_module& with_windows(const std::shared_ptr<IWindows>& windows)
             {
-                this->items_window_manager = items_window_manager;
+                this->windows = windows;
                 return *this;
             }
         };

@@ -52,6 +52,7 @@
 #include "Plugins/IPlugin.h"
 #include "Tools/IToolbar.h"
 #include "Windows/IWindows.h"
+#include "Windows/IWindow.h"
 
 namespace trview
 {
@@ -179,6 +180,9 @@ namespace trview
 
         MockWindows::MockWindows() {}
         MockWindows::~MockWindows() {}
+
+        MockWindow::MockWindow() {}
+        MockWindow::~MockWindow() {}
 
         MockScriptable::MockScriptable() {}
         MockScriptable::~MockScriptable() {}

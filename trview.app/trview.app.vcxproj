@@ -123,6 +123,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" />
     <ClInclude Include="Mocks\UI\IFonts.h" />
     <ClInclude Include="Mocks\UI\ILevelInfo.h" />
+    <ClInclude Include="Mocks\Windows\IWindow.h" />
     <ClInclude Include="Mocks\Windows\IWindows.h" />
     <ClInclude Include="Settings\FontSetting.h" />
     <ClCompile Include="trview_imgui.cpp" />

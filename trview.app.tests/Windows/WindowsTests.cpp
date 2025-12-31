@@ -10,22 +10,6 @@
 #include <trview.app/Mocks/Elements/ISoundSource.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 
-#include <trview.app/Mocks/Windows/IAboutWindowManager.h>
-#include <trview.app/Mocks/Windows/ICameraSinkWindowManager.h>
-#include <trview.app/Mocks/Windows/IConsoleManager.h>
-#include <trview.app/Mocks/Windows/IDiffWindowManager.h>
-#include <trview.app/Mocks/Windows/IItemsWindowManager.h>
-#include <trview.app/Mocks/Windows/ILightsWindowManager.h>
-#include <trview.app/Mocks/Windows/ILogWindowManager.h>
-#include <trview.app/Mocks/Windows/IRoomsWindowManager.h>
-#include <trview.app/Mocks/Windows/IRouteWindowManager.h>
-#include <trview.app/Mocks/Windows/IPluginsWindowManager.h>
-#include <trview.app/Mocks/Windows/ISoundsWindowManager.h>
-#include <trview.app/Mocks/Windows/IStaticsWindowManager.h>
-#include <trview.app/Mocks/Windows/ITexturesWindowManager.h>
-#include <trview.app/Mocks/Windows/ITriggersWindowManager.h>
-#include <trview.app/Mocks/Windows/IPackWindowManager.h>
-
 #include <trview.tests.common/Event.h>
 
 using namespace trview;
@@ -41,124 +25,9 @@ namespace
     {
         struct test_module
         {
-            std::unique_ptr<IAboutWindowManager> about_window{ mock_unique<MockAboutWindowManager>() };
-            std::unique_ptr<ICameraSinkWindowManager> camera_sinks{ mock_unique<MockCameraSinkWindowManager>() };
-            std::unique_ptr<IConsoleManager> console_manager{ mock_unique<MockConsoleManager>() };
-            std::unique_ptr<IDiffWindowManager> diffs{ mock_unique<MockDiffWindowManager>() };
-            std::shared_ptr<IItemsWindowManager> items{ mock_shared<MockItemsWindowManager>() };
-            std::unique_ptr<ILogWindowManager> log{ mock_unique<MockLogWindowManager>() };
-            std::unique_ptr<ILightsWindowManager> lights{ mock_unique<MockLightsWindowManager>() };
-            std::unique_ptr<IPackWindowManager> pack{ mock_unique<MockPackWindowManager>() };
-            std::unique_ptr<IPluginsWindowManager> plugins{ mock_unique<MockPluginsWindowManager>() };
-            std::unique_ptr<IRoomsWindowManager> rooms{ mock_unique<MockRoomsWindowManager>() };
-            std::unique_ptr<IRouteWindowManager> route{ mock_unique<MockRouteWindowManager>() };
-            std::unique_ptr<ISoundsWindowManager> sounds{ mock_unique<MockSoundsWindowManager>() };
-            std::unique_ptr<IStaticsWindowManager> statics{ mock_unique<MockStaticsWindowManager>() };
-            std::unique_ptr<ITexturesWindowManager> textures{ mock_unique<MockTexturesWindowManager>() };
-            std::unique_ptr<ITriggersWindowManager> triggers{ mock_unique<MockTriggersWindowManager>() };
-
             std::unique_ptr<trview::Windows> build()
             {
-                return std::make_unique<trview::Windows>(
-                    std::move(about_window),
-                    std::move(camera_sinks),
-                    std::move(console_manager),
-                    std::move(diffs),
-                    items,
-                    std::move(lights),
-                    std::move(log),
-                    std::move(pack),
-                    std::move(plugins),
-                    std::move(rooms),
-                    std::move(route),
-                    std::move(sounds),
-                    std::move(statics),
-                    std::move(textures),
-                    std::move(triggers));
-            }
-
-            test_module& with_camera_sinks(std::unique_ptr<ICameraSinkWindowManager> manager)
-            {
-                camera_sinks = std::move(manager);
-                return *this;
-            }
-
-            test_module& with_console(std::unique_ptr<IConsoleManager> manager)
-            {
-                console_manager = std::move(manager);
-                return *this;
-            }
-
-            test_module& with_diffs(std::unique_ptr<IDiffWindowManager> manager)
-            {
-                diffs = std::move(manager);
-                return *this;
-            }
-
-            test_module& with_items(std::unique_ptr<IItemsWindowManager> manager)
-            {
-                items = std::move(manager);
-                return *this;
-            }
-
-            test_module& with_lights(std::unique_ptr<ILightsWindowManager> manager)
-            {
-                lights = std::move(manager);
-                return *this;
-            }
-
-            test_module& with_log(std::unique_ptr<ILogWindowManager> manager)
-            {
-                log = std::move(manager);
-                return *this;
-            }
-
-            test_module& with_packs(std::unique_ptr<IPackWindowManager> manager)
-            {
-                pack = std::move(manager);
-                return *this;
-            }
-
-            test_module& with_plugins(std::unique_ptr<IPluginsWindowManager> manager)
-            {
-                plugins = std::move(manager);
-                return *this;
-            }
-
-            test_module& with_rooms(std::unique_ptr<IRoomsWindowManager> manager)
-            {
-                rooms = std::move(manager);
-                return *this;
-            }
-
-            test_module& with_route(std::unique_ptr<IRouteWindowManager> manager)
-            {
-                route = std::move(manager);
-                return *this;
-            }
-
-            test_module& with_sounds(std::unique_ptr<ISoundsWindowManager> manager)
-            {
-                sounds = std::move(manager);
-                return *this;
-            }
-
-            test_module& with_statics(std::unique_ptr<IStaticsWindowManager> manager)
-            {
-                statics = std::move(manager);
-                return *this;
-            }
-
-            test_module& with_textures(std::unique_ptr<ITexturesWindowManager> manager)
-            {
-                textures = std::move(manager);
-                return *this;
-            }
-
-            test_module& with_triggers(std::unique_ptr<ITriggersWindowManager> manager)
-            {
-                triggers = std::move(manager);
-                return *this;
+                return std::make_unique<trview::Windows>(window, shortcuts);
             }
         };
         return test_module{};

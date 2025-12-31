@@ -3,14 +3,13 @@
 #include <unordered_map>
 #include <trview.common/Windows/IShortcuts.h>
 #include <trview.common/TokenStore.h>
+#include <trview.common/MessageHandler.h>
 
 #include "IWindows.h"
 #include "IWindow.h"
 
 namespace trview
 {
-    struct IRouteWindowManager;
-
     class Windows final : public IWindows, public MessageHandler
     {
     public:
