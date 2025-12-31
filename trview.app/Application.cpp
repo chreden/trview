@@ -958,5 +958,16 @@ namespace trview
                 requester->receive_message({ .type = "route", .data = std::make_shared<MessageData<std::weak_ptr<IRoute>>>(_route) });
             }
         }
+        else if (auto level = messages::read_open_level(message))
+        {
+            const auto level_ptr = level.value().lock();
+            if (level_ptr &&
+                level_ptr->version() == trlevel::LevelVersion::Unknown &&
+                level_ptr->pack().lock() &&
+                _windows->windows("Pack").empty())
+            {
+                _windows->create("Pack");
+            }
+        }
     }
 }

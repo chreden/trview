@@ -2,6 +2,7 @@
 
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>
+#include "../Elements/Flyby/IFlybyNode.h"
 
 #include "../Graphics/LevelTextureStorage.h"
 #include "../Camera/ICamera.h"
@@ -95,6 +96,13 @@ namespace trview
             {
                 add_ladder_down(sector, sector->flags() & SectorFlag::Climbable);
             }
+        }
+
+        template <typename T>
+        bool is_matching_level(const std::shared_ptr<T>& element, const ILevel* const level)
+        {
+            const auto level_ptr = element->level().lock();
+            return level_ptr && level_ptr.get() == level;
         }
     }
 
@@ -245,7 +253,8 @@ namespace trview
     void Level::set_selected_room(const std::weak_ptr<IRoom>& room)
     { 
         const auto room_ptr = room.lock();
-        if (_selected_room.lock() == room_ptr)
+        if (_selected_room.lock() == room_ptr ||
+            !is_matching_level(room_ptr, this))
         {
             return;
         }
@@ -269,7 +278,7 @@ namespace trview
     void Level::set_selected_item(const std::weak_ptr<IItem>& item)
     {
         const auto selected_item = item.lock();
-        if (_selected_item.lock() != selected_item)
+        if (_selected_item.lock() != selected_item && is_matching_level(selected_item, this))
         {
             sync_room(selected_item);
             _selected_item = selected_item;
@@ -1074,7 +1083,7 @@ namespace trview
     void Level::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
         const auto selected_trigger = trigger.lock();
-        if (_selected_trigger.lock() != selected_trigger)
+        if (_selected_trigger.lock() != selected_trigger && is_matching_level(selected_trigger, this))
         {
             sync_room(selected_trigger);
             _selected_trigger = selected_trigger;
@@ -1089,7 +1098,7 @@ namespace trview
     void Level::set_selected_light(const std::weak_ptr<ILight>& light)
     {
         const auto selected_light = light.lock();
-        if (_selected_light.lock() != selected_light)
+        if (_selected_light.lock() != selected_light && is_matching_level(selected_light, this))
         {
             sync_room(selected_light);
             _selected_light = light;
@@ -1098,12 +1107,18 @@ namespace trview
 
     void Level::set_selected_camera_sink(uint32_t number)
     {
-        _selected_camera_sink = _camera_sinks[number];
+        if (number <= _camera_sinks.size())
+        {
+            _selected_camera_sink = _camera_sinks[number];
+        }
     }
 
     void Level::set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& node)
     {
-        _selected_flyby_node = node;
+        if (is_matching_level(node.lock(), this))
+        {
+            _selected_flyby_node = node;
+        }
     }
 
     std::shared_ptr<ILevelTextureStorage> Level::texture_storage() const
