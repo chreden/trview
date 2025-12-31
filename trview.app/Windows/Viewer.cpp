@@ -1654,6 +1654,10 @@ namespace trview
                 }
             }
         }
+        else if (auto selected_waypoint = messages::read_select_waypoint(message))
+        {
+            select_waypoint(selected_waypoint.value());
+        }
     }
 
     void Viewer::initialise()

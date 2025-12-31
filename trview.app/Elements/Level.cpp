@@ -264,8 +264,6 @@ namespace trview
                 on_alternate_mode_selected(!_alternate_mode);
             }
         }
-
-        on_room_selected(room);
     }
 
     void Level::set_selected_item(const std::weak_ptr<IItem>& item)
@@ -275,7 +273,6 @@ namespace trview
         {
             sync_room(selected_item);
             _selected_item = selected_item;
-            on_item_selected(_selected_item);
         }
     }
 
@@ -1081,7 +1078,6 @@ namespace trview
         {
             sync_room(selected_trigger);
             _selected_trigger = selected_trigger;
-            on_trigger_selected(_selected_trigger);
         }
     }
 
@@ -1097,7 +1093,6 @@ namespace trview
         {
             sync_room(selected_light);
             _selected_light = light;
-            on_level_changed();
         }
     }
 

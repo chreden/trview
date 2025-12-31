@@ -315,6 +315,7 @@ namespace trview
     void Application::add_waypoint(const Vector3& position, const Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
     {
         uint32_t new_index = _route->insert(position, normal, room, type, index);
+        _route->select_waypoint(_route->waypoint(new_index));
         messages::send_select_waypoint(_messaging, _route->waypoint(new_index));
     }
 

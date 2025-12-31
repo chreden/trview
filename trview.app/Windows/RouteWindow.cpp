@@ -686,6 +686,10 @@ namespace trview
         {
             set_route(route.value());
         }
+        else if (auto waypoint = messages::read_select_waypoint(message))
+        {
+            select_waypoint(waypoint.value());
+        }
     }
 
     void RouteWindow::initialise()
