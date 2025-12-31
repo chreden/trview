@@ -178,9 +178,10 @@ namespace trview
     std::vector<std::weak_ptr<IWindow>> Windows::windows(const std::string& type) const
     {
         std::vector<std::weak_ptr<IWindow>> results;
-        for (const auto& window : _windows)
+        auto window_list = _windows.find(type);
+        if (window_list != _windows.end())
         {
-            if (window.second->type() == type)
+            for (auto& window : window_list->second)
             {
                 results.push_back(window.second);
             }

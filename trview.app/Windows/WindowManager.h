@@ -28,14 +28,14 @@ namespace trview
         /// <returns>The added window.</returns>
         std::weak_ptr<T> add_window(const std::shared_ptr<T>& window);
         TokenStore _token_store;
-        std::unordered_map<int32_t, std::shared_ptr<T>> _windows;
+        std::unordered_map<std::string, std::unordered_map<int32_t, std::shared_ptr<T>>> _windows;
     private:
         /// <summary>
         /// Find the next ID.
         /// </summary>
         /// <returns>The next available window number.</returns>
-        int32_t next_id() const;
-        std::vector<int32_t> _closing_windows;
+        int32_t next_id(const std::string& type) const;
+        std::vector<std::pair<std::string, int32_t>> _closing_windows;
     };
 }
 
