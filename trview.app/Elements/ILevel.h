@@ -160,7 +160,6 @@ namespace trview
         /// Event raised when the level needs to change the alternate group mode.
         Event<uint16_t, bool> on_alternate_group_selected;
         mutable Event<> on_geometry_colours_changed;
-        Event<bool> on_ng_plus;
     };
 
     /// <summary>

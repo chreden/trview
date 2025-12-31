@@ -1604,7 +1604,6 @@ namespace trview
         {
             _render_filters = set_flag(_render_filters, RenderFilter::NgPlus, show);
             messages::send_ng_plus(_messaging, show);
-            on_ng_plus(show);
 
             if (const auto selected = _selected_item.lock())
             {
