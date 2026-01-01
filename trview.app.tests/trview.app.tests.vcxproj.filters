@@ -23,7 +23,6 @@
     <ClCompile Include="Routing\ActionTests.cpp" Filter="Routing" />
     <ClCompile Include="Routing\RouteTests.cpp" Filter="Routing" />
     <ClCompile Include="UI\ViewerUITests.cpp" Filter="UI" />
-    <ClCompile Include="Windows\RouteWindowManagerTests.cpp" Filter="Windows" />
     <ClCompile Include="Routing\WaypointTests.cpp" Filter="Routing" />
     <ClCompile Include="Elements\StaticMeshTests.cpp" Filter="Elements" />
     <ClCompile Include="Settings\SettingsLoaderTests.cpp" Filter="Settings" />
