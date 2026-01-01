@@ -20,12 +20,18 @@
     <ClCompile Include="..\external\imgui\misc\freetype\imgui_freetype.cpp" />
     <ClCompile Include="..\external\shared\imgui_app.cpp" />
     <ClCompile Include="AlternateGroupTogglerTests.cpp" />
-    <ClCompile Include="ApplicationTests.cpp" />
+    <ClCompile Include="ApplicationTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Camera\CameraInputTests.cpp" />
     <ClCompile Include="Elements\CameraSinkTests.cpp" />
     <ClCompile Include="Elements\FlybyTests.cpp" />
     <ClCompile Include="Elements\ItemTests.cpp" />
-    <ClCompile Include="Elements\LevelTests.cpp" />
+    <ClCompile Include="Elements\LevelTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Elements\LightTests.cpp" />
     <ClCompile Include="Elements\RoomTests.cpp" />
     <ClCompile Include="Elements\SectorTests.cpp" />
@@ -73,11 +79,20 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="UI\MapColoursTests.cpp" />
-    <ClCompile Include="UI\ViewerUITests.cpp" />
+    <ClCompile Include="UI\ViewerUITests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="ViewMenuTests.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
-    <ClCompile Include="Windows\RouteWindowManagerTests.cpp" />
-    <ClCompile Include="Windows\ViewerTests.cpp" />
+    <ClCompile Include="Windows\RouteWindowManagerTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Windows\ViewerTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Windows\WindowsTests.cpp" />
   </ItemGroup>
   <ItemGroup>

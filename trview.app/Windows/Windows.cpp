@@ -130,7 +130,7 @@ namespace trview
     std::weak_ptr<IWindow> Windows::add_window(const std::shared_ptr<IWindow>& window)
     {
         std::string type = window->type();
-        int32_t number = next_id(type);
+        const int32_t number = next_id(type);
         window->set_number(number);
         _token_store += window->on_window_closed += [number, this, type]()
             {
@@ -196,7 +196,7 @@ namespace trview
 
         if (settings.route_startup)
         {
-            create("Sounds");
+            create("Route");
         }
 
         if (settings.statics_startup)
@@ -206,7 +206,7 @@ namespace trview
 
         if (settings.triggers_startup)
         {
-            create("Textures");
+            create("Triggers");
         }
     }
 

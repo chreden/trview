@@ -17,7 +17,7 @@ namespace
     {
         struct test_module
         {
-            Window window{ create_test_window(L"RouteWindowManagerTests") };
+            Window window{ create_test_window(L"RouteWindowManagerTests") };chrome://vivaldi-webui/startpage?section=Speed-dials&background-color=#2e2f37
             std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
             RouteWindow::Source window_source{ [](auto&&...) { return mock_shared<MockRouteWindow>(); } };
 

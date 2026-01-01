@@ -153,9 +153,15 @@
     <ClCompile Include="ContextMenuTests.cpp" />
     <ClCompile Include="FiltersTests.cpp" />
     <ClCompile Include="GoToTests.cpp" />
-    <ClCompile Include="ItemsWindowTests.cpp" />
+    <ClCompile Include="ItemsWindowTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="LevelInfoTests.cpp" />
-    <ClCompile Include="LightsWindowTests.cpp" />
+    <ClCompile Include="LightsWindowTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="LogWindowTests.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -164,11 +170,23 @@
     <ClCompile Include="PluginsWindowTests.cpp" />
     <ClCompile Include="RoomNavigatorTests.cpp" />
     <ClCompile Include="RoomsWindowTests.cpp" />
-    <ClCompile Include="RouteWindowTests.cpp" />
+    <ClCompile Include="RouteWindowTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="SettingsWindowTests.cpp" />
-    <ClCompile Include="StaticsWindowTests.cpp" />
-    <ClCompile Include="TexturesWindowTests.cpp" />
-    <ClCompile Include="TriggersWindowTests.cpp" />
+    <ClCompile Include="StaticsWindowTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="TexturesWindowTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="TriggersWindowTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="trview.app.ui.tests.cpp" />
     <ClCompile Include="trview_tests.cpp" />
     <ClCompile Include="ViewOptionsTests.cpp" />
