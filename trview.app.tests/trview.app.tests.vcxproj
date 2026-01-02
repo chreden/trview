@@ -25,10 +25,7 @@
     <ClCompile Include="Elements\CameraSinkTests.cpp" />
     <ClCompile Include="Elements\FlybyTests.cpp" />
     <ClCompile Include="Elements\ItemTests.cpp" />
-    <ClCompile Include="Elements\LevelTests.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="Elements\LevelTests.cpp" />
     <ClCompile Include="Elements\LightTests.cpp" />
     <ClCompile Include="Elements\RoomTests.cpp" />
     <ClCompile Include="Elements\SectorTests.cpp" />

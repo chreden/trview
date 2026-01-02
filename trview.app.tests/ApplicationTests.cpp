@@ -967,9 +967,7 @@ TEST(Application, RouteNewRoute)
         mock_shared<MockRoute>()
     };
 
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto application = register_test_module()
-        .with_windows(std::move(windows_ptr))
         .with_route_source([&](auto&&...) -> std::shared_ptr<IRoute>
             {
                 if (index < routes.size())
@@ -988,9 +986,7 @@ TEST(Application, RouteNewRoute)
 TEST(Application, RouteNewRandomizerRoute)
 {
     auto route = mock_shared<MockRandomizerRoute>();
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto application = register_test_module()
-        .with_windows(std::move(windows_ptr))
         .with_randomizer_route_source([&](auto&&...) { return route; })
         .build();
 
