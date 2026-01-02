@@ -15,5 +15,18 @@ namespace trview
             }
             return std::nullopt;
         }
+
+        std::optional<trview::Message> find_last_message(const std::vector<trview::Message>& messages, const std::string& type)
+        {
+            std::optional<trview::Message> result;
+            for (const auto& message : messages)
+            {
+                if (message.type == type)
+                {
+                    result = message;
+                }
+            }
+            return result;
+        }
     }
 }

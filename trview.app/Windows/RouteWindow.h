@@ -75,5 +75,6 @@ namespace trview
         bool _need_focus{ false };
         bool _show_settings{ false };
         std::weak_ptr<IMessageSystem> _messaging;
+        bool _sent_announce{ false };
     };
 }

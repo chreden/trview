@@ -20,10 +20,7 @@
     <ClCompile Include="..\external\imgui\misc\freetype\imgui_freetype.cpp" />
     <ClCompile Include="..\external\shared\imgui_app.cpp" />
     <ClCompile Include="AlternateGroupTogglerTests.cpp" />
-    <ClCompile Include="ApplicationTests.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="ApplicationTests.cpp" />
     <ClCompile Include="Camera\CameraInputTests.cpp" />
     <ClCompile Include="Elements\CameraSinkTests.cpp" />
     <ClCompile Include="Elements\FlybyTests.cpp" />

@@ -211,6 +211,16 @@ namespace trview
             send_message(messaging, route, "route");
         }
 
+        std::optional<bool> read_route_window_opened(const Message& message)
+        {
+            return read_message<bool>(message, "route_window_opened");
+        }
+
+        void send_route_window_opened(const std::weak_ptr<IMessageSystem>& messaging)
+        {
+            send_message(messaging, true, "route_window_opened");
+        }
+
         void get_selected_camera_sink(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
         {
             get_message(messaging, reply_to, "get_selected_camera_sink");

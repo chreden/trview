@@ -83,6 +83,9 @@ namespace trview
         std::optional<std::weak_ptr<IRoute>> read_route(const Message& message);
         void send_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRoute>& sector);
 
+        std::optional<bool> read_route_window_opened(const Message& message);
+        void send_route_window_opened(const std::weak_ptr<IMessageSystem>& messaging);
+
         void get_selected_camera_sink(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
         std::optional<std::weak_ptr<ICameraSink>> read_select_camera_sink(const Message& message);
         void send_select_camera_sink(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ICameraSink>& camera_sink);

@@ -97,8 +97,6 @@ namespace trview
         setup_shortcuts();
         setup_view_menu();
 
-        _token_store += _windows->on_route_window_created += [&]() { open_recent_route(); };
-
         _windows->setup(_settings);
         setup_viewer(*startup_options);
         _plugins->initialise(this);
@@ -719,9 +717,13 @@ namespace trview
                 }
             }
 
-            if (auto selected_room = old_level->selected_room().lock())
+            auto selected_room = old_level->selected_room().lock();
+            if (selected_room)
             {
-                select_room(_level->room(selected_room->number()));
+                if (const auto new_selected_room = _level->room(selected_room->number()).lock())
+                {
+                    messages::send_select_room(_messaging, new_selected_room);
+                }
             }
 
             _viewer->set_target(old_target);
@@ -944,7 +946,7 @@ namespace trview
                 set_route(_route_source(std::nullopt)); 
             }
         }
-        else if (auto route_new_randomizer = messages::commands::read_new_route(message))
+        else if (auto route_new_randomizer = messages::commands::read_new_randomizer_route(message))
         {
             if (should_discard_changes())
             {
@@ -968,6 +970,10 @@ namespace trview
             {
                 _windows->create("Pack");
             }
+        }
+        else if (auto route_window_opened = messages::read_route_window_opened(message))
+        {
+            open_recent_route();
         }
     }
 }

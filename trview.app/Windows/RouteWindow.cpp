@@ -453,6 +453,12 @@ namespace trview
 
     void RouteWindow::update(float delta)
     {
+        if (!_sent_announce)
+        {
+            messages::send_route_window_opened(_messaging);
+            _sent_announce = true;
+        }
+
         if (_tooltip_timer.has_value())
         {
             _tooltip_timer = _tooltip_timer.value() + delta;

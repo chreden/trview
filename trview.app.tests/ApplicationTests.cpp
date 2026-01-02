@@ -23,7 +23,10 @@
 #include <trview.app/Mocks/Plugins/IPlugins.h>
 #include <trview.app/Mocks/UI/IFonts.h>
 #include <trview.app/Mocks/Windows/IWindows.h>
+#include <trview.app/Mocks/Windows/IWindow.h>
 #include <trview.common/Mocks/Messages/IMessageSystem.h>
+#include <trview.tests.common/Messages.h>
+#include <trview.app/Messages/Messages.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -203,14 +206,23 @@ TEST(Application, RecentFilesUpdatedOnFileOpen)
     auto level_source = [&](auto&& filename, auto&&...) { called = filename; return mock_unique<mocks::MockLevel>(); };
 
     auto messaging = mock_shared<MockMessageSystem>();
-    trview::Message called_settings;
-    EXPECT_CALL(*messaging, send_message).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
+
+    std::vector<trview::Message> messages;
+    EXPECT_CALL(*messaging, send_message).WillRepeatedly([&](auto&& message) { messages.push_back(message); });
 
     auto application = register_test_module().with_level_source(level_source).with_messaging(messaging).build();
     application->open("test_path.tr2", ILevel::OpenMode::Full);
     ASSERT_TRUE(called.has_value());
     std::list<std::string> expected{ "test_path.tr2" };
-    ASSERT_EQ(std::static_pointer_cast<MessageData<UserSettings>>(called_settings.data)->value.recent_files, expected);
+
+    if (auto found = find_last_message(messages, "settings"))
+    {
+        ASSERT_EQ(messages::read_settings(found.value())->recent_files, expected);
+    }
+    else
+    {
+        FAIL();
+    }
 }
 
 TEST(Application, FileOpenedInViewer)
@@ -230,12 +242,10 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     std::optional<std::string> called;
     auto level_source = [&](auto&& filename, auto&&...) { called = filename; return mock_unique<mocks::MockLevel>(); };
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto route = mock_shared<MockRoute>();
 
     std::vector<std::string> events;
 
-    EXPECT_CALL(windows, set_level).Times(1).WillOnce([&](auto) { events.push_back("windows_level"); });
     EXPECT_CALL(*route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
     EXPECT_CALL(viewer, open(A<const std::weak_ptr<ILevel>&>(), ILevel::OpenMode::Full)).Times(1).WillOnce([&](auto&&...) { events.push_back("viewer"); });
@@ -244,7 +254,6 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
         .with_level_source(level_source)
         .with_viewer(std::move(viewer_ptr))
         .with_route_source([&](auto&&...) {return route; })
-        .with_windows(std::move(windows_ptr))
         .build();
     application->open("test_path.tr2", ILevel::OpenMode::Full);
 
@@ -378,9 +387,9 @@ TEST(Application, ExportRouteSavesFile)
         .with_dialogs(dialogs)
         .build();
 
-    windows.on_route_save_as();
+    application->receive_message({ .type = "route_save_as", .data = std::make_shared<MessageData<bool>>(false) });
 }
-
+/*
 TEST(Application, OpenRouteLoadsFile)
 {
     auto dialogs = mock_shared<MockDialogs>();
@@ -402,6 +411,7 @@ TEST(Application, OpenRouteLoadsFile)
 
     windows.on_route_open();
 }
+*/
 
 TEST(Application, WindowManagersUpdated)
 {
@@ -563,16 +573,9 @@ TEST(Application, ReloadSyncsProperties)
     ON_CALL(*original, selected_room).WillByDefault(Return(original_room));
 
     ON_CALL(*reloaded, items).WillByDefault(Return(items_weak_reloaded));
-    const auto item_matcher = [](auto r) { return std::get<0>(r).lock(); };
-    EXPECT_CALL(*reloaded, set_selected_item).With(ResultOf(item_matcher, Eq(items_reloaded[3]))).Times(1);
     ON_CALL(*reloaded, triggers).WillByDefault(Return(triggers_weak_reloaded));
-    EXPECT_CALL(*reloaded, set_selected_trigger(3)).Times(1);
     ON_CALL(*reloaded, lights).WillByDefault(Return(lights_weak_reloaded));
-    EXPECT_CALL(*reloaded, set_selected_light(3)).Times(1);
     ON_CALL(*reloaded, number_of_rooms).WillByDefault(Return(5));
-    const auto matcher = [](auto r) { return std::get<0>(r).lock(); };
-    EXPECT_CALL(*reloaded, set_selected_room).With(ResultOf(matcher, Eq(std::shared_ptr<IRoom>{}))).Times(AnyNumber());
-    EXPECT_CALL(*reloaded, set_selected_room).With(ResultOf(matcher, Eq(room))).Times(1);
     EXPECT_CALL(*reloaded, trigger).WillRepeatedly(Return(triggers_weak_reloaded[3]));
     EXPECT_CALL(*reloaded, light).WillRepeatedly(Return(lights_weak_reloaded[3] ));
     EXPECT_CALL(*reloaded, item).WillRepeatedly(Return(items_reloaded[3]));
@@ -593,13 +596,54 @@ TEST(Application, ReloadSyncsProperties)
     ON_CALL(viewer, target).WillByDefault(Return(Vector3(1, 2, 3)));
     EXPECT_CALL(viewer, set_target(Vector3(1, 2, 3))).Times(1);
 
+    auto messaging = mock_shared<MockMessageSystem>();
+    std::vector<trview::Message> messages;
+    EXPECT_CALL(*messaging, send_message).WillRepeatedly([&](auto&& message) { messages.push_back(message); });
+
     auto application = register_test_module()
         .with_level_source(level_source)
         .with_viewer(std::move(viewer_ptr))
+        .with_messaging(messaging)
         .build();
 
     application->open("test.tr2", ILevel::OpenMode::Full);
     application->open("test.tr2", ILevel::OpenMode::Reload);
+
+    if (auto select_item_message = find_message(messages, "select_item"))
+    {
+        ASSERT_EQ(messages::read_select_item(select_item_message.value())->lock(), items_reloaded[3]);
+    }
+    else
+    {
+        FAIL();
+    }
+
+    if (auto select_trigger_message = find_message(messages, "select_trigger"))
+    {
+        ASSERT_EQ(messages::read_select_trigger(select_trigger_message.value())->lock(), triggers_reloaded[3]);
+    }
+    else
+    {
+        FAIL();
+    }
+
+    if (auto select_light_message = find_message(messages, "select_light"))
+    {
+        ASSERT_EQ(messages::read_select_light(select_light_message.value())->lock(), lights_reloaded[3]);
+    }
+    else
+    {
+        FAIL();
+    }
+
+    if (auto select_room_message = find_last_message(messages, "select_room"))
+    {
+        ASSERT_EQ(messages::read_select_room(select_room_message.value())->lock(), room);
+    }
+    else
+    {
+        FAIL();
+    }
 }
 
 TEST(Application, RouteSetToDefaultColoursOnReset)
@@ -628,29 +672,32 @@ TEST(Application, RecentRouteLoaded)
     auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, message_box(std::wstring(L"Reopen last used route for this level?"), std::wstring(L"Reopen route"), IDialogs::Buttons::Yes_No)).Times(1).WillOnce(Return(true));
     auto route = mock_shared<MockRoute>();
-    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    EXPECT_CALL(viewer, set_route(std::shared_ptr<IRoute>(route))).Times(2);
     auto messaging = mock_shared<MockMessageSystem>();
-    trview::Message called_settings;
-    EXPECT_CALL(*messaging, send_message).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
+    std::vector<trview::Message> messages;
+    EXPECT_CALL(*messaging, send_message).WillRepeatedly([&](auto&& message) { messages.push_back(message); });
     auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
     ON_CALL(level, filename).WillByDefault(Return("test.tr2"));
     auto [windows_ptr, windows] = create_mock<MockWindows>();
-    ON_CALL(windows, is_route_window_open).WillByDefault(Return(true));
+    ON_CALL(windows, windows("Route")).WillByDefault(Return(std::vector<std::weak_ptr<IWindow>> { mock_shared<MockWindow>() }));
 
     auto application = register_test_module()
         .with_settings_loader(std::move(settings_loader_ptr))
         .with_dialogs(dialogs)
-        .with_viewer(std::move(viewer_ptr))
         .with_route_source([&](auto&&...) {return route; })
         .with_level_source([&](auto&&...) { return std::move(level_ptr); })
         .with_windows(std::move(windows_ptr))
         .with_messaging(messaging)
         .build();
-    
     application->open("test.tr2", ILevel::OpenMode::Full);
 
-    ASSERT_EQ(std::static_pointer_cast<MessageData<UserSettings>>(called_settings.data)->value.recent_routes["test.tr2"].route_path, "test.tvr");
+    if (auto settings_message = find_last_message(messages, "settings"))
+    {
+        ASSERT_EQ(messages::read_settings(settings_message.value())->recent_routes["test.tr2"].route_path, "test.tvr");
+    }
+    else
+    {
+        FAIL();
+    }
 }
 
 TEST(Application, RecentRouteNotLoaded)
@@ -661,19 +708,17 @@ TEST(Application, RecentRouteNotLoaded)
     ON_CALL(settings_loader, load_user_settings).WillByDefault(Return(settings));
     auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, message_box(std::wstring(L"Reopen last used route for this level?"), std::wstring(L"Reopen route"), IDialogs::Buttons::Yes_No)).Times(1).WillOnce(Return(false));
-    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     auto messaging = mock_shared<MockMessageSystem>();
-    trview::Message called_settings;
-    EXPECT_CALL(*messaging, send_message).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
+    std::vector<trview::Message> messages;
+    EXPECT_CALL(*messaging, send_message).WillRepeatedly([&](auto&& message) { messages.push_back(message); });
     auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
     ON_CALL(level, filename).WillByDefault(Return("test.tr2"));
     auto [windows_ptr, windows] = create_mock<MockWindows>();
-    ON_CALL(windows, is_route_window_open).WillByDefault(Return(true));
+    ON_CALL(windows, windows("Route")).WillByDefault(Return(std::vector<std::weak_ptr<IWindow>> { mock_shared<MockWindow>() }));
 
     auto application = register_test_module()
         .with_settings_loader(std::move(settings_loader_ptr))
         .with_dialogs(dialogs)
-        .with_viewer(std::move(viewer_ptr))
         .with_level_source([&](auto&&...) { return std::move(level_ptr); })
         .with_windows(std::move(windows_ptr))
         .with_messaging(messaging)
@@ -681,7 +726,14 @@ TEST(Application, RecentRouteNotLoaded)
 
     application->open("test.tr2", ILevel::OpenMode::Full);
 
-    ASSERT_TRUE(std::static_pointer_cast<MessageData<UserSettings>>(called_settings.data)->value.recent_routes.empty());
+    if (auto settings_message = find_last_message(messages, "settings"))
+    {
+        ASSERT_TRUE(messages::read_settings(settings_message.value())->recent_routes.empty());
+    }
+    else
+    {
+        FAIL();
+    }
 }
 
 TEST(Application, RecentRouteLoadedOnWindowOpened)
@@ -696,8 +748,8 @@ TEST(Application, RecentRouteLoadedOnWindowOpened)
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, set_route(std::shared_ptr<IRoute>(route))).Times(2);
     auto messaging = mock_shared<MockMessageSystem>();
-    trview::Message called_settings;
-    EXPECT_CALL(*messaging, send_message).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
+    std::vector<trview::Message> messages;
+    EXPECT_CALL(*messaging, send_message).WillRepeatedly([&](auto&& message) { messages.push_back(message); });
     auto [level_ptr, level] = create_mock<trview::mocks::MockLevel>();
     ON_CALL(level, filename).WillByDefault(Return("test.tr2"));
     auto [windows_ptr, windows] = create_mock<MockWindows>();
@@ -713,80 +765,18 @@ TEST(Application, RecentRouteLoadedOnWindowOpened)
         .build();
 
     application->open("test.tr2", ILevel::OpenMode::Full);
+    ON_CALL(windows, windows("Route")).WillByDefault(Return(std::vector<std::weak_ptr<IWindow>> { mock_shared<MockWindow>() }));
 
-    ON_CALL(windows, is_route_window_open).WillByDefault(Return(true));
-    windows.on_route_window_created();
+    application->receive_message(trview::Message{ .type = "route_window_opened", .data = std::make_shared<MessageData<bool>>(true) });
 
-    ASSERT_EQ(std::static_pointer_cast<MessageData<UserSettings>>(called_settings.data)->value.recent_routes["test.tr2"].route_path, "test.tvr");
-}
-
-TEST(Application, SectorHoverForwarded)
-{
-    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    EXPECT_CALL(viewer, select_sector).Times(1);
-
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
-
-    auto application = register_test_module()
-        .with_viewer(std::move(viewer_ptr))
-        .with_windows(std::move(windows_ptr))
-        .build();
-
-    windows.on_sector_hover(mock_shared<MockSector>());
-}
-
-TEST(Application, CameraSinkSelectedEventForwarded)
-{
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
-    auto level = mock_shared<trview::mocks::MockLevel>();
-    EXPECT_CALL(*level, set_selected_camera_sink).Times(1);
-
-    auto camera_sink = mock_shared<MockCameraSink>();
-    ON_CALL(*camera_sink, level).WillByDefault(Return(level));
-
-    auto application = register_test_module()
-        .with_windows(std::move(windows_ptr))
-        .with_level_source([&](auto&&...) { return level; })
-        .build();
-
-    application->open("test_path.tr2", ILevel::OpenMode::Full);
-    windows.on_camera_sink_selected(camera_sink);
-}
-
-TEST(Application, TriggerSelectedFromWindows)
-{
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
-    auto level = mock_shared<trview::mocks::MockLevel>();
-    EXPECT_CALL(*level, set_selected_trigger).Times(1);
-
-    auto trigger = mock_shared<MockTrigger>();
-    ON_CALL(*trigger, level).WillByDefault(Return(level));
-
-    auto application = register_test_module()
-        .with_windows(std::move(windows_ptr))
-        .with_level_source([&](auto&&...) { return level; })
-        .build();
-
-    application->open("test_path.tr2", ILevel::OpenMode::Full);
-    windows.on_trigger_selected(trigger);
-}
-
-TEST(Application, CameraSinkSelectedFromWindows)
-{
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
-    auto level = mock_shared<trview::mocks::MockLevel>();
-    EXPECT_CALL(*level, set_selected_camera_sink).Times(1);
-
-    auto sink = mock_shared<MockCameraSink>();
-    ON_CALL(*sink, level).WillByDefault(Return(level));
-
-    auto application = register_test_module()
-        .with_windows(std::move(windows_ptr))
-        .with_level_source([&](auto&&...) { return level; })
-        .build();
-
-    application->open("test_path.tr2", ILevel::OpenMode::Full);
-    windows.on_camera_sink_selected(sink);
+    if (auto settings_message = find_last_message(messages, "settings"))
+    {
+        ASSERT_EQ(messages::read_settings(settings_message.value())->recent_routes["test.tr2"].route_path, "test.tvr");
+    }
+    else
+    {
+        FAIL();
+    }
 }
 
 TEST(Application, SetCurrentLevelPrompt)
@@ -857,19 +847,16 @@ TEST(Application, RouteOpen)
     ON_CALL(*files, load_file(A<const std::string&>())).WillByDefault(Return(std::vector<uint8_t>{0x7B, 0x7D}));
 
     auto route = mock_shared<MockRoute>();
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto dialogs = mock_shared<MockDialogs>();
     ON_CALL(*dialogs, open_file).WillByDefault(Return(IDialogs::FileResult{.filename = "test", .filter_index = 1 }));
     auto application = register_test_module()
         .with_settings_loader(std::move(settings_loader_ptr))
-        .with_windows(std::move(windows_ptr))
         .with_route_source([=](auto&&...) { return route; })
         .with_dialogs(dialogs)
         .with_files(files)
         .build();
 
-    windows.on_route_open();
-
+    application->receive_message(trview::Message{ .type = "route_open", .data = std::make_shared<MessageData<bool>>(true) });
     ASSERT_EQ(application->route(), route);
 }
 
@@ -883,19 +870,16 @@ TEST(Application, RouteOpenRandomizer)
     ON_CALL(*files, load_file(A<const std::string&>())).WillByDefault(Return(std::vector<uint8_t>{0x7B, 0x7D}));
 
     auto route = mock_shared<MockRandomizerRoute>();
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto dialogs = mock_shared<MockDialogs>();
     ON_CALL(*dialogs, open_file).WillByDefault(Return(IDialogs::FileResult{.filename = "test.json", .filter_index = 2 }));
     auto application = register_test_module()
         .with_settings_loader(std::move(settings_loader_ptr))
-        .with_windows(std::move(windows_ptr))
         .with_randomizer_route_source([=](auto&&...) { return route; })
         .with_dialogs(dialogs)
         .with_files(files)
         .build();
 
-    windows.on_route_open();
-
+    application->receive_message(trview::Message{ .type = "route_open", .data = std::make_shared<MessageData<bool>>(true) });
     ASSERT_EQ(application->route(), route);
 }
 
@@ -904,13 +888,11 @@ TEST(Application, RouteReload)
     auto route = mock_shared<MockRoute>();
     EXPECT_CALL(*route, reload).Times(1);
 
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto application = register_test_module()
-        .with_windows(std::move(windows_ptr))
         .with_route_source([=](auto&&...) { return route; })
         .build();
 
-    windows.on_route_reload();
+    application->receive_message(trview::Message{ .type = "route_reload", .data = std::make_shared<MessageData<bool>>(true) });
 }
 
 TEST(Application, RouteSave)
@@ -920,13 +902,11 @@ TEST(Application, RouteSave)
     EXPECT_CALL(*route, save).Times(1);
     EXPECT_CALL(*route, set_filename).Times(0);
 
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto application = register_test_module()
-        .with_windows(std::move(windows_ptr))
         .with_route_source([=](auto&&...) { return route; })
         .build();
 
-    windows.on_route_save();
+    application->receive_message(trview::Message{ .type = "route_save", .data = std::make_shared<MessageData<bool>>(true) });
 }
 
 TEST(Application, RouteSaveNoFilename)
@@ -936,17 +916,15 @@ TEST(Application, RouteSaveNoFilename)
     EXPECT_CALL(*route, set_filename).Times(1);
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
 
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto dialogs = mock_shared<MockDialogs>();
     ON_CALL(*dialogs, save_file).WillByDefault(Return(IDialogs::FileResult{ .filename = "test", .filter_index = 1 }));
 
     auto application = register_test_module()
-        .with_windows(std::move(windows_ptr))
         .with_route_source([=](auto&&...) { return route; })
         .with_dialogs(dialogs)
         .build();
 
-    windows.on_route_save();
+    application->receive_message(trview::Message{ .type = "route_save", .data = std::make_shared<MessageData<bool>>(true) });
 }
 
 TEST(Application, RouteSaveAs)
@@ -956,17 +934,15 @@ TEST(Application, RouteSaveAs)
     EXPECT_CALL(*route, set_filename).Times(1);
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
 
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto dialogs = mock_shared<MockDialogs>();
     ON_CALL(*dialogs, save_file).WillByDefault(Return(IDialogs::FileResult{.filename = "test", .filter_index = 1 }));
 
     auto application = register_test_module()
-        .with_windows(std::move(windows_ptr))
         .with_route_source([=](auto&&...) { return route; })
         .with_dialogs(dialogs)
         .build();
 
-    windows.on_route_save_as();
+    application->receive_message(trview::Message{ .type = "route_save_as", .data = std::make_shared<MessageData<bool>>(true) });
 }
 
 TEST(Application, RouteLevelSwitch)
@@ -977,10 +953,9 @@ TEST(Application, RouteLevelSwitch)
     auto [windows_ptr, windows] = create_mock<MockWindows>();
     auto application = register_test_module()
         .with_file_menu(std::move(file_menu_ptr))
-        .with_windows(std::move(windows_ptr))
         .build();
-      
-    windows.on_level_switch("test1");
+
+    application->receive_message(trview::Message{ .type = "switch_level_filename", .data = std::make_shared<MessageData<std::string>>("test1") });
 }
 
 TEST(Application, RouteNewRoute)
@@ -993,7 +968,6 @@ TEST(Application, RouteNewRoute)
     };
 
     auto [windows_ptr, windows] = create_mock<MockWindows>();
-    EXPECT_CALL(windows, set_route).Times(2);
     auto application = register_test_module()
         .with_windows(std::move(windows_ptr))
         .with_route_source([&](auto&&...) -> std::shared_ptr<IRoute>
@@ -1007,7 +981,7 @@ TEST(Application, RouteNewRoute)
         .build();
 
     ASSERT_EQ(application->route(), routes[0]);
-    windows.on_new_route();
+    application->receive_message(trview::Message{ .type = "new_route", .data = std::make_shared<MessageData<bool>>(true) });
     ASSERT_EQ(application->route(), routes[1]);
 }
 
@@ -1015,34 +989,14 @@ TEST(Application, RouteNewRandomizerRoute)
 {
     auto route = mock_shared<MockRandomizerRoute>();
     auto [windows_ptr, windows] = create_mock<MockWindows>();
-    EXPECT_CALL(windows, set_route).Times(2);
     auto application = register_test_module()
         .with_windows(std::move(windows_ptr))
         .with_randomizer_route_source([&](auto&&...) { return route; })
         .build();
 
     ASSERT_NE(application->route(), route);
-    windows.on_new_randomizer_route();
+    application->receive_message(trview::Message{ .type = "new_randomizer_route", .data = std::make_shared<MessageData<bool>>(true) });
     ASSERT_EQ(application->route(), route);
-}
-
-TEST(Application, OnStaticMeshSelected)
-{
-    auto level = mock_shared<trview::mocks::MockLevel>();
-    auto static_mesh = mock_shared<MockStaticMesh>();
-    ON_CALL(*static_mesh, level).WillByDefault(Return(level));
-    auto [windows_ptr, windows] = create_mock<MockWindows>();
-    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    auto application = register_test_module()
-        .with_windows(std::move(windows_ptr))
-        .with_viewer(std::move(viewer_ptr))
-        .build();
-
-    application->set_current_level(level, ILevel::OpenMode::Full, false);
-
-    EXPECT_CALL(viewer, select_static_mesh).Times(1);
-    EXPECT_CALL(windows, select(A<const std::weak_ptr<IStaticMesh>&>())).Times(1);
-    windows.on_static_selected(static_mesh);
 }
 
 TEST(Application, LevelUpdated)

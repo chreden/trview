@@ -28,6 +28,5 @@ namespace trview
         virtual void render() = 0;
         virtual void setup(const UserSettings& settings) = 0;
         virtual std::vector<std::weak_ptr<IWindow>> windows(const std::string& type) const = 0;
-        Event<> on_route_window_created;
     };
 }
