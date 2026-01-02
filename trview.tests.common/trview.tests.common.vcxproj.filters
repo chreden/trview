@@ -5,8 +5,10 @@
     <ClInclude Include="Mocks.h" />
     <ClInclude Include="Mocks.hpp" />
     <ClInclude Include="Event.h" />
+    <ClInclude Include="Messages.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Messages.cpp" />
   </ItemGroup>
 </Project>
