@@ -137,7 +137,7 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_items({ std::from_range, context.items });
 
             ctx->ItemUncheck("Items 0/**/Sync");
-            ctx->ItemClick("Items 0/**/1##1");
+            ctx->ItemClick("Items 0/**/##1");
 
             IM_CHECK_EQ(called_item.has_value(), false);
         });
@@ -147,11 +147,9 @@ void register_items_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<ItemsWindowContext>();
-            auto messaging = mock_shared<MockMessageSystem>();
-            context.ptr = register_test_module().with_messaging(messaging).build();
-
-            std::optional<trview::Message> called_item;
-            EXPECT_CALL(*messaging, send_message).Times(1).WillRepeatedly(SaveArg<0>(&called_item));
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             context.items =
             {
@@ -160,9 +158,16 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             };
             context.ptr->set_items({ std::from_range, context.items });
 
-            ctx->ItemClick("Items 0/**/1##1");
+            ctx->ItemClick("Items 0/**/##1");
 
-            IM_CHECK_EQ(std::static_pointer_cast<MessageData<std::weak_ptr<IItem>>>(called_item->data)->value.lock(), context.items[1]);
+            if (const auto found = find_message(context.messages, "select_item"))
+            {
+                IM_CHECK_EQ(messages::read_select_item(found.value())->lock(), context.items[1]);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
 
             const auto from_window = context.ptr->selected_item().lock();
             IM_CHECK_EQ(from_window, context.items[1]);
@@ -173,11 +178,9 @@ void register_items_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<ItemsWindowContext>();
-            auto messaging = mock_shared<MockMessageSystem>();
-            context.ptr = register_test_module().with_messaging(messaging).build();
-
-            std::optional<trview::Message> called_item;
-            EXPECT_CALL(*messaging, send_message).Times(1).WillRepeatedly(SaveArg<0>(&called_item));
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto room_78 = mock_shared<MockRoom>()->with_number(78);
 
@@ -192,11 +195,19 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             ctx->ItemClick("Items 0/**/Track##track");
             ctx->ItemCheck("/**/Room");
             ctx->KeyPress(ImGuiKey_Escape);
-            ctx->ItemClick("Items 0/**/1##1");
+            ctx->ItemClick("Items 0/**/##1");
 
-            IM_CHECK_EQ(ctx->ItemExists("Items 0/**/0##0"), false);
-            IM_CHECK_EQ(ctx->ItemExists("Items 0/**/1##1"), true);
-            IM_CHECK_EQ(std::static_pointer_cast<MessageData<std::weak_ptr<IItem>>>(called_item->data)->value.lock(), context.items[1]);
+            IM_CHECK_EQ(ctx->ItemExists("Items 0/**/##0"), false);
+            IM_CHECK_EQ(ctx->ItemExists("Items 0/**/##1"), true);
+
+            if (const auto found = find_message(context.messages, "select_item"))
+            {
+                IM_CHECK_EQ(messages::read_select_item(found.value())->lock(), context.items[1]);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
         });
 
     test<ItemsWindowContext>(engine, "Items Window", "Items List Not Filtered When Room Set and Track Room Disabled",
@@ -204,11 +215,9 @@ void register_items_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<ItemsWindowContext>();
-            auto messaging = mock_shared<MockMessageSystem>();
-            context.ptr = register_test_module().with_messaging(messaging).build();
-
-            std::optional<trview::Message> called_item;
-            EXPECT_CALL(*messaging, send_message).Times(1).WillRepeatedly(SaveArg<0>(&called_item));
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto room_78 = mock_shared<MockRoom>()->with_number(78);
 
@@ -220,9 +229,16 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_items({ std::from_range, context.items });
             context.ptr->set_current_room(room_78);
 
-            ctx->ItemClick("Items 0/**/0##0");
+            ctx->ItemClick("Items 0/**/##0");
 
-            IM_CHECK_EQ(std::static_pointer_cast<MessageData<std::weak_ptr<IItem>>>(called_item->data)->value.lock(), context.items[0]);
+            if (const auto found = find_message(context.messages, "select_item"))
+            {
+                IM_CHECK_EQ(messages::read_select_item(found.value())->lock(), context.items[0]);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
         });
 
     test<ItemsWindowContext>(engine, "Items Window", "Items List Populated on Set",
@@ -240,7 +256,7 @@ void register_items_window_tests(ImGuiTestEngine* engine)
 
             for (std::size_t i = 0; i < context.items.size(); ++i)
             {
-                IM_CHECK_EQ(ctx->ItemExists(std::format("Items 0/**/{0}##{0}", i).c_str()), true);
+                IM_CHECK_EQ(ctx->ItemExists(std::format("Items 0/**/##{0}", i).c_str()), true);
             }
         });
 
@@ -257,7 +273,7 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             };
             context.ptr->set_items({ std::from_range, context.items });
 
-            IM_CHECK_EQ(ctx->ItemExists("Items 0/**/1##1"), true);
+            IM_CHECK_EQ(ctx->ItemExists("Items 0/**/##1"), true);
             IM_CHECK_EQ(ctx->ItemExists("Items 0/**/##Hide-1"), true);
             IM_CHECK_EQ(ctx->ItemIsChecked("Items 0/**/##Hide-1"), false);
 
@@ -314,7 +330,7 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             }
             else
             {
-                IM_CHECK_EQ(false, true);
+                IM_ERRORF("Message not found");
             }
         });
 
@@ -338,7 +354,7 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_items({ std::from_range, context.items });
             context.ptr->set_triggers({ std::from_range, context.triggers });
 
-            ctx->ItemClick("Items 0/**/1##1");
+            ctx->ItemClick("Items 0/**/##1");
 
             for (std::size_t i = 0; i < context.items.size(); ++i)
             {
