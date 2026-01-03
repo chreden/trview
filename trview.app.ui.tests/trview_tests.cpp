@@ -32,7 +32,7 @@ void register_trview_tests(ImGuiTestEngine* engine)
     register_go_to_tests(engine);
     register_items_window_tests(engine);
     register_level_info_tests(engine);
-    // register_lights_window_tests(engine);
+    register_lights_window_tests(engine);
     register_log_window_tests(engine);
     register_plugins_window_tests(engine);
     register_room_navigator_controls_tests(engine);

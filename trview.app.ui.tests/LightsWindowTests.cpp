@@ -5,6 +5,8 @@
 #include <trview.app/Windows/LightsWindow.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.common/Mocks/Messages/IMessageSystem.h>
+#include <trview.tests.common/Messages.h>
+#include <trview.app/Messages/Messages.h>
 
 using namespace testing;
 using namespace trview;
@@ -24,6 +26,12 @@ namespace
             {
                 return std::make_unique<LightsWindow>(clipboard, messaging);
             }
+
+            test_module& with_messaging(const std::shared_ptr<IMessageSystem>& messaging)
+            {
+                this->messaging = messaging;
+                return *this;
+            }
         };
 
         return test_module{};
@@ -33,6 +41,8 @@ namespace
     {
         std::shared_ptr<LightsWindow> ptr;
         std::vector<std::shared_ptr<ILight>> lights;
+        std::shared_ptr<MockMessageSystem> messaging;
+        std::vector<trview::Message> messages;
 
         void render()
         {
@@ -87,8 +97,8 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
             ctx->ItemCheck("/**/Room");
             ctx->Yield();
 
-            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), false);
-            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##0"), false);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
         });
 
     test<LightsWindowContext>(engine, "Lights Window", "Light List Not Filtered When Room Set and Track Room Disabled",
@@ -107,8 +117,8 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
 
             ctx->Yield();
 
-            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), true);
-            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##0"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
         });
 
     test<LightsWindowContext>(engine, "Lights Window", "Light Selected Raised When Sync Item Enabled",
@@ -116,19 +126,25 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<LightsWindowContext>();
-            context.ptr = register_test_module().build();
-
-            std::weak_ptr<ILight> raised_light;
-            auto token = context.ptr->on_light_selected += [&raised_light](const auto& light) { raised_light = light; };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto light1 = mock_shared<MockLight>()->with_number(0);
             auto light2 = mock_shared<MockLight>()->with_number(1);
             context.lights = { light1, light2 };
             context.ptr->set_lights({ light1, light2 });
 
-            ctx->ItemClick("/**/1##1");
+            ctx->ItemClick("/**/##1");
 
-            ASSERT_EQ(raised_light.lock(), light2);
+            if (const auto found = find_message(context.messages, "select_light"))
+            {
+                IM_CHECK_EQ(messages::read_select_light(found.value())->lock(), light2);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
         });
 
     test<LightsWindowContext>(engine, "Lights Window", "Light Selected Not Raised When Sync Item Disabled",
@@ -136,10 +152,10 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<LightsWindowContext>();
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
             context.ptr = register_test_module().build();
-
-            std::weak_ptr<ILight> raised_light;
-            auto token = context.ptr->on_light_selected += [&raised_light](const auto& light) { raised_light = light; };
 
             auto light1 = mock_shared<MockLight>()->with_number(0);
             auto light2 = mock_shared<MockLight>()->with_number(1);
@@ -147,9 +163,9 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_lights({ light1, light2 });
 
             ctx->ItemUncheck("/**/Sync");
-            ctx->ItemClick("/**/1##1");
+            ctx->ItemClick("/**/##1");
 
-            ASSERT_EQ(raised_light.lock(), nullptr);
+            IM_CHECK_EQ(find_message(context.messages, "select_light"), std::nullopt);
         });
 
     test<LightsWindowContext>(engine, "Lights Window", "On Light Visibility Raised",
@@ -166,7 +182,7 @@ void register_lights_window_tests(ImGuiTestEngine* engine)
             context.lights = { light1, light2 };
             context.ptr->set_lights({ light1, light2 });
 
-            ctx->ItemUncheck("/**/##hide-1");
+            ctx->ItemUncheck("/**/##Hide-1");
 
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(light2.get()), true);
         });

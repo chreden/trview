@@ -75,7 +75,6 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<ItemsWindowContext>();
             context.messaging = mock_shared<MockMessageSystem>();
             context.ptr = register_test_module().with_messaging(context.messaging).build();
-
             ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             context.items =
