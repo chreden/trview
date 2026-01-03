@@ -168,10 +168,7 @@
     <ClCompile Include="SettingsWindowTests.cpp" />
     <ClCompile Include="StaticsWindowTests.cpp" />
     <ClCompile Include="TexturesWindowTests.cpp" />
-    <ClCompile Include="TriggersWindowTests.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="TriggersWindowTests.cpp" />
     <ClCompile Include="trview.app.ui.tests.cpp" />
     <ClCompile Include="trview_tests.cpp" />
     <ClCompile Include="ViewOptionsTests.cpp" />

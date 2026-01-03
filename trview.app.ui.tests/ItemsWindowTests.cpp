@@ -95,7 +95,7 @@ void register_items_window_tests(ImGuiTestEngine* engine)
             }
             else
             {
-                IM_CHECK_EQ(false, true);
+                IM_ERRORF("Message not found");
             }
         });
 
