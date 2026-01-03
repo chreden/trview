@@ -37,7 +37,7 @@ void register_trview_tests(ImGuiTestEngine* engine)
     register_plugins_window_tests(engine);
     register_room_navigator_controls_tests(engine);
     register_rooms_window_tests(engine);
-    // register_route_window_tests(engine);
+    register_route_window_tests(engine);
     register_settings_window_tests(engine);
     // register_statics_window_tests(engine);
     // register_textures_window_tests(engine);

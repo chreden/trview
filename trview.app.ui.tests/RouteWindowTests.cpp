@@ -15,6 +15,9 @@
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.common/Mocks/Messages/IMessageSystem.h>
 
+#include <trview.tests.common/Messages.h>
+#include <trview.app/Messages/Messages.h>
+
 using namespace testing;
 using namespace trview;
 using namespace trview::mocks;
@@ -50,9 +53,17 @@ namespace
                 return *this;
             }
 
+            test_module& with_messaging(const std::shared_ptr<IMessageSystem>& messaging)
+            {
+                this->messaging = messaging;
+                return *this;
+            }
+
             std::unique_ptr<RouteWindow> build()
             {
-                return std::make_unique<RouteWindow>(clipboard, dialogs, files, messaging);
+                auto window = std::make_unique<RouteWindow>(clipboard, dialogs, files, messaging);
+                window->receive_message(trview::Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(UserSettings {.randomizer_tools = false, .randomizer = {}}) });
+                return window;
             }
         };
         return test_module{};
@@ -63,6 +74,8 @@ namespace
         std::shared_ptr<RouteWindow> ptr;
         std::shared_ptr<IRoute> route;
         std::shared_ptr<IRoom> room;
+        std::shared_ptr<MockMessageSystem> messaging;
+        std::vector<trview::Message> messages;
 
         void render()
         {
@@ -404,18 +417,14 @@ void register_route_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<RouteWindowContext>();
-            context.ptr = register_test_module().build();
-
-            bool raised = false;
-            auto token = context.ptr->on_route_open += [&]()
-            {
-                raised = true;
-            };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             ctx->ItemClick("Route###Route/##menubar/File");
             ctx->ItemClick("##Menu_00/Open");
 
-            IM_CHECK_EQ(raised, true);
+            IM_CHECK_NE(find_message(context.messages, "route_open"), std::nullopt);
         });
 
     test<RouteWindowContext>(engine, "Route Window", "Import Route Button Does Not Raise Event When Cancelled",
@@ -431,22 +440,25 @@ void register_route_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<RouteWindowContext>();
-            context.ptr = register_test_module().build();
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto route = mock_shared<MockRandomizerRoute>();
             ON_CALL(*route, filenames).WillByDefault(Return(std::vector<std::string>{ "test1", "test2" }));
             context.ptr->set_route(route);
 
-            std::optional<std::string> raised;
-            auto token = context.ptr->on_level_switch += [&](const auto& value)
-            {
-                raised = value;
-            };
-
             ctx->ItemClick("/**/test2");
 
-            IM_CHECK_EQ(raised.has_value(), true);
-            IM_CHECK_EQ(raised.value(), "test2");
+            if (auto found = find_message(context.messages, "switch_level_filename"))
+            {
+                auto switch_level_message = messages::read_switch_level_filename(found.value());
+                IM_CHECK_EQ(switch_level_message.value(), "test2");
+            }
+            else
+            {
+                IM_CHECK_EQ(false, true);
+            }
         });
 
     test<RouteWindowContext>(engine, "Route Window", "New Randomizer Route Raises Event",
@@ -454,20 +466,16 @@ void register_route_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<RouteWindowContext>();
-            context.ptr = register_test_module().build();
-
-            bool raised = false;
-            auto token = context.ptr->on_new_randomizer_route += [&]()
-            {
-                raised = true;
-            };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             context.ptr->receive_message(trview::Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(UserSettings {.randomizer_tools = true}) });
             ctx->ItemClick("Route###Route/##menubar/File");
             ctx->ItemClick("##Menu_00/New");
             ctx->ItemClick("##Menu_01/Randomizer Route");
 
-            IM_CHECK_EQ(raised, true);
+            IM_CHECK_NE(find_message(context.messages, "new_randomizer_route"), std::nullopt);
         });
 
     test<RouteWindowContext>(engine, "Route Window", "New Route Raises Event",
@@ -475,18 +483,14 @@ void register_route_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<RouteWindowContext>();
-            context.ptr = register_test_module().build();
-
-            bool raised = false;
-            auto token = context.ptr->on_new_route += [&]()
-            {
-                raised = true;
-            };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             ctx->ItemClick("Route###Route/##menubar/File");
             ctx->ItemClick("##Menu_00/New");
 
-            IM_CHECK_EQ(raised, true);
+            IM_CHECK_NE(find_message(context.messages, "new_route"), std::nullopt);
         });
 
     test<RouteWindowContext>(engine, "Route Window", "Randomizer Panel Creates UI From Settings",
@@ -560,22 +564,18 @@ void register_route_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<RouteWindowContext>();
-            context.ptr = register_test_module().build();
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto route = mock_shared<MockRoute>();
             ON_CALL(*route, filename).WillByDefault(Return("test"));
             context.ptr->set_route(route);
 
-            bool raised = false;
-            auto token = context.ptr->on_route_reload += [&]()
-            {
-                raised = true;
-            };
-
             ctx->ItemClick("Route###Route/##menubar/File");
             ctx->ItemClick("##Menu_00/Reload");
 
-            IM_CHECK_EQ(raised, true);
+            IM_CHECK_NE(find_message(context.messages, "route_reload"), std::nullopt);
         });
 
     test<RouteWindowContext>(engine, "Route Window", "Room Position Values Copied to Clipboard",
@@ -611,18 +611,14 @@ void register_route_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<RouteWindowContext>();
-            context.ptr = register_test_module().build();
-
-            bool raised = false;
-            auto token = context.ptr->on_route_save += [&]()
-            {
-                raised = true;
-            };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             ctx->ItemClick("Route###Route/##menubar/File");
             ctx->ItemClick("##Menu_00/Save");
 
-            IM_CHECK_EQ(raised, true);
+            IM_CHECK_NE(find_message(context.messages, "route_save"), std::nullopt);
         });
 
     test<RouteWindowContext>(engine, "Route Window", "Save As Raises Event",
@@ -630,18 +626,14 @@ void register_route_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<RouteWindowContext>();
-            context.ptr = register_test_module().build();
-
-            bool raised = false;
-            auto token = context.ptr->on_route_save_as += [&]()
-            {
-                raised = true;
-            };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             ctx->ItemClick("Route###Route/##menubar/File");
             ctx->ItemClick("##Menu_00/Save As");
 
-            IM_CHECK_EQ(raised, true);
+            IM_CHECK_NE(find_message(context.messages, "route_save_as"), std::nullopt);
         });
 
     test<RouteWindowContext>(engine, "Route Window", "Set Randomizer Number Updates Waypoint",
