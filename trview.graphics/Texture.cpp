@@ -90,8 +90,12 @@ namespace trview
         Size Texture::size() const
         {
             D3D11_TEXTURE2D_DESC desc;
-            _texture->GetDesc(&desc);
-            return Size(static_cast<float>(desc.Width), static_cast<float>(desc.Height));
+            if (_texture)
+            {
+                _texture->GetDesc(&desc);
+                return Size(static_cast<float>(desc.Width), static_cast<float>(desc.Height));
+            }
+            return { 0, 0 };
         }
 
         const ComPtr<ID3D11Texture2D>& Texture::texture() const

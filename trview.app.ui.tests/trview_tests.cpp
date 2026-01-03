@@ -40,7 +40,7 @@ void register_trview_tests(ImGuiTestEngine* engine)
     register_route_window_tests(engine);
     register_settings_window_tests(engine);
     register_statics_window_tests(engine);
-    // register_textures_window_tests(engine);
+    register_textures_window_tests(engine);
     // register_triggers_window_tests(engine);
     register_view_options_tests(engine);
 }
