@@ -491,6 +491,7 @@ TEST(Level, SelectedItem)
                     ON_CALL(*entity, number).WillByDefault(Return(entity_source_called));
                     ++entity_source_called;
                     items.push_back(entity);
+                    testing::Mock::AllowLeak(entity.get());
                     return entity;
                 })
             .with_messaging(messaging)
@@ -528,6 +529,7 @@ TEST(Level, SelectedLight)
                     ON_CALL(*light, number).WillByDefault(Return(light_source_called));
                     ++light_source_called;
                     lights.push_back(light);
+                    testing::Mock::AllowLeak(light.get());
                     return light;
                 })
             .build();
@@ -572,6 +574,7 @@ TEST(Level, SelectedTrigger)
                     ON_CALL(*trigger, number).WillByDefault(Return(trigger_source_called));
                     ++trigger_source_called;
                     triggers.push_back(trigger);
+                    testing::Mock::AllowLeak(trigger.get());
                     return trigger;
                 })
             .build();
