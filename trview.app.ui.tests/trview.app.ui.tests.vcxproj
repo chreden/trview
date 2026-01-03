@@ -166,10 +166,7 @@
     <ClCompile Include="RoomsWindowTests.cpp" />
     <ClCompile Include="RouteWindowTests.cpp" />
     <ClCompile Include="SettingsWindowTests.cpp" />
-    <ClCompile Include="StaticsWindowTests.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="StaticsWindowTests.cpp" />
     <ClCompile Include="TexturesWindowTests.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
