@@ -565,6 +565,8 @@ TEST(Level, SelectedTrigger)
                     ON_CALL(*sector, flags).WillByDefault(Return(SectorFlag::Trigger));
                     sectors.resize(5, sector);
                     ON_CALL(*room, sectors).WillByDefault(Return(sectors));
+                    testing::Mock::AllowLeak(room.get());
+                    testing::Mock::AllowLeak(sector.get());
                     return room;
                 })
             .with_trigger_source(
