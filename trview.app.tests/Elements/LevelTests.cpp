@@ -477,33 +477,35 @@ TEST(Level, SelectedItem)
     ON_CALL(mock_level, num_rooms()).WillByDefault(Return(1));
     auto messaging = mock_shared<MockMessageSystem>();
 
-    std::vector<std::shared_ptr<MockItem>> items;
-
-    uint32_t entity_source_called = 0;
-    std::shared_ptr<trview::ILevel> level;
-    level = register_test_module()
-        .with_level(std::move(mock_level_ptr))
-        .with_entity_source(
-            [&](auto&&...)
-            {
-                auto entity = mock_shared<MockItem>();
-                ON_CALL(*entity, number).WillByDefault(Return(entity_source_called));
-                ++entity_source_called;
-                items.push_back(entity);
-                return entity;
-            })
-        .with_messaging(messaging)
-        .build();
-
-    for (auto& item : items)
     {
-        ON_CALL(*item, level).WillByDefault(Return(level));
-    }
+        std::vector<std::shared_ptr<MockItem>> items;
 
-    ASSERT_EQ(level->selected_item(), std::nullopt);
-    level->set_selected_item(items[4]);
-    ASSERT_TRUE(level->selected_item().has_value());
-    ASSERT_EQ(level->selected_item().value(), 4);
+        uint32_t entity_source_called = 0;
+        std::shared_ptr<trview::ILevel> level;
+        level = register_test_module()
+            .with_level(std::move(mock_level_ptr))
+            .with_entity_source(
+                [&](auto&&...)
+                {
+                    auto entity = mock_shared<MockItem>();
+                    ON_CALL(*entity, number).WillByDefault(Return(entity_source_called));
+                    ++entity_source_called;
+                    items.push_back(entity);
+                    return entity;
+                })
+            .with_messaging(messaging)
+            .build();
+
+        for (auto& item : items)
+        {
+            ON_CALL(*item, level).WillByDefault(Return(level));
+        }
+
+        ASSERT_EQ(level->selected_item(), std::nullopt);
+        level->set_selected_item(items[4]);
+        ASSERT_TRUE(level->selected_item().has_value());
+        ASSERT_EQ(level->selected_item().value(), 4);
+    }
 }
 
 TEST(Level, SelectedLight)
@@ -513,30 +515,32 @@ TEST(Level, SelectedLight)
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     ON_CALL(mock_level, num_rooms).WillByDefault(Return(1));
     ON_CALL(mock_level, get_room).WillByDefault(Return(room));
-    
-    std::vector<std::shared_ptr<MockLight>> lights;
-    uint32_t light_source_called = 0;
-    auto level = register_test_module()
-        .with_level(std::move(mock_level_ptr))
-        .with_light_source(
-            [&](auto&&...)
-            {
-                auto light = mock_shared<MockLight>();
-                ON_CALL(*light, number).WillByDefault(Return(light_source_called));
-                ++light_source_called;
-                lights.push_back(light);
-                return light;
-            })
-        .build();
 
-    for (auto& light : lights)
     {
-        ON_CALL(*light, level).WillByDefault(Return(level));
-    }
+        std::vector<std::shared_ptr<MockLight>> lights;
+        uint32_t light_source_called = 0;
+        auto level = register_test_module()
+            .with_level(std::move(mock_level_ptr))
+            .with_light_source(
+                [&](auto&&...)
+                {
+                    auto light = mock_shared<MockLight>();
+                    ON_CALL(*light, number).WillByDefault(Return(light_source_called));
+                    ++light_source_called;
+                    lights.push_back(light);
+                    return light;
+                })
+            .build();
 
-    ASSERT_EQ(level->selected_light(), std::nullopt);
-    level->set_selected_light(4);
-    ASSERT_EQ(level->selected_light(), 4);
+        for (auto& light : lights)
+        {
+            ON_CALL(*light, level).WillByDefault(Return(level));
+        }
+
+        ASSERT_EQ(level->selected_light(), std::nullopt);
+        level->set_selected_light(4);
+        ASSERT_EQ(level->selected_light(), 4);
+    }
 }
 
 TEST(Level, SelectedTrigger)
@@ -544,41 +548,43 @@ TEST(Level, SelectedTrigger)
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     ON_CALL(mock_level, num_rooms()).WillByDefault(Return(1));
 
-    uint32_t trigger_source_called = 0;
-    std::vector<std::shared_ptr<MockTrigger>> triggers;
-
-    auto level = register_test_module()
-        .with_level(std::move(mock_level_ptr))
-        .with_room_source(
-            [&](auto&&...)
-            {
-                auto room = mock_shared<MockRoom>();
-                std::vector<std::shared_ptr<ISector>> sectors;
-                auto sector = mock_shared<MockSector>();
-                ON_CALL(*sector, flags).WillByDefault(Return(SectorFlag::Trigger));
-                sectors.resize(5, sector);
-                ON_CALL(*room, sectors).WillByDefault(Return(sectors));
-                return room;
-            })
-        .with_trigger_source(
-            [&](auto&&...)
-            {
-                auto trigger = mock_shared<MockTrigger>();
-                ON_CALL(*trigger, number).WillByDefault(Return(trigger_source_called));
-                ++trigger_source_called;
-                triggers.push_back(trigger);
-                return trigger;
-            })
-        .build();
-
-    for (auto& trigger : triggers)
     {
-        ON_CALL(*trigger, level).WillByDefault(Return(level));
-    }
+        uint32_t trigger_source_called = 0;
+        std::vector<std::shared_ptr<MockTrigger>> triggers;
 
-    ASSERT_EQ(level->selected_trigger(), std::nullopt);
-    level->set_selected_trigger(4);
-    ASSERT_EQ(level->selected_trigger(), 4);
+        auto level = register_test_module()
+            .with_level(std::move(mock_level_ptr))
+            .with_room_source(
+                [&](auto&&...)
+                {
+                    auto room = mock_shared<MockRoom>();
+                    std::vector<std::shared_ptr<ISector>> sectors;
+                    auto sector = mock_shared<MockSector>();
+                    ON_CALL(*sector, flags).WillByDefault(Return(SectorFlag::Trigger));
+                    sectors.resize(5, sector);
+                    ON_CALL(*room, sectors).WillByDefault(Return(sectors));
+                    return room;
+                })
+            .with_trigger_source(
+                [&](auto&&...)
+                {
+                    auto trigger = mock_shared<MockTrigger>();
+                    ON_CALL(*trigger, number).WillByDefault(Return(trigger_source_called));
+                    ++trigger_source_called;
+                    triggers.push_back(trigger);
+                    return trigger;
+                })
+            .build();
+
+        for (auto& trigger : triggers)
+        {
+            ON_CALL(*trigger, level).WillByDefault(Return(level));
+        }
+
+        ASSERT_EQ(level->selected_trigger(), std::nullopt);
+        level->set_selected_trigger(4);
+        ASSERT_EQ(level->selected_trigger(), 4);
+    }
 }
 
 TEST(Level, Trigger)
