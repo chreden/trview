@@ -5,8 +5,11 @@
 
 namespace trview
 {
+    struct ILevelTextureStorage;
     struct ITransparencyBuffer
     {
+        using Source = std::function<std::unique_ptr<ITransparencyBuffer>(const std::weak_ptr<ILevelTextureStorage>&)>;
+
         virtual ~ITransparencyBuffer() = 0;
         // Add a triangle to the transparency buffer. The triangle will be added to the end
         // of the collection.
@@ -19,10 +22,10 @@ namespace trview
         virtual void sort(const DirectX::SimpleMath::Vector3& eye_position) = 0;
 
         /// Render the accumulated transparent triangles. Sort should be called before this function is called.
-        /// @param camera The current camera.
+        /// @param view_project The view projection.
         /// @param texture_storage Texture storage for the level.
         /// @param ignore_blend Optional. Set to true to render this without transparency.
-        virtual void render(const ICamera& camera, bool ignore_blend = false) = 0;
+        virtual void render(const DirectX::SimpleMath::Matrix& view_projection, bool ignore_blend = false) = 0;
 
         // Reset the triangles buffer.
         virtual void reset() = 0;

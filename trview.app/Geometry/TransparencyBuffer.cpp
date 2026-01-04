@@ -77,7 +77,7 @@ namespace trview
         complete();
     }
 
-    void TransparencyBuffer::render(const ICamera& camera, bool ignore_blend)
+    void TransparencyBuffer::render(const Matrix& view_projection, bool ignore_blend)
     {
         if (!_vertices.size())
         {
@@ -101,7 +101,7 @@ namespace trview
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
         memset(&mapped_resource, 0, sizeof(mapped_resource));
 
-        MeshData data{ camera.view_projection(), Color(1,1,1,1), Vector4::Zero };
+        MeshData data{ view_projection, Color(1,1,1,1), Vector4::Zero };
          
         context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
         memcpy(mapped_resource.pData, &data, sizeof(data));

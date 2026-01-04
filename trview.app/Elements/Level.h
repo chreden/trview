@@ -145,6 +145,8 @@ namespace trview
         void update(float delta) override;
         void set_show_animation(bool show) override;
         void receive_message(const Message& message) override;
+        std::weak_ptr<IModelStorage> model_storage() const override;
+        std::weak_ptr<ILevelTextureStorage> level_texture_storage() const override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);

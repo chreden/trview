@@ -118,6 +118,7 @@
     <ClCompile Include="Elements\Flyby\FlybyNode.cpp" Filter="Elements\Flyby" />
     <ClCompile Include="Messages\Messages.cpp" Filter="Messages" />
     <ClCompile Include="Elements\Level\LevelNameLookup.cpp" Filter="Elements\Level" />
+    <ClCompile Include="Windows\Models\ModelsWindow.cpp" Filter="Windows\Models" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -357,12 +358,9 @@
     <ClInclude Include="Mocks\Elements\ILevelNameLookup.h" Filter="Mocks\Elements" />
     <ClInclude Include="Menus\LevelSortingMode.h" Filter="Menus" />
     <ClInclude Include="Menus\LevelSortingMode.hpp" Filter="Menus" />
-    <ClInclude Include="Windows\IWindow.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
+    <ClInclude Include="Windows\IWindow.h" Filter="Windows" />
+    <ClInclude Include="Mocks\Windows\IWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Windows\Models\ModelsWindow.h" Filter="Windows\Models" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -586,6 +584,9 @@
     </Filter>
     <Filter Include="Geometry\Model">
       <UniqueIdentifier>{03a8e721-8c98-438d-a8eb-c67a9e88e956}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Models">
+      <UniqueIdentifier>{bb2435da-29e4-489f-a207-f9e9f86ef14b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Elements\Flyby">
       <UniqueIdentifier>{52dec27a-a711-4587-9a97-4ae9bdb7a050}</UniqueIdentifier>

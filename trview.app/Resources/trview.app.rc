@@ -72,6 +72,7 @@ BEGIN
         MENUITEM "&Lights\tCtrl+L"              ID_WINDOWS_LIGHTS
         MENUITEM "Camera/Sink\tCtrl+K"          ID_WINDOWS_CAMERA_SINK
         MENUITEM "Log"                          ID_WINDOWS_LOG
+        MENUITEM "Models"                       ID_WINDOWS_MODELS
         MENUITEM "Textures"                     ID_WINDOWS_TEXTURES
         MENUITEM "Console\tF11"                 ID_WINDOWS_CONSOLE
         MENUITEM "Plugins\tCtrl+P"              ID_WINDOWS_PLUGINS

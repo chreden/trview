@@ -91,6 +91,8 @@ namespace trview
             MOCK_METHOD(void, update, (float), (override));
             MOCK_METHOD(void, set_show_animation, (bool), (override));
             MOCK_METHOD(void, receive_message, (const Message&), (override));
+            MOCK_METHOD(std::weak_ptr<IModelStorage>, model_storage, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<ILevelTextureStorage>, level_texture_storage, (), (const, override));
 
             std::shared_ptr<MockLevel> with_version(trlevel::LevelVersion version)
             {
