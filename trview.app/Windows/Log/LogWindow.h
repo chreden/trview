@@ -3,11 +3,11 @@
 #include <trview.common/Logs/ILog.h>
 #include <trview.common/IFiles.h>
 #include <trview.common/Windows/IDialogs.h>
-#include "ILogWindow.h"
+#include "../IWindow.h"
 
 namespace trview
 {
-    class LogWindow final : public ILogWindow
+    class LogWindow final : public IWindow
     {
     public:
         struct Names
@@ -19,8 +19,12 @@ namespace trview
 
         explicit LogWindow(const std::shared_ptr<ILog>& log, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files);
         virtual ~LogWindow() = default;
-        virtual void render() override;
-        virtual void set_number(int32_t number) override;
+        void update(float delta) override;
+        void render() override;
+        void set_number(int32_t number) override;
+        std::string type() const override;
+        void receive_message(const Message&) override;
+        std::string title() const override;
     private:
         bool render_log_window();
         void save_to_file(const std::vector<LogMessage>& messages, int level_offset);

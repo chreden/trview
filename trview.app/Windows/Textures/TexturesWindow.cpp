@@ -1,10 +1,12 @@
 #include "TexturesWindow.h"
-#include "../../Graphics/ILevelTextureStorage.h"
+#include "../../Messages/Messages.h"
+#include "../../Elements/ILevel.h"
 #include <format>
 
 namespace trview
 {
-    ITexturesWindow::~ITexturesWindow()
+    TexturesWindow::TexturesWindow(const std::weak_ptr<IMessageSystem>& messaging)
+        : _messaging(messaging)
     {
     }
 
@@ -15,6 +17,10 @@ namespace trview
             on_window_closed();
             return;
         }
+    }
+
+    void TexturesWindow::update(float)
+    {
     }
 
     bool TexturesWindow::render_textures_window()
@@ -56,5 +62,31 @@ namespace trview
     {
         const int32_t max_textures = std::max(0, (_texture_storage ? static_cast<int32_t>(_texture_storage->num_tiles()) : 0) - 1);
         _index = std::clamp(_index, 0, max_textures);
+    }
+
+    void TexturesWindow::receive_message(const Message& message)
+    {
+        if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                set_texture_storage(level_ptr->texture_storage());
+            }
+        }
+    }
+
+    void TexturesWindow::initialise()
+    {
+        messages::get_open_level(_messaging, weak_from_this());
+    }
+
+    std::string TexturesWindow::type() const
+    {
+        return "Textures";
+    }
+
+    std::string TexturesWindow::title() const
+    {
+        return _id;
     }
 }

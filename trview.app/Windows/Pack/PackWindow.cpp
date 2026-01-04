@@ -1,14 +1,16 @@
 #include "PackWindow.h"
 #include <trlevel/Level.h>
+#include "../../Messages/Messages.h"
+#include "../../Elements/ILevel.h"
 
 namespace trview
 {
-    IPackWindow::~IPackWindow()
+    PackWindow::PackWindow(const std::shared_ptr<IFiles>& files, const std::shared_ptr<IDialogs>& dialogs, const std::weak_ptr<IMessageSystem>& messaging)
+        : _files(files), _dialogs(dialogs), _messaging(messaging)
     {
     }
 
-    PackWindow::PackWindow(const std::shared_ptr<IFiles>& files, const std::shared_ptr<IDialogs>& dialogs)
-        : _files(files), _dialogs(dialogs)
+    void PackWindow::update(float)
     {
     }
 
@@ -56,7 +58,7 @@ namespace trview
                         bool selected = false;
                         if (ImGui::Selectable(std::format("{}##{}", part.start, index++).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                         {
-                            on_level_open(std::format("pack://{}\\{}", pack->filename(), part.start));
+                            messages::send_open_level_filename(_messaging, std::format("pack://{}\\{}", pack->filename(), part.start));
                         }
                         if (ImGui::BeginPopupContextItem())
                         {
@@ -91,6 +93,32 @@ namespace trview
         ImGui::End();
         ImGui::PopStyleVar();
         return stay_open;
+    }
+
+    void PackWindow::initialise()
+    {
+        messages::get_open_level(_messaging, weak_from_this());
+    }
+
+    void PackWindow::receive_message(const Message& message)
+    {
+        if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                set_pack(level_ptr->pack());
+            }
+        }
+    }
+
+    std::string PackWindow::type() const
+    {
+        return "Pack";
+    }
+
+    std::string PackWindow::title() const
+    {
+        return _id;
     }
 }
 

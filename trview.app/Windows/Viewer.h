@@ -39,7 +39,7 @@
 namespace trview
 {
     /// Class that coordinates all the parts of the application.
-    class Viewer : public IViewer, public MessageHandler, public IRecipient
+    class Viewer : public IViewer, public MessageHandler, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         /// Create a new viewer.
@@ -67,9 +67,9 @@ namespace trview
         virtual void render_ui() override;
         virtual void present(bool vsync) override;
         void open(const std::weak_ptr<ILevel>& level, ILevel::OpenMode open_mode) override;
-        virtual void select_item(const std::weak_ptr<IItem>& item) override;
+        void select_item(const std::weak_ptr<IItem>& item);
         void select_room(const std::weak_ptr<IRoom>& room) override;
-        virtual void select_trigger(const std::weak_ptr<ITrigger>& trigger) override;
+        void select_trigger(const std::weak_ptr<ITrigger>& trigger);
         virtual void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) override;
         virtual void set_camera_mode(ICamera::Mode camera_mode) override;
         virtual void set_route(const std::shared_ptr<IRoute>& route) override;
@@ -81,17 +81,18 @@ namespace trview
         virtual void set_show_tooltip(bool value) override;
         virtual void set_show_ui(bool value) override;
         virtual bool ui_input_active() const override;
-        virtual void select_light(const std::weak_ptr<ILight>& light) override;
+        void select_light(const std::weak_ptr<ILight>& light);
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual DirectX::SimpleMath::Vector3 target() const override;
         virtual void set_target(const DirectX::SimpleMath::Vector3& target) override;
         virtual void select_sector(const std::weak_ptr<ISector>& sector) override;
         virtual void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
         void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh) override;
-        void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) override;
+        void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source);
         void select_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) override;
         std::weak_ptr<ILevel> level() const override;
         void receive_message(const Message& message) override;
+        void initialise();
     private:
         void initialise_input();
         void toggle_highlight();
@@ -134,6 +135,9 @@ namespace trview
         void set_show_sound_sources(bool show);
         void set_ng_plus(bool show);
         void set_show_animation(bool show);
+
+        template <typename T>
+        std::shared_ptr<T> get_entity_and_sync_level(const std::weak_ptr<T>& entity);
 
         const std::shared_ptr<graphics::IDevice> _device;
         const std::shared_ptr<IShortcuts>& _shortcuts;
@@ -179,6 +183,10 @@ namespace trview
         bool _camera_moved{ false };
         graphics::ISamplerState::Source _sampler_source;
         std::weak_ptr<IMessageSystem> _messaging;
+
+        // TODO: Changes due to messaging:
+        std::weak_ptr<IRoom> _latest_room;
     };
 }
 
+#include "Viewer.inl"

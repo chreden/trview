@@ -3,26 +3,15 @@
 
 namespace trview
 {
-    IAboutWindow::~IAboutWindow()
+    void AboutWindow::update(float)
     {
-    }
-
-    void AboutWindow::focus()
-    {
-        _need_focus = true;
     }
 
     void AboutWindow::render()
     {
-        if (_need_focus)
-        {
-            ImGui::SetNextWindowFocus();
-            _need_focus = false;
-        }
-
         bool stay_open = true;
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(400, 0));
-        if (ImGui::Begin("About", &stay_open, ImGuiWindowFlags_None))
+        if (ImGui::Begin(_id.c_str(), &stay_open, ImGuiWindowFlags_None))
         {
             ImGui::TextWrapped(std::format("trview, Version {}", trview::version()).c_str());
             ImGui::TextWrapped("Copyright (c) 2025 trview team");
@@ -44,5 +33,24 @@ namespace trview
         {
             on_window_closed();
         }
+    }
+
+    void AboutWindow::set_number(int32_t number)
+    {
+        _id = std::format("About {}", number);
+    }
+
+    std::string AboutWindow::type() const
+    {
+        return "About";
+    }
+
+    void AboutWindow::receive_message(const Message&)
+    {
+    }
+
+    std::string AboutWindow::title() const
+    {
+        return _id;
     }
 }

@@ -5,7 +5,7 @@
 
 namespace trview
 {
-    struct IItemsWindow;
+    struct IWindow;
 
     struct IContextMenu
     {
@@ -44,7 +44,7 @@ namespace trview
         /// Event raised when a trigger has been selected.
         /// </summary>
         Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-        Event<std::weak_ptr<IItemsWindow>> on_filter_items_to_tile;
+        Event<std::weak_ptr<IWindow>> on_filter_items_to_tile;
         virtual void render() = 0;
         /// <summary>
         /// Set the context menu to visible.

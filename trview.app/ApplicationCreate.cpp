@@ -61,44 +61,33 @@
 #include "UI/ViewerUI.h"
 #include "UI/ViewOptions.h"
 #include "UI/MapRenderer.h"
-#include "Windows/ItemsWindowManager.h"
+#include "Windows/ItemsWindow.h"
 #include "Windows/LightsWindow.h"
-#include "Windows/LightsWindowManager.h"
-#include "Windows/RouteWindowManager.h"
-#include "Windows/RoomsWindowManager.h"
-#include "Windows/TriggersWindowManager.h"
+#include "Windows/RoomsWindow.h"
+#include "Windows/RouteWindow.h"
 #include "Windows/TriggersWindow.h"
 #include "Windows/Viewer.h"
 #include "Windows/Log/LogWindow.h"
-#include "Windows/Log/LogWindowManager.h"
 #include "UI/DX11ImGuiBackend.h"
-#include "Windows/Textures/TexturesWindowManager.h"
 #include "Windows/Textures/TexturesWindow.h"
-#include "Windows/CameraSink/CameraSinkWindowManager.h"
 #include "Windows/CameraSink/CameraSinkWindow.h"
-#include "Windows/Console/ConsoleManager.h"
 #include "Windows/Console/Console.h"
 #include "Plugins/Plugins.h"
 #include "Plugins/Plugin.h"
-#include "Windows/Plugins/PluginsWindowManager.h"
 #include "Windows/Plugins/PluginsWindow.h"
 #include "Tools/Toolbar.h"
 #include "UI/Fonts/Fonts.h"
-#include "Windows/Sounds/SoundsWindowManager.h"
 #include "Windows/Sounds/SoundsWindow.h"
-#include "Windows/Statics/StaticsWindowManager.h"
 #include "Windows/Statics/StaticsWindow.h"
 #include "Windows/Windows.h"
-#include "Windows/About/AboutWindowManager.h"
 #include "Windows/About/AboutWindow.h"
-#include "Windows/Diff/DiffWindowManager.h"
 #include "Windows/Diff/DiffWindow.h"
-#include "Windows/Pack/PackWindowManager.h"
 #include "Windows/Pack/PackWindow.h"
 #include "UI/LevelInfo.h"
 #include "Elements/Level/LevelNameLookup.h"
 
 #include <trview.common/Messages/MessageSystem.h>
+#include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {
@@ -398,13 +387,24 @@ namespace trview
             { 
                 auto renderer = std::make_shared<MapRenderer>(fonts, messaging);
                 messaging->add_recipient(renderer);
+                renderer->initialise();
                 return renderer;
             };
         auto clipboard = std::make_shared<Clipboard>(window);
-        auto items_window_source = [=]() { return std::make_shared<ItemsWindow>(clipboard, messaging); };
-        auto items_window_manager = std::make_shared<ItemsWindowManager>(window, shortcuts, items_window_source);
-        auto rooms_window_source = [=]() { return std::make_shared<RoomsWindow>(map_renderer_source, clipboard, messaging); };
-        auto rooms_window_manager = std::make_shared<RoomsWindowManager>(window, shortcuts, rooms_window_source);
+        auto items_window_source = [=]()
+            {
+                auto new_window = std::make_shared<ItemsWindow>(clipboard, messaging);
+                messaging->add_recipient(new_window);
+                new_window->initialise();
+                return new_window;
+            };
+        auto rooms_window_source = [=]()
+            {
+                auto new_window = std::make_shared<RoomsWindow>(map_renderer_source, clipboard, messaging);
+                messaging->add_recipient(new_window);
+                new_window->initialise();
+                return new_window;
+            };
 
         auto settings_window = std::make_shared<SettingsWindow>(dialogs, shell, fonts, texture_storage, messaging);
         messaging->add_recipient(settings_window);
@@ -412,54 +412,60 @@ namespace trview
         Resource level_hashes = get_resource_memory(IDR_LEVEL_HASHES, L"TEXT");
         auto level_name_lookup = std::make_shared<LevelNameLookup>(files, std::string(level_hashes.data, level_hashes.data + level_hashes.size));
 
-        auto viewer_ui = std::make_shared<ViewerUI>(
-            window,
-            shortcuts,
-            map_renderer_source,
-            settings_window,
-            std::make_unique<ViewOptions>(rooms_window_manager),
-            std::make_unique<ContextMenu>(items_window_manager),
-            std::make_unique<CameraControls>(),
-            std::make_unique<Toolbar>(plugins),
-            messaging,
-            std::make_unique<LevelInfo>(*texture_storage, level_name_lookup));
-        messaging->add_recipient(viewer_ui);
-
-        const auto camera = std::make_shared<Camera>(window.size());
-        auto viewer = std::make_shared<Viewer>(
-            window,
-            device,
-            viewer_ui,
-            std::make_unique<Picking>(window),
-            std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window)),
-            shortcuts,
-            route_source(std::nullopt),
-            std::make_unique<Compass>(device, sprite_source, render_target_source, default_mesh_source),
-            std::make_unique<Measure>(device, default_mesh_source),
-            device_window_source,
-            std::make_unique<SectorHighlight>(default_mesh_source),
-            clipboard,
-            camera,
-            sampler_source,
-            messaging);
-        messaging->add_recipient(viewer);
-
-        auto triggers_window_source = [=]() { return std::make_shared<TriggersWindow>(clipboard, messaging); };
-        auto route_window_source = [=]() { return std::make_shared<RouteWindow>(clipboard, dialogs, files, messaging); };
+        auto triggers_window_source = [=]()
+            {
+                auto triggers_window = std::make_shared<TriggersWindow>(clipboard, messaging);
+                messaging->add_recipient(triggers_window);
+                triggers_window->initialise();
+                return triggers_window;
+            };
+        auto route_window_source = [=]()
+            {
+                auto route_window = std::make_shared<RouteWindow>(clipboard, dialogs, files, messaging);
+                messaging->add_recipient(route_window);
+                route_window->initialise();
+                return route_window;
+            };
         auto lights_window_source = [=]()
-            { 
+            {
                 auto lights_window = std::make_shared<LightsWindow>(clipboard, messaging);
                 messaging->add_recipient(lights_window);
+                lights_window->initialise();
                 return lights_window;
             };
 
         auto log_window_source = [=]() { return std::make_shared<LogWindow>(log, dialogs, files); };
-        auto camera_sink_window_source = [=]() { return std::make_shared<CameraSinkWindow>(clipboard, camera, messaging); };
+        const auto camera = std::make_shared<Camera>(window.size());
+        auto camera_sink_window_source = [=]()
+            {
+                auto camera_sink_window = std::make_shared<CameraSinkWindow>(clipboard, camera, messaging);
+                messaging->add_recipient(camera_sink_window);
+                camera_sink_window->initialise();
+                return camera_sink_window;
+            };
 
-        auto textures_window_source = [=]() { return std::make_shared<TexturesWindow>(); };
+        auto textures_window_source = [=]()
+            {
+                auto textures_window = std::make_shared<TexturesWindow>(messaging);
+                messaging->add_recipient(textures_window);
+                textures_window->initialise();
+                return textures_window;
+            };
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };
-        auto statics_window_source = [=]() { return std::make_shared<StaticsWindow>(clipboard, messaging); };
-        auto sounds_window_source = [=]() { return std::make_shared<SoundsWindow>(messaging); };
+        auto statics_window_source = [=]()
+            {
+                auto statics_window = std::make_shared<StaticsWindow>(clipboard, messaging);
+                messaging->add_recipient(statics_window);
+                statics_window->initialise();
+                return statics_window;
+            };
+        auto sounds_window_source = [=]()
+            {
+                auto sounds_window = std::make_shared<SoundsWindow>(messaging);
+                messaging->add_recipient(sounds_window);
+                sounds_window->initialise();
+                return sounds_window;
+            };
         auto about_window_source = [=]() { return std::make_shared<AboutWindow>(); };
 
         auto level_name_source = [=](auto&& filename, auto&& pack) -> std::optional<ILevelNameLookup::Name>
@@ -479,8 +485,67 @@ namespace trview
         auto imgui_file_menu = std::make_shared<ImGuiFileMenu>(dialogs, files, level_name_source);
         messaging->add_recipient(imgui_file_menu);
 
-        auto diff_window_source = [=]() { return std::make_shared<DiffWindow>(dialogs, level_source, imgui_file_menu, messaging); };
-        auto pack_window_source = [=]() { return std::make_shared<PackWindow>(files, dialogs); };
+        auto diff_window_source = [=]()
+            {
+                auto diff_window = std::make_shared<DiffWindow>(dialogs, level_source, imgui_file_menu, messaging);
+                diff_window->initialise();
+                return diff_window;
+            };
+        auto pack_window_source = [=]()
+            {
+                auto pack_window = std::make_shared<PackWindow>(files, dialogs, messaging);
+                pack_window->initialise();
+                return pack_window;
+            };
+
+        auto windows = std::make_shared<Windows>(window, shortcuts);
+        windows->register_window("About", about_window_source);
+        windows->register_window("CameraSink", camera_sink_window_source);
+        windows->register_window("Console", console_source);
+        windows->register_window("Diff", diff_window_source);
+        windows->register_window("Items", items_window_source);
+        windows->register_window("Lights", lights_window_source);
+        windows->register_window("Log", log_window_source);
+        windows->register_window("Pack", pack_window_source);
+        windows->register_window("Plugins", plugins_window_source);
+        windows->register_window("Rooms", rooms_window_source);
+        windows->register_window("Route", route_window_source);
+        windows->register_window("Sounds", sounds_window_source);
+        windows->register_window("Statics", statics_window_source);
+        windows->register_window("Textures", textures_window_source);
+        windows->register_window("Triggers", triggers_window_source);
+
+        auto viewer_ui = std::make_shared<ViewerUI>(
+            window,
+            shortcuts,
+            map_renderer_source,
+            settings_window,
+            std::make_unique<ViewOptions>(windows),
+            std::make_unique<ContextMenu>(windows),
+            std::make_unique<CameraControls>(),
+            std::make_unique<Toolbar>(plugins),
+            messaging,
+            std::make_unique<LevelInfo>(*texture_storage, level_name_lookup));
+        messaging->add_recipient(viewer_ui);
+
+        auto viewer = std::make_shared<Viewer>(
+            window,
+            device,
+            viewer_ui,
+            std::make_unique<Picking>(window),
+            std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window)),
+            shortcuts,
+            route_source(std::nullopt),
+            std::make_unique<Compass>(device, sprite_source, render_target_source, default_mesh_source),
+            std::make_unique<Measure>(device, default_mesh_source),
+            device_window_source,
+            std::make_unique<SectorHighlight>(default_mesh_source),
+            clipboard,
+            camera,
+            sampler_source,
+            messaging);
+        messaging->add_recipient(viewer);
+        viewer->initialise();
 
         auto file_menu = std::make_shared<FileMenu>(window, shortcuts, dialogs, files, level_name_source, messaging);
         messaging->add_recipient(file_menu);
@@ -501,22 +566,7 @@ namespace trview
             plugins,
             randomizer_route_source,
             fonts,
-            std::make_unique<Windows>(
-                std::make_unique<AboutWindowManager>(window, about_window_source),
-                std::make_unique<CameraSinkWindowManager>(window, shortcuts, camera_sink_window_source),
-                std::make_unique<ConsoleManager>(window, shortcuts, console_source, files),
-                std::make_unique<DiffWindowManager>(window, shortcuts, diff_window_source),
-                items_window_manager,
-                std::make_unique<LightsWindowManager>(window, shortcuts, lights_window_source),
-                std::make_unique<LogWindowManager>(window, log_window_source),
-                std::make_unique<PackWindowManager>(window, pack_window_source),
-                std::make_unique<PluginsWindowManager>(window, shortcuts, plugins_window_source),
-                rooms_window_manager,
-                std::make_unique<RouteWindowManager>(window, shortcuts, route_window_source),
-                std::make_unique<SoundsWindowManager>(window, sounds_window_source),
-                std::make_unique<StaticsWindowManager>(window, shortcuts, statics_window_source),
-                std::make_unique<TexturesWindowManager>(window, textures_window_source),
-                std::make_unique<TriggersWindowManager>(window, shortcuts, triggers_window_source)),
+            windows,
             Application::LoadMode::Async,
             messaging);
         messaging->add_recipient(application);

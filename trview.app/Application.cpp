@@ -72,14 +72,14 @@ namespace trview
         std::shared_ptr<IPlugins> plugins,
         const IRandomizerRoute::Source& randomizer_route_source,
         std::shared_ptr<IFonts> fonts,
-        std::unique_ptr<IWindows> windows,
+        const std::shared_ptr<IWindows>& windows,
         LoadMode load_mode,
         const std::shared_ptr<IMessageSystem>& messaging)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_menu(file_menu), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _viewer(viewer),
         _route_source(route_source), _shortcuts(shortcuts), _level_source(level_source), _dialogs(dialogs), _files(files), _timer(default_time_source()),
         _imgui_backend(std::move(imgui_backend)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
-        _windows(std::move(windows)), _messaging(messaging)
+        _windows(windows), _messaging(messaging)
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -96,38 +96,6 @@ namespace trview
 
         setup_shortcuts();
         setup_view_menu();
-
-        _token_store += _windows->on_camera_sink_selected += [this](const auto& sink) {  select_camera_sink(sink); };
-        _token_store += _windows->on_flyby_node_selected += [this](const auto& node) { select_flyby_node(node); };
-        _token_store += _windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _windows->on_item_selected += [this](const auto& item) { select_item(item); };
-        _token_store += _windows->on_light_selected += [this](const auto& light) { select_light(light); };
-        _token_store += _windows->on_room_selected += [this](const auto& room) { select_room(room); };
-        _token_store += _windows->on_sector_hover += [this](const auto& sector) { select_sector(sector); };
-        _token_store += _windows->on_waypoint_selected += [&](const auto& waypoint) { select_waypoint(waypoint); };
-        _token_store += _windows->on_route_open += [&]() { this->open_route(); };
-        _token_store += _windows->on_route_reload += [&]() { this->reload_route(); };
-        _token_store += _windows->on_route_save += [&]() { this->save_route(); };
-        _token_store += _windows->on_route_save_as += [&]() { this->save_route_as(); };
-        _token_store += _windows->on_route_window_created += [&]() { open_recent_route(); };
-        _token_store += _windows->on_level_open += [&](const auto& filename) { open(filename, ILevel::OpenMode::Full); };
-        _token_store += _windows->on_level_switch += [&](const auto& level) { _file_menu->switch_to(level); };
-        _token_store += _windows->on_new_route += [&]() { if (should_discard_changes()) { set_route(_route_source(std::nullopt)); } };
-        _token_store += _windows->on_new_randomizer_route += [&]() { if (should_discard_changes()) { set_route(_randomizer_route_source(std::nullopt)); } };
-        _token_store += _windows->on_static_selected += [this](const auto& stat) { select_static_mesh(stat); };
-        _token_store += _windows->on_sound_source_selected += [this](const auto& sound) { select_sound_source(sound); };
-        _token_store += _windows->on_diff_ended += [this](auto&& level) { end_diff(level); };
-        _token_store += _windows->on_sector_selected += [this](auto&& sector)
-            {
-                if (const auto s = sector.lock())
-                {
-                    if (const auto r = s->room().lock())
-                    {
-                        select_room(r);
-                        _viewer->set_target(r->sector_centroid(s));
-                    }
-                }
-            };
 
         _windows->setup(_settings);
         setup_viewer(*startup_options);
@@ -310,18 +278,9 @@ namespace trview
 
     void Application::setup_viewer(const IStartupOptions& startup_options)
     {
-        _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
-        _token_store += _viewer->on_room_selected += [this](const auto& room) { select_room(room); };
-        _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _viewer->on_light_selected += [this](const auto& light) { select_light(light); };
         _token_store += _viewer->on_waypoint_added += [this](const auto& position, const auto& normal, auto room, auto type, auto index) { add_waypoint(position, normal, room, type, index); };
-        _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
-        _token_store += _viewer->on_camera_sink_selected += [this](const auto& camera_sink) { select_camera_sink(camera_sink); };
-        _token_store += _viewer->on_flyby_node_selected += [this](const auto& flyby_node) { select_flyby_node(flyby_node); };
         _token_store += _viewer->on_font += [this](auto&& name, auto&& font) { _new_font = { name, font }; };
-        _token_store += _viewer->on_static_mesh_selected += [this](const auto& static_mesh) { select_static_mesh(static_mesh); };
-        _token_store += _viewer->on_sound_source_selected += [this](const auto& sound_source) { select_sound_source(sound_source); };
 
         auto filename = startup_options.filename();
         if (!filename.empty())
@@ -354,7 +313,8 @@ namespace trview
     void Application::add_waypoint(const Vector3& position, const Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
     {
         uint32_t new_index = _route->insert(position, normal, room, type, index);
-        select_waypoint(_route->waypoint(new_index));
+        _route->select_waypoint(_route->waypoint(new_index));
+        messages::send_select_waypoint(_messaging, _route->waypoint(new_index));
     }
 
     void Application::remove_waypoint(uint32_t index)
@@ -364,23 +324,8 @@ namespace trview
 
         if (_route->waypoints() > 0)
         {
-            select_waypoint(_route->waypoint(_route->selected_waypoint()));
+            messages::send_select_waypoint(_messaging, _route->waypoint(_route->selected_waypoint()));
         }
-    }
-
-    void Application::select_item(std::weak_ptr<IItem> item)
-    {
-        const auto [item_ptr, level] = get_entity_and_level(item);
-        if (!item_ptr || !level)
-        {
-            return;
-        }
-
-        _viewer->open(level, ILevel::OpenMode::Reload);
-        select_room(item_ptr->room());
-        level->set_selected_item(item);
-        _viewer->select_item(item);
-        _windows->select(item);
     }
 
     void Application::select_room(std::weak_ptr<IRoom> room)
@@ -394,45 +339,13 @@ namespace trview
         level->set_selected_room(room);
         _viewer->open(level, ILevel::OpenMode::Reload);
         _viewer->select_room(room);
-        _windows->set_room(room);
-    }
-
-    void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)
-    {
-        const auto [trigger_ptr, level] = get_entity_and_level(trigger);
-        if (!trigger_ptr || !level)
-        {
-            return;
-        }
-
-        _viewer->open(level, ILevel::OpenMode::Reload);
-        select_room(trigger_ptr->room());
-        level->set_selected_trigger(trigger_ptr->number());
-        _viewer->select_trigger(trigger);
-        _windows->select(trigger);
-    }
-
-    void Application::select_waypoint(const std::weak_ptr<IWaypoint>& waypoint)
-    {
-        if (!_level)
-        {
-            return;
-        }
-
-        if (auto waypoint_ptr = waypoint.lock())
-        {
-            select_room(_level->room(waypoint_ptr->room()));
-            _route->select_waypoint(waypoint_ptr);
-            _viewer->select_waypoint(waypoint_ptr);
-            _windows->select(waypoint_ptr);
-        }
     }
 
     void Application::select_next_waypoint()
     {
         if (_route->selected_waypoint() + 1 < _route->waypoints())
         {
-            select_waypoint(_route->waypoint(_route->selected_waypoint() + 1));
+            messages::send_select_waypoint(_messaging, _route->waypoint(_route->selected_waypoint() + 1));
         }
     }
 
@@ -440,28 +353,8 @@ namespace trview
     {
         if (_route->selected_waypoint() > 0)
         {
-            select_waypoint(_route->waypoint(_route->selected_waypoint() - 1));
+            messages::send_select_waypoint(_messaging, _route->waypoint(_route->selected_waypoint() - 1));
         }
-    }
-
-    void Application::select_light(const std::weak_ptr<ILight>& light)
-    {
-        const auto [light_ptr, level] = get_entity_and_level(light);
-        if (!light_ptr || !level)
-        {
-            return;
-        }
-
-        _viewer->open(level, ILevel::OpenMode::Reload);
-        select_room(light_ptr->room());
-        level->set_selected_light(light_ptr->number());
-        _viewer->select_light(light);
-        _windows->select(light);
-    }
-
-    void Application::select_sector(const std::weak_ptr<ISector>& sector)
-    {
-        _viewer->select_sector(sector);
     }
 
     void Application::render()
@@ -683,7 +576,7 @@ namespace trview
 
     void Application::open_recent_route()
     {
-        if (!_level || _recent_route_prompted  || !_windows->is_route_window_open() || std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
+        if (!_level || _recent_route_prompted  || _windows->windows("Route").empty() || std::dynamic_pointer_cast<IRandomizerRoute>(_route) != nullptr)
         {
             return;
         }
@@ -715,21 +608,6 @@ namespace trview
                 placement.rcNormalPosition.left, placement.rcNormalPosition.top, placement.rcNormalPosition.right, placement.rcNormalPosition.bottom
             };
         }
-    }
-
-    void Application::select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
-    {
-        const auto [camera_sink_ptr, level] = get_entity_and_level(camera_sink);
-        if (!camera_sink_ptr || !level)
-        {
-            return;
-        }
-
-        _viewer->open(level, ILevel::OpenMode::Reload);
-        select_room(actual_room(*camera_sink_ptr));
-        level->set_selected_camera_sink(camera_sink_ptr->number());
-        _viewer->select_camera_sink(camera_sink);
-        _windows->select(camera_sink);
     }
 
     std::weak_ptr<ILevel> Application::current_level() const
@@ -778,9 +656,10 @@ namespace trview
         auto old_level = _level;
         _level = level;
 
+        messages::send_open_level(_messaging, _level);
+
         _file_menu->open_file(level->filename(), level->pack());
         _level->set_map_colours(_settings.map_colours);
-        _windows->set_level(_level);
         if (open_mode == ILevel::OpenMode::Full)
         {
             _route->clear();
@@ -807,31 +686,44 @@ namespace trview
             {
                 if (const auto new_selected_item = _level->item(selected_item.value()).lock())
                 {
-                    select_item(new_selected_item);
+                    messages::send_select_item(_messaging, new_selected_item);
                 }
             }
 
             auto selected_trigger = old_level->selected_trigger();
             if (selected_trigger.has_value())
             {
-                select_trigger(_level->trigger(selected_trigger.value()));
+                if (const auto new_selected_trigger = _level->trigger(selected_trigger.value()).lock())
+                {
+                    messages::send_select_trigger(_messaging, new_selected_trigger);
+                }
             }
 
             auto selected_light = old_level->selected_light();
             if (selected_light.has_value())
             {
-                select_light(_level->light(selected_light.value()));
+                if (const auto new_selected_light = _level->light(selected_light.value()).lock())
+                {
+                    messages::send_select_light(_messaging, new_selected_light);
+                }
             }
 
             auto selected_camera_sink = old_level->selected_camera_sink();
             if (selected_camera_sink.has_value())
             {
-                select_camera_sink(_level->camera_sink(selected_camera_sink.value()));
+                if (const auto new_selected_camera_sink = _level->camera_sink(selected_camera_sink.value()).lock())
+                {
+                    messages::send_select_camera_sink(_messaging, new_selected_camera_sink);
+                }
             }
 
-            if (auto selected_room = old_level->selected_room().lock())
+            auto selected_room = old_level->selected_room().lock();
+            if (selected_room)
             {
-                select_room(_level->room(selected_room->number()));
+                if (const auto new_selected_room = _level->room(selected_room->number()).lock())
+                {
+                    messages::send_select_room(_messaging, new_selected_room);
+                }
             }
 
             _viewer->set_target(old_target);
@@ -868,37 +760,8 @@ namespace trview
     void Application::set_route(const std::shared_ptr<IRoute>& route)
     {
         _route = route;
-        _token_store += _route->on_waypoint_selected += [&](auto&& r) { select_waypoint(r); };
         _route->set_level(_level);
         _viewer->set_route(_route);
-        _windows->set_route(_route);
-    }
-
-    void Application::select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh)
-    {
-        const auto [static_mesh_ptr, level] = get_entity_and_level(static_mesh);
-        if (!static_mesh_ptr || !level)
-        {
-            return;
-        }
-
-        _viewer->open(level, ILevel::OpenMode::Reload);
-        select_room(static_mesh_ptr->room());
-        _viewer->select_static_mesh(static_mesh_ptr);
-        _windows->select(static_mesh_ptr);
-    }
-
-    void Application::select_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
-    {
-        const auto [sound_source_ptr, level] = get_entity_and_level(sound_source);
-        if (!sound_source_ptr || !level)
-        {
-            return;
-        }
-
-        _viewer->open(level, ILevel::OpenMode::Reload);
-        _viewer->select_sound_source(sound_source);
-        _windows->select(sound_source);
     }
 
     void Application::check_load()
@@ -938,23 +801,32 @@ namespace trview
         }
     }
 
-    void Application::select_flyby_node(const std::weak_ptr<IFlybyNode>& node)
-    {
-        const auto [flyby_node_ptr, level] = get_entity_and_level(node);
-        if (!flyby_node_ptr || !level)
-        {
-            return;
-        }
-
-        _viewer->open(level, ILevel::OpenMode::Reload);
-        level->set_selected_flyby_node(node);
-        _viewer->select_flyby_node(node);
-        _windows->select(node);
-    }
-
     void Application::receive_message(const Message& message)
     {
-        if (auto settings = messages::read_settings(message))
+        if (message.type == "get_selected_item")
+        {
+            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
+            {
+                if (_level)
+                {
+                    if (auto selected = _level->selected_item())
+                    {
+                        requester->receive_message({ .type = "select_item", .data = std::make_shared<MessageData<std::weak_ptr<IItem>>>(_level->item(selected.value())) });
+                    }
+                }
+            }
+        }
+        else if (message.type == "get_selected_room")
+        {
+            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
+            {
+                if (_level)
+                {
+                    requester->receive_message({ .type = "select_room", .data = std::make_shared<MessageData<std::weak_ptr<IRoom>>>(_level->selected_room()) });
+                }
+            }
+        }
+        else if (auto settings = messages::read_settings(message))
         {
             _settings = settings.value();
             lua::set_settings(_settings);
@@ -965,6 +837,143 @@ namespace trview
             {
                 requester->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(_settings) });
             }
+        }
+        else if (message.type == "get_selected_light")
+        {
+            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
+            {
+                if (_level)
+                {
+                    if (auto current_selected_light = _level->selected_light())
+                    {
+                        const auto light = _level->lights()[current_selected_light.value()];
+                        requester->receive_message({ .type = "select_light", .data = std::make_shared<MessageData<std::weak_ptr<ILight>>>(light) });
+                    }
+                }
+            }
+        }
+        else if (message.type == "get_selected_trigger")
+        {
+            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
+            {
+                if (_level)
+                {
+                    if (auto current_selected_trigger = _level->selected_trigger())
+                    {
+                        const auto trigger = _level->trigger(current_selected_trigger.value());
+                        requester->receive_message({ .type = "select_trigger", .data = std::make_shared<MessageData<std::weak_ptr<ITrigger>>>(trigger) });
+                    }
+                }
+            }
+        }
+        else if (message.type == "get_selected_camera_sink")
+        {
+            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
+            {
+                if (_level)
+                {
+                    if (auto current_selected_camera_sink = _level->selected_camera_sink())
+                    {
+                        const auto camera_sink = _level->camera_sink(current_selected_camera_sink.value());
+                        requester->receive_message({ .type = "select_camera_sink", .data = std::make_shared<MessageData<std::weak_ptr<ICameraSink>>>(camera_sink) });
+                    }
+                }
+            }
+        }
+        else if (message.type == "get_selected_sound_source")
+        {
+            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
+            {
+                // TODO: Who knows about this?
+            }
+        }
+        else if (message.type == "get_open_level")
+        {
+            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
+            {
+                requester->receive_message({ .type = "open_level", .data = std::make_shared<MessageData<std::weak_ptr<ILevel>>>(_level) });
+            }
+        }
+        else if (auto diff_level = messages::read_end_diff(message))
+        {
+            end_diff(diff_level.value());
+        }
+        else if (auto add_to_route = messages::read_add_to_route(message))
+        {
+            if (auto trigger = std::get_if<std::weak_ptr<ITrigger>>(&add_to_route->element))
+            {
+                if (auto trigger_ptr = trigger->lock())
+                {
+                    add_waypoint(trigger_ptr->position(), Vector3::Down, trigger_room(trigger_ptr), IWaypoint::Type::Trigger, trigger_ptr->number());
+                }
+            }
+            else if (auto item = std::get_if<std::weak_ptr<IItem>>(&add_to_route->element))
+            {
+                if (auto item_ptr = item->lock())
+                {
+                    add_waypoint(item_ptr->position(), Vector3::Down, item_room(item_ptr), IWaypoint::Type::Entity, item_ptr->number());
+                }
+            }
+        }
+        else if (auto open_filename = messages::read_open_level_filename(message))
+        {
+            open(open_filename.value(), ILevel::OpenMode::Full);
+        }
+        else if (auto switch_filename = messages::read_switch_level_filename(message))
+        {
+            _file_menu->switch_to(switch_filename.value());
+        }
+        else if (auto route_open = messages::commands::read_route_open(message))
+        {
+            open_route();
+        }
+        else if (auto route_reload = messages::commands::read_route_reload(message))
+        {
+            reload_route();
+        }
+        else if (auto route_save = messages::commands::read_route_save(message))
+        {
+            save_route();
+        }
+        else if (auto route_save_as = messages::commands::read_route_save_as(message))
+        {
+            save_route_as();
+        }
+        else if (auto route_new = messages::commands::read_new_route(message))
+        {
+            if (should_discard_changes())
+            { 
+                set_route(_route_source(std::nullopt)); 
+            }
+        }
+        else if (auto route_new_randomizer = messages::commands::read_new_randomizer_route(message))
+        {
+            if (should_discard_changes())
+            {
+                set_route(_randomizer_route_source(std::nullopt));
+            }
+        }
+        else if (message.type == "get_route")
+        {
+            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
+            {
+                requester->receive_message({ .type = "route", .data = std::make_shared<MessageData<std::weak_ptr<IRoute>>>(_route) });
+            }
+        }
+        else if (auto level = messages::read_open_level(message))
+        {
+            const auto level_ptr = level.value().lock();
+            if (level_ptr &&
+                level_ptr->version() == trlevel::LevelVersion::Unknown &&
+                level_ptr->pack().lock() &&
+                _windows->windows("Pack").empty())
+            {
+                _windows->create("Pack");
+            }
+        }
+        else if (auto route_window_opened = messages::read_route_window_opened(message))
+        {
+            open_recent_route();
         }
     }
 }

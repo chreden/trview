@@ -4,6 +4,7 @@
 #include "../RowCounter.h"
 #include "../../Elements/Flyby/IFlybyNode.h"
 #include "../../Messages/Messages.h"
+#include "../../Elements/ILevel.h"
 
 namespace trview
 {
@@ -122,10 +123,6 @@ namespace trview
         }
     }
 
-    ICameraSinkWindow::~ICameraSinkWindow()
-    {
-    }
-
     CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _camera(camera), _messaging(messaging)
     {
@@ -230,7 +227,7 @@ namespace trview
                 set_local_selected_flyby_node(nodes[0]);
                 if (_sync)
                 {
-                    on_flyby_node_selected(_selected_node);
+                    messages::send_select_flyby_node(_messaging, _selected_node);
                 }
             }
         }
@@ -295,7 +292,7 @@ namespace trview
                     set_local_selected_camera_sink(camera);
                     if (_sync)
                     {
-                        on_camera_sink_selected(camera);
+                        messages::send_select_camera_sink(_messaging, camera);
                     }
                 }, default_hide(filtered_camera_sinks));
         }
@@ -380,7 +377,7 @@ namespace trview
                         {
                             _selected_trigger = trigger;
                             _track.set_enabled<Type::Room>(false);
-                            on_trigger_selected(trigger);
+                            messages::send_select_trigger(_messaging, trigger);
                         }
                         ImGui::TableNextColumn();
                         ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
@@ -873,7 +870,7 @@ namespace trview
                         set_local_selected_flyby_node(node);
                         if (_sync)
                         {
-                            on_flyby_node_selected(node);
+                            messages::send_select_flyby_node(_messaging, node);
                         }
                     }, {});
 
@@ -966,5 +963,44 @@ namespace trview
                 _columns_set = true;
             }
         }
+        else if (auto selected_camera_sink = messages::read_select_camera_sink(message))
+        {
+            set_selected_camera_sink(selected_camera_sink.value());
+        }
+        else if (auto selected_flyby_node = messages::read_select_flyby_node(message))
+        {
+            set_selected_flyby_node(selected_flyby_node.value());
+        }
+        else if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                set_camera_sinks(level_ptr->camera_sinks());
+                set_flybys(level_ptr->flybys());
+                set_platform_and_version(level_ptr->platform_and_version());
+            }
+        }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_current_room(selected_room.value());
+        }
+    }
+
+    void CameraSinkWindow::initialise()
+    {
+        messages::get_open_level(_messaging, weak_from_this());
+        messages::get_selected_room(_messaging, weak_from_this());
+        messages::get_selected_camera_sink(_messaging, weak_from_this());
+        messages::get_selected_flyby_node(_messaging, weak_from_this());
+    }
+
+    std::string CameraSinkWindow::type() const
+    {
+        return "CameraSink";
+    }
+
+    std::string CameraSinkWindow::title() const
+    {
+        return _id;
     }
 }

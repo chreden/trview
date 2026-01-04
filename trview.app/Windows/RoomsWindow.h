@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IRoomsWindow.h"
+#include "IWindow.h"
 
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.common/TokenStore.h>
@@ -16,7 +16,7 @@
 
 namespace trview
 {
-    class RoomsWindow final : public IRoomsWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class RoomsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -34,27 +34,30 @@ namespace trview
         /// @param renderer_source The function to call to get a renderer.
         explicit RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~RoomsWindow() = default;
-        void clear_selected_trigger() override;
+        void clear_selected_trigger();
         void render() override;
-        void set_current_room(const std::weak_ptr<IRoom>& room) override;
-        void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
-        void set_level_version(trlevel::LevelVersion version) override;
-        void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
-        void set_selected_item(const std::weak_ptr<IItem>& item) override;
-        void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
+        void set_current_room(const std::weak_ptr<IRoom>& room);
+        void set_items(const std::vector<std::weak_ptr<IItem>>& items);
+        void set_level_version(trlevel::LevelVersion version);
+        void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms);
+        void set_selected_item(const std::weak_ptr<IItem>& item);
+        void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
         void update(float delta) override;
         void set_number(int32_t number) override;
-        void set_floordata(const std::vector<uint16_t>& data) override;
-        void set_selected_light(const std::weak_ptr<ILight>& light) override;
-        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
-        void clear_selected_light() override;
-        void clear_selected_camera_sink() override;
-        void set_ng_plus(bool value) override;
-        void set_trng(bool value) override;
-        std::string name() const override;
-        void set_filters(std::vector<Filters<IRoom>::Filter> filters) override;
-        void set_selected_sector(const std::weak_ptr<ISector>& sector) override;
+        void set_floordata(const std::vector<uint16_t>& data);
+        void set_selected_light(const std::weak_ptr<ILight>& light);
+        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
+        void clear_selected_light();
+        void clear_selected_camera_sink();
+        void set_ng_plus(bool value);
+        void set_trng(bool value);
+        std::string name() const;
+        void set_filters(std::vector<Filters<IRoom>::Filter> filters);
+        void set_selected_sector(const std::weak_ptr<ISector>& sector);
         void receive_message(const Message& message) override;
+        void initialise();
+        std::string type() const override;
+        std::string title() const override;
     private:
         void set_sync_room(bool value);
         void render_rooms_list();

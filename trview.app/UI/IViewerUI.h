@@ -13,8 +13,6 @@
 namespace trview
 {
     struct IRoom;
-    struct IItem;
-    struct IItemsWindow;
 
     enum class Tool
     {
@@ -68,15 +66,6 @@ namespace trview
         /// Event raised when the hide button is clicked.
         Event<> on_hide;
 
-        /// Event raised when a minimap sector is hovered over.
-        Event<std::weak_ptr<ISector>> on_sector_hover;
-
-        /// Event raised when an item is selected.
-        Event<std::weak_ptr<IItem>> on_select_item;
-
-        /// Event raised when a room is selected.
-        Event<std::weak_ptr<IRoom>> on_select_room;
-
         /// Event raised when a tool is selected.
         Event<Tool> on_tool_selected;
 
@@ -98,11 +87,9 @@ namespace trview
         /// </summary>
         Event<IContextMenu::CopyType> on_copy;
 
-        Event<std::weak_ptr<ITrigger>> on_select_trigger;
-
         Event<std::string, FontSetting> on_font;
 
-        Event<std::weak_ptr<IItemsWindow>> on_filter_items_to_tile;
+        Event<std::weak_ptr<IWindow>> on_filter_items_to_tile;
         Event<bool> on_linear_filtering;
 
         /// Render the UI.
@@ -175,12 +162,6 @@ namespace trview
         /// Set whether the user can click the remove waypoint button.
         /// "param value Whether the button is enabled.
         virtual void set_remove_waypoint_enabled(bool value) = 0;
-
-        /// <summary>
-        /// Set the currently selected item index.
-        /// </summary>
-        /// <param name="item">The selected item number.</param>
-        virtual void set_selected_item(uint32_t index) = 0;
 
         /// Set the selected room.
         /// @param room The selected room.

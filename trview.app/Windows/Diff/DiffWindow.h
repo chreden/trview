@@ -8,12 +8,12 @@
 
 #include "../../Menus/IFileMenu.h"
 #include "../../Elements/ILevel.h"
-#include "IDiffWindow.h"
+#include "../IWindow.h"
 #include "../../Settings/UserSettings.h"
 
 namespace trview
 {
-    class DiffWindow final : public IDiffWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class DiffWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -22,8 +22,10 @@ namespace trview
 
         explicit DiffWindow(const std::shared_ptr<IDialogs>& dialogs, const ILevel::Source& level_source, const std::shared_ptr<IFileMenu>& file_menu, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~DiffWindow() = default;
+        void initialise();
+        void update(float delta) override;
         void render() override;
-        void set_level(const std::weak_ptr<ILevel>& level) override;
+        void set_level(const std::weak_ptr<ILevel>& level);
         void set_number(int32_t number) override;
 
         struct Diff
@@ -63,6 +65,8 @@ namespace trview
         };
 
         void receive_message(const Message& message) override;
+        std::string type() const override;
+        std::string title() const override;
     private:
         struct LoadOperation
         {

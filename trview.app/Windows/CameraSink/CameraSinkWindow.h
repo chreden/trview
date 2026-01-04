@@ -3,15 +3,22 @@
 #include <trview.common/TokenStore.h>
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.common/Messages/IMessageSystem.h>
+
 #include "../../Filters/Filters.h"
+
+#include <trlevel/LevelVersion.h>
+
 #include "../../Track/Track.h"
-#include "ICameraSinkWindow.h"
 #include "../AutoHider.h"
 #include "../../Settings/UserSettings.h"
+#include "../IWindow.h"
+
+#include "../../Elements/CameraSink/ICameraSink.h"
+#include "../../Elements/Flyby/IFlyby.h"
 
 namespace trview
 {
-    class CameraSinkWindow final : public ICameraSinkWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class CameraSinkWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -29,14 +36,17 @@ namespace trview
         virtual ~CameraSinkWindow() = default;
         void render() override;
         void set_number(int32_t number) override;
-        void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks) override;
-        void set_flybys(const std::vector<std::weak_ptr<IFlyby>>& flybys) override;
-        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) override;
-        void set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) override;
-        void set_current_room(const std::weak_ptr<IRoom>& room) override;
+        void set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks);
+        void set_flybys(const std::vector<std::weak_ptr<IFlyby>>& flybys);
+        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
+        void set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node);
+        void set_current_room(const std::weak_ptr<IRoom>& room);
         void update(float delta) override;
-        void set_platform_and_version(const trlevel::PlatformAndVersion& version) override;
+        void set_platform_and_version(const trlevel::PlatformAndVersion& version);
         void receive_message(const Message& message) override;
+        void initialise();
+        std::string type() const override;
+        std::string title() const override;
     private:
         bool render_camera_sink_window();
         void set_sync(bool value);

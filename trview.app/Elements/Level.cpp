@@ -2,6 +2,7 @@
 
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>
+#include "../Elements/Flyby/IFlybyNode.h"
 
 #include "../Graphics/LevelTextureStorage.h"
 #include "../Camera/ICamera.h"
@@ -95,6 +96,13 @@ namespace trview
             {
                 add_ladder_down(sector, sector->flags() & SectorFlag::Climbable);
             }
+        }
+
+        template <typename T>
+        bool is_matching_level(const std::shared_ptr<T>& element, const ILevel* const level)
+        {
+            const auto level_ptr = element->level().lock();
+            return level_ptr && level_ptr.get() == level;
         }
     }
 
@@ -245,7 +253,8 @@ namespace trview
     void Level::set_selected_room(const std::weak_ptr<IRoom>& room)
     { 
         const auto room_ptr = room.lock();
-        if (_selected_room.lock() == room_ptr)
+        if (_selected_room.lock() == room_ptr ||
+            !is_matching_level(room_ptr, this))
         {
             return;
         }
@@ -264,17 +273,15 @@ namespace trview
                 on_alternate_mode_selected(!_alternate_mode);
             }
         }
-
-        on_room_selected(room);
     }
 
     void Level::set_selected_item(const std::weak_ptr<IItem>& item)
     {
         const auto selected_item = item.lock();
-        if (_selected_item.lock() != selected_item)
+        if (_selected_item.lock() != selected_item && is_matching_level(selected_item, this))
         {
+            sync_room(selected_item);
             _selected_item = selected_item;
-            on_item_selected(_selected_item);
         }
     }
 
@@ -925,7 +932,7 @@ namespace trview
         {
             if (auto level = current_room->level().lock())
             {
-                on_room_selected(level->room(current_room->alternate_room()));
+                messages::send_select_room(_messaging, level->room(current_room->alternate_room()));
             }
         }
 
@@ -951,7 +958,7 @@ namespace trview
         {
             if (auto level = current_room->level().lock())
             {
-                on_room_selected(level->room(current_room->alternate_room()));
+                messages::send_select_room(_messaging, level->room(current_room->alternate_room()));
             }
         }
     }
@@ -1070,27 +1077,48 @@ namespace trview
 
     void Level::set_selected_trigger(uint32_t number)
     {
-        const auto selected_trigger = _triggers[number];
-        if (_selected_trigger.lock() != selected_trigger)
+        set_selected_trigger(_triggers[number]);
+    }
+
+    void Level::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
+    {
+        const auto selected_trigger = trigger.lock();
+        if (_selected_trigger.lock() != selected_trigger && is_matching_level(selected_trigger, this))
         {
+            sync_room(selected_trigger);
             _selected_trigger = selected_trigger;
-            on_trigger_selected(_selected_trigger);
         }
     }
 
     void Level::set_selected_light(uint32_t number)
     {
-        _selected_light = _lights[number];
+        set_selected_light(_lights[number]);
+    }
+
+    void Level::set_selected_light(const std::weak_ptr<ILight>& light)
+    {
+        const auto selected_light = light.lock();
+        if (_selected_light.lock() != selected_light && is_matching_level(selected_light, this))
+        {
+            sync_room(selected_light);
+            _selected_light = light;
+        }
     }
 
     void Level::set_selected_camera_sink(uint32_t number)
     {
-        _selected_camera_sink = _camera_sinks[number];
+        if (number <= _camera_sinks.size())
+        {
+            _selected_camera_sink = _camera_sinks[number];
+        }
     }
 
     void Level::set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& node)
     {
-        _selected_flyby_node = node;
+        if (is_matching_level(node.lock(), this))
+        {
+            _selected_flyby_node = node;
+        }
     }
 
     std::shared_ptr<ILevelTextureStorage> Level::texture_storage() const
@@ -1575,7 +1603,7 @@ namespace trview
         if (currently_active != show)
         {
             _render_filters = set_flag(_render_filters, RenderFilter::NgPlus, show);
-            on_ng_plus(show);
+            messages::send_ng_plus(_messaging, show);
 
             if (const auto selected = _selected_item.lock())
             {
@@ -1592,7 +1620,7 @@ namespace trview
                     if (alternate != _entities.end())
                     {
                         _selected_item = *alternate;
-                        on_item_selected(_selected_item);
+                        messages::send_select_item(_messaging, _selected_item);
                     }
                 }
             }
@@ -1639,10 +1667,30 @@ namespace trview
 
     void Level::receive_message(const Message& message)
     {
-        if (auto settings = messages::read_settings(message))
+        if (auto selected_item = messages::read_select_item(message))
+        {
+            set_selected_item(selected_item.value());
+        }
+        else if (auto settings = messages::read_settings(message))
         {
             _map_colours = settings->map_colours;
             on_geometry_colours_changed();
+        }
+        else if (auto selected_light = messages::read_select_light(message))
+        {
+            set_selected_light(selected_light.value());
+        }
+        else if (auto selected_trigger = messages::read_select_trigger(message))
+        {
+            set_selected_trigger(selected_trigger.value());
+        }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_selected_room(selected_room.value());
+        }
+        else if (auto selected_flyby_node = messages::read_select_flyby_node(message))
+        {
+            set_selected_flyby_node(selected_flyby_node.value());
         }
     }
 

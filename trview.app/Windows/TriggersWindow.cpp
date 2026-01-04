@@ -36,10 +36,6 @@ namespace trview
         }
     }
 
-    ITriggersWindow::~ITriggersWindow()
-    {
-    }
-
     TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _messaging(messaging)
     {
@@ -243,7 +239,7 @@ namespace trview
                     set_local_selected_trigger(trigger);
                     if (_sync_trigger)
                     {
-                        on_trigger_selected(trigger);
+                        messages::send_select_trigger(_messaging, trigger);
                     }
                 }, default_hide(filtered_triggers));
         }
@@ -335,7 +331,7 @@ namespace trview
                         ImGui::TextWrapped("This trigger is affected by a trigger triggerer. This trigger will be disabled until the item is activated.");
                         if (ImGui::Button(std::format("Item {} - {}", item_ptr->number(), item_ptr->type()).c_str(), ImVec2(-1, 0)))
                         {
-                            on_item_selected(item);
+                            messages::send_select_item(_messaging, item);
                         }
                     }
                 }
@@ -344,7 +340,7 @@ namespace trview
 
             if (ImGui::Button(Names::add_to_route.c_str(), ImVec2(-1, 30)))
             {
-                on_add_to_route(_selected_trigger);
+                messages::send_add_to_route(_messaging, _selected_trigger);
             }
 
             const bool any_extra = std::ranges::any_of(_local_selected_trigger_commands, [](auto&& c) { return c.data().size() > 1; });
@@ -381,7 +377,7 @@ namespace trview
                         if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object && command.index() < _all_items.size())
                         {
                             _track.set_enabled<Type::Room>(false);
-                            on_item_selected(_all_items[command.index()]);
+                            messages::send_select_item(_messaging, _all_items[command.index()]);
                         }
                         else if (equals_any(command.type(), TriggerCommandType::UnderwaterCurrent, TriggerCommandType::Camera))
                         {
@@ -390,7 +386,7 @@ namespace trview
                             {
                                 if (auto level = selected_trigger->level().lock())
                                 {
-                                    on_camera_sink_selected(level->camera_sink(command.index()));
+                                    messages::send_select_camera_sink(_messaging, level->camera_sink(command.index()));
                                 }
                             }
                         }
@@ -408,7 +404,7 @@ namespace trview
                                             const auto nodes = flyby->nodes();
                                             if (!nodes.empty())
                                             {
-                                                on_flyby_node_selected(nodes[0]);
+                                                messages::send_select_flyby_node(_messaging, nodes[0]);
                                             }
                                             break;
                                         }
@@ -632,5 +628,39 @@ namespace trview
                 _columns_set = true;
             }
         }
+        else if (auto selected_trigger = messages::read_select_trigger(message))
+        {
+            set_selected_trigger(selected_trigger.value());
+        }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_current_room(selected_room.value());
+        }
+        else if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                set_items(level_ptr->items());
+                set_triggers(level_ptr->triggers());
+                set_platform_and_version(level_ptr->platform_and_version());
+            }
+        }
+    }
+
+    void TriggersWindow::initialise()
+    {
+        messages::get_open_level(_messaging, weak_from_this());
+        messages::get_selected_room(_messaging, weak_from_this());
+        messages::get_selected_trigger(_messaging, weak_from_this());
+    }
+
+    std::string TriggersWindow::type() const
+    {
+        return "Triggers";
+    }
+
+    std::string TriggersWindow::title() const
+    {
+        return _id;
     }
 }

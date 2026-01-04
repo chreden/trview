@@ -50,16 +50,11 @@
     <ClCompile Include="Routing\IWaypoint.cpp" Filter="Routing" />
     <ClCompile Include="Settings\RandomizerSettings.cpp" Filter="Settings" />
     <ClCompile Include="trview_imgui.cpp" />
-    <ClCompile Include="Windows\LightsWindowManager.cpp" Filter="Windows\Lights" />
     <ClCompile Include="Windows\LightsWindow.cpp" Filter="Windows\Lights" />
     <ClCompile Include="Windows\ItemsWindow.cpp" Filter="Windows\Items" />
-    <ClCompile Include="Windows\ItemsWindowManager.cpp" Filter="Windows\Items" />
     <ClCompile Include="Windows\TriggersWindow.cpp" Filter="Windows\Triggers" />
-    <ClCompile Include="Windows\TriggersWindowManager.cpp" Filter="Windows\Triggers" />
     <ClCompile Include="Windows\RoomsWindow.cpp" Filter="Windows\Rooms" />
-    <ClCompile Include="Windows\RoomsWindowManager.cpp" Filter="Windows\Rooms" />
     <ClCompile Include="Windows\RouteWindow.cpp" Filter="Windows\Route" />
-    <ClCompile Include="Windows\RouteWindowManager.cpp" Filter="Windows\Route" />
     <ClCompile Include="UI\DX11ImGuiBackend.cpp" Filter="UI" />
     <ClCompile Include="UI\MapRenderer.cpp" Filter="UI\Minimap" />
     <ClCompile Include="Elements\ILight.cpp" Filter="Elements\Light" />
@@ -72,12 +67,9 @@
     <ClCompile Include="Elements\Level.cpp" Filter="Elements\Level" />
     <ClCompile Include="Menus\FileMenu.cpp" Filter="Menus" />
     <ClCompile Include="Windows\Log\LogWindow.cpp" Filter="Windows\Log" />
-    <ClCompile Include="Windows\Log\LogWindowManager.cpp" Filter="Windows\Log" />
     <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
     <ClCompile Include="Elements\CameraSink\CameraSink.cpp" Filter="Elements\CameraSink" />
     <ClCompile Include="Windows\Textures\TexturesWindow.cpp" Filter="Windows\Textures" />
-    <ClCompile Include="Windows\CameraSink\CameraSinkWindowManager.cpp" Filter="Windows\CameraSink" />
-    <ClCompile Include="Windows\Textures\TexturesWindowManager.cpp" Filter="Windows\Textures" />
     <ClCompile Include="Windows\CameraSink\CameraSinkWindow.cpp" Filter="Windows\CameraSink" />
     <ClCompile Include="Lua\trview\trview.cpp" Filter="Lua\trview" />
     <ClCompile Include="Lua\Elements\Level\Lua_Level.cpp" Filter="Lua\Elements\Level" />
@@ -92,14 +84,12 @@
     <ClCompile Include="Elements\Sector.cpp" Filter="Elements\Sector" />
     <ClCompile Include="Lua\Elements\Sector\Lua_Sector.cpp" Filter="Lua\Elements\Sector" />
     <ClCompile Include="Lua\Elements\CameraSink\Lua_CameraSink.cpp" Filter="Lua\Elements\CameraSink" />
-    <ClCompile Include="Windows\Console\ConsoleManager.cpp" Filter="Windows\Console" />
     <ClCompile Include="Windows\Console\Console.cpp" Filter="Windows\Console" />
     <ClCompile Include="Lua\Elements\Light\Lua_Light.cpp" Filter="Lua\Elements\Light" />
     <ClCompile Include="Lua\Colour.cpp" Filter="Lua" />
     <ClCompile Include="Plugins\Plugins.cpp" Filter="Plugins" />
     <ClCompile Include="Plugins\Plugin.cpp" Filter="Plugins" />
     <ClCompile Include="Windows\Plugins\PluginsWindow.cpp" Filter="Windows\Plugins" />
-    <ClCompile Include="Windows\Plugins\PluginsWindowManager.cpp" Filter="Windows\Plugins" />
     <ClCompile Include="Lua\Elements\StaticMesh\Lua_StaticMesh.cpp" Filter="Lua\Elements\StaticMesh" />
     <ClCompile Include="Elements\StaticMesh.cpp" Filter="Elements\StaticMesh" />
     <ClCompile Include="Lua\BoundingBox.cpp" Filter="Lua" />
@@ -108,7 +98,6 @@
     <ClCompile Include="Routing\RandomizerRoute.cpp" Filter="Routing" />
     <ClCompile Include="Windows\RowCounter.cpp" Filter="Windows" />
     <ClCompile Include="UI\Fonts\Fonts.cpp" Filter="UI\Fonts" />
-    <ClCompile Include="Windows\Statics\StaticsWindowManager.cpp" Filter="Windows\Statics" />
     <ClCompile Include="Windows\Statics\StaticsWindow.cpp" Filter="Windows\Statics" />
     <ClCompile Include="Windows\Windows.cpp" Filter="Windows" />
     <ClCompile Include="Lua\Scriptable\Scriptable.cpp" Filter="Lua\Scriptable" />
@@ -116,17 +105,13 @@
     <ClCompile Include="Sound\SoundStorage.cpp" Filter="Sound" />
     <ClCompile Include="Sound\Sound.cpp" Filter="Sound" />
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" Filter="Windows\Sounds" />
-    <ClCompile Include="Windows\Sounds\SoundsWindowManager.cpp" Filter="Windows\Sounds" />
     <ClCompile Include="Elements\SoundSource\SoundSource.cpp" Filter="Elements\SoundSource" />
     <ClCompile Include="Elements\Remastered\NgPlusSwitcher.cpp" Filter="Elements\Remastered" />
     <ClCompile Include="Windows\AutoHider.cpp" Filter="Windows" />
     <ClCompile Include="Windows\About\AboutWindow.cpp" Filter="Windows\About" />
-    <ClCompile Include="Windows\About\AboutWindowManager.cpp" Filter="Windows\About" />
     <ClCompile Include="Windows\Diff\DiffWindow.cpp" Filter="Windows\Diff" />
-    <ClCompile Include="Windows\Diff\DiffWindowManager.cpp" Filter="Windows\Diff" />
     <ClCompile Include="Menus\ImGuiFileMenu.cpp" Filter="Menus" />
     <ClCompile Include="Windows\Pack\PackWindow.cpp" Filter="Windows\Pack" />
-    <ClCompile Include="Windows\Pack\PackWindowManager.cpp" Filter="Windows\Pack" />
     <ClCompile Include="Geometry\Model\Model.cpp" Filter="Geometry\Model" />
     <ClCompile Include="Geometry\Model\ModelStorage.cpp" Filter="Geometry\Model" />
     <ClCompile Include="Elements\Flyby\Flyby.cpp" Filter="Elements\Flyby" />
@@ -200,12 +185,6 @@
     <ClInclude Include="Mocks\Graphics\ITextureStorage.h" Filter="Mocks\Graphics" />
     <ClInclude Include="Routing\IRoute.h" Filter="Routing" />
     <ClInclude Include="Mocks\Routing\IRoute.h" Filter="Mocks\Routing" />
-    <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IRouteWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\ITriggersWindow.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IItemsWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Tools\ICompass.h" Filter="Tools" />
     <ClInclude Include="Mocks\Tools\ICompass.h" Filter="Mocks\Tools" />
     <ClInclude Include="Tools\IMeasure.h" Filter="Tools" />
@@ -223,7 +202,6 @@
     <ClInclude Include="Graphics\ISectorHighlight.h" Filter="Graphics" />
     <ClInclude Include="Mocks\Graphics\ISectorHighlight.h" Filter="Mocks\Graphics" />
     <ClInclude Include="UI\IViewerUI.h" Filter="UI" />
-    <ClInclude Include="Mocks\Windows\IRoomsWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Mocks\Elements\IItem.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Elements\IRoom.h" Filter="Mocks\Elements" />
     <ClInclude Include="Settings\IStartupOptions.h" Filter="Settings" />
@@ -238,7 +216,6 @@
     <ClInclude Include="Routing\IActions.h" Filter="Routing" />
     <ClInclude Include="Routing\Actions.h" Filter="Routing" />
     <ClInclude Include="Mocks\UI\ISettingsWindow.h" Filter="Mocks\UI" />
-    <ClInclude Include="Mocks\Windows\IRouteWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Routing\IWaypoint.h" Filter="Routing" />
     <ClInclude Include="Mocks\Routing\IWaypoint.h" Filter="Mocks\Routing" />
     <ClInclude Include="UI\IViewOptions.h" Filter="UI" />
@@ -249,30 +226,14 @@
     <ClInclude Include="Mocks\UI\ICameraControls.h" Filter="Mocks\UI" />
     <ClInclude Include="Settings\RandomizerSettings.h" Filter="Settings" />
     <ClInclude Include="Mocks\UI\IMapRenderer.h" Filter="Mocks\UI" />
-    <ClInclude Include="Windows\ILightsWindowManager.h" Filter="Windows\Lights" />
-    <ClInclude Include="Windows\LightsWindowManager.h" Filter="Windows\Lights" />
     <ClInclude Include="Windows\LightsWindow.h" Filter="Windows\Lights" />
-    <ClInclude Include="Windows\ILightsWindow.h" Filter="Windows\Lights" />
-    <ClInclude Include="Mocks\Windows\ILightsWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Mocks\Elements\ILight.h" Filter="Mocks\Elements" />
     <ClInclude Include="trview_imgui.h" />
     <ClInclude Include="trview_imgui.hpp" />
-    <ClInclude Include="Windows\IItemsWindow.h" Filter="Windows\Items" />
-    <ClInclude Include="Windows\IItemsWindowManager.h" Filter="Windows\Items" />
     <ClInclude Include="Windows\ItemsWindow.h" Filter="Windows\Items" />
-    <ClInclude Include="Windows\ItemsWindowManager.h" Filter="Windows\Items" />
-    <ClInclude Include="Windows\ITriggersWindow.h" Filter="Windows\Triggers" />
-    <ClInclude Include="Windows\ITriggersWindowManager.h" Filter="Windows\Triggers" />
     <ClInclude Include="Windows\TriggersWindow.h" Filter="Windows\Triggers" />
-    <ClInclude Include="Windows\TriggersWindowManager.h" Filter="Windows\Triggers" />
-    <ClInclude Include="Windows\IRoomsWindow.h" Filter="Windows\Rooms" />
-    <ClInclude Include="Windows\IRoomsWindowManager.h" Filter="Windows\Rooms" />
     <ClInclude Include="Windows\RoomsWindow.h" Filter="Windows\Rooms" />
-    <ClInclude Include="Windows\RoomsWindowManager.h" Filter="Windows\Rooms" />
-    <ClInclude Include="Windows\IRouteWindow.h" Filter="Windows\Route" />
-    <ClInclude Include="Windows\IRouteWindowManager.h" Filter="Windows\Route" />
     <ClInclude Include="Windows\RouteWindow.h" Filter="Windows\Route" />
-    <ClInclude Include="Windows\RouteWindowManager.h" Filter="Windows\Route" />
     <ClInclude Include="UI\IImGuiBackend.h" Filter="UI" />
     <ClInclude Include="UI\DX11ImGuiBackend.h" Filter="UI" />
     <ClInclude Include="Mocks\UI\IImGuiBackend.h" Filter="Mocks\UI" />
@@ -281,14 +242,11 @@
     <ClInclude Include="Elements\ILight.h" Filter="Elements\Light" />
     <ClInclude Include="UI\MapColours.h" Filter="UI\Minimap" />
     <ClInclude Include="Elements\Light.h" Filter="Elements\Light" />
-    <ClInclude Include="Mocks\Windows\ILightsWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="UI\ISettingsWindow.h" Filter="UI\Settings" />
     <ClInclude Include="UI\SettingsWindow.h" Filter="UI\Settings" />
     <ClInclude Include="Elements\Floordata.h" Filter="Elements" />
     <ClInclude Include="Filters\Filters.h" Filter="Filters" />
     <ClInclude Include="Filters\Filters.hpp" Filter="Filters" />
-    <ClInclude Include="Windows\WindowManager.h" Filter="Windows" />
-    <ClInclude Include="Windows\WindowManager.hpp" Filter="Windows" />
     <ClInclude Include="Elements\IRoom.h" Filter="Elements\Room" />
     <ClInclude Include="Elements\Room.h" Filter="Elements\Room" />
     <ClInclude Include="Elements\RoomInfo.h" Filter="Elements\Room" />
@@ -297,30 +255,15 @@
     <ClInclude Include="Menus\FileMenu.h" Filter="Menus" />
     <ClInclude Include="Menus\IFileMenu.h" Filter="Menus" />
     <ClInclude Include="Mocks\Menus\IFileMenu.h" Filter="Mocks\Menus" />
-    <ClInclude Include="Windows\Log\ILogWindow.h" Filter="Windows\Log" />
     <ClInclude Include="Windows\Log\LogWindow.h" Filter="Windows\Log" />
-    <ClInclude Include="Windows\Log\ILogWindowManager.h" Filter="Windows\Log" />
-    <ClInclude Include="Windows\Log\LogWindowManager.h" Filter="Windows\Log" />
-    <ClInclude Include="Mocks\Windows\ILogWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\ILogWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Elements\RenderFilter.h" Filter="Elements" />
     <ClInclude Include="Elements\CameraSink\ICameraSink.h" Filter="Elements\CameraSink" />
-    <ClInclude Include="Windows\Textures\ITexturesWindow.h" Filter="Windows\Textures" />
     <ClInclude Include="Elements\CameraSink\CameraSink.h" Filter="Elements\CameraSink" />
-    <ClInclude Include="Windows\Textures\ITexturesWindowManager.h" Filter="Windows\Textures" />
     <ClInclude Include="Mocks\Elements\ICameraSink.h" Filter="Mocks\Elements" />
     <ClInclude Include="Windows\Textures\TexturesWindow.h" Filter="Windows\Textures" />
-    <ClInclude Include="Windows\CameraSink\ICameraSinkWindowManager.h" Filter="Windows\CameraSink" />
-    <ClInclude Include="Windows\Textures\TexturesWindowManager.h" Filter="Windows\Textures" />
-    <ClInclude Include="Windows\CameraSink\ICameraSinkWindow.h" Filter="Windows\CameraSink" />
-    <ClInclude Include="Mocks\Windows\ITexturesWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Windows\CameraSink\CameraSinkWindowManager.h" Filter="Windows\CameraSink" />
-    <ClInclude Include="Mocks\Windows\ITexturesWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Lua\trview\trview.h" Filter="Lua\trview" />
     <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h" Filter="Windows\CameraSink" />
-    <ClInclude Include="Mocks\Windows\ICameraSinkWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Lua\Elements\Level\Lua_Level.h" Filter="Lua\Elements\Level" />
-    <ClInclude Include="Mocks\Windows\ICameraSinkWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Track\Track.h" Filter="Track" />
     <ClInclude Include="Type.h" />
     <ClInclude Include="Type.inl" />
@@ -336,12 +279,7 @@
     <ClInclude Include="Elements\Sector.h" Filter="Elements\Sector" />
     <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h" Filter="Lua\Elements\Sector" />
     <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h" Filter="Lua\Elements\CameraSink" />
-    <ClInclude Include="Windows\Console\IConsole.h" Filter="Windows\Console" />
-    <ClInclude Include="Windows\Console\IConsoleManager.h" Filter="Windows\Console" />
-    <ClInclude Include="Windows\Console\ConsoleManager.h" Filter="Windows\Console" />
-    <ClInclude Include="Mocks\Windows\IConsoleManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Windows\Console\Console.h" Filter="Windows\Console" />
-    <ClInclude Include="Mocks\Windows\IConsole.h" Filter="Mocks\Windows" />
     <ClInclude Include="Lua\Elements\Light\Lua_Light.h" Filter="Lua\Elements\Light" />
     <ClInclude Include="Lua\Colour.h" Filter="Lua" />
     <ClInclude Include="UserCancelledException.h" />
@@ -355,12 +293,7 @@
     <ClInclude Include="Plugins\IPlugin.h" Filter="Plugins" />
     <ClInclude Include="Plugins\Plugin.h" Filter="Plugins" />
     <ClInclude Include="Mocks\Plugins\IPlugin.h" Filter="Mocks\Plugins" />
-    <ClInclude Include="Windows\Plugins\IPluginsWindow.h" Filter="Windows\Plugins" />
-    <ClInclude Include="Windows\Plugins\IPluginsWindowManager.h" Filter="Windows\Plugins" />
-    <ClInclude Include="Windows\Plugins\PluginsWindowManager.h" Filter="Windows\Plugins" />
     <ClInclude Include="Windows\Plugins\PluginsWindow.h" Filter="Windows\Plugins" />
-    <ClInclude Include="Mocks\Windows\IPluginsWindow.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IPluginsWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Lua\Elements\StaticMesh\Lua_StaticMesh.h" Filter="Lua\Elements\StaticMesh" />
     <ClInclude Include="Elements\IStaticMesh.h" Filter="Elements\StaticMesh" />
     <ClInclude Include="Elements\StaticMesh.h" Filter="Elements\StaticMesh" />
@@ -378,12 +311,7 @@
     <ClInclude Include="UI\Fonts\IFonts.h" Filter="UI\Fonts" />
     <ClInclude Include="UI\Fonts\Fonts.h" Filter="UI\Fonts" />
     <ClInclude Include="Mocks\UI\IFonts.h" Filter="Mocks\UI" />
-    <ClInclude Include="Windows\Statics\IStaticsWindowManager.h" Filter="Windows\Statics" />
-    <ClInclude Include="Windows\Statics\IStaticsWindow.h" Filter="Windows\Statics" />
-    <ClInclude Include="Windows\Statics\StaticsWindowManager.h" Filter="Windows\Statics" />
     <ClInclude Include="Windows\Statics\StaticsWindow.h" Filter="Windows\Statics" />
-    <ClInclude Include="Mocks\Windows\IStaticsWindow.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IStaticsWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Windows\IWindows.h" Filter="Windows" />
     <ClInclude Include="Windows\Windows.h" Filter="Windows" />
     <ClInclude Include="Mocks\Windows\IWindows.h" Filter="Mocks\Windows" />
@@ -395,12 +323,7 @@
     <ClInclude Include="Sound\SoundStorage.h" Filter="Sound" />
     <ClInclude Include="Sound\ISound.h" Filter="Sound" />
     <ClInclude Include="Sound\Sound.h" Filter="Sound" />
-    <ClInclude Include="Windows\Sounds\ISoundsWindow.h" Filter="Windows\Sounds" />
     <ClInclude Include="Windows\Sounds\SoundsWindow.h" Filter="Windows\Sounds" />
-    <ClInclude Include="Windows\Sounds\ISoundsWindowManager.h" Filter="Windows\Sounds" />
-    <ClInclude Include="Windows\Sounds\SoundsWindowManager.h" Filter="Windows\Sounds" />
-    <ClInclude Include="Mocks\Windows\ISoundsWindow.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\ISoundsWindowManager.h" Filter="Mocks\Windows" />
     <ClInclude Include="Elements\SoundSource\ISoundSource.h" Filter="Elements\SoundSource" />
     <ClInclude Include="Elements\SoundSource\SoundSource.h" Filter="Elements\SoundSource" />
     <ClInclude Include="Mocks\Elements\ISoundSource.h" Filter="Mocks\Elements" />
@@ -410,26 +333,11 @@
     <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h" Filter="Elements\Remastered" />
     <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h" Filter="Mocks\Elements" />
     <ClInclude Include="Windows\AutoHider.h" Filter="Windows" />
-    <ClInclude Include="Windows\About\IAboutWindow.h" Filter="Windows\About" />
-    <ClInclude Include="Windows\About\IAboutWindowManager.h" Filter="Windows\About" />
     <ClInclude Include="Windows\About\AboutWindow.h" Filter="Windows\About" />
-    <ClInclude Include="Windows\About\AboutWindowManager.h" Filter="Windows\About" />
-    <ClInclude Include="Mocks\Windows\IAboutWindow.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IAboutWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Windows\Diff\IDiffWindowManager.h" Filter="Windows\Diff" />
-    <ClInclude Include="Windows\Diff\DiffWindowManager.h" Filter="Windows\Diff" />
-    <ClInclude Include="Windows\Diff\IDiffWindow.h" Filter="Windows\Diff" />
     <ClInclude Include="Windows\Diff\DiffWindow.h" Filter="Windows\Diff" />
-    <ClInclude Include="Mocks\Windows\IDiffWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IDiffWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Menus\ImGuiFileMenu.h" Filter="Menus" />
     <ClInclude Include="Settings\PluginSetting.h" Filter="Settings" />
-    <ClInclude Include="Windows\Pack\IPackWindow.h" Filter="Windows\Pack" />
     <ClInclude Include="Windows\Pack\PackWindow.h" Filter="Windows\Pack" />
-    <ClInclude Include="Windows\Pack\IPackWindowManager.h" Filter="Windows\Pack" />
-    <ClInclude Include="Windows\Pack\PackWindowManager.h" Filter="Windows\Pack" />
-    <ClInclude Include="Mocks\Windows\IPackWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IPackWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Geometry\Model\IModel.h" Filter="Geometry\Model" />
     <ClInclude Include="Geometry\Model\Model.h" Filter="Geometry\Model" />
     <ClInclude Include="Geometry\Model\IModelStorage.h" Filter="Geometry\Model" />
@@ -449,6 +357,12 @@
     <ClInclude Include="Mocks\Elements\ILevelNameLookup.h" Filter="Mocks\Elements" />
     <ClInclude Include="Menus\LevelSortingMode.h" Filter="Menus" />
     <ClInclude Include="Menus\LevelSortingMode.hpp" Filter="Menus" />
+    <ClInclude Include="Windows\IWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -709,6 +623,8 @@
     <None Include="Elements\IStaticMesh.inl" Filter="Elements\StaticMesh" />
     <None Include="Windows\AutoHider.inl" Filter="Windows" />
     <None Include="Windows\CameraSink\CameraSinkWindow.inl" Filter="Windows\CameraSink" />
+    <None Include="Windows\Viewer.inl" Filter="Windows" />
+    <None Include="Elements\Level.inl" Filter="Elements\Level" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\trview.app.rc" Filter="Resources" />

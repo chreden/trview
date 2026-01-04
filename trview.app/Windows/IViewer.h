@@ -38,34 +38,13 @@ namespace trview
 
         virtual ~IViewer() = 0;
 
-        /// Event raised when the viwer wants to select an item.
-        Event<std::weak_ptr<IItem>> on_item_selected;
-
-        /// Event raised when the viewer wants to select a room.
-        Event<std::weak_ptr<IRoom>> on_room_selected;
-
-        /// Event raised when the viewer wants to select a trigger.
-        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
-
-        /// <summary>
-        /// Event raised when the viewer wants to select a light.
-        /// </summary>
-        Event<std::weak_ptr<ILight>> on_light_selected;
-
-        /// Event raised when the viewer wants to select a waypoint.
-        Event<std::weak_ptr<IWaypoint>> on_waypoint_selected;
-
         /// Event raised when the viewer wants to remove a waypoint.
         Event<uint32_t> on_waypoint_removed;
 
         /// Event raised when the viewer wants to add a waypoint.
         Event<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, std::weak_ptr<IRoom>, IWaypoint::Type, uint32_t> on_waypoint_added;
 
-        Event<std::weak_ptr<ICameraSink>> on_camera_sink_selected;
         Event<std::string, FontSetting> on_font;
-        Event<std::weak_ptr<IStaticMesh>> on_static_mesh_selected;
-        Event<std::weak_ptr<ISoundSource>> on_sound_source_selected;
-        Event<std::weak_ptr<IFlybyNode>> on_flyby_node_selected;
 
         virtual std::weak_ptr<ICamera> camera() const = 0;
 
@@ -80,22 +59,11 @@ namespace trview
 
         virtual void open(const std::weak_ptr<ILevel>& level, ILevel::OpenMode open_mode) = 0;
 
-        /// Select the specified item.
-        /// @param item The item to select.
-        /// @remarks This will not raise the on_item_selected event.
-        virtual void select_item(const std::weak_ptr<IItem>& item) = 0;
-
         /// <summary>
         /// Select the specified room.
         /// </summary>
         /// <param name="room">The room to select</param>
-        /// <remarks>This will not raise the on_room_selected event.</remarks>
         virtual void select_room(const std::weak_ptr<IRoom>& room) = 0;
-
-        /// Select the specified trigger.
-        /// @param trigger The trigger to select.
-        /// @remarks This will not raise the on_trigger_selected event.
-        virtual void select_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
 
         /// Select the specified waypoint
         /// @param index The waypoint to select.
@@ -131,8 +99,6 @@ namespace trview
 
         virtual bool ui_input_active() const = 0;
 
-        virtual void select_light(const std::weak_ptr<ILight>& light) = 0;
-
         virtual DirectX::SimpleMath::Vector3 target() const = 0;
 
         virtual void set_target(const DirectX::SimpleMath::Vector3& target) = 0;
@@ -141,7 +107,6 @@ namespace trview
 
         virtual void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
         virtual void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh) = 0;
-        virtual void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source) = 0;
         virtual void select_flyby_node(const std::weak_ptr<IFlybyNode>& flyby_node) = 0;
         virtual std::weak_ptr<ILevel> level() const = 0;
     };

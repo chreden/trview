@@ -3,16 +3,21 @@
 #include <trview.common/TokenStore.h>
 #include <trview.common/Messages/IMessageSystem.h>
 
-#include "ISoundsWindow.h"
 #include "../../Filters/Filters.h"
 #include "../AutoHider.h"
 #include "../../Settings/UserSettings.h"
+
+#include <trlevel/LevelVersion.h>
+#include "../../Elements/SoundSource/ISoundSource.h"
+#include "../../Sound/ISoundStorage.h"
+
+#include "../IWindow.h"
 
 namespace trview
 {
     struct ILevel;
 
-    class SoundsWindow final : public ISoundsWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class SoundsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -28,14 +33,18 @@ namespace trview
 
         explicit SoundsWindow(const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~SoundsWindow() = default;
+        void update(float delta) override;
         void render() override;
-        void set_level_platform(trlevel::Platform platform) override;
-        void set_level_version(trlevel::LevelVersion version) override;
+        void set_level_platform(trlevel::Platform platform);
+        void set_level_version(trlevel::LevelVersion version);
         void set_number(int32_t number) override;
-        void set_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source) override;
-        void set_sound_storage(const std::weak_ptr<ISoundStorage>& sound_storage) override;
-        void set_sound_sources(const std::vector<std::weak_ptr<ISoundSource>>& sound_sources) override;
+        void set_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source);
+        void set_sound_storage(const std::weak_ptr<ISoundStorage>& sound_storage);
+        void set_sound_sources(const std::vector<std::weak_ptr<ISoundSource>>& sound_sources);
         void receive_message(const Message& message) override;
+        void initialise();
+        std::string type() const override;
+        std::string title() const override;
     private:
         bool render_sounds_window();
         void render_sound_sources_list();

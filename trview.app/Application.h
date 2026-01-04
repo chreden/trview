@@ -69,7 +69,7 @@ namespace trview
             std::shared_ptr<IPlugins> plugins,
             const IRandomizerRoute::Source& randomizer_route_source,
             std::shared_ptr<IFonts> fonts,
-            std::unique_ptr<IWindows> windows,
+            const std::shared_ptr<IWindows>& windows,
             LoadMode load_mode,
             const std::shared_ptr<IMessageSystem>& messaging);
         virtual ~Application();
@@ -97,19 +97,9 @@ namespace trview
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, std::weak_ptr<IRoom> room, IWaypoint::Type type, uint32_t index);
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index);
         void remove_waypoint(uint32_t index);
-        void select_item(std::weak_ptr<IItem> item);
         void select_room(std::weak_ptr<IRoom> room);
-        /// <summary>
-        /// Select a trigger in the application. If the trigger is empty, nothing happens.
-        /// </summary>
-        /// <param name="trigger">The trigger.</param>
-        void select_trigger(const std::weak_ptr<ITrigger>& trigger);
-        void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint);
         void select_next_waypoint();
         void select_previous_waypoint();
-        void select_light(const std::weak_ptr<ILight>& light);
-        void select_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
-        void select_sector(const std::weak_ptr<ISector>& sector);
         bool is_rando_route() const;
         bool should_discard_changes();
         void reload();
@@ -120,11 +110,8 @@ namespace trview
         void save_route_as();
         void open_recent_route();
         void save_window_placement();
-        void select_static_mesh(const std::weak_ptr<IStaticMesh>& static_mesh);
-        void select_sound_source(const std::weak_ptr<ISoundSource>& sound_source);
         void check_load();
         void end_diff(const std::weak_ptr<ILevel>& level);
-        void select_flyby_node(const std::weak_ptr<IFlybyNode>& node);
 
         TokenStore _token_store;
 
@@ -150,7 +137,7 @@ namespace trview
 
         // Windows
         std::shared_ptr<IViewer> _viewer;
-        std::unique_ptr<IWindows> _windows;
+        std::shared_ptr<IWindows> _windows;
         Timer _timer;
         std::optional<std::pair<std::string, FontSetting>> _new_font;
 

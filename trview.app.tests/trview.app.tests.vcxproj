@@ -21,7 +21,6 @@
     <ClCompile Include="..\external\shared\imgui_app.cpp" />
     <ClCompile Include="AlternateGroupTogglerTests.cpp" />
     <ClCompile Include="ApplicationTests.cpp" />
-    <ClCompile Include="CameraSinkWindowManagerTests.cpp" />
     <ClCompile Include="Camera\CameraInputTests.cpp" />
     <ClCompile Include="Elements\CameraSinkTests.cpp" />
     <ClCompile Include="Elements\FlybyTests.cpp" />
@@ -38,7 +37,6 @@
     <ClCompile Include="Graphics\LevelTextureStorageTests.cpp" />
     <ClCompile Include="Graphics\MeshStorageTests.cpp" />
     <ClCompile Include="Graphics\TextureStorage.cpp" />
-    <ClCompile Include="ItemsWindowManagerTests.cpp" />
     <ClCompile Include="Lua\Camera\Lua_CameraTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_CameraSinkTests.cpp" />
     <ClCompile Include="Lua\Elements\Lua_ItemTests.cpp" />
@@ -58,10 +56,8 @@
     <ClCompile Include="Menus\MenuDetectorTests.cpp" />
     <ClCompile Include="NullImGuiBackend.cpp" />
     <ClCompile Include="FileMenuTests.cpp" />
-    <ClCompile Include="PluginsWindowManagerTests.cpp" />
     <ClCompile Include="Plugins\PluginsTests.cpp" />
     <ClCompile Include="Plugins\PluginTests.cpp" />
-    <ClCompile Include="RoomsWindowManagerTests.cpp" />
     <ClCompile Include="RoomsWindowTests.cpp" />
     <ClCompile Include="Routing\ActionsTests.cpp" />
     <ClCompile Include="Routing\ActionTests.cpp" />
@@ -76,19 +72,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TexturesWindowManagerTests.cpp" />
-    <ClCompile Include="TriggersWindowManagerTests.cpp" />
     <ClCompile Include="UI\MapColoursTests.cpp" />
     <ClCompile Include="UI\ViewerUITests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
-    <ClCompile Include="Windows\AboutWindowManagerTests.cpp" />
-    <ClCompile Include="Windows\ConsoleManagerTests.cpp" />
-    <ClCompile Include="Windows\LightsWindowManagerTests.cpp" />
-    <ClCompile Include="Windows\LogWindowManagerTests.cpp" />
-    <ClCompile Include="Windows\RouteWindowManagerTests.cpp" />
-    <ClCompile Include="Windows\SoundsWindowManagerTests.cpp" />
-    <ClCompile Include="Windows\StaticsWindowManagerTests.cpp" />
     <ClCompile Include="Windows\ViewerTests.cpp" />
     <ClCompile Include="Windows\WindowsTests.cpp" />
   </ItemGroup>

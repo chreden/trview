@@ -6,6 +6,7 @@
 #include "../Elements/IRoom.h"
 #include "../Elements/ISector.h"
 #include "../Messages/Messages.h"
+#include "../Elements/ILevel.h"
 
 namespace trview
 {
@@ -25,10 +26,6 @@ namespace trview
             return high - (extra - (extra / size) * size);
         }
         return v;
-    }
-
-    IItemsWindow::~IItemsWindow()
-    {
     }
 
     ItemsWindow::ItemsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
@@ -160,7 +157,7 @@ namespace trview
                     set_local_selected_item(item);
                     if (_sync_item)
                     {
-                        on_item_selected(item);
+                        messages::send_select_item(_messaging, item);
                     }
                 }, default_hide(filtered_items));
         }
@@ -208,11 +205,13 @@ namespace trview
                         return std::format("{:.0f}, {:.0f}, {:.0f}", pos.x, pos.y, pos.z);
                     };
 
+                    const auto level = item->level().lock();
                     auto is_bad_mutant_egg = [&]() 
                     { 
                         return _level_version == trlevel::LevelVersion::Tomb1 &&
                             is_mutant_egg(*item) &&
-                            !_model_checker(mutant_egg_contents(*item));
+                            level &&
+                            level->has_model(mutant_egg_contents(*item));
                     };
 
                     add_stat(std::format("Type{}", is_bad_mutant_egg() ? "*" : ""), item->type());
@@ -258,7 +257,7 @@ namespace trview
                                 {
                                     if (ImGui::Button(std::format("{} {}", to_string(trigger->type()), trigger->number()).c_str(), ImVec2(-1,0)))
                                     {
-                                        on_trigger_selected(trigger);
+                                        messages::send_select_trigger(_messaging, trigger);
                                     }
                                 }
                             }
@@ -270,7 +269,7 @@ namespace trview
 
             if (ImGui::Button(Names::add_to_route_button.c_str(), ImVec2(-1, 30)))
             {
-                on_add_to_route(_selected_item);
+                messages::send_add_to_route(_messaging, _selected_item);
             }
 
             render_trigger_references();
@@ -409,11 +408,6 @@ namespace trview
         _level_version = version;
     }
 
-    void ItemsWindow::set_model_checker(const std::function<bool(uint32_t)>& checker)
-    {
-        _model_checker = checker;
-    }
-
     void ItemsWindow::set_ng_plus(bool value)
     {
         _ng_plus = value;
@@ -457,7 +451,7 @@ namespace trview
                 {
                     _selected_trigger = trigger;
                     _track.set_enabled<Type::Room>(false);
-                    on_trigger_selected(trigger);
+                    messages::send_select_trigger(_messaging, trigger);
                 }
                 ImGui::TableNextColumn();
                 ImGui::Text(std::to_string(trigger_room(trigger_ptr)).c_str());
@@ -470,7 +464,15 @@ namespace trview
 
     void ItemsWindow::receive_message(const Message& message)
     {
-        if (auto settings = messages::read_settings(message))
+        if (auto selected_item = messages::read_select_item(message))
+        {
+            set_selected_item(selected_item.value());
+        }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_current_room(selected_room.value());
+        }
+        else if (auto settings = messages::read_settings(message))
         {
             _settings = settings.value();
             if (!_columns_set)
@@ -479,5 +481,41 @@ namespace trview
                 _columns_set = true;
             }
         }
+        else if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                clear_selected_item();
+                set_items(level_ptr->items());
+                set_triggers(level_ptr->triggers());
+                set_level_version(level_ptr->version());
+                set_ng_plus(level_ptr->ng_plus());
+            }
+        }
+        else if (auto ng_plus = messages::read_ng_plus(message))
+        {
+            set_ng_plus(ng_plus.value());
+        }
+        else if (message.type == "item_filters")
+        {
+            set_filters(std::static_pointer_cast<MessageData<std::vector<Filters<IItem>::Filter>>>(message.data)->value);
+        }
+    }
+
+    void ItemsWindow::initialise()
+    {
+        messages::get_open_level(_messaging, weak_from_this());
+        messages::get_selected_room(_messaging, weak_from_this());
+        messages::get_selected_item(_messaging, weak_from_this());
+    }
+
+    std::string ItemsWindow::type() const
+    {
+        return "Items";
+    }
+
+    std::string ItemsWindow::title() const
+    {
+        return _id;
     }
 }

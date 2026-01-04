@@ -23,8 +23,10 @@
 #include <trview.app/Mocks/Elements/ISoundSource.h>
 #include <trview.graphics/Mocks/ISamplerState.h>
 #include <trview.tests.common/Event.h>
+#include <trview.tests.common/Messages.h>
 #include <trview.common/Messages/Message.h>
 #include <trview.common/Mocks/Messages/IMessageSystem.h>
+#include <trview.app/Messages/Messages.h>
 
 using testing::A;
 using testing::Return;
@@ -210,26 +212,6 @@ namespace
     }
 }
 
-/// Tests that the on_select_item event from the UI is observed and forwarded.
-TEST(Viewer, SelectItemRaisedForValidItem)
-{
-    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-
-    auto item = mock_shared<MockItem>();
-    auto level = mock_shared<MockLevel>();
-
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
-    viewer->open(level, ILevel::OpenMode::Full);
-
-    std::shared_ptr<IItem> raised_item;
-    auto token = viewer->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
-
-    ui.on_select_item(item);
-
-    ASSERT_TRUE(raised_item);
-    ASSERT_EQ(raised_item, item);
-}
-
 /// Tests that the on_hide event from the UI is observed and forwarded when the item is valid.
 TEST(Viewer, ItemVisibilityRaisedForValidItem)
 {
@@ -249,43 +231,35 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     ui.on_hide();
 }
 
-/// Tests that the on_select_room event from the UI is observed and forwarded.
-TEST(Viewer, SelectRoomRaised)
-{
-    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
-
-    auto room = mock_shared<MockRoom>()->with_number(100);
-    std::shared_ptr<IRoom> raised_room;
-    auto token = viewer->on_room_selected += [&raised_room](const auto& room) { raised_room = room.lock(); };
-
-    ui.on_select_room(room);
-
-    ASSERT_EQ(raised_room, room);
-}
-
 /// Tests that the trigger selected event is raised when the user clicks on a trigger.
 TEST(Viewer, SelectTriggerRaised)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+    auto messaging = mock_shared<MockMessageSystem>();
 
     auto level = mock_shared<MockLevel>();
     auto trigger = mock_shared<MockTrigger>()->with_number(100);
     EXPECT_CALL(*level, trigger(100)).WillRepeatedly(Return(trigger));
 
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
+    std::vector<trview::Message> messages;
+    EXPECT_CALL(*messaging, send_message).WillRepeatedly([&](auto&& message) { messages.push_back(message); });
+    
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).with_messaging(messaging).build();
     viewer->open(level, ILevel::OpenMode::Full);
-
-    std::optional<std::weak_ptr<ITrigger>> selected_trigger;
-    auto token = viewer->on_trigger_selected += [&selected_trigger](const auto& trigger) { selected_trigger = trigger; };
 
     activate_context_menu(picking, mouse, trigger);
     mouse.mouse_click(IMouse::Button::Left);
 
-    ASSERT_TRUE(selected_trigger.has_value());
-    ASSERT_EQ(selected_trigger.value().lock(), trigger);
+    if (auto found = find_message(messages, "select_trigger"))
+    {
+        ASSERT_EQ(messages::read_select_trigger(found.value())->lock(), trigger);
+    }
+    else
+    {
+        FAIL();
+    }
 }
 
 TEST(Viewer, TriggerHidden)
@@ -314,12 +288,13 @@ TEST(Viewer, SelectWaypointRaised)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto level = mock_shared<MockLevel>();
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
+    auto messaging = mock_shared<MockMessageSystem>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).with_messaging(messaging).build();
+
+    std::vector<trview::Message> messages;
+    EXPECT_CALL(*messaging, send_message).WillRepeatedly([&](auto&& message) { messages.push_back(message); });
 
     viewer->open(level, ILevel::OpenMode::Full);
-
-    std::shared_ptr<IWaypoint> selected_waypoint;
-    auto token = viewer->on_waypoint_selected += [&selected_waypoint](const auto& waypoint) { selected_waypoint = waypoint.lock(); };
 
     auto route = mock_shared<MockRoute>();
     auto waypoint = mock_shared<MockWaypoint>();
@@ -329,8 +304,14 @@ TEST(Viewer, SelectWaypointRaised)
     activate_context_menu(picking, mouse, waypoint, 100);
     mouse.mouse_click(IMouse::Button::Left);
 
-    ASSERT_TRUE(selected_waypoint);
-    ASSERT_EQ(selected_waypoint, waypoint);
+    if (auto found = find_message(messages, "select_waypoint"))
+    {
+        ASSERT_EQ(messages::read_select_waypoint(found.value())->lock(), waypoint);
+    }
+    else
+    {
+        FAIL();
+    }
 }
 
 /// Tests that the on_remove_waypoint event from the UI is observed and forwarded.
@@ -938,22 +919,20 @@ TEST(Viewer, SetShowRooms)
 TEST(Viewer, GoToLaraSelectsLast)
 {
     auto level = mock_shared<MockLevel>();
-    auto viewer = register_test_module().build();
+    auto messaging = mock_shared<MockMessageSystem>();
+    auto viewer = register_test_module().with_messaging(messaging).build();
 
     auto item1 = mock_shared<MockItem>();
     auto item2 = mock_shared<MockItem>();
     ON_CALL(*level, items).WillByDefault(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2 }));
 
-    std::shared_ptr<IItem> selected;
-    auto token = viewer->on_item_selected += [&](const auto& item)
-    {
-        selected = item.lock();
-    };
+    std::optional<trview::Message> raised;
+    EXPECT_CALL(*messaging, send_message).Times(testing::AtLeast(1)).WillRepeatedly(testing::SaveArg<0>(&raised));
 
     viewer->open(level, ILevel::OpenMode::Full);
 
-    ASSERT_TRUE(selected);
-    ASSERT_EQ(selected, item2);
+    ASSERT_TRUE(raised);
+    ASSERT_EQ(std::static_pointer_cast<MessageData<std::weak_ptr<IItem>>>(raised->data)->value.lock(), item2);
 }
 
 TEST(Viewer, CameraSinkVisibilityRaisedForValidItem)
@@ -1021,72 +1000,6 @@ TEST(Viewer, SetShowLighting)
     ui.on_toggle_changed(IViewer::Options::lighting, true);
 }
 
-TEST(Viewer, RoomSelectedForwarded)
-{
-    auto level = mock_shared<MockLevel>();
-    auto viewer = register_test_module().build();
-    auto room = mock_shared<MockRoom>();
-
-    std::shared_ptr<IRoom> raised;
-    auto token = viewer->on_room_selected += [&](auto r) { raised = r.lock(); };
-
-    viewer->open(level, ILevel::OpenMode::Full);
-    level->on_room_selected(room);
-
-    ASSERT_EQ(raised, room);
-
-    auto new_level = mock_shared<MockLevel>();
-    viewer->open(new_level, ILevel::OpenMode::Full);
-
-    raised.reset();
-    level->on_room_selected(room);
-    ASSERT_FALSE(raised);
-}
-
-TEST(Viewer, ItemSelectedForwarded)
-{
-    auto item = mock_shared<MockItem>();
-
-    auto level = mock_shared<MockLevel>();
-    auto viewer = register_test_module().build();
-
-    std::shared_ptr<IItem> raised;
-    auto token = viewer->on_item_selected += [&](auto i) { raised = i.lock(); };
-
-    viewer->open(level, ILevel::OpenMode::Full);
-    level->on_item_selected(item);
-
-    ASSERT_EQ(raised, item);
-
-    raised.reset();
-    auto new_level = mock_shared<MockLevel>();
-    viewer->open(new_level, ILevel::OpenMode::Full);
-    level->on_item_selected(item);
-    ASSERT_EQ(raised, nullptr);
-}
-
-TEST(Viewer, TriggerSelectedForwarded)
-{
-    auto trigger = mock_shared<MockTrigger>();
-
-    auto level = mock_shared<MockLevel>();
-    auto viewer = register_test_module().build();
-
-    std::shared_ptr<ITrigger> raised;
-    auto token = viewer->on_trigger_selected += [&](auto t) { raised = t.lock(); };
-
-    viewer->open(level, ILevel::OpenMode::Full);
-    level->on_trigger_selected(trigger);
-
-    ASSERT_EQ(raised, trigger);
-
-    raised.reset();
-    auto new_level = mock_shared<MockLevel>();
-    viewer->open(new_level, ILevel::OpenMode::Full);
-    level->on_trigger_selected(trigger);
-    ASSERT_EQ(raised, nullptr);
-}
-
 TEST(Viewer, SetRouteForwarded)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
@@ -1109,23 +1022,6 @@ TEST(Viewer, ToggleSaved)
 
     const std::unordered_map<std::string, bool> expected { { IViewer::Options::water, true } };
     ASSERT_EQ(std::static_pointer_cast<MessageData<UserSettings>>(called_settings.data)->value.toggles, expected);
-}
-
-TEST(Viewer, SectorHighlightForwarded)
-{
-    auto [sector_highlight_ptr, sector_highlight] = create_mock<MockSectorHighlight>();
-    EXPECT_CALL(sector_highlight, set_sector).Times(1);
-
-    auto level = mock_shared<MockLevel>();
-
-    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_sector_highlight(std::move(sector_highlight_ptr)).build();
-
-    viewer->open(level, ILevel::OpenMode::Full);
-
-    auto room = mock_shared<MockRoom>();
-    auto sector = mock_shared<MockSector>()->with_room(room);
-    ui.on_sector_hover(sector);
 }
 
 TEST(Viewer, AlternateGroupForwarded)
@@ -1210,18 +1106,20 @@ TEST(Viewer, SelectSoundSourceRaised)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto level = mock_shared<MockLevel>();
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
+    auto messaging = mock_shared<MockMessageSystem>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).with_messaging(messaging).build();
 
     viewer->open(level, ILevel::OpenMode::Full);
 
-    std::shared_ptr<ISoundSource> selected_sound_source;
-    auto token = viewer->on_sound_source_selected += capture(selected_sound_source);
+    std::optional<trview::Message> message;
+    EXPECT_CALL(*messaging, send_message).Times(1).WillRepeatedly(testing::SaveArg<0>(&message));
 
     auto sound_source = mock_shared<MockSoundSource>();
     activate_context_menu(picking, mouse, sound_source);
     mouse.mouse_click(IMouse::Button::Left);
 
-    ASSERT_EQ(selected_sound_source, sound_source);
+    ASSERT_TRUE(message.has_value());
+    ASSERT_EQ(messages::read_select_sound_source(message.value())->lock(), sound_source);
 }
 
 TEST(Viewer, SetShowSoundSources)

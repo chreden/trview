@@ -4,12 +4,12 @@
 
 namespace trview
 {
-    ILogWindow::~ILogWindow()
+    LogWindow::LogWindow(const std::shared_ptr<ILog>& log, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
+        : _log(log), _dialogs(dialogs), _files(files)
     {
     }
 
-    LogWindow::LogWindow(const std::shared_ptr<ILog>& log, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
-        : _log(log), _dialogs(dialogs), _files(files)
+    void LogWindow::update(float)
     {
     }
 
@@ -143,6 +143,20 @@ namespace trview
                 stream << std::format("[{}] {} - {}", message.timestamp, activities, message.text) << '\n';
             });
         _files->save_file(result.value().filename, stream.str());
+    }
+
+    std::string LogWindow::type() const
+    {
+        return "Log";
+    }
+
+    void LogWindow::receive_message(const Message&)
+    {
+    }
+
+    std::string LogWindow::title() const
+    {
+        return _id;
     }
 }
 

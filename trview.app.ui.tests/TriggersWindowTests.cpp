@@ -9,6 +9,8 @@
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.tests.common/Mocks.h>
 #include <trview.common/Mocks/Messages/IMessageSystem.h>
+#include <trview.tests.common/Messages.h>
+#include <trview.app/Messages/Messages.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -28,6 +30,12 @@ namespace
             {
                 return std::make_unique<TriggersWindow>(clipboard, messaging);
             }
+
+            test_module& with_messaging(const std::shared_ptr<MockMessageSystem>& messaging)
+            {
+                this->messaging = messaging;
+                return *this;
+            }
         };
 
         return test_module{};
@@ -38,6 +46,8 @@ namespace
         std::unique_ptr<TriggersWindow> ptr;
         std::vector<std::shared_ptr<MockTrigger>> triggers;
         std::vector<std::shared_ptr<MockItem>> items;
+        std::shared_ptr<MockMessageSystem> messaging;
+        std::vector<trview::Message> messages;
 
         void render()
         {
@@ -56,10 +66,9 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<TriggersWindowContext>();
-            context.ptr = register_test_module().build();
-
-            std::shared_ptr<ITrigger> raised_trigger;
-            auto token = context.ptr->on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger.lock(); };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto trigger = mock_shared<MockTrigger>();
             context.triggers = { trigger };
@@ -68,7 +77,16 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
 
             ctx->ItemClick("/**/Add to Route");
 
-            IM_CHECK_EQ(raised_trigger, trigger);
+            if (auto found = find_message(context.messages, "add_to_route"))
+            {
+                auto route_message = messages::read_add_to_route(found.value());
+                IM_CHECK_EQ(std::holds_alternative<std::weak_ptr<ITrigger>>(route_message->element), true);
+                IM_CHECK_EQ(std::get<std::weak_ptr<ITrigger>>(route_message->element).lock(), trigger);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
         });
 
     test<TriggersWindowContext>(engine, "Triggers Window", "Camera Sink Selected Raised",
@@ -76,10 +94,9 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<TriggersWindowContext>();
-            context.ptr = register_test_module().build();
-
-            std::shared_ptr<ICameraSink> raised;
-            auto token = context.ptr->on_camera_sink_selected += [&raised](const auto& cam) { raised = cam.lock(); };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto cam = mock_shared<MockCameraSink>();
 
@@ -93,7 +110,14 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
 
             ctx->ItemClick("/**/0##command-0");
 
-            IM_CHECK_EQ(raised, cam);
+            if (const auto found = find_message(context.messages, "select_camera_sink"))
+            {
+                IM_CHECK_EQ(messages::read_select_camera_sink(found.value())->lock(), cam);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
         });
 
     test<TriggersWindowContext>(engine, "Triggers Window", "Click Stat Shows Bubble",
@@ -128,19 +152,19 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_triggers({ trigger1, trigger2, trigger3, trigger4 });
 
             ctx->Yield();
-            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), true);
-            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);
-            IM_CHECK_EQ(ctx->ItemExists("/**/2##2"), true);
-            IM_CHECK_EQ(ctx->ItemExists("/**/3##3"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##0"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##2"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##3"), true);
 
-            ctx->SetRef(ctx->ItemInfo("/**/0##0")->Window->ParentWindow);
+            ctx->SetRef(ctx->ItemInfo("/**/##0")->Window->ParentWindow);
             ctx->ComboClick("##commandfilter/Flipmaps");
             ctx->Yield();
 
-            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), true);
-            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);
-            IM_CHECK_EQ(ctx->ItemExists("/**/2##2"), true);
-            IM_CHECK_EQ(ctx->ItemExists("/**/3##3"), false);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##0"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##2"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##3"), false);
         });
 
     test<TriggersWindowContext>(engine, "Triggers Window", "Item Selected Raised",
@@ -148,10 +172,9 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<TriggersWindowContext>();
-            context.ptr = register_test_module().build();
-
-            std::shared_ptr<IItem> raised_item;
-            auto token = context.ptr->on_item_selected += [&raised_item](const auto& item) { raised_item = item.lock(); };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             context.items = 
             {
@@ -169,7 +192,15 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
 
             auto selected = context.ptr->selected_trigger().lock();
             IM_CHECK_EQ(selected, trigger);
-            IM_CHECK_EQ(raised_item, context.items[1]);
+            
+            if (const auto found = find_message(context.messages, "select_item"))
+            {
+                IM_CHECK_EQ(messages::read_select_item(found.value())->lock(), context.items[1]);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
         });
 
     test<TriggersWindowContext>(engine, "Triggers Window", "Reset Colour",
@@ -205,15 +236,15 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_triggers(triggers);
 
             ctx->Yield();
-            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), true);
-            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##0"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
 
-            ctx->SetRef(ctx->ItemInfo("/**/0##0")->Window->ParentWindow);
+            ctx->SetRef(ctx->ItemInfo("/**/##0")->Window->ParentWindow);
             ctx->ComboClick("##commandfilter/Camera");
             ctx->Yield();
 
-            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), false);
-            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##0"), false);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
         });
 
     test<TriggersWindowContext>(engine, "Triggers Window", "Triggers List Not Filtered When Room Set and Track Room Disabled",
@@ -229,9 +260,11 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_triggers({ trigger1, trigger2 });
             context.ptr->set_current_room(room_78);
 
+            context.ptr->receive_message(trview::Message{ .type = "select_room", .data = std::make_shared<MessageData<std::weak_ptr<IRoom>>>(room_78) });
+
             ctx->Yield();
-            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), true);
-            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##0"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
         });
 
     test<TriggersWindowContext>(engine, "Triggers Window", "Triggers List Filtered When Room Set and Track Room Enabled",
@@ -249,15 +282,15 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_current_room(room_78);
 
             ctx->Yield();
-            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), true);
-            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##0"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
 
             ctx->ItemClick("/**/Track##track");
             ctx->ItemCheck("/**/Room");
             ctx->Yield();
 
-            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), false);
-            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##0"), false);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
         });
 
     test<TriggersWindowContext>(engine, "Triggers Window", "Trigger Selected Raised When Sync Trigger Enabled",
@@ -265,18 +298,24 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<TriggersWindowContext>();
-            context.ptr = register_test_module().build();
-
-            std::shared_ptr<ITrigger> raised_trigger;
-            auto token = context.ptr->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger.lock(); };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto trigger1 = mock_shared<MockTrigger>()->with_number(0);
             auto trigger2 = mock_shared<MockTrigger>()->with_number(1);
             context.ptr->set_triggers({ trigger1, trigger2 });
 
-            ctx->ItemClick("/**/1##1");
+            ctx->ItemClick("/**/##1");
 
-            IM_CHECK_EQ(raised_trigger, trigger2);
+            if (const auto found = find_message(context.messages, "select_trigger"))
+            {
+                IM_CHECK_EQ(messages::read_select_trigger(found.value())->lock(), trigger2);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
 
             const auto from_window = context.ptr->selected_trigger().lock();
             IM_CHECK_EQ(from_window, trigger2);
@@ -287,19 +326,18 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<TriggersWindowContext>();
-            context.ptr = register_test_module().build();
-
-            std::shared_ptr<ITrigger> raised_trigger;
-            auto token = context.ptr->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger.lock(); };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto trigger1 = mock_shared<MockTrigger>()->with_number(0);
             auto trigger2 = mock_shared<MockTrigger>()->with_number(1);
             context.ptr->set_triggers({ trigger1, trigger2 });
 
             ctx->ItemUncheck("/**/Sync");
-            ctx->ItemClick("/**/1##1");
+            ctx->ItemClick("/**/##1");
 
-            IM_CHECK_EQ(raised_trigger, nullptr);
+            IM_CHECK_EQ(find_message(context.messages, "select_trigger"), std::nullopt);
         });
 
     test<TriggersWindowContext>(engine, "Triggers Window", "Trigger Visibility Raised",
@@ -314,7 +352,7 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_triggers({ trigger });
             EXPECT_CALL(*trigger, set_visible(false)).Times(1);
 
-            ctx->ItemCheck("/**/##hide-0");
+            ctx->ItemCheck("/**/##Hide-0");
 
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(trigger.get()), true);
         });

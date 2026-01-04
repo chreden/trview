@@ -1,36 +1,44 @@
 #include "ViewOptions.h"
 #include "../Windows/IViewer.h"
-#include "../Windows/IRoomsWindowManager.h"
+#include "../Filters/Filters.h"
+#include "../Windows/IWindows.h"
+#include "../Windows/IWindow.h"
+#include <trview.common/Messages/Message.h>
 
 namespace trview
 {
     namespace
     {
         void show_room_filter(
-            std::weak_ptr<IRoomsWindowManager> rooms_window_manager,
+            std::weak_ptr<IWindows> windows,
             const std::vector<Filters<IRoom>::Filter>& filters)
         {
             if (ImGui::BeginPopupContextItem())
             {
                 if (ImGui::BeginMenu("Filter"))
                 {
-                    if (auto rooms_windows = rooms_window_manager.lock())
+                    windows;
+                    filters;
+
+                    if (auto windows_ptr = windows.lock())
                     {
                         if (ImGui::MenuItem("New Window"))
                         {
-                            if (const auto new_window = rooms_windows->create_window().lock())
+                            if (const auto new_window = windows_ptr->create("Rooms").lock())
                             {
-                                new_window->set_filters(filters);
+                                new_window->receive_message(
+                                    Message{ .type = "room_filters", .data = std::make_shared<MessageData<std::vector<Filters<IRoom>::Filter>>>(filters) });
                             }
                         }
 
-                        for (const auto& window : rooms_windows->windows())
+                        for (const auto& window : windows_ptr->windows("Rooms"))
                         {
                             if (auto actual_window = window.lock())
                             {
-                                if (ImGui::MenuItem(actual_window->name().c_str()))
+                                if (ImGui::MenuItem(actual_window->title().c_str()))
                                 {
-                                    actual_window->set_filters(filters);
+                                    actual_window->receive_message(
+                                        Message{ .type = "room_filters", .data = std::make_shared<MessageData<std::vector<Filters<IRoom>::Filter>>>(filters) });
                                 }
                             }
                         }
@@ -46,8 +54,8 @@ namespace trview
     {
     }
 
-    ViewOptions::ViewOptions(const std::weak_ptr<IRoomsWindowManager>& rooms_window_manager)
-        : _rooms_window_manager(rooms_window_manager)
+    ViewOptions::ViewOptions(const std::weak_ptr<IWindows>& windows)
+        : _windows(windows)
     {
         _toggles[IViewer::Options::highlight] = false;
         _toggles[IViewer::Options::triggers] = true;
@@ -134,7 +142,7 @@ namespace trview
                             ImGui::Text("Click to toggle flip map, right click for filter options.");
                             ImGui::EndTooltip();
                         }
-                        show_room_filter(_rooms_window_manager, {{.key = "Alternate", .compare = CompareOp::Exists, .op = Op::And }});
+                        show_room_filter(_windows, {{.key = "Alternate", .compare = CompareOp::Exists, .op = Op::And }});
                     }
                 }
                 ImGui::EndTable();
@@ -169,7 +177,7 @@ namespace trview
                     {
                         ImGui::PopStyleColor();
                     }
-                    show_room_filter(_rooms_window_manager, { {.key = "Alternate Group", .compare = CompareOp::Equal, .value = std::to_string(group.first), .op = Op::And } });
+                    show_room_filter(_windows, { {.key = "Alternate Group", .compare = CompareOp::Equal, .value = std::to_string(group.first), .op = Op::And } });
                     ImGui::SameLine();
                 }
             }

@@ -2,7 +2,7 @@
 
 #include <unordered_set>
 
-#include "IConsole.h"
+#include "../IWindow.h"
 #include "../../Plugins/IPlugins.h"
 #include "../../UI/Fonts/IFonts.h"
 
@@ -12,7 +12,7 @@
 
 namespace trview
 {
-    class Console final : public IConsole
+    class Console final : public IWindow
     {
     public:
         struct Names
@@ -24,8 +24,12 @@ namespace trview
         explicit Console(const std::shared_ptr<IDialogs>& dialogs, const std::weak_ptr<IPlugins>& plugins, const std::shared_ptr<IFonts>& fonts);
         virtual ~Console() = default;
 
+        void update(float delta) override;
         void render() override;
         void set_number(int32_t number) override;
+        std::string type() const override;
+        void receive_message(const Message&) override {};
+        std::string title() const override;
     private:
         static int callback(ImGuiInputTextCallbackData* data);
         bool render_console();

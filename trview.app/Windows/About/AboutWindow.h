@@ -1,16 +1,20 @@
 #pragma once
 
-#include "IAboutWindow.h"
+#include "../IWindow.h"
 
 namespace trview
 {
-    class AboutWindow final : public IAboutWindow
+    class AboutWindow final : public IWindow
     {
     public:
         virtual ~AboutWindow() = default;
-        void focus() override;
+        void update(float delta) override;
         void render() override;
+        void set_number(int32_t number) override;
+        std::string type() const override;
+        std::string title() const override;
+        void receive_message(const Message&) override;
     private:
-        bool _need_focus{ false };
+        std::string _id{ "About 0" };
     };
 }

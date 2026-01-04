@@ -414,15 +414,15 @@ namespace trview
         };
     }
 
-    IDiffWindow::~IDiffWindow()
-    {
-    }
-
     DiffWindow::DiffWindow(const std::shared_ptr<IDialogs>& dialogs, const ILevel::Source& level_source, const std::shared_ptr<IFileMenu>& file_menu,
         const std::weak_ptr<IMessageSystem>& messaging)
         : _dialogs(dialogs), _level_source(level_source), _file_menu(file_menu), _messaging(messaging)
     {
         _token_store += _file_menu->on_file_open += [this](auto&& filename) { start_load(filename); };
+    }
+
+    void DiffWindow::update(float)
+    {
     }
 
     void DiffWindow::render()
@@ -436,7 +436,7 @@ namespace trview
         {
             if (_diff.has_value())
             {
-                on_diff_ended(_diff->level);
+                messages::send_end_diff(_messaging, _diff->level);
             }
             on_window_closed();
             return;
@@ -765,7 +765,7 @@ namespace trview
             const auto show_table = [this](
                 const std::string& table_name,
                 const auto& diff_entries,
-                auto& on_selected,
+                auto&& on_selected,
                 const auto& key_get)
                 {
                     if (ImGui::BeginTable(table_name.c_str(), 5, ImGuiTableFlags_ScrollY))
@@ -843,49 +843,49 @@ namespace trview
             
             if (ImGui::BeginTabItem(std::format("Items{}", any_items ? "*" : "").c_str()))
             {
-                show_table("Items List", _diff->diff.items, on_item_selected, [](auto&& i) { return i->type(); });
+                show_table("Items List", _diff->diff.items, [&](auto&& item) { messages::send_select_item(_messaging, item); }, [](auto&& i) { return i->type(); });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Triggers{}", any_triggers ? "*" : "").c_str()))
             {
-                show_table("Triggers List", _diff->diff.triggers, on_trigger_selected, [](auto&& t) { return to_string(t->type()); });
+                show_table("Triggers List", _diff->diff.triggers, [&](auto&& trigger) { messages::send_select_trigger(_messaging, trigger); }, [](auto&& t) { return to_string(t->type()); });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Lights{}", any_lights ? "*" : "").c_str()))
             {
-                show_table("Lights List", _diff->diff.lights, on_light_selected, [](auto&& l) { return to_string(l->type()); });
+                show_table("Lights List", _diff->diff.lights, [&](auto&& light) { messages::send_select_light(_messaging, light); }, [](auto&& l) { return to_string(l->type()); });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Camera/Sink{}", any_camera_sink ? "*" : "").c_str()))
             {
-                show_table("CameraSink List", _diff->diff.camera_sinks, on_camera_sink_selected, [](auto&& c) { return to_string(c->type()); });
+                show_table("CameraSink List", _diff->diff.camera_sinks, [&](auto&& camera_sink) { messages::send_select_camera_sink(_messaging, camera_sink); }, [](auto&& c) { return to_string(c->type()); });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Statics{}", any_statics ? "*" : "").c_str()))
             {
-                show_table("Statics List", _diff->diff.static_meshes, on_static_mesh_selected, [](auto&& c) { return to_string(c->type()); });
+                show_table("Statics List", _diff->diff.static_meshes, [&](auto&& static_mesh) { messages::send_select_static_mesh(_messaging, static_mesh); }, [](auto&& c) { return to_string(c->type()); });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Sound Sources{}", any_sounds ? "*" : "").c_str()))
             {
-                show_table("Sounds List", _diff->diff.sound_sources, on_sound_source_selected, [](auto&&) { return "Sound"; });
+                show_table("Sounds List", _diff->diff.sound_sources, [&](auto&& sound_source) { messages::send_select_sound_source(_messaging, sound_source); }, [](auto&&) { return "Sound"; });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Rooms{}", any_rooms ? "*" : "").c_str()))
             {
-                show_table("Rooms List", _diff->diff.rooms, on_room_selected, [](auto&&) { return "Room"; });
+                show_table("Rooms List", _diff->diff.rooms, [&](auto&& room) { messages::send_select_room(_messaging, room); }, [](auto&&) { return "Room"; });
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem(std::format("Sectors{}", any_sectors ? "*" : "").c_str()))
             {
-                show_table("Sectors List", _diff->diff.sectors, on_sector_selected, [](auto&&) { return "Sector"; });
+                show_table("Sectors List", _diff->diff.sectors, [&](auto&& sector) { messages::send_select_sector(_messaging, sector); }, [](auto&&) { return "Sector"; });
                 ImGui::EndTabItem();
             }
 
@@ -899,5 +899,24 @@ namespace trview
         {
             _settings = settings.value();
         }
+        else if (auto level = messages::read_open_level(message))
+        {
+            set_level(level.value());
+        }
+    }
+
+    void DiffWindow::initialise()
+    {
+        messages::get_open_level(_messaging, weak_from_this());
+    }
+
+    std::string DiffWindow::type() const
+    {
+        return "Diff";
+    }
+
+    std::string DiffWindow::title() const
+    {
+        return _id;
     }
 }

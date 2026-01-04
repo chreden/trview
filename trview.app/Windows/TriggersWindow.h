@@ -9,7 +9,7 @@
 #include "../Filters/Filters.h"
 #include "../Track/Track.h"
 
-#include "ITriggersWindow.h"
+#include "IWindow.h"
 #include "../Elements/IItem.h"
 #include "../Elements/ITrigger.h"
 #include "AutoHider.h"
@@ -17,7 +17,7 @@
 
 namespace trview
 {
-    class TriggersWindow final : public ITriggersWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class TriggersWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -37,16 +37,19 @@ namespace trview
         explicit TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~TriggersWindow() = default;
         virtual void render() override;
-        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
-        virtual void clear_selected_trigger() override;
-        void set_current_room(const std::weak_ptr<IRoom>& room) override;
+        void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
+        void clear_selected_trigger();
+        void set_current_room(const std::weak_ptr<IRoom>& room);
         virtual void set_number(int32_t number) override;
-        virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
-        virtual void set_items(const std::vector<std::weak_ptr<IItem>>& items) override;
-        void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version) override;
-        virtual std::weak_ptr<ITrigger> selected_trigger() const override;
+        void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
+        void set_items(const std::vector<std::weak_ptr<IItem>>& items);
+        void set_platform_and_version(const trlevel::PlatformAndVersion& platform_and_version);
+        std::weak_ptr<ITrigger> selected_trigger() const;
         virtual void update(float delta) override;
         void receive_message(const Message& message) override;
+        void initialise();
+        std::string type() const override;
+        std::string title() const override;
     private:
         void set_sync_trigger(bool value);
         void render_triggers_list();

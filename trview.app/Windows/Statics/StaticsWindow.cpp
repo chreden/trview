@@ -2,13 +2,10 @@
 #include "../RowCounter.h"
 #include "../../trview_imgui.h"
 #include "../../Messages/Messages.h"
+#include "../../Elements/ILevel.h"
 
 namespace trview
 {
-    IStaticsWindow::~IStaticsWindow()
-    {
-    }
-
     StaticsWindow::StaticsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _messaging(messaging)
     {
@@ -95,7 +92,7 @@ namespace trview
                     set_local_selected_static_mesh(stat);
                     if (_sync_static)
                     {
-                        on_static_selected(stat);
+                        messages::send_select_static_mesh(_messaging, stat);
                     }
                 }, default_hide(filtered_statics));
         }
@@ -248,5 +245,37 @@ namespace trview
                 _columns_set = true;
             }
         }
+        else if (auto selected_static_mesh = messages::read_select_static_mesh(message))
+        {
+            set_selected_static(selected_static_mesh.value());
+        }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_current_room(selected_room.value());
+        }
+        else if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                set_statics(level_ptr->static_meshes());
+            }
+        }
+    }
+
+    void StaticsWindow::initialise()
+    {
+        messages::get_open_level(_messaging, weak_from_this());
+        messages::get_selected_room(_messaging, weak_from_this());
+        messages::get_selected_static_mesh(_messaging, weak_from_this());
+    }
+
+    std::string StaticsWindow::type() const
+    {
+        return "Statics";
+    }
+
+    std::string StaticsWindow::title() const
+    {
+        return _id;
     }
 }

@@ -3,10 +3,10 @@
 #include <trview.common/TokenStore.h>
 #include <trview.common/Windows/IClipboard.h>
 #include "../Elements/ILight.h"
-#include "ILightsWindow.h"
 #include "../Filters/Filters.h"
 #include "../Track/Track.h"
 #include "AutoHider.h"
+#include "IWindow.h"
 
 #include "../Settings/UserSettings.h"
 
@@ -14,7 +14,7 @@
 
 namespace trview
 {
-    class LightsWindow final : public ILightsWindow, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    class LightsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names
@@ -29,15 +29,18 @@ namespace trview
 
         explicit LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~LightsWindow() = default;
-        virtual void clear_selected_light() override;
-        virtual void render() override;
-        virtual void update(float delta) override;
-        virtual void set_lights(const std::vector<std::weak_ptr<ILight>>& lights) override;
-        virtual void set_selected_light(const std::weak_ptr<ILight>& light) override;
-        virtual void set_level_version(trlevel::LevelVersion version) override;
-        virtual void set_number(int32_t number) override;
-        void set_current_room(const std::weak_ptr<IRoom>& room) override;
+        void clear_selected_light();
+        void render() override;
+        void update(float delta) override;
+        void set_lights(const std::vector<std::weak_ptr<ILight>>& lights);
+        void set_selected_light(const std::weak_ptr<ILight>& light);
+        void set_level_version(trlevel::LevelVersion version);
+        void set_number(int32_t number) override;
+        void set_current_room(const std::weak_ptr<IRoom>& room);
         void receive_message(const Message& message) override;
+        void initialise();
+        std::string type() const override;
+        std::string title() const override;
     private:
         void set_sync_light(bool value);
         void set_local_selected_light(const std::weak_ptr<ILight>& light);

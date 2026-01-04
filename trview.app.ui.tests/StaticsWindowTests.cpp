@@ -5,6 +5,8 @@
 #include <trview.app/Windows/Statics/StaticsWindow.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.common/Mocks/Messages/IMessageSystem.h>
+#include <trview.tests.common/Messages.h>
+#include <trview.app/Messages/Messages.h>
 
 #include <format>
 #include <ranges>
@@ -33,6 +35,12 @@ namespace
                 this->clipboard = clipboard;
                 return *this;
             }
+
+            test_module& with_messaging(const std::shared_ptr<IMessageSystem>& messaging)
+            {
+                this->messaging = messaging;
+                return *this;
+            }
         };
 
         return test_module{};
@@ -42,6 +50,8 @@ namespace
     {
         std::unique_ptr<StaticsWindow> ptr;
         std::vector<std::shared_ptr<MockStaticMesh>> statics;
+        std::shared_ptr<MockMessageSystem> messaging;
+        std::vector<trview::Message> messages;
     };
 
     void render(StaticsWindowContext& context)
@@ -60,10 +70,9 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<StaticsWindowContext>();
-            context.ptr = register_test_module().build();
-
-            std::shared_ptr<IStaticMesh> raised_static;
-            auto token = context.ptr->on_static_selected += [&raised_static](const auto& stat) { raised_static = stat.lock(); };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto room_78 = mock_shared<MockRoom>()->with_number(78);
 
@@ -78,11 +87,18 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
             ctx->ItemClick("Statics 0/**/Track##track");
             ctx->ItemCheck("/**/Room");
             ctx->KeyPress(ImGuiKey_Escape);
-            ctx->ItemClick("Statics 0/**/1##1");
+            ctx->ItemClick("Statics 0/**/##1");
 
-            IM_CHECK_EQ(ctx->ItemExists("Statics 0/**/0##0"), false);
-            IM_CHECK_EQ(ctx->ItemExists("Statics 0/**/1##1"), true);
-            IM_CHECK_EQ(raised_static, context.statics[1]);
+            IM_CHECK_EQ(ctx->ItemExists("Statics 0/**/##0"), false);
+            IM_CHECK_EQ(ctx->ItemExists("Statics 0/**/##1"), true);
+            if (const auto found = find_message(context.messages, "select_static_mesh"))
+            {
+                IM_CHECK_EQ(messages::read_select_static_mesh(found.value())->lock(), context.statics[1]);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
         });
 
     test<StaticsWindowContext>(engine, "Statics Window", "Statics List Not Filtered When Room Set and Track Room Disabled",
@@ -90,10 +106,9 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<StaticsWindowContext>();
-            context.ptr = register_test_module().build();
-
-            std::shared_ptr<IStaticMesh> raised_static;
-            auto token = context.ptr->on_static_selected += [&raised_static](const auto& stat) { raised_static = stat.lock(); };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto room_78 = mock_shared<MockRoom>()->with_number(78);
 
@@ -105,9 +120,16 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_statics({ std::from_range, context.statics });
             context.ptr->set_current_room(room_78);
 
-            ctx->ItemClick("Statics 0/**/0##0");
+            ctx->ItemClick("Statics 0/**/##0");
 
-            IM_CHECK_EQ(raised_static, context.statics[0]);
+            if (const auto found = find_message(context.messages, "select_static_mesh"))
+            {
+                IM_CHECK_EQ(messages::read_select_static_mesh(found.value())->lock(), context.statics[0]);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
         });
 
     test<StaticsWindowContext>(engine, "Statics Window", "Static Selected Not Raised When Sync Static Disabled",
@@ -115,10 +137,9 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<StaticsWindowContext>();
-            context.ptr = register_test_module().build();
-
-            std::shared_ptr<IStaticMesh> raised_static;
-            auto token = context.ptr->on_static_selected += [&raised_static](const auto& stat) { raised_static = stat.lock(); };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             context.statics =
             {
@@ -128,9 +149,9 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_statics({ std::from_range, context.statics });
 
             ctx->ItemUncheck("Statics 0/**/Sync");
-            ctx->ItemClick("Statics 0/**/1##1");
+            ctx->ItemClick("Statics 0/**/##1");
 
-            IM_CHECK_EQ(raised_static, nullptr);
+            IM_CHECK_EQ(find_message(context.messages, "select_static_mesh"), std::nullopt);
         });
 
     test<StaticsWindowContext>(engine, "Statics Window", "Static Selected Raised When Sync Static Enabled",
@@ -138,10 +159,9 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx)
         {
             auto& context = ctx->GetVars<StaticsWindowContext>();
-            context.ptr = register_test_module().build();
-
-            std::shared_ptr<IStaticMesh> raised_static;
-            auto token = context.ptr->on_static_selected += [&raised_static](const auto& stat) { raised_static = stat.lock(); };
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             context.statics =
             {
@@ -151,9 +171,9 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_statics({ std::from_range, context.statics });
 
             ctx->ItemUncheck("Statics 0/**/Sync");
-            ctx->ItemClick("Statics 0/**/1##1");
+            ctx->ItemClick("Statics 0/**/##1");
 
-            IM_CHECK_EQ(raised_static, nullptr);
+            IM_CHECK_EQ(find_message(context.messages, "select_static_mesh"), std::nullopt);
 
             const auto from_window = context.ptr->selected_static().lock();
             IM_CHECK_EQ(from_window, context.statics[1]);
@@ -174,6 +194,6 @@ void register_statics_window_tests(ImGuiTestEngine* engine)
             context.statics = { mock_shared<MockStaticMesh>()->with_number(0)->with_visible(true), static1 };
             context.ptr->set_statics({ std::from_range, context.statics });
 
-            ctx->ItemCheck("Statics 0/**/##hide-1");
+            ctx->ItemCheck("Statics 0/**/##Hide-1");
         });
 }

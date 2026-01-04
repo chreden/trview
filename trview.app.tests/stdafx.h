@@ -16,6 +16,8 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
+#include <imgui.h>
+
 // Fix for printing ComPtr - removes value printing:
 namespace testing
 {
@@ -65,14 +67,6 @@ namespace testing
 #include <trview.app/Mocks/UI/ISettingsWindow.h>
 #include <trview.app/Mocks/UI/IViewOptions.h>
 #include <trview.app/Mocks/UI/IViewerUI.h>
-#include <trview.app/Mocks/Windows/IItemsWindow.h>
-#include <trview.app/Mocks/Windows/IItemsWindowManager.h>
-#include <trview.app/Mocks/Windows/IRoomsWindow.h>
-#include <trview.app/Mocks/Windows/IRoomsWindowManager.h>
-#include <trview.app/Mocks/Windows/IRouteWindow.h>
-#include <trview.app/Mocks/Windows/IRouteWindowManager.h>
-#include <trview.app/Mocks/Windows/ITriggersWindow.h>
-#include <trview.app/Mocks/Windows/ITriggersWindowManager.h>
 #include <trview.app/Mocks/Windows/IViewer.h>
 #include <trview.common/Mocks/IFiles.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>

@@ -59,6 +59,7 @@ namespace trview
         void reposition() override;
         void receive_message(const Message& message) override;
         void set_selection(const std::vector<std::shared_ptr<ISector>>& sectors) override;
+        void initialise();
     private:
         std::shared_ptr<ISector> sector_at(const Point& p) const;
         // Determines the position (on screen) to draw a sector 

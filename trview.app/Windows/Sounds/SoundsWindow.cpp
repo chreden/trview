@@ -12,10 +12,6 @@
 
 namespace trview
 {
-    ISoundsWindow::~ISoundsWindow()
-    {
-    }
-
     SoundsWindow::SoundsWindow(const std::weak_ptr<IMessageSystem>& messaging)
         : _messaging(messaging)
     {
@@ -37,6 +33,10 @@ namespace trview
                     }
                 }
             };
+    }
+
+    void SoundsWindow::update(float)
+    {
     }
 
     void SoundsWindow::render()
@@ -145,7 +145,7 @@ namespace trview
                     set_local_selected_sound_source(sound_source);
                     if (_sync_sound_source)
                     {
-                        on_sound_source_selected(sound_source);
+                        messages::send_select_sound_source(_messaging, sound_source);
                     }
                 }, default_hide(filtered_sound_sources));
         }
@@ -343,5 +343,35 @@ namespace trview
                 _columns_set = true;
             }
         }
+        else if (auto selected_sound = messages::read_select_sound_source(message))
+        {
+            set_selected_sound_source(selected_sound.value());
+        }
+        else if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                set_level_platform(level_ptr->platform());
+                set_level_version(level_ptr->version());
+                set_sound_sources(level_ptr->sound_sources());
+                set_sound_storage(level_ptr->sound_storage());
+            }
+        }
+    }
+
+    void SoundsWindow::initialise()
+    {
+        messages::get_selected_sound_source(_messaging, weak_from_this());
+        messages::get_open_level(_messaging, weak_from_this());
+    }
+
+    std::string SoundsWindow::type() const
+    {
+        return "Sounds";
+    }
+
+    std::string SoundsWindow::title() const
+    {
+        return _id;
     }
 }

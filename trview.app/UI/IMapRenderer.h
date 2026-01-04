@@ -18,11 +18,7 @@ namespace trview
 
         virtual ~IMapRenderer() = 0;
 
-        /// Event raised when the user hovers over a map sector, or if the mouse leaves the map.
-        Event<std::weak_ptr<IRoom>> on_room_selected;
-        Event<std::weak_ptr<ISector>> on_sector_hover;
         Event<std::weak_ptr<ISector>> on_sector_selected;
-        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
         // Renders the map 
         virtual void render(bool window) = 0;

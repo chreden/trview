@@ -3,13 +3,10 @@
 #include <format>
 #include "RowCounter.h"
 #include "../Messages/Messages.h"
+#include "../Elements/ILevel.h"
 
 namespace trview
 {
-    ILightsWindow::~ILightsWindow()
-    {
-    }
-
     LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _messaging(messaging)
     {
@@ -137,7 +134,7 @@ namespace trview
                     set_local_selected_light(light);
                     if (_sync_light)
                     {
-                        on_light_selected(light);
+                        messages::send_select_light(_messaging, light);
                     }
                 }, default_hide(filtered_lights));
         }
@@ -334,7 +331,39 @@ namespace trview
                 _columns_set = true;
             }
         }
+        else if (auto selected_light = messages::read_select_light(message))
+        {
+            set_selected_light(selected_light.value());
+        }
+        else if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                clear_selected_light();
+                set_lights(level_ptr->lights());
+                set_level_version(level_ptr->version());
+            }
+        }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_current_room(selected_room.value());
+        }
+    }
+
+    void LightsWindow::initialise()
+    {
+        messages::get_open_level(_messaging, weak_from_this());
+        messages::get_selected_room(_messaging, weak_from_this());
+        messages::get_selected_light(_messaging, weak_from_this());
+    }
+
+    std::string LightsWindow::type() const
+    {
+        return "Lights";
+    }
+
+    std::string LightsWindow::title() const
+    {
+        return _id;
     }
 }
-
-

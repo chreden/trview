@@ -84,15 +84,15 @@ namespace trview
             _tooltip->set_visible(false);
             if (std::holds_alternative<std::weak_ptr<IItem>>(item.item))
             {
-                on_select_item(std::get<std::weak_ptr<IItem>>(item.item));
+                messages::send_select_item(_messaging, std::get<std::weak_ptr<IItem>>(item.item));
             }
             else if (std::holds_alternative<std::weak_ptr<ITrigger>>(item.item))
             {
-                on_select_trigger(std::get<std::weak_ptr<ITrigger>>(item.item));
+                messages::send_select_trigger(_messaging, std::get<std::weak_ptr<ITrigger>>(item.item));
             }
             else if (std::holds_alternative<std::weak_ptr<IRoom>>(item.item))
             {
-                on_select_room(std::get<std::weak_ptr<IRoom>>(item.item));
+                messages::send_select_room(_messaging, std::get<std::weak_ptr<IRoom>>(item.item));
             }
         };
 
@@ -112,7 +112,7 @@ namespace trview
         _context_menu->on_orbit_here += on_orbit;
         _context_menu->on_hide += on_hide;
         _context_menu->on_copy += on_copy;
-        _context_menu->on_trigger_selected += on_select_trigger;
+        _token_store += _context_menu->on_trigger_selected += [this](auto&& trigger) { messages::send_select_trigger(_messaging, trigger); };
         _context_menu->on_filter_items_to_tile += on_filter_items_to_tile;
         _context_menu->set_remove_enabled(false);
         _context_menu->set_hide_enabled(false);
@@ -132,9 +132,6 @@ namespace trview
             };
 
         _map_renderer = map_renderer_source();
-        _map_renderer->on_sector_hover += on_sector_hover;
-        _map_renderer->on_room_selected += on_select_room;
-        _map_renderer->on_trigger_selected += on_select_trigger;
     }
 #pragma warning(pop)
 
@@ -164,7 +161,7 @@ namespace trview
             {
                 if (auto level = _level.lock())
                 {
-                    on_select_room(level->room(index));
+                    messages::send_select_room(_messaging, level->room(index));
                 }
             };
 
@@ -312,16 +309,17 @@ namespace trview
         _context_menu->set_remove_enabled(value);
     }
 
-    void ViewerUI::set_selected_item(uint32_t index)
-    {
-        _selected_item = index;
-    }
-
     void ViewerUI::set_selected_room(const std::shared_ptr<IRoom>& room)
     {
-        _room_navigator->set_selected_room(room->number());
-        _selected_room = room->number();
-        _map_renderer->load(room);
+        if (room)
+        {
+            _room_navigator->set_selected_room(room->number());
+            _selected_room = room->number();
+        }
+        else
+        {
+            _selected_room = 0;
+        }
     }
 
     void ViewerUI::set_show_context_menu(bool value)
@@ -513,6 +511,10 @@ namespace trview
             {
                 set_toggle(toggle.first, toggle.second);
             }
+        }
+        else if (auto selected_room = messages::read_select_room(message))
+        {
+            set_selected_room(selected_room.value().lock());
         }
     }
 }

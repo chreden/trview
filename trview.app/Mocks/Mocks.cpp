@@ -45,43 +45,14 @@
 #include "UI/ISettingsWindow.h"
 #include "UI/IViewerUI.h"
 #include "UI/IViewOptions.h"
-#include "Windows/IItemsWindow.h"
-#include "Windows/IItemsWindowManager.h"
-#include "Windows/ILightsWindow.h"
-#include "Windows/ILightsWindowManager.h"
-#include "Windows/ILogWindow.h"
-#include "Windows/ILogWindowManager.h"
-#include "Windows/IRoomsWindow.h"
-#include "Windows/IRoomsWindowManager.h"
-#include "Windows/IRouteWindow.h"
-#include "Windows/IRouteWindowManager.h"
-#include "Windows/ITriggersWindow.h"
-#include "Windows/ITriggersWindowManager.h"
 #include "Windows/IViewer.h"
-#include "Windows/ITexturesWindowManager.h"
-#include "Windows/ITexturesWindow.h"
-#include "Windows/ICameraSinkWindow.h"
-#include "Windows/ICameraSinkWindowManager.h"
-#include "Windows/IConsoleManager.h"
-#include "Windows/IConsole.h"
 #include "IApplication.h"
 #include "Lua/ILua.h"
 #include "Plugins/IPlugins.h"
 #include "Plugins/IPlugin.h"
-#include "Windows/IPluginsWindow.h"
-#include "Windows/IPluginsWindowManager.h"
 #include "Tools/IToolbar.h"
-#include "Windows/IStaticsWindow.h"
-#include "Windows/IStaticsWindowManager.h"
 #include "Windows/IWindows.h"
-#include "Windows/ISoundsWindow.h"
-#include "Windows/ISoundsWindowManager.h"
-#include "Windows/IAboutWindow.h"
-#include "Windows/IAboutWindowManager.h"
-#include "Windows/IDiffWindowManager.h"
-#include "Windows/IDiffWindow.h"
-#include "Windows/IPackWindowManager.h"
-#include "Windows/IPackWindow.h"
+#include "Windows/IWindow.h"
 
 namespace trview
 {
@@ -189,68 +160,8 @@ namespace trview
         MockViewOptions::MockViewOptions() {}
         MockViewOptions::~MockViewOptions() {}
 
-        MockItemsWindow::MockItemsWindow() {}
-        MockItemsWindow::~MockItemsWindow() {}
-
-        MockItemsWindowManager::MockItemsWindowManager() {}
-        MockItemsWindowManager::~MockItemsWindowManager() {}
-
-        MockLightsWindow::MockLightsWindow() {}
-        MockLightsWindow::~MockLightsWindow() {}
-
-        MockLightsWindowManager::MockLightsWindowManager() {}
-        MockLightsWindowManager::~MockLightsWindowManager() {}
-
-        MockLogWindow::MockLogWindow() {}
-        MockLogWindow::~MockLogWindow() {}
-
-        MockLogWindowManager::MockLogWindowManager() {}
-        MockLogWindowManager::~MockLogWindowManager() {}
-
-        MockPackWindow::MockPackWindow() {}
-        MockPackWindow::~MockPackWindow() {}
-
-        MockPackWindowManager::MockPackWindowManager() {}
-        MockPackWindowManager::~MockPackWindowManager() {}
-
-        MockRoomsWindow::MockRoomsWindow() {}
-        MockRoomsWindow::~MockRoomsWindow() {}
-
-        MockRoomsWindowManager::MockRoomsWindowManager() {}
-        MockRoomsWindowManager::~MockRoomsWindowManager() {}
-
-        MockRouteWindow::MockRouteWindow() {}
-        MockRouteWindow::~MockRouteWindow() {}
-
-        MockRouteWindowManager::MockRouteWindowManager() {}
-        MockRouteWindowManager::~MockRouteWindowManager() {}
-
-        MockTriggersWindow::MockTriggersWindow() {}
-        MockTriggersWindow::~MockTriggersWindow() {}
-
-        MockTriggersWindowManager::MockTriggersWindowManager() {}
-        MockTriggersWindowManager::~MockTriggersWindowManager() {}
-
         MockViewer::MockViewer() {}
         MockViewer::~MockViewer() {}
-
-        MockTexturesWindowManager::MockTexturesWindowManager() {}
-        MockTexturesWindowManager::~MockTexturesWindowManager() {}
-
-        MockTexturesWindow::MockTexturesWindow() {}
-        MockTexturesWindow::~MockTexturesWindow() {}
-
-        MockCameraSinkWindowManager::MockCameraSinkWindowManager() {}
-        MockCameraSinkWindowManager::~MockCameraSinkWindowManager() {}
-
-        MockCameraSinkWindow::MockCameraSinkWindow() {}
-        MockCameraSinkWindow::~MockCameraSinkWindow() {}
-
-        MockConsoleManager::MockConsoleManager() {}
-        MockConsoleManager::~MockConsoleManager() {}
-
-        MockConsole::MockConsole() {}
-        MockConsole::~MockConsole() {}
 
         MockApplication::MockApplication() {}
         MockApplication::~MockApplication() {}
@@ -264,32 +175,17 @@ namespace trview
         MockPlugin::MockPlugin() {}
         MockPlugin::~MockPlugin() {}
 
-        MockPluginsWindow::MockPluginsWindow() {}
-        MockPluginsWindow::~MockPluginsWindow() {}
-
-        MockPluginsWindowManager::MockPluginsWindowManager() {}
-        MockPluginsWindowManager::~MockPluginsWindowManager() {}
-
-        MockStaticsWindow::MockStaticsWindow() {}
-        MockStaticsWindow::~MockStaticsWindow() {}
-
-        MockStaticsWindowManager::MockStaticsWindowManager() {}
-        MockStaticsWindowManager::~MockStaticsWindowManager() {}
-
         MockToolbar::MockToolbar() {}
         MockToolbar::~MockToolbar() {}
 
         MockWindows::MockWindows() {}
         MockWindows::~MockWindows() {}
 
+        MockWindow::MockWindow() {}
+        MockWindow::~MockWindow() {}
+
         MockScriptable::MockScriptable() {}
         MockScriptable::~MockScriptable() {}
-
-        MockSoundsWindow::MockSoundsWindow() {}
-        MockSoundsWindow::~MockSoundsWindow() {}
-
-        MockSoundsWindowManager::MockSoundsWindowManager() {}
-        MockSoundsWindowManager::~MockSoundsWindowManager() {}
 
         MockSoundSource::MockSoundSource() {};
         MockSoundSource::~MockSoundSource() {};
@@ -302,18 +198,6 @@ namespace trview
 
         MockNgPlusSwitcher::MockNgPlusSwitcher() {};
         MockNgPlusSwitcher::~MockNgPlusSwitcher() {};
-
-        MockAboutWindowManager::MockAboutWindowManager() {};
-        MockAboutWindowManager::~MockAboutWindowManager() {};
-
-        MockAboutWindow::MockAboutWindow() {};
-        MockAboutWindow::~MockAboutWindow() {};
-
-        MockDiffWindow::MockDiffWindow() {};
-        MockDiffWindow::~MockDiffWindow() {};
-
-        MockDiffWindowManager::MockDiffWindowManager() {};
-        MockDiffWindowManager::~MockDiffWindowManager() {};
 
         MockLevelInfo::MockLevelInfo() {}
         MockLevelInfo::~MockLevelInfo() {}
