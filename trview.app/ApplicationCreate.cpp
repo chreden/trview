@@ -516,6 +516,7 @@ namespace trview
         windows->register_window("Items", items_window_source);
         windows->register_window("Lights", lights_window_source);
         windows->register_window("Log", log_window_source);
+        windows->register_window("Models", models_window_source);
         windows->register_window("Pack", pack_window_source);
         windows->register_window("Plugins", plugins_window_source);
         windows->register_window("Rooms", rooms_window_source);
@@ -524,7 +525,6 @@ namespace trview
         windows->register_window("Statics", statics_window_source);
         windows->register_window("Textures", textures_window_source);
         windows->register_window("Triggers", triggers_window_source);
-        windows->register_window("Models", models_window_source);
 
         auto viewer_ui = std::make_shared<ViewerUI>(
             window,
