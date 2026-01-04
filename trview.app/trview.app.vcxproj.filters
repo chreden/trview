@@ -117,9 +117,8 @@
     <ClCompile Include="Elements\Flyby\Flyby.cpp" Filter="Elements\Flyby" />
     <ClCompile Include="Elements\Flyby\FlybyNode.cpp" Filter="Elements\Flyby" />
     <ClCompile Include="Messages\Messages.cpp" Filter="Messages" />
-    <ClCompile Include="Windows\Models\ModelsWindow.cpp" Filter="Windows\Models" />
     <ClCompile Include="Elements\Level\LevelNameLookup.cpp" Filter="Elements\Level" />
-    <ClCompile Include="Windows\Models\ModelsWindowManager.cpp" Filter="Windows\Models" />
+    <ClCompile Include="Windows\Models\ModelsWindow.cpp" Filter="Windows\Models" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -358,19 +357,10 @@
     <ClInclude Include="Mocks\UI\ILevelInfo.h" Filter="Mocks\UI" />
     <ClInclude Include="Mocks\Elements\ILevelNameLookup.h" Filter="Mocks\Elements" />
     <ClInclude Include="Menus\LevelSortingMode.h" Filter="Menus" />
-    <ClInclude Include="Mocks\Windows\IModelsWindow.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Windows\IModelsWindowManager.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Windows\Models\IModelsWindow.h" Filter="Windows\Models" />
-    <ClInclude Include="Windows\Models\IModelsWindowManager.h" Filter="Windows\Models" />
-    <ClInclude Include="Windows\Models\ModelsWindow.h" Filter="Windows\Models" />
-    <ClInclude Include="Windows\Models\ModelsWindowManager.h" Filter="Windows\Models" />
     <ClInclude Include="Menus\LevelSortingMode.hpp" Filter="Menus" />
-    <ClInclude Include="Windows\IWindow.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Mocks\Windows\IWindow.h">
-      <Filter>Mocks\Windows</Filter>
-    </ClInclude>
+    <ClInclude Include="Windows\IWindow.h" Filter="Windows" />
+    <ClInclude Include="Mocks\Windows\IWindow.h" Filter="Mocks\Windows" />
+    <ClInclude Include="Windows\Models\ModelsWindow.h" Filter="Windows\Models" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

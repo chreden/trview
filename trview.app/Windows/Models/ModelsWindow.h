@@ -1,17 +1,19 @@
 #pragma once
 
-#include "IModelsWindow.h"
+#include "../IWindow.h"
 #include <trview.graphics/IDevice.h>
 #include <trview.graphics/IBuffer.h>
 #include "../../Geometry/ITransparencyBuffer.h"
 #include <trview.graphics/Sampler/ISamplerState.h>
 #include <trview.common/TokenStore.h>
 #include "../../Camera/CameraInput.h"
+#include <trview.common/Messages/IMessageSystem.h>
+#include "../../Geometry/Model/IModelStorage.h"
 
 namespace trview
 {
     struct IModel;
-    class ModelsWindow final : public IModelsWindow
+    class ModelsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         ModelsWindow(const std::shared_ptr<graphics::IDevice>& device,
@@ -20,15 +22,20 @@ namespace trview
             const graphics::IBuffer::ConstantSource& buffer_source,
             ITransparencyBuffer::Source transparency_buffer_source,
             const graphics::ISamplerState::Source& sampler_source,
-            std::unique_ptr<input::IMouse> mouse);
+            std::unique_ptr<input::IMouse> mouse,
+            const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~ModelsWindow() = default;
         void render() override;
-        void set_level_texture_storage(const std::weak_ptr<ILevelTextureStorage>& level_texture_storage) override;
-        void set_model_storage(const std::weak_ptr<IModelStorage>& model_storage) override;
+        void initialise();
         void set_number(int32_t number) override;
         void update(float delta) override;
+        void receive_message(const Message& message) override;
+        std::string title() const override;
+        std::string type() const override;
     private:
         bool render_meshes_window();
+        void set_level_texture_storage(const std::weak_ptr<ILevelTextureStorage>& level_texture_storage);
+        void set_model_storage(const std::weak_ptr<IModelStorage>& model_storage);
 
         std::string _id{ "Models 0" };
         std::weak_ptr<IModelStorage> _model_storage;
@@ -48,5 +55,6 @@ namespace trview
         TokenStore _token_store;
         CameraInput _camera_input;
         bool _mouse_over{ false };
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }

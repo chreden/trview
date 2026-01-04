@@ -498,9 +498,12 @@ namespace trview
                 pack_window->initialise();
                 return pack_window;
             };
+
+        auto transparency_buffer_source = [=](auto&& lts) { return std::make_unique<TransparencyBuffer>(device, lts); };
+
         auto models_window_source = [=]()
             {
-                auto models_window = std::make_shared<ModelsWindow>(files, dialogs, messaging);
+                auto models_window = std::make_shared<ModelsWindow>(device, render_target_source, shader_storage, buffer_source, transparency_buffer_source, sampler_source, std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window)), messaging);
                 models_window->initialise();
                 return models_window;
             };
@@ -557,9 +560,6 @@ namespace trview
 
         auto file_menu = std::make_shared<FileMenu>(window, shortcuts, dialogs, files, level_name_source, messaging);
         messaging->add_recipient(file_menu);
-
-        auto transparency_buffer_source = [=](auto&& lts) { return std::make_unique<TransparencyBuffer>(device, lts); };
-        auto meshes_window_source = [=]() { return std::make_shared<ModelsWindow>(device, render_target_source, shader_storage, buffer_source, transparency_buffer_source, sampler_source, std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window))); };
 
         auto application = std::make_shared<Application>(
             window,

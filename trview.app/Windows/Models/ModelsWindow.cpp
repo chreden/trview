@@ -1,6 +1,8 @@
 #include "ModelsWindow.h"
 #include "../../Geometry/Model/IModelStorage.h"
 #include "../../Geometry/Model/IModel.h"
+#include "../../Messages/Messages.h"
+#include "../../Elements/ILevel.h"
 
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/ViewportStore.h>
@@ -20,19 +22,16 @@ namespace trview
 #pragma warning(pop)
     }
 
-    IModelsWindow::~IModelsWindow()
-    {
-    }
-
     ModelsWindow::ModelsWindow(const std::shared_ptr<graphics::IDevice>& device,
         const graphics::IRenderTarget::SizeSource& render_target_source,
         const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
         const graphics::IBuffer::ConstantSource& buffer_source,
         ITransparencyBuffer::Source transparency_buffer_source,
         const graphics::ISamplerState::Source& sampler_source,
-        std::unique_ptr<input::IMouse> mouse)
+        std::unique_ptr<input::IMouse> mouse,
+        const std::weak_ptr<IMessageSystem>& messaging)
         : _device(device), _render_target(render_target_source(512, 512, graphics::IRenderTarget::DepthStencilMode::Enabled)), _transparency_buffer_source(transparency_buffer_source),
-        _sampler_state(sampler_source(graphics::ISamplerState::AddressMode::Clamp)), _mouse(std::move(mouse))
+        _sampler_state(sampler_source(graphics::ISamplerState::AddressMode::Clamp)), _mouse(std::move(mouse)), _messaging(messaging)
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -191,5 +190,32 @@ namespace trview
         ImGui::End();
         ImGui::PopStyleVar();
         return stay_open;
+    }
+
+    void ModelsWindow::initialise()
+    {
+        messages::get_open_level(_messaging, weak_from_this());
+    }
+
+    void ModelsWindow::receive_message(const Message& message)
+    {
+        if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                set_level_texture_storage(level_ptr->texture_storage());
+                set_model_storage(level_ptr->model_storage());
+            }
+        }
+    }
+
+    std::string ModelsWindow::title() const
+    {
+        return _id;
+    }
+
+    std::string ModelsWindow::type() const
+    {
+        return "Models";
     }
 }

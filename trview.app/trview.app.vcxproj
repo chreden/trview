@@ -88,6 +88,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\AutoHider.cpp" />
     <ClCompile Include="Windows\About\AboutWindow.cpp" />
     <ClCompile Include="Windows\Diff\DiffWindow.cpp" />
+    <ClCompile Include="Windows\Models\ModelsWindow.cpp" />
     <ClCompile Include="Windows\Pack\PackWindow.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
@@ -223,6 +224,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\Console\Console.h" />
     <ClInclude Include="Windows\Diff\DiffWindow.h" />
     <ClInclude Include="Windows\IWindow.h" />
+    <ClInclude Include="Windows\Models\ModelsWindow.h" />
     <ClInclude Include="Windows\Pack\PackWindow.h" />
     <ClInclude Include="Windows\Sounds\SoundsWindow.h" />
     <ClInclude Include="Windows\Windows.h" />
