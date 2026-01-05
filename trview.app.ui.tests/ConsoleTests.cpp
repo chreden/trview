@@ -102,7 +102,7 @@ void register_console_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*plugin, do_file("test.lua")).Times(1);
             ON_CALL(*plugins, plugins).WillByDefault(testing::Return(std::vector<std::weak_ptr<IPlugin>>{ plugin }));
             auto dialogs = mock_shared<MockDialogs>();
-            ON_CALL(*dialogs, open_file).WillByDefault(testing::Return(IDialogs::FileResult{ "test.lua" }));
+            ON_CALL(*dialogs, open_file).WillByDefault(testing::Return(IDialogs::FileResult{ .filename = "test.lua" }));
             context.ptr = std::make_shared<Console>(dialogs, plugins, mock_shared<MockFonts>());
 
             ctx->ItemClick("/Console 0/##menubar/File");
@@ -121,7 +121,7 @@ void register_console_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*plugin, do_file("test.lua")).Times(2);
             ON_CALL(*plugins, plugins).WillByDefault(testing::Return(std::vector<std::weak_ptr<IPlugin>>{ plugin }));
             auto dialogs = mock_shared<MockDialogs>();
-            ON_CALL(*dialogs, open_file).WillByDefault(testing::Return(IDialogs::FileResult{ "test.lua" }));
+            ON_CALL(*dialogs, open_file).WillByDefault(testing::Return(IDialogs::FileResult{ .filename = "test.lua" }));
             context.ptr = std::make_shared<Console>(dialogs, plugins, mock_shared<MockFonts>());
 
             ctx->ItemClick("/Console 0/##menubar/File");

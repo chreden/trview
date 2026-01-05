@@ -14,6 +14,7 @@ namespace trview
         if (!_settings)
         {
             messages::get_settings(_messaging, weak_from_this());
+            return;
         }
 
         if (!render_plugins_window())

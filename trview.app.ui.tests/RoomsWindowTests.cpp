@@ -104,7 +104,7 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
             EXPECT_CALL(*room2, set_visible(true)).Times(1);
             context.ptr->set_rooms({ room1, room2 });
 
-            ctx->ItemUncheck("/**/##hide-1");
+            ctx->ItemUncheck("/**/##Hide-1");
 
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(room2.get()), true);
         });
@@ -134,8 +134,8 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_current_room(normal_room);
 
             ctx->Yield();
-            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), true);
-            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##0"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
 
             ctx->ItemClick("/**/Filters##FiltersButton");
             ctx->SetRef(ctx->ItemInfo("/**/+")->Window);
@@ -147,7 +147,7 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
 
             ctx->Yield();
 
-            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), false);
-            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##0"), false);
+            IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
         });
 }

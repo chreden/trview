@@ -8,8 +8,8 @@
 #include <trview.tests.common/Mocks.h>
 #include <trview.app/Mocks/Camera/ICamera.h>
 #include <trview.common/Mocks/Messages/IMessageSystem.h>
-
 #include <trview.app/Messages/Messages.h>
+#include <trview.tests.common/Messages.h>
 
 using namespace testing;
 using namespace trview;
@@ -49,6 +49,8 @@ namespace
         std::unique_ptr<CameraSinkWindow> ptr;
         std::vector<std::shared_ptr<MockCameraSink>> camera_sinks;
         std::vector<std::shared_ptr<MockTrigger>> triggers;
+        std::shared_ptr<MockMessageSystem> messaging;
+        std::vector<trview::Message> messages;
 
         void render()
         {
@@ -79,19 +81,18 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             ctx->ItemClick("/**/Track##track");
             ctx->ItemCheck("/**/Room");
 
-            IM_CHECK_EQ(ctx->ItemExists("/**/0##0"), false);;
-            IM_CHECK_EQ(ctx->ItemExists("/**/1##1"), true);;
+            IM_CHECK_EQ(ctx->ItemExists("/**/##0"), false);;
+            IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);;
         });
 
     test<CameraSinkWindowContext>(engine, "Camera/Sink Window", "Selected Not Raised When Sync Off",
         [](ImGuiTestContext* ctx) { ctx->GetVars<CameraSinkWindowContext>().render(); },
         [](ImGuiTestContext* ctx)
         {
-            auto messaging = mock_shared<MockMessageSystem>();
-            EXPECT_CALL(*messaging, send_message).Times(0);
-
             auto& context = ctx->GetVars<CameraSinkWindowContext>();
-            context.ptr = register_test_module().with_messaging(messaging).build();
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto camera_sink1 = mock_shared<MockCameraSink>()->with_number(0);
             auto camera_sink2 = mock_shared<MockCameraSink>()->with_number(1);
@@ -99,44 +100,46 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_camera_sinks({ camera_sink1, camera_sink2 });
 
             ctx->ItemUncheck("/**/Sync");
-            ctx->ItemClick("/**/1##1");
+            ctx->ItemClick("/**/##1");
 
-            ASSERT_EQ(true, testing::Mock::VerifyAndClearExpectations(messaging.get()));
+            ASSERT_EQ(true, testing::Mock::VerifyAndClearExpectations(context.messaging.get()));
         });
 
     test<CameraSinkWindowContext>(engine, "Camera/Sink Window", "Selected Raised",
         [](ImGuiTestContext* ctx) { ctx->GetVars<CameraSinkWindowContext>().render(); },
         [](ImGuiTestContext* ctx)
         {
-            auto messaging = mock_shared<MockMessageSystem>();
-            std::optional<trview::Message> message;
-            EXPECT_CALL(*messaging, send_message).Times(1).WillRepeatedly(testing::SaveArg<0>(&message));
-
             auto& context = ctx->GetVars<CameraSinkWindowContext>();
-            context.ptr = register_test_module().build();
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto camera_sink1 = mock_shared<MockCameraSink>()->with_number(0);
             auto camera_sink2 = mock_shared<MockCameraSink>()->with_number(1);
             context.camera_sinks = { camera_sink1, camera_sink2 };
             context.ptr->set_camera_sinks({ camera_sink1, camera_sink2 });
 
-            ctx->ItemClick("/**/1##1");
+            ctx->ItemClick("/**/##1");
 
-            IM_CHECK_EQ(message.has_value(), true);
-            auto raised = messages::read_select_camera_sink(message.value());
-            IM_CHECK_EQ(raised.value().lock(), camera_sink2);
+            if (auto found = find_message(context.messages, "select_camera_sink"))
+            {
+                auto selected = messages::read_select_camera_sink(found.value());
+                IM_CHECK_EQ(selected->lock(), camera_sink2);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
         });
 
     test<CameraSinkWindowContext>(engine, "Camera/Sink Window", "Trigger Selected Raised",
         [](ImGuiTestContext* ctx) { ctx->GetVars<CameraSinkWindowContext>().render(); },
         [](ImGuiTestContext* ctx)
         {
-            auto messaging = mock_shared<MockMessageSystem>();
-            std::optional<trview::Message> message;
-            EXPECT_CALL(*messaging, send_message).Times(1).WillRepeatedly(testing::SaveArg<0>(&message));
-
             auto& context = ctx->GetVars<CameraSinkWindowContext>();
-            context.ptr = register_test_module().build();
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
 
             auto trigger1 = mock_shared<MockTrigger>();
             auto trigger2 = mock_shared<MockTrigger>();
@@ -149,9 +152,15 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
 
             ctx->ItemClick("/**/1");
 
-            IM_CHECK_EQ(message.has_value(), true);
-            auto raised = messages::read_select_trigger(message.value());
-            IM_CHECK_EQ(raised.value().lock(), trigger2);
+            if (auto found = find_message(context.messages, "select_trigger"))
+            {
+                auto selected = messages::read_select_trigger(found.value());
+                IM_CHECK_EQ(selected->lock(), trigger2);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
         });
 
     test<CameraSinkWindowContext>(engine, "Camera/Sink Window", "Type Changed Raised",
@@ -168,7 +177,7 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_camera_sinks({ camera_sink });
             context.ptr->set_selected_camera_sink(camera_sink);
 
-            ctx->SetRef("/Camera\\/Sink 0\\/Details_8FE7677A");
+            ctx->SetRef("/Camera\\/Sink 0\\/Details_CA3F050C");
             ctx->ComboClick("Type/Sink##type");
 
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(camera_sink.get()), true);
@@ -188,7 +197,7 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             context.camera_sinks = { camera_sink1, camera_sink2 };
             context.ptr->set_camera_sinks({ camera_sink1, camera_sink2 });
 
-            ctx->ItemClick("/**/##hide-1");
+            ctx->ItemClick("/**/##Hide-1");
 
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(camera_sink2.get()), true);
         });

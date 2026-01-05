@@ -25,7 +25,9 @@ namespace
 
             std::unique_ptr<PluginsWindow> build()
             {
-                return std::make_unique<PluginsWindow>(plugins, shell, dialogs, messaging);
+                auto window = std::make_unique<PluginsWindow>(plugins, shell, dialogs, messaging);
+                window->receive_message(trview::Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(UserSettings {.randomizer_tools = false, .randomizer = {}}) });
+                return window;
             }
 
             test_module& with_plugins(std::shared_ptr<IPlugins> plugins)
