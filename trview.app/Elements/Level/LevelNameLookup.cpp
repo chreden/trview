@@ -114,10 +114,20 @@ namespace trview
             return std::nullopt;
         }
 
+        std::optional<std::vector<uint8_t>> get_tombpc_data(const std::shared_ptr<IFiles>& files, const std::filesystem::path& level_path)
+        {
+            const auto tombpc = files->load_file(level_path.parent_path() /= "TOMBPC.DAT");
+            if (tombpc)
+            {
+                return tombpc;
+            }
+            return files->load_file(level_path.parent_path() /= "trtla.dat");
+        }
+
         std::optional<ILevelNameLookup::Name> read_tombpc_1_3(const std::shared_ptr<IFiles>& files, const std::string& level_filename)
         {
             const std::filesystem::path level_path{ level_filename };
-            if (const auto tombpc_data = files->load_file(level_path.parent_path() /= "TOMBPC.DAT"))
+            if (const auto tombpc_data = get_tombpc_data(files, level_path))
             {
                 try
                 {
