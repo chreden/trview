@@ -252,14 +252,8 @@ TEST(Viewer, SelectTriggerRaised)
     activate_context_menu(picking, mouse, trigger);
     mouse.mouse_click(IMouse::Button::Left);
 
-    if (auto found = find_message(messages, "select_trigger"))
-    {
-        ASSERT_EQ(messages::read_select_trigger(found.value())->lock(), trigger);
-    }
-    else
-    {
-        FAIL();
-    }
+    const auto found = find_message_throw(messages, "select_trigger");
+    ASSERT_EQ(messages::read_select_trigger(found)->lock(), trigger);
 }
 
 TEST(Viewer, TriggerHidden)
@@ -304,14 +298,8 @@ TEST(Viewer, SelectWaypointRaised)
     activate_context_menu(picking, mouse, waypoint, 100);
     mouse.mouse_click(IMouse::Button::Left);
 
-    if (auto found = find_message(messages, "select_waypoint"))
-    {
-        ASSERT_EQ(messages::read_select_waypoint(found.value())->lock(), waypoint);
-    }
-    else
-    {
-        FAIL();
-    }
+    const auto found = find_message_throw(messages, "select_waypoint");
+    ASSERT_EQ(messages::read_select_waypoint(found)->lock(), waypoint);
 }
 
 /// Tests that the on_remove_waypoint event from the UI is observed and forwarded.
