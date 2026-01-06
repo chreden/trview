@@ -72,10 +72,6 @@ namespace trview
 
         virtual void set_camera_mode(ICamera::Mode camera_mode) = 0;
 
-        /// Set the current route.
-        /// @param route The new route.
-        virtual void set_route(const std::shared_ptr<IRoute>& route) = 0;
-
         /// Set whether the compass is visible.
         virtual void set_show_compass(bool value) = 0;
 

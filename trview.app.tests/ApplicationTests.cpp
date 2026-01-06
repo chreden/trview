@@ -215,14 +215,8 @@ TEST(Application, RecentFilesUpdatedOnFileOpen)
     ASSERT_TRUE(called.has_value());
     std::list<std::string> expected{ "test_path.tr2" };
 
-    if (auto found = find_last_message(messages, "settings"))
-    {
-        ASSERT_EQ(messages::read_settings(found.value())->recent_files, expected);
-    }
-    else
-    {
-        FAIL();
-    }
+    const auto found = find_last_message_throw(messages, "settings");
+    ASSERT_EQ(messages::read_settings(found)->recent_files, expected);
 }
 
 TEST(Application, FileOpenedInViewer)
@@ -609,41 +603,17 @@ TEST(Application, ReloadSyncsProperties)
     application->open("test.tr2", ILevel::OpenMode::Full);
     application->open("test.tr2", ILevel::OpenMode::Reload);
 
-    if (auto select_item_message = find_message(messages, "select_item"))
-    {
-        ASSERT_EQ(messages::read_select_item(select_item_message.value())->lock(), items_reloaded[3]);
-    }
-    else
-    {
-        FAIL();
-    }
+    const auto select_item_message = find_message_throw(messages, "select_item");
+    ASSERT_EQ(messages::read_select_item(select_item_message)->lock(), items_reloaded[3]);
 
-    if (auto select_trigger_message = find_message(messages, "select_trigger"))
-    {
-        ASSERT_EQ(messages::read_select_trigger(select_trigger_message.value())->lock(), triggers_reloaded[3]);
-    }
-    else
-    {
-        FAIL();
-    }
+    const auto select_trigger_message = find_message_throw(messages, "select_trigger");
+    ASSERT_EQ(messages::read_select_trigger(select_trigger_message)->lock(), triggers_reloaded[3]);
 
-    if (auto select_light_message = find_message(messages, "select_light"))
-    {
-        ASSERT_EQ(messages::read_select_light(select_light_message.value())->lock(), lights_reloaded[3]);
-    }
-    else
-    {
-        FAIL();
-    }
+    const auto select_light_message = find_message_throw(messages, "select_light");
+    ASSERT_EQ(messages::read_select_light(select_light_message)->lock(), lights_reloaded[3]);
 
-    if (auto select_room_message = find_last_message(messages, "select_room"))
-    {
-        ASSERT_EQ(messages::read_select_room(select_room_message.value())->lock(), room);
-    }
-    else
-    {
-        FAIL();
-    }
+    const auto select_room_message = find_last_message_throw(messages, "select_room");
+    ASSERT_EQ(messages::read_select_room(select_room_message)->lock(), room);
 }
 
 TEST(Application, RouteSetToDefaultColoursOnReset)
@@ -690,14 +660,8 @@ TEST(Application, RecentRouteLoaded)
         .build();
     application->open("test.tr2", ILevel::OpenMode::Full);
 
-    if (auto settings_message = find_last_message(messages, "settings"))
-    {
-        ASSERT_EQ(messages::read_settings(settings_message.value())->recent_routes["test.tr2"].route_path, "test.tvr");
-    }
-    else
-    {
-        FAIL();
-    }
+    const auto settings_message = find_last_message_throw(messages, "settings");
+    ASSERT_EQ(messages::read_settings(settings_message)->recent_routes["test.tr2"].route_path, "test.tvr");
 }
 
 TEST(Application, RecentRouteNotLoaded)
@@ -726,14 +690,8 @@ TEST(Application, RecentRouteNotLoaded)
 
     application->open("test.tr2", ILevel::OpenMode::Full);
 
-    if (auto settings_message = find_last_message(messages, "settings"))
-    {
-        ASSERT_TRUE(messages::read_settings(settings_message.value())->recent_routes.empty());
-    }
-    else
-    {
-        FAIL();
-    }
+    const auto settings_message = find_last_message_throw(messages, "settings");
+    ASSERT_TRUE(messages::read_settings(settings_message)->recent_routes.empty());
 }
 
 TEST(Application, RecentRouteLoadedOnWindowOpened)
@@ -745,8 +703,6 @@ TEST(Application, RecentRouteLoadedOnWindowOpened)
     auto dialogs = mock_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, message_box(std::wstring(L"Reopen last used route for this level?"), std::wstring(L"Reopen route"), IDialogs::Buttons::Yes_No)).Times(1).WillOnce(Return(true));
     auto route = mock_shared<MockRoute>();
-    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    EXPECT_CALL(viewer, set_route(std::shared_ptr<IRoute>(route))).Times(2);
     auto messaging = mock_shared<MockMessageSystem>();
     std::vector<trview::Message> messages;
     EXPECT_CALL(*messaging, send_message).WillRepeatedly([&](auto&& message) { messages.push_back(message); });
@@ -757,7 +713,6 @@ TEST(Application, RecentRouteLoadedOnWindowOpened)
     auto application = register_test_module()
         .with_settings_loader(std::move(settings_loader_ptr))
         .with_dialogs(dialogs)
-        .with_viewer(std::move(viewer_ptr))
         .with_route_source([&](auto&&...) {return route; })
         .with_level_source([&](auto&&...) { return std::move(level_ptr); })
         .with_windows(std::move(windows_ptr))
@@ -769,14 +724,11 @@ TEST(Application, RecentRouteLoadedOnWindowOpened)
 
     application->receive_message(trview::Message{ .type = "route_window_opened", .data = std::make_shared<MessageData<bool>>(true) });
 
-    if (auto settings_message = find_last_message(messages, "settings"))
-    {
-        ASSERT_EQ(messages::read_settings(settings_message.value())->recent_routes["test.tr2"].route_path, "test.tvr");
-    }
-    else
-    {
-        FAIL();
-    }
+    const auto settings_message = find_last_message_throw(messages, "settings");
+    ASSERT_EQ(messages::read_settings(settings_message)->recent_routes["test.tr2"].route_path, "test.tvr");
+
+    const auto route_message = find_last_message_throw(messages, "route");
+    ASSERT_EQ(messages::read_route(route_message)->lock(), route);
 }
 
 TEST(Application, SetCurrentLevelPrompt)

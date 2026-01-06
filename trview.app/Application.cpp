@@ -320,8 +320,6 @@ namespace trview
     void Application::remove_waypoint(uint32_t index)
     {
         _route->remove(index);
-        _viewer->set_route(_route);
-
         if (_route->waypoints() > 0)
         {
             messages::send_select_waypoint(_messaging, _route->waypoint(_route->selected_waypoint()));
@@ -761,7 +759,7 @@ namespace trview
     {
         _route = route;
         _route->set_level(_level);
-        _viewer->set_route(_route);
+        messages::send_route(_messaging, _route);
     }
 
     void Application::check_load()

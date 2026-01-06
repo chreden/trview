@@ -1658,6 +1658,10 @@ namespace trview
         {
             select_waypoint(selected_waypoint.value());
         }
+        else if (auto route = messages::read_route(message))
+        {
+            set_route(route.value().lock());
+        }
     }
 
     void Viewer::initialise()

@@ -72,7 +72,7 @@ namespace trview
         void select_trigger(const std::weak_ptr<ITrigger>& trigger);
         virtual void select_waypoint(const std::weak_ptr<IWaypoint>& waypoint) override;
         virtual void set_camera_mode(ICamera::Mode camera_mode) override;
-        virtual void set_route(const std::shared_ptr<IRoute>& route) override;
+        void set_route(const std::shared_ptr<IRoute>& route);
         virtual void set_show_compass(bool value) override;
         virtual void set_show_minimap(bool value) override;
         virtual void set_show_route(bool value) override;

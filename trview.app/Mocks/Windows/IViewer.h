@@ -21,7 +21,6 @@ namespace trview
             MOCK_METHOD(void, select_flyby_node, (const std::weak_ptr<IFlybyNode>&), (override));
             MOCK_METHOD(void, select_static_mesh, (const std::weak_ptr<IStaticMesh>&), (override));
             MOCK_METHOD(void, set_camera_mode, (ICamera::Mode), (override));
-            MOCK_METHOD(void, set_route, (const std::shared_ptr<IRoute>&), (override));
             MOCK_METHOD(void, set_show_compass, (bool), (override));
             MOCK_METHOD(void, set_show_minimap, (bool), (override));
             MOCK_METHOD(void, set_show_route, (bool), (override));
