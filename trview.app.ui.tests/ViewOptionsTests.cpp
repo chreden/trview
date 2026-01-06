@@ -10,6 +10,8 @@
 #include <trview.app/Mocks/Windows/IWindow.h>
 
 #include <trview.app/Filters/Filters.h>
+#include <trview.common/Messages/Message.h>
+#include <trview.app/Messages/Messages.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -255,9 +257,9 @@ void register_view_options_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            std::vector<Filters<IRoom>::Filter> filters;
+            trview::Message message;
             auto window = mock_shared<MockWindow>();
-            // EXPECT_CALL(*room, set_filters).WillOnce(testing::SaveArg<0>(&filters)).Times(1);
+            EXPECT_CALL(*window, receive_message).WillOnce(testing::SaveArg<0>(&message)).Times(1);
             auto windows = mock_shared<MockWindows>();
             EXPECT_CALL(*windows, create).WillOnce(testing::Return(window));
 
@@ -274,7 +276,7 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(window.get()));
 
             const std::vector<Filters<IRoom>::Filter> expected{ {.key = "Alternate", .compare = CompareOp::Exists, .op = Op::And } };
-            IM_CHECK_EQ(expected, filters);
+            IM_CHECK_EQ(expected, std::static_pointer_cast<MessageData<std::vector<Filters<IRoom>::Filter>>>(message.data)->value);
         });
 
     test<ViewOptionsContext>(engine, "View Options", "Flip Flags Toggle",
@@ -334,12 +336,11 @@ void register_view_options_tests(ImGuiTestEngine* engine)
         [](ImGuiTestContext* ctx) { render(ctx->GetVars<ViewOptionsContext>()); },
         [](ImGuiTestContext* ctx)
         {
-            std::vector<Filters<IRoom>::Filter> filters;
-            auto room = mock_shared<MockWindows>();
-            // EXPECT_CALL(*room, set_filters).WillOnce(testing::SaveArg<0>(&filters)).Times(1);
+            trview::Message message;
+            auto window = mock_shared<MockWindow>();
+            EXPECT_CALL(*window, receive_message).WillOnce(testing::SaveArg<0>(&message)).Times(1);
             auto windows = mock_shared<MockWindows>();
-            // TODO: Fix
-            // EXPECT_CALL(*windows, create).WillOnce(testing::Return(room));
+            EXPECT_CALL(*windows, create).WillOnce(testing::Return(window));
 
             auto& context = ctx->GetVars<ViewOptionsContext>();
             context.ptr = register_test_module().with_windows(windows).build();
@@ -352,10 +353,10 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             ctx->ItemClick("/**/##Menu_00/New Window");
 
             IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(windows.get()));
-            IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(room.get()));
+            IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(window.get()));
 
             const std::vector<Filters<IRoom>::Filter> expected{ {.key = "Alternate Group", .compare = CompareOp::Equal, .value = "3", .op = Op::And } };
-            IM_CHECK_EQ(expected, filters);
+            IM_CHECK_EQ(expected, std::static_pointer_cast<MessageData<std::vector<Filters<IRoom>::Filter>>>(message.data)->value);
         });
 
     test<ViewOptionsContext>(engine, "View Options", "Hidden Geometry Checkbox Toggle",

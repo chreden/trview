@@ -59,12 +59,15 @@ void register_level_info_tests(ImGuiTestEngine* engine)
             auto lookup = mock_shared<MockLevelNameLookup>();
             ON_CALL(*lookup, lookup(A<const std::weak_ptr<ILevel>&>())).WillByDefault(testing::Return(ILevelNameLookup::Name{ .name = "test" }));
 
+            auto level = mock_shared<MockLevel>();
+            ON_CALL(*level, name).WillByDefault(Return("Test"));
+
             auto& context = ctx->GetVars<LevelInfoContext>();
             context.ptr = register_test_module().with_level_name_lookup(lookup).build();
-            context.ptr->set_level(mock_shared<MockLevel>());
+            context.ptr->set_level(level);
 
             ctx->Yield();
-            IM_CHECK_EQ(RenderedText(ctx, ctx->ItemInfo("LevelInfo")->ID), "test");
+            IM_CHECK_EQ(RenderedText(ctx, ctx->ItemInfo("LevelInfo")->ID), "test (Test)");
         });
 
     test<LevelInfoContext>(engine, "Level Info", "On Toggle Settings Raised",
