@@ -17,6 +17,8 @@ namespace trview
             using Function = Floordata::Command::Function;
             switch (function)
             {
+            case Function::Portal:
+                return Function::Death;
             case Function::Death:
                 return Function::CeilingSlant;
                 break;

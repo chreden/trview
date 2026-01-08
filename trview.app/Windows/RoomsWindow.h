@@ -120,6 +120,7 @@ namespace trview
         std::shared_ptr<IMapRenderer> _map_renderer;
         std::shared_ptr<IClipboard> _clipboard;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Tomb1 };
+        trlevel::PlatformAndVersion _platform_and_version;
         std::string _id{ "Rooms 0" };
         std::optional<float> _tooltip_timer;
 
