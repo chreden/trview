@@ -616,7 +616,7 @@ namespace trview
             {
                 const auto& sectors = room.sectors();
                 return sectors
-                    | std::views::transform([&](auto&& s) { return parse_floordata(_floordata, s->floordata_index(), FloordataMeanings::None, _trng).commands; })
+                    | std::views::transform([&](auto&& s) { return parse_floordata(_floordata, s->floordata_index(), FloordataMeanings::None, _trng, _platform_and_version).commands; })
                     | std::views::join
                     | std::views::transform([](auto&& c) { return c.type; })
                     | std::ranges::to<std::unordered_set>()
@@ -988,7 +988,7 @@ namespace trview
 
                 if (selected_sector)
                 {
-                    const Floordata floordata = parse_floordata(_floordata, selected_sector->floordata_index(), FloordataMeanings::Generate, _all_items, _trng);
+                    const Floordata floordata = parse_floordata(_floordata, selected_sector->floordata_index(), FloordataMeanings::Generate, _all_items, _trng, _platform_and_version);
 
                     uint32_t index = selected_sector->floordata_index();
                     for (const auto& command : floordata.commands)
@@ -1356,6 +1356,7 @@ namespace trview
                 set_items(level_ptr->items());
                 set_triggers(level_ptr->triggers());
                 set_level_version(level_ptr->version());
+                _platform_and_version = level_ptr->platform_and_version();
                 set_ng_plus(level_ptr->ng_plus());
                 set_trng(level_ptr->trng());
                 set_floordata(level_ptr->floor_data());
@@ -1402,7 +1403,7 @@ namespace trview
 
             sector_filters.add_multi_getter<std::string>("Floordata Type", { available_floordata_types.begin(), available_floordata_types.end() }, [&](auto&& sector)
                 {
-                    return parse_floordata(_floordata, sector.floordata_index(), FloordataMeanings::None, _trng).commands
+                    return parse_floordata(_floordata, sector.floordata_index(), FloordataMeanings::None, _trng, _platform_and_version).commands
                         | std::views::transform([](auto&& c) { return c.type; })
                         | std::ranges::to<std::unordered_set>()
                         | std::views::transform([](auto&& s) { return to_string(s); })

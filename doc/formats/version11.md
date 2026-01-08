@@ -40,6 +40,10 @@ The WAD and SWD files will be merged into the main file in later versions.
 | [tr_entity_may_1996](tr_entity_may_1996.md)[n] | Entities ||
 | `uint8`[8192] | Light map ||
 
+### Floordata
+
+Floordata is in a slightly different order to release TR1. Details are [here](floordata_9.md).
+
 ## .WAD Format
 
 WAD format is shared with several later versions. See [WAD Format](wad.md).
