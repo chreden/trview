@@ -1,5 +1,7 @@
 # Floordata (Version 9-11)
 
+Floordata functions are in a different order to release TR1.
+
 | Value | Meaning | Note |
 | ----- | ------- | ---- | 
 | 0 | None | |

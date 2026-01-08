@@ -17,6 +17,7 @@ The WAD and SWD files will be merged into the main file in later versions.
 - Zones added.
 - Entity format now the same as retail TR1
   - Intensity1 added
+- Floordata functions now the same order as retail TR1
 
 ## .TOM Format
 

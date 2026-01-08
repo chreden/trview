@@ -11,8 +11,8 @@ TRView has support for several older formats including some demos and other vers
 Earliest version that TRView supports. The only example of this is the early version of The Lost Valley in LEVEL3.TOM in the May 1996 version of TR1.
 
 ### Todo
-- [WAD](wad.md)
-- Floordata meanings
+- Rect UV swap
+- Texture Slices
 
 ## Version 11
 
@@ -21,7 +21,8 @@ Earliest version that TRView supports. The only example of this is the early ver
 The 'May 1996' version of TR1.
 
 ### Todo
-- Floordata meanings
+- Rect UV swap
+- Texture Slices
 
 ## Version 21
 
@@ -33,6 +34,8 @@ The 'May 1996' version of TR1.
 - Zones
 
 ## Version 26
+
+- [Version 26](version26.md)
 
 'July 1996' Saturn demo of TR1.
 
