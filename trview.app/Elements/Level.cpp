@@ -1121,6 +1121,14 @@ namespace trview
         }
     }
 
+    void Level::set_selected_sound_source(const std::weak_ptr<ISoundSource>& node)
+    {
+        if (is_matching_level(node.lock(), this))
+        {
+            _selected_sound_source = node;
+        }
+    }
+
     std::shared_ptr<ILevelTextureStorage> Level::texture_storage() const
     {
         return _texture_storage;
@@ -1691,6 +1699,34 @@ namespace trview
         else if (auto selected_flyby_node = messages::read_select_flyby_node(message))
         {
             set_selected_flyby_node(selected_flyby_node.value());
+        }
+        else if (auto selected_sound_source = messages::read_select_sound_source(message))
+        {
+            set_selected_sound_source(selected_sound_source.value());
+        }
+        else if (message.type == "get_selected_item")
+        {
+            messages::reply_to(message, "select_item", _selected_item);
+        }
+        else if (message.type == "get_selected_room")
+        {
+            messages::reply_to(message, "select_room", _selected_room);
+        }
+        else if (message.type == "get_selected_light")
+        {
+            messages::reply_to(message, "select_light", _selected_light);
+        }
+        else if (message.type == "get_selected_trigger")
+        {
+            messages::reply_to(message, "select_trigger", _selected_trigger);
+        }
+        else if (message.type == "get_selected_camera_sink")
+        {
+            messages::reply_to(message, "select_camera_sink", _selected_camera_sink);
+        }
+        else if (message.type == "get_selected_sound_source")
+        {
+            messages::reply_to(message, "select_sound_source", _selected_sound_source);
         }
     }
 

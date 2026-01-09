@@ -1,7 +1,4 @@
 #include "Messages.h"
-
-#include <trview.common/Messages/IMessageSystem.h>
-
 #include "../Settings/UserSettings.h"
 
 namespace trview

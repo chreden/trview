@@ -326,19 +326,6 @@ namespace trview
         }
     }
 
-    void Application::select_room(std::weak_ptr<IRoom> room)
-    {
-        const auto [room_ptr, level] = get_entity_and_level(room);
-        if (!room_ptr || !level)
-        {
-            return;
-        }
-
-        level->set_selected_room(room);
-        _viewer->open(level, ILevel::OpenMode::Reload);
-        _viewer->select_room(room);
-    }
-
     void Application::select_next_waypoint()
     {
         if (_route->selected_waypoint() + 1 < _route->waypoints())
@@ -801,30 +788,7 @@ namespace trview
 
     void Application::receive_message(const Message& message)
     {
-        if (message.type == "get_selected_item")
-        {
-            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
-            {
-                if (_level)
-                {
-                    if (auto selected = _level->selected_item())
-                    {
-                        requester->receive_message({ .type = "select_item", .data = std::make_shared<MessageData<std::weak_ptr<IItem>>>(_level->item(selected.value())) });
-                    }
-                }
-            }
-        }
-        else if (message.type == "get_selected_room")
-        {
-            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
-            {
-                if (_level)
-                {
-                    requester->receive_message({ .type = "select_room", .data = std::make_shared<MessageData<std::weak_ptr<IRoom>>>(_level->selected_room()) });
-                }
-            }
-        }
-        else if (auto settings = messages::read_settings(message))
+        if (auto settings = messages::read_settings(message))
         {
             _settings = settings.value();
             lua::set_settings(_settings);
@@ -834,55 +798,6 @@ namespace trview
             if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
             {
                 requester->receive_message({ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(_settings) });
-            }
-        }
-        else if (message.type == "get_selected_light")
-        {
-            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
-            {
-                if (_level)
-                {
-                    if (auto current_selected_light = _level->selected_light())
-                    {
-                        const auto light = _level->lights()[current_selected_light.value()];
-                        requester->receive_message({ .type = "select_light", .data = std::make_shared<MessageData<std::weak_ptr<ILight>>>(light) });
-                    }
-                }
-            }
-        }
-        else if (message.type == "get_selected_trigger")
-        {
-            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
-            {
-                if (_level)
-                {
-                    if (auto current_selected_trigger = _level->selected_trigger())
-                    {
-                        const auto trigger = _level->trigger(current_selected_trigger.value());
-                        requester->receive_message({ .type = "select_trigger", .data = std::make_shared<MessageData<std::weak_ptr<ITrigger>>>(trigger) });
-                    }
-                }
-            }
-        }
-        else if (message.type == "get_selected_camera_sink")
-        {
-            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
-            {
-                if (_level)
-                {
-                    if (auto current_selected_camera_sink = _level->selected_camera_sink())
-                    {
-                        const auto camera_sink = _level->camera_sink(current_selected_camera_sink.value());
-                        requester->receive_message({ .type = "select_camera_sink", .data = std::make_shared<MessageData<std::weak_ptr<ICameraSink>>>(camera_sink) });
-                    }
-                }
-            }
-        }
-        else if (message.type == "get_selected_sound_source")
-        {
-            if (auto requester = std::static_pointer_cast<MessageData<std::weak_ptr<IRecipient>>>(message.data)->value.lock())
-            {
-                // TODO: Who knows about this?
             }
         }
         else if (message.type == "get_open_level")
