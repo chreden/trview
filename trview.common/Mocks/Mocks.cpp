@@ -9,6 +9,7 @@
 #include "Windows/IShortcuts.h"
 #include "IFiles.h"
 #include "Messages/IMessageSystem.h"
+#include "Messages/IRecipient.h"
 
 namespace trview
 {
@@ -34,5 +35,8 @@ namespace trview
 
         MockMessageSystem::MockMessageSystem() {}
         MockMessageSystem::~MockMessageSystem() {}
+
+        MockRecipient::MockRecipient() {}
+        MockRecipient::~MockRecipient() {}
     }
 }

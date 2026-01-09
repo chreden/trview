@@ -26,6 +26,8 @@
 #include <trview.app/Mocks/Elements/INgPlusSwitcher.h>
 #include <trview.graphics/mocks/ISamplerState.h>
 #include <trview.common/Mocks/Messages/IMessageSystem.h>
+#include <trview.common/Mocks/Messages/IRecipient.h>
+#include <trview.app/Messages/Messages.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -869,4 +871,22 @@ TEST(Level, RoomUpdatedIfAnimationsEnabled)
     ASSERT_EQ(room_called, 1);
     level->set_show_animation(true);
     level->update(1.0f);
+}
+
+TEST(Level, SelectItemMessages)
+{
+    std::optional<trview::Message> message;
+    auto caller = mock_shared<MockRecipient>();
+    EXPECT_CALL(*caller, receive_message).WillOnce(SaveArg<0>(&message));
+
+    auto level = register_test_module().build();
+
+    auto item = mock_shared<MockItem>();
+    ON_CALL(*item, level).WillByDefault(Return(level));
+
+    level->receive_message(trview::Message{ .type = "select_item", .data = std::make_shared<MessageData<std::weak_ptr<IItem>>>(item) });
+    level->receive_message(trview::Message{ .type = "get_selected_item", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(caller) });
+
+    ASSERT_EQ(message.has_value(), true);
+    ASSERT_EQ(messages::read_select_item(message.value())->lock(), item);
 }

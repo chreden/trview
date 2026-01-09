@@ -45,6 +45,7 @@
     <ClInclude Include="Messages\IRecipient.h" Filter="Messages" />
     <ClInclude Include="Mocks\Messages\IMessageSystem.h" Filter="Messages" />
     <ClInclude Include="Messages\Message.h" Filter="Messages" />
+    <ClInclude Include="Mocks\Messages\IRecipient.h" Filter="Mocks\Messages" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Size.cpp" />
