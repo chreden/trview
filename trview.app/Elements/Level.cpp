@@ -1108,14 +1108,6 @@ namespace trview
         }
     }
 
-    void Level::set_selected_camera_sink(uint32_t number)
-    {
-        if (number <= _camera_sinks.size())
-        {
-            set_selected_camera_sink(_camera_sinks[number]);
-        }
-    }
-
     void Level::set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
     {
         if (is_matching_level(camera_sink.lock(), this))

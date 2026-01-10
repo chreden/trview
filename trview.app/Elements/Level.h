@@ -96,7 +96,6 @@ namespace trview
         virtual bool show_items() const override;
         virtual void set_selected_trigger(uint32_t number) override;
         virtual void set_selected_light(uint32_t number) override;
-        virtual void set_selected_camera_sink(uint32_t number) override;
         void set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& node) override;
         virtual std::shared_ptr<ILevelTextureStorage> texture_storage() const override;
         virtual std::set<uint32_t> alternate_groups() const override;

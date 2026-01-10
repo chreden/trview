@@ -107,7 +107,6 @@ namespace trview
         virtual void set_map_colours(const MapColours& map_colours) = 0;
         virtual void set_selected_trigger(uint32_t number) = 0;
         virtual void set_selected_light(uint32_t number) = 0;
-        virtual void set_selected_camera_sink(uint32_t number) = 0;
         virtual void set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& node) = 0;
         virtual void set_show_geometry(bool show) = 0;
         virtual void set_show_triggers(bool show) = 0;
