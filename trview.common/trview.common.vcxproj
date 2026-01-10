@@ -33,6 +33,7 @@
     <ClInclude Include="Mocks\IFiles.h" />
     <ClInclude Include="Mocks\Logs\ILog.h" />
     <ClInclude Include="Mocks\Messages\IMessageSystem.h" />
+    <ClInclude Include="Mocks\Messages\IRecipient.h" />
     <ClInclude Include="Mocks\Windows\IClipboard.h" />
     <ClInclude Include="Mocks\Windows\IDialogs.h" />
     <ClInclude Include="Mocks\Windows\IShell.h" />

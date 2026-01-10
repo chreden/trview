@@ -97,7 +97,6 @@ namespace trview
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, std::weak_ptr<IRoom> room, IWaypoint::Type type, uint32_t index);
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index);
         void remove_waypoint(uint32_t index);
-        void select_room(std::weak_ptr<IRoom> room);
         void select_next_waypoint();
         void select_previous_waypoint();
         bool is_rando_route() const;

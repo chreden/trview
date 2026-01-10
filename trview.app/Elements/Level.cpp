@@ -755,12 +755,15 @@ namespace trview
         {
             for (uint16_t room : current_batch)
             {
-                // Add the room to the final list of rooms.
-                results.insert(room);
+                if (room < _rooms.size())
+                {
+                    // Add the room to the final list of rooms.
+                    results.insert(room);
 
-                // Get the neighbours of the room and add them to the next batch to be processed.
-                const auto neighbours = _rooms[room]->neighbours();
-                next_batch.insert(neighbours.begin(), neighbours.end());
+                    // Get the neighbours of the room and add them to the next batch to be processed.
+                    const auto neighbours = _rooms[room]->neighbours();
+                    next_batch.insert(neighbours.begin(), neighbours.end());
+                }
             }
 
             // Remove all entries from the current batch as they have been processed.
@@ -1105,11 +1108,11 @@ namespace trview
         }
     }
 
-    void Level::set_selected_camera_sink(uint32_t number)
+    void Level::set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
     {
-        if (number <= _camera_sinks.size())
+        if (is_matching_level(camera_sink.lock(), this))
         {
-            _selected_camera_sink = _camera_sinks[number];
+            _selected_camera_sink = camera_sink;
         }
     }
 
@@ -1118,6 +1121,14 @@ namespace trview
         if (is_matching_level(node.lock(), this))
         {
             _selected_flyby_node = node;
+        }
+    }
+
+    void Level::set_selected_sound_source(const std::weak_ptr<ISoundSource>& node)
+    {
+        if (is_matching_level(node.lock(), this))
+        {
+            _selected_sound_source = node;
         }
     }
 
@@ -1691,6 +1702,48 @@ namespace trview
         else if (auto selected_flyby_node = messages::read_select_flyby_node(message))
         {
             set_selected_flyby_node(selected_flyby_node.value());
+        }
+        else if (auto selected_sound_source = messages::read_select_sound_source(message))
+        {
+            set_selected_sound_source(selected_sound_source.value());
+        }
+        else if (const auto selected_camera_sink = messages::read_select_camera_sink(message))
+        {
+            set_selected_camera_sink(selected_camera_sink.value());
+        }
+        else if (message.type == "get_selected_item")
+        {
+            messages::reply_to(message, "select_item", _selected_item);
+        }
+        else if (message.type == "get_selected_room")
+        {
+            messages::reply_to(message, "select_room", _selected_room);
+        }
+        else if (message.type == "get_selected_light")
+        {
+            messages::reply_to(message, "select_light", _selected_light);
+        }
+        else if (message.type == "get_selected_trigger")
+        {
+            messages::reply_to(message, "select_trigger", _selected_trigger);
+        }
+        else if (message.type == "get_selected_camera_sink")
+        {
+            messages::reply_to(message, "select_camera_sink", _selected_camera_sink);
+        }
+        else if (message.type == "get_selected_sound_source")
+        {
+            messages::reply_to(message, "select_sound_source", _selected_sound_source);
+        }
+        else if (const auto unhide = messages::commands::read_unhide_all(message))
+        {
+            for (const auto& item : _entities) { item->set_visible(true); };
+            for (const auto& trigger : _triggers) { trigger->set_visible(true); }
+            for (const auto& light : _lights) { light->set_visible(true); }
+            for (const auto& room : _rooms) { room->set_visible(true); }
+            for (const auto& camera_sink : _camera_sinks) { camera_sink->set_visible(true); }
+            for (const auto& static_mesh : _static_meshes) { if (auto stat = static_mesh.lock()) { stat->set_visible(true); } };
+            for (const auto& sound_source : _sound_sources) { sound_source->set_visible(true); };
         }
     }
 

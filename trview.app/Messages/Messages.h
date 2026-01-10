@@ -50,6 +50,9 @@ namespace trview
 
             std::optional<bool> read_new_randomizer_route(const Message& message);
             void send_new_randomizer_route(const std::weak_ptr<IMessageSystem>& messaging);
+
+            std::optional<bool> read_unhide_all(const Message& message);
+            void send_unhide_all(const std::weak_ptr<IMessageSystem>& messaging);
         }
 
         void get_settings(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
@@ -125,5 +128,10 @@ namespace trview
         void get_selected_waypoint(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
         std::optional<std::weak_ptr<IWaypoint>> read_select_waypoint(const Message& message);
         void send_select_waypoint(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IWaypoint>& trigger);
+
+        template <typename T>
+        void reply_to(const Message& message, const std::string& type, T&& data);
     }
 }
+
+#include "Messages.inl"
