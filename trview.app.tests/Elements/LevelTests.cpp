@@ -132,6 +132,18 @@ namespace
                 this->messaging = messaging;
                 return *this;
             }
+
+            test_module& with_camera_sink_source(const ICameraSink::Source& camera_sink_source)
+            {
+                this->camera_sink_source = camera_sink_source;
+                return *this;
+            }
+
+            test_module& with_sound_source(const ISoundSource::Source& sound_source_source)
+            {
+                this->sound_source_source = sound_source_source;
+                return *this;
+            }
         };
 
         return test_module{};
@@ -979,4 +991,59 @@ TEST(Level, SelectSoundSourceMessages)
 
     ASSERT_EQ(message.has_value(), true);
     ASSERT_EQ(messages::read_select_sound_source(message.value())->lock(), sound_source);
+}
+
+TEST(Level, UnhideAllMessage)
+{
+    tr3_room level_room{ };
+    level_room.lights.resize(1);
+    level_room.static_meshes.resize(1);
+
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+    EXPECT_CALL(mock_level, num_entities()).WillRepeatedly(Return(1));
+    EXPECT_CALL(mock_level, num_cameras).WillRepeatedly(Return(1));
+    ON_CALL(mock_level, get_room).WillByDefault(Return(level_room));
+
+    auto room = mock_shared<MockRoom>();
+    std::vector<std::shared_ptr<ISector>> sectors;
+    auto sector = mock_shared<MockSector>();
+    ON_CALL(*sector, flags).WillByDefault(Return(SectorFlag::Trigger));
+    sectors.resize(1, sector);
+    ON_CALL(*room, sectors).WillByDefault(Return(sectors));
+
+    EXPECT_CALL(*room, set_visible(true));
+
+    auto static_mesh = mock_shared<MockStaticMesh>();
+    EXPECT_CALL(*static_mesh, set_visible(true));
+    EXPECT_CALL(*room, static_meshes).WillRepeatedly(Return(std::vector<std::weak_ptr<IStaticMesh>> { static_mesh }));
+
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, room).WillRepeatedly(Return(room));
+    EXPECT_CALL(*item, set_visible(true));
+
+    auto trigger = mock_shared<MockTrigger>();
+    EXPECT_CALL(*trigger, set_visible(true));
+
+    auto light = mock_shared<MockLight>();
+    EXPECT_CALL(*light, set_visible(true));
+
+    auto camera_sink = mock_shared<MockCameraSink>();
+    EXPECT_CALL(*camera_sink, set_visible(true));
+
+    auto sound_source = mock_shared<MockSoundSource>();
+    EXPECT_CALL(*sound_source, set_visible(true));
+    ON_CALL(mock_level, sound_sources).WillByDefault(Return(std::vector<tr_sound_source>(1)));
+
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source([&](auto&&...) { return room; })
+        .with_entity_source([&](auto&&...) { return item; })
+        .with_trigger_source([&](auto&&...) { return trigger; })
+        .with_light_source([&](auto&&...) { return light; })
+        .with_camera_sink_source([&](auto&&...) { return camera_sink; })
+        .with_sound_source([&](auto&&...) { return sound_source; })
+        .build();
+
+    level->receive_message(trview::Message{ .type = "unhide_all", .data = std::make_shared<MessageData<bool>>(true) });
 }
