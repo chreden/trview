@@ -1735,6 +1735,16 @@ namespace trview
         {
             messages::reply_to(message, "select_sound_source", _selected_sound_source);
         }
+        else if (const auto unhide = messages::commands::read_unhide_all(message))
+        {
+            for (const auto& item : _entities) { item->set_visible(true); };
+            for (const auto& trigger : _triggers) { trigger->set_visible(true); }
+            for (const auto& light : _lights) { light->set_visible(true); }
+            for (const auto& room : _rooms) { room->set_visible(true); }
+            for (const auto& camera_sink : _camera_sinks) { camera_sink->set_visible(true); }
+            for (const auto& static_mesh : _static_meshes) { if (auto stat = static_mesh.lock()) { stat->set_visible(true); } };
+            for (const auto& sound_source : _sound_sources) { sound_source->set_visible(true); };
+        }
     }
 
     bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

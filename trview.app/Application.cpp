@@ -259,21 +259,7 @@ namespace trview
         _token_store += _view_menu.on_show_selection += [&](bool show) { _viewer->set_show_selection(show); };
         _token_store += _view_menu.on_show_route += [&](bool show) { _viewer->set_show_route(show); };
         _token_store += _view_menu.on_show_tools += [&](bool show) { _viewer->set_show_tools(show); };
-        _token_store += _view_menu.on_unhide_all += [&]()
-        {
-            if (!_level)
-            {
-                return;
-            }
-
-            for (const auto& item : _level->items()) { if (auto item_ptr = item.lock()) { item_ptr->set_visible(true); } };
-            for (const auto& trigger : _level->triggers()) { if (auto trigger_ptr = trigger.lock()) { trigger_ptr->set_visible(true); } }
-            for (const auto& light : _level->lights()) { if (auto light_ptr = light.lock()) { light_ptr->set_visible(true); } }
-            for (const auto& room : _level->rooms()) { if (auto room_ptr = room.lock()) { room_ptr->set_visible(true); } }
-            for (const auto& camera_sink : _level->camera_sinks()) { if (auto cs = camera_sink.lock()) { cs->set_visible(true); } }
-            for (const auto& static_mesh : _level->static_meshes()) { if (auto stat = static_mesh.lock()) { stat->set_visible(true); } };
-            for (const auto& sound_source : _level->sound_sources()) { if (auto sound_source_ptr = sound_source.lock()) { sound_source_ptr->set_visible(true); } };
-        };
+        _token_store += _view_menu.on_unhide_all += [&]() { messages::commands::send_unhide_all(_messaging); };
     }
 
     void Application::setup_viewer(const IStartupOptions& startup_options)

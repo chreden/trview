@@ -96,6 +96,16 @@ namespace trview
             {
                 send_message(messaging, true, "new_randomizer_route");
             }
+
+            std::optional<bool> read_unhide_all(const Message& message)
+            {
+                return read_message<bool>(message, "unhide_all");
+            }
+
+            void send_unhide_all(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "unhide_all");
+            }
         }
 
         void get_settings(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
