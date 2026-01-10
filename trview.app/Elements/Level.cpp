@@ -755,12 +755,15 @@ namespace trview
         {
             for (uint16_t room : current_batch)
             {
-                // Add the room to the final list of rooms.
-                results.insert(room);
+                if (room < _rooms.size())
+                {
+                    // Add the room to the final list of rooms.
+                    results.insert(room);
 
-                // Get the neighbours of the room and add them to the next batch to be processed.
-                const auto neighbours = _rooms[room]->neighbours();
-                next_batch.insert(neighbours.begin(), neighbours.end());
+                    // Get the neighbours of the room and add them to the next batch to be processed.
+                    const auto neighbours = _rooms[room]->neighbours();
+                    next_batch.insert(neighbours.begin(), neighbours.end());
+                }
             }
 
             // Remove all entries from the current batch as they have been processed.
@@ -1109,7 +1112,15 @@ namespace trview
     {
         if (number <= _camera_sinks.size())
         {
-            _selected_camera_sink = _camera_sinks[number];
+            set_selected_camera_sink(_camera_sinks[number]);
+        }
+    }
+
+    void Level::set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    {
+        if (is_matching_level(camera_sink.lock(), this))
+        {
+            _selected_camera_sink = camera_sink;
         }
     }
 
@@ -1703,6 +1714,10 @@ namespace trview
         else if (auto selected_sound_source = messages::read_select_sound_source(message))
         {
             set_selected_sound_source(selected_sound_source.value());
+        }
+        else if (const auto selected_camera_sink = messages::read_select_camera_sink(message))
+        {
+            set_selected_camera_sink(selected_camera_sink.value());
         }
         else if (message.type == "get_selected_item")
         {

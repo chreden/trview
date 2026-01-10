@@ -158,6 +158,7 @@ namespace trview
         void set_selected_light(const std::weak_ptr<ILight>& light);
         void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
         void set_selected_sound_source(const std::weak_ptr<ISoundSource>& node);
+        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
 
         // Render the rooms in the level.
         // context: The device context.

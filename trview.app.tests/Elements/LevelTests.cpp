@@ -890,3 +890,93 @@ TEST(Level, SelectItemMessages)
     ASSERT_EQ(message.has_value(), true);
     ASSERT_EQ(messages::read_select_item(message.value())->lock(), item);
 }
+
+TEST(Level, SelectRoomMessages)
+{
+    std::optional<trview::Message> message;
+    auto caller = mock_shared<MockRecipient>();
+    EXPECT_CALL(*caller, receive_message).WillOnce(SaveArg<0>(&message));
+
+    auto level = register_test_module().build();
+
+    auto room = mock_shared<MockRoom>();
+    ON_CALL(*room, level).WillByDefault(Return(level));
+
+    level->receive_message(trview::Message{ .type = "select_room", .data = std::make_shared<MessageData<std::weak_ptr<IRoom>>>(room) });
+    level->receive_message(trview::Message{ .type = "get_selected_room", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(caller) });
+
+    ASSERT_EQ(message.has_value(), true);
+    ASSERT_EQ(messages::read_select_room(message.value())->lock(), room);
+}
+
+TEST(Level, SelectLightMessages)
+{
+    std::optional<trview::Message> message;
+    auto caller = mock_shared<MockRecipient>();
+    EXPECT_CALL(*caller, receive_message).WillOnce(SaveArg<0>(&message));
+
+    auto level = register_test_module().build();
+
+    auto light = mock_shared<MockLight>();
+    ON_CALL(*light, level).WillByDefault(Return(level));
+
+    level->receive_message(trview::Message{ .type = "select_light", .data = std::make_shared<MessageData<std::weak_ptr<ILight>>>(light) });
+    level->receive_message(trview::Message{ .type = "get_selected_light", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(caller) });
+
+    ASSERT_EQ(message.has_value(), true);
+    ASSERT_EQ(messages::read_select_light(message.value())->lock(), light);
+}
+
+TEST(Level, SelectTriggerMessages)
+{
+    std::optional<trview::Message> message;
+    auto caller = mock_shared<MockRecipient>();
+    EXPECT_CALL(*caller, receive_message).WillOnce(SaveArg<0>(&message));
+
+    auto level = register_test_module().build();
+
+    auto trigger = mock_shared<MockTrigger>();
+    ON_CALL(*trigger, level).WillByDefault(Return(level));
+
+    level->receive_message(trview::Message{ .type = "select_trigger", .data = std::make_shared<MessageData<std::weak_ptr<ITrigger>>>(trigger) });
+    level->receive_message(trview::Message{ .type = "get_selected_trigger", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(caller) });
+
+    ASSERT_EQ(message.has_value(), true);
+    ASSERT_EQ(messages::read_select_trigger(message.value())->lock(), trigger);
+}
+
+TEST(Level, SelectCameraSinkMessages)
+{
+    std::optional<trview::Message> message;
+    auto caller = mock_shared<MockRecipient>();
+    EXPECT_CALL(*caller, receive_message).WillOnce(SaveArg<0>(&message));
+
+    auto level = register_test_module().build();
+
+    auto camera_sink = mock_shared<MockCameraSink>();
+    ON_CALL(*camera_sink, level).WillByDefault(Return(level));
+
+    level->receive_message(trview::Message{ .type = "select_camera_sink", .data = std::make_shared<MessageData<std::weak_ptr<ICameraSink>>>(camera_sink) });
+    level->receive_message(trview::Message{ .type = "get_selected_camera_sink", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(caller) });
+
+    ASSERT_EQ(message.has_value(), true);
+    ASSERT_EQ(messages::read_select_camera_sink(message.value())->lock(), camera_sink);
+}
+
+TEST(Level, SelectSoundSourceMessages)
+{
+    std::optional<trview::Message> message;
+    auto caller = mock_shared<MockRecipient>();
+    EXPECT_CALL(*caller, receive_message).WillOnce(SaveArg<0>(&message));
+
+    auto level = register_test_module().build();
+
+    auto sound_source = mock_shared<MockSoundSource>();
+    ON_CALL(*sound_source, level).WillByDefault(Return(level));
+
+    level->receive_message(trview::Message{ .type = "select_sound_source", .data = std::make_shared<MessageData<std::weak_ptr<ISoundSource>>>(sound_source) });
+    level->receive_message(trview::Message{ .type = "get_selected_sound_source", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(caller) });
+
+    ASSERT_EQ(message.has_value(), true);
+    ASSERT_EQ(messages::read_select_sound_source(message.value())->lock(), sound_source);
+}
