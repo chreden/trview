@@ -286,6 +286,14 @@ namespace trview
         _filters.add_getter<int>("Intensity", [](auto&& light) { return static_cast<int>(light.intensity()); }, has_intensity);
         _filters.add_getter<int>("Fade", [](auto&& light) { return static_cast<int>(light.fade()); }, has_fade);
         _filters.add_getter<bool>("Hide", [](auto&& light) { return !light.visible(); }, EditMode::ReadWrite);
+        _filters.add_getter<bool>("In Visible Room", [](auto&& light)
+            {
+                if (const auto level = light.level().lock())
+                {
+                    return level->is_in_visible_set(light.room());
+                }
+                return false;
+            });
 
         if (_level_version >= trlevel::LevelVersion::Tomb3)
         {
