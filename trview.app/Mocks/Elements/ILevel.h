@@ -21,6 +21,7 @@ namespace trview
             MOCK_METHOD(bool, has_model, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<uint16_t>, floor_data, (), (const, override));
             MOCK_METHOD(bool, highlight_mode_enabled, (RoomHighlightMode), (const, override));
+            MOCK_METHOD(bool, is_in_visible_set, (const std::weak_ptr<IRoom>&), (const, override));
             MOCK_METHOD(std::weak_ptr<IItem>, item, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<IItem>>, items, (), (const, override));
             MOCK_METHOD(std::vector<graphics::Texture>, level_textures, (), (const, override));

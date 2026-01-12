@@ -171,6 +171,11 @@ namespace trview
         return _selected_room;
     }
 
+    bool Level::is_in_visible_set(const std::weak_ptr<IRoom>& room) const
+    {
+        return std::ranges::contains(get_potentially_visible_rooms(), room.lock());
+    }
+
     std::weak_ptr<IItem> Level::item(uint32_t index) const
     {
         if (index >= _entities.size())
@@ -509,32 +514,14 @@ namespace trview
 
         bool highlight = highlight_mode_enabled(RoomHighlightMode::Highlight);
         const auto selected = _selected_room.lock();
-        if (highlight_mode_enabled(RoomHighlightMode::Neighbours))
-        {
-            for (uint16_t i : _neighbours)
-            {
-                const auto& room = _rooms[i];
-                if (!room->visible() || is_alternate_mismatch(*room) || !in_view(*room))
-                {
-                    continue;
-                }
-                rooms.emplace_back(*room.get(), highlight ? (room == selected ? IRoom::SelectionMode::Selected : IRoom::SelectionMode::NotSelected) : IRoom::SelectionMode::Selected, i);
-            }
-        }
-        else
-        {
-            for (std::size_t i = 0; i < _rooms.size(); ++i)
-            {
-                const auto& room = _rooms[i];
-                if (!room->visible() || is_alternate_mismatch(*room) || !in_view(*room))
-                {
-                    continue;
-                }
-                rooms.emplace_back(*room, highlight ? (room == selected ? IRoom::SelectionMode::Selected : IRoom::SelectionMode::NotSelected) : IRoom::SelectionMode::Selected, static_cast<uint16_t>(i));
-            }
-        }
-
-        return rooms;
+        return get_potentially_visible_rooms() |
+               std::views::filter([&](auto&& room) { return in_view(*room); }) |
+               std::views::transform([&](auto&& room) { return
+                    Level::RoomToRender(
+                        *room,
+                        highlight ? (room == selected ? IRoom::SelectionMode::Selected : IRoom::SelectionMode::NotSelected) : IRoom::SelectionMode::Selected,
+                        static_cast<uint16_t>(room->number())); }) |
+                std::ranges::to<std::vector>();
     }
 
     void Level::generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage)
@@ -1692,6 +1679,36 @@ namespace trview
         {
             set_selected_flyby_node(selected_flyby_node.value());
         }
+    }
+
+    std::vector<std::shared_ptr<IRoom>> Level::get_potentially_visible_rooms() const
+    {
+        std::vector<std::shared_ptr<IRoom>> rooms;
+        if (highlight_mode_enabled(RoomHighlightMode::Neighbours))
+        {
+            for (uint16_t i : _neighbours)
+            {
+                const auto& room = _rooms[i];
+                if (!room->visible() || is_alternate_mismatch(*room))
+                {
+                    continue;
+                }
+                rooms.emplace_back(room);
+            }
+        }
+        else
+        {
+            for (std::size_t i = 0; i < _rooms.size(); ++i)
+            {
+                const auto& room = _rooms[i];
+                if (!room->visible() || is_alternate_mismatch(*room))
+                {
+                    continue;
+                }
+                rooms.emplace_back(room);
+            }
+        }
+        return rooms;
     }
 
     bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)
