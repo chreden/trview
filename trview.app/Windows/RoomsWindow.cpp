@@ -679,6 +679,15 @@ namespace trview
                     | std::views::transform([&](auto&& s) { return static_cast<int>(s->ceiling()); })
                     | std::ranges::to<std::vector>();
             });
+
+        _filters.add_getter<bool>("In Visible Room", [](auto&& room)
+            {
+                if (const auto level = room.level().lock())
+                {
+                    return level->is_in_visible_set(level->room(room.number()));
+                }
+                return false;
+            });
     }
 
     void RoomsWindow::render_properties_tab(const std::shared_ptr<IRoom>& room)
