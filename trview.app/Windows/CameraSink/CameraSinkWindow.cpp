@@ -474,6 +474,14 @@ namespace trview
         // Sink:
         _filters.add_getter<int>("Strength", [](auto&& camera_sink) { return static_cast<int>(camera_sink.strength()); }, is_sink);
         _filters.add_getter<int>("Box Index", [](auto&& camera_sink) { return static_cast<int>(camera_sink.flag()); }, is_sink);
+        _filters.add_getter<bool>("In Visible Room", [](auto&& camera_sink)
+            {
+                if (const auto level = camera_sink.level().lock())
+                {
+                    return level->is_in_visible_set(camera_sink.room());
+                }
+                return false;
+            });
 
         _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
         _token_store += _filters.on_columns_reset += [this]()
@@ -508,6 +516,23 @@ namespace trview
                     }
                 }
                 return rooms | std::ranges::to<std::vector>();
+            });
+        _flyby_filters.add_getter<bool>("In Visible Room", [](auto&& flyby)
+            {
+                if (const auto level = flyby.level().lock())
+                {
+                    for (const auto& node : flyby.nodes())
+                    {
+                        if (const auto node_ptr = node.lock())
+                        {
+                            if (level->is_in_visible_set(level->room(node_ptr->room())))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
             });
 
         _flyby_filters.set_columns(std::vector<std::string>{ "#", "Hide" });

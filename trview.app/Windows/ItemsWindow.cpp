@@ -401,6 +401,14 @@ namespace trview
             {
                 return item.ng_plus() == std::nullopt ? std::vector<bool>{} : std::vector<bool>{false,true};
             });
+        _filters.add_getter<bool>("In Visible Room", [](auto&& item)
+            {
+                if (const auto level = item.level().lock())
+                {
+                    return level->is_in_visible_set(item.room());
+                }
+                return false;
+            });
     }
 
     void ItemsWindow::set_level_version(trlevel::LevelVersion version)

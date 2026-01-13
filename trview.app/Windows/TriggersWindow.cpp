@@ -502,6 +502,14 @@ namespace trview
         _filters.add_getter<bool>("Only once", [](auto&& trigger) { return trigger.only_once(); });
         _filters.add_getter<int>("Timer", [](auto&& trigger) { return static_cast<int>(trigger.timer()); });
         _filters.add_getter<bool>("Hide", [](auto&& trigger) { return !trigger.visible(); }, EditMode::ReadWrite);
+        _filters.add_getter<bool>("In Visible Room", [](auto&& trigger)
+            {
+                if (const auto level = trigger.level().lock())
+                {
+                    return level->is_in_visible_set(trigger.room());
+                }
+                return false;
+            });
 
         _filters.add_multi_getter<std::string>("Command", [=](auto&& trigger)
             {

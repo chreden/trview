@@ -56,6 +56,7 @@ namespace trview
         virtual bool has_model(uint32_t type_id) const = 0;
         virtual std::vector<uint16_t> floor_data() const = 0;
         virtual bool highlight_mode_enabled(RoomHighlightMode mode) const = 0;
+        virtual bool is_in_visible_set(const std::weak_ptr<IRoom>& room) const = 0;
         virtual std::weak_ptr<IItem> item(uint32_t index) const = 0;
         /// Get the items in this level.
         /// @returns All items in the level.

@@ -54,6 +54,7 @@ namespace trview
         virtual std::vector<graphics::Texture> level_textures() const override;
         virtual std::optional<uint32_t> selected_item() const override;
         std::weak_ptr<IRoom> selected_room() const override;
+        bool is_in_visible_set(const std::weak_ptr<IRoom>& room) const override;
         virtual std::weak_ptr<IItem> item(uint32_t index) const override;
         virtual std::vector<std::weak_ptr<IItem>> items() const override;
         std::string name() const override;
@@ -200,6 +201,7 @@ namespace trview
 
         template <typename T>
         void sync_room(const std::shared_ptr<T>& element) const;
+        std::vector<std::shared_ptr<IRoom>> get_potentially_visible_rooms() const;
 
         std::shared_ptr<graphics::IDevice> _device;
         std::vector<std::shared_ptr<IRoom>>   _rooms;

@@ -198,6 +198,14 @@ namespace trview
         _filters.add_getter<std::string>("Flags", [](auto&& stat) { return format_binary(stat.flags()); });
         _filters.add_getter<bool>("Has Collision", [](auto&& stat) { return stat.has_collision(); });
         _filters.add_getter<bool>("Hide", [](auto&& stat) { return !stat.visible(); }, EditMode::ReadWrite);
+        _filters.add_getter<bool>("In Visible Room", [](auto&& stat)
+            {
+                if (const auto level = stat.level().lock())
+                {
+                    return level->is_in_visible_set(stat.room());
+                }
+                return false;
+            });
     }
 
     void StaticsWindow::set_local_selected_static_mesh(std::weak_ptr<IStaticMesh> static_mesh)
