@@ -96,7 +96,6 @@ namespace trview
         virtual bool show_items() const override;
         virtual void set_selected_trigger(uint32_t number) override;
         virtual void set_selected_light(uint32_t number) override;
-        virtual void set_selected_camera_sink(uint32_t number) override;
         void set_selected_flyby_node(const std::weak_ptr<IFlybyNode>& node) override;
         virtual std::shared_ptr<ILevelTextureStorage> texture_storage() const override;
         virtual std::set<uint32_t> alternate_groups() const override;
@@ -157,6 +156,8 @@ namespace trview
         void generate_flybys(const trlevel::ILevel& level, const IFlyby::Source& flyby_source);
         void set_selected_light(const std::weak_ptr<ILight>& light);
         void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger);
+        void set_selected_sound_source(const std::weak_ptr<ISoundSource>& node);
+        void set_selected_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink);
 
         // Render the rooms in the level.
         // context: The device context.
@@ -223,6 +224,7 @@ namespace trview
         std::weak_ptr<ILight> _selected_light;
         std::weak_ptr<ICameraSink> _selected_camera_sink;
         std::weak_ptr<IFlybyNode> _selected_flyby_node;
+        std::weak_ptr<ISoundSource> _selected_sound_source;
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 

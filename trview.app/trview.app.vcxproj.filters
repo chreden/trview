@@ -625,6 +625,7 @@
     <None Include="Windows\CameraSink\CameraSinkWindow.inl" Filter="Windows\CameraSink" />
     <None Include="Windows\Viewer.inl" Filter="Windows" />
     <None Include="Elements\Level.inl" Filter="Elements\Level" />
+    <None Include="Messages\Messages.inl" Filter="Messages" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\trview.app.rc" Filter="Resources" />

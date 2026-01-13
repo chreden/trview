@@ -26,6 +26,8 @@
 #include <trview.app/Mocks/Elements/INgPlusSwitcher.h>
 #include <trview.graphics/mocks/ISamplerState.h>
 #include <trview.common/Mocks/Messages/IMessageSystem.h>
+#include <trview.common/Mocks/Messages/IRecipient.h>
+#include <trview.app/Messages/Messages.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -128,6 +130,18 @@ namespace
             test_module& with_messaging(const std::shared_ptr<IMessageSystem>& messaging)
             {
                 this->messaging = messaging;
+                return *this;
+            }
+
+            test_module& with_camera_sink_source(const ICameraSink::Source& camera_sink_source)
+            {
+                this->camera_sink_source = camera_sink_source;
+                return *this;
+            }
+
+            test_module& with_sound_source(const ISoundSource::Source& sound_source_source)
+            {
+                this->sound_source_source = sound_source_source;
                 return *this;
             }
         };
@@ -869,4 +883,167 @@ TEST(Level, RoomUpdatedIfAnimationsEnabled)
     ASSERT_EQ(room_called, 1);
     level->set_show_animation(true);
     level->update(1.0f);
+}
+
+TEST(Level, SelectItemMessages)
+{
+    std::optional<trview::Message> message;
+    auto caller = mock_shared<MockRecipient>();
+    EXPECT_CALL(*caller, receive_message).WillOnce(SaveArg<0>(&message));
+
+    auto level = register_test_module().build();
+
+    auto item = mock_shared<MockItem>();
+    ON_CALL(*item, level).WillByDefault(Return(level));
+
+    level->receive_message(trview::Message{ .type = "select_item", .data = std::make_shared<MessageData<std::weak_ptr<IItem>>>(item) });
+    level->receive_message(trview::Message{ .type = "get_selected_item", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(caller) });
+
+    ASSERT_EQ(message.has_value(), true);
+    ASSERT_EQ(messages::read_select_item(message.value())->lock(), item);
+}
+
+TEST(Level, SelectRoomMessages)
+{
+    std::optional<trview::Message> message;
+    auto caller = mock_shared<MockRecipient>();
+    EXPECT_CALL(*caller, receive_message).WillOnce(SaveArg<0>(&message));
+
+    auto level = register_test_module().build();
+
+    auto room = mock_shared<MockRoom>();
+    ON_CALL(*room, level).WillByDefault(Return(level));
+
+    level->receive_message(trview::Message{ .type = "select_room", .data = std::make_shared<MessageData<std::weak_ptr<IRoom>>>(room) });
+    level->receive_message(trview::Message{ .type = "get_selected_room", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(caller) });
+
+    ASSERT_EQ(message.has_value(), true);
+    ASSERT_EQ(messages::read_select_room(message.value())->lock(), room);
+}
+
+TEST(Level, SelectLightMessages)
+{
+    std::optional<trview::Message> message;
+    auto caller = mock_shared<MockRecipient>();
+    EXPECT_CALL(*caller, receive_message).WillOnce(SaveArg<0>(&message));
+
+    auto level = register_test_module().build();
+
+    auto light = mock_shared<MockLight>();
+    ON_CALL(*light, level).WillByDefault(Return(level));
+
+    level->receive_message(trview::Message{ .type = "select_light", .data = std::make_shared<MessageData<std::weak_ptr<ILight>>>(light) });
+    level->receive_message(trview::Message{ .type = "get_selected_light", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(caller) });
+
+    ASSERT_EQ(message.has_value(), true);
+    ASSERT_EQ(messages::read_select_light(message.value())->lock(), light);
+}
+
+TEST(Level, SelectTriggerMessages)
+{
+    std::optional<trview::Message> message;
+    auto caller = mock_shared<MockRecipient>();
+    EXPECT_CALL(*caller, receive_message).WillOnce(SaveArg<0>(&message));
+
+    auto level = register_test_module().build();
+
+    auto trigger = mock_shared<MockTrigger>();
+    ON_CALL(*trigger, level).WillByDefault(Return(level));
+
+    level->receive_message(trview::Message{ .type = "select_trigger", .data = std::make_shared<MessageData<std::weak_ptr<ITrigger>>>(trigger) });
+    level->receive_message(trview::Message{ .type = "get_selected_trigger", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(caller) });
+
+    ASSERT_EQ(message.has_value(), true);
+    ASSERT_EQ(messages::read_select_trigger(message.value())->lock(), trigger);
+}
+
+TEST(Level, SelectCameraSinkMessages)
+{
+    std::optional<trview::Message> message;
+    auto caller = mock_shared<MockRecipient>();
+    EXPECT_CALL(*caller, receive_message).WillOnce(SaveArg<0>(&message));
+
+    auto level = register_test_module().build();
+
+    auto camera_sink = mock_shared<MockCameraSink>();
+    ON_CALL(*camera_sink, level).WillByDefault(Return(level));
+
+    level->receive_message(trview::Message{ .type = "select_camera_sink", .data = std::make_shared<MessageData<std::weak_ptr<ICameraSink>>>(camera_sink) });
+    level->receive_message(trview::Message{ .type = "get_selected_camera_sink", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(caller) });
+
+    ASSERT_EQ(message.has_value(), true);
+    ASSERT_EQ(messages::read_select_camera_sink(message.value())->lock(), camera_sink);
+}
+
+TEST(Level, SelectSoundSourceMessages)
+{
+    std::optional<trview::Message> message;
+    auto caller = mock_shared<MockRecipient>();
+    EXPECT_CALL(*caller, receive_message).WillOnce(SaveArg<0>(&message));
+
+    auto level = register_test_module().build();
+
+    auto sound_source = mock_shared<MockSoundSource>();
+    ON_CALL(*sound_source, level).WillByDefault(Return(level));
+
+    level->receive_message(trview::Message{ .type = "select_sound_source", .data = std::make_shared<MessageData<std::weak_ptr<ISoundSource>>>(sound_source) });
+    level->receive_message(trview::Message{ .type = "get_selected_sound_source", .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(caller) });
+
+    ASSERT_EQ(message.has_value(), true);
+    ASSERT_EQ(messages::read_select_sound_source(message.value())->lock(), sound_source);
+}
+
+TEST(Level, UnhideAllMessage)
+{
+    tr3_room level_room{ };
+    level_room.lights.resize(1);
+    level_room.static_meshes.resize(1);
+
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+    EXPECT_CALL(mock_level, num_entities()).WillRepeatedly(Return(1));
+    EXPECT_CALL(mock_level, num_cameras).WillRepeatedly(Return(1));
+    ON_CALL(mock_level, get_room).WillByDefault(Return(level_room));
+
+    auto room = mock_shared<MockRoom>();
+    std::vector<std::shared_ptr<ISector>> sectors;
+    auto sector = mock_shared<MockSector>();
+    ON_CALL(*sector, flags).WillByDefault(Return(SectorFlag::Trigger));
+    sectors.resize(1, sector);
+    ON_CALL(*room, sectors).WillByDefault(Return(sectors));
+
+    EXPECT_CALL(*room, set_visible(true));
+
+    auto static_mesh = mock_shared<MockStaticMesh>();
+    EXPECT_CALL(*static_mesh, set_visible(true));
+    EXPECT_CALL(*room, static_meshes).WillRepeatedly(Return(std::vector<std::weak_ptr<IStaticMesh>> { static_mesh }));
+
+    auto item = mock_shared<MockItem>();
+    EXPECT_CALL(*item, room).WillRepeatedly(Return(room));
+    EXPECT_CALL(*item, set_visible(true));
+
+    auto trigger = mock_shared<MockTrigger>();
+    EXPECT_CALL(*trigger, set_visible(true));
+
+    auto light = mock_shared<MockLight>();
+    EXPECT_CALL(*light, set_visible(true));
+
+    auto camera_sink = mock_shared<MockCameraSink>();
+    EXPECT_CALL(*camera_sink, set_visible(true));
+
+    auto sound_source = mock_shared<MockSoundSource>();
+    EXPECT_CALL(*sound_source, set_visible(true));
+    ON_CALL(mock_level, sound_sources).WillByDefault(Return(std::vector<tr_sound_source>(1)));
+
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source([&](auto&&...) { return room; })
+        .with_entity_source([&](auto&&...) { return item; })
+        .with_trigger_source([&](auto&&...) { return trigger; })
+        .with_light_source([&](auto&&...) { return light; })
+        .with_camera_sink_source([&](auto&&...) { return camera_sink; })
+        .with_sound_source([&](auto&&...) { return sound_source; })
+        .build();
+
+    level->receive_message(trview::Message{ .type = "unhide_all", .data = std::make_shared<MessageData<bool>>(true) });
 }
