@@ -354,3 +354,72 @@ TEST(Filters, IsNotMultiValue)
     ASSERT_TRUE(filters.match(Object().with_texts({ "second", "third", "fourth" })));
     ASSERT_FALSE(filters.match(Object().with_texts({ "second", "first", "third" })));
 }
+
+TEST(Filters, NestedFilter)
+{
+    Filters<Object> filters;
+    filters.add_getter<float>("number", [](auto&& o) { return o.number; });
+    filters.add_getter<std::string>("text", [](auto&& o) { return o.text; });
+
+    // Filter: (number == 1 || number == 5) && text == "test"
+
+    // Branch 1
+    Filters<Object>::Filter number_1 = make_filter().key("number").compare_op(CompareOp::Equal).value("1").op(Op::Or);
+    Filters<Object>::Filter number_5 = make_filter().key("number").compare_op(CompareOp::Equal).value("5");
+    Filters<Object>::Filter numbers = make_filter().op(Op::And);
+    numbers.children = { number_1, number_5 };
+
+    // Branch 2
+    Filters<Object>::Filter text_test = make_filter().key("text").compare_op(CompareOp::Equal).value("test");
+
+    Filters<Object>::Filter top_filter = make_filter();
+    top_filter.children = { numbers, text_test };
+
+    filters.add_filter(top_filter);
+
+    ASSERT_TRUE(filters.match(Object().with_number(1).with_text("test")));
+    ASSERT_TRUE(filters.match(Object().with_number(5).with_text("test")));
+    ASSERT_FALSE(filters.match(Object().with_number(2).with_text("test2")));
+    ASSERT_FALSE(filters.match(Object().with_number(0).with_text("test")));
+    ASSERT_FALSE(filters.match(Object().with_number(1).with_text("test2")));
+    ASSERT_FALSE(filters.match(Object().with_number(5).with_text("test2")));
+}
+
+TEST(Filters, DoubleNested)
+{
+    Filters<Object> filters;
+    filters.add_getter<float>("number", [](auto&& o) { return o.number; });
+    filters.add_getter<std::string>("text", [](auto&& o) { return o.text; });
+    filters.add_getter<float>("option", [](auto&& o) { return o.option.value(); }, [](auto&& o) { return o.option.has_value(); });
+
+    // Filter: ((number == 1 || number == 5) && text == "test") || option
+
+    // Branch 1
+    Filters<Object>::Filter number_1 = make_filter().key("number").compare_op(CompareOp::Equal).value("1").op(Op::Or);
+    Filters<Object>::Filter number_5 = make_filter().key("number").compare_op(CompareOp::Equal).value("5");
+    Filters<Object>::Filter numbers = make_filter().op(Op::And);
+    numbers.children = { number_1, number_5 };
+
+    // Branch 2
+    Filters<Object>::Filter text_test = make_filter().key("text").compare_op(CompareOp::Equal).value("test");
+
+    Filters<Object>::Filter left = make_filter().op(Op::Or);
+    left.children = { numbers, text_test };
+
+    // Branch 3
+    Filters<Object>::Filter option = make_filter().key("option").compare_op(CompareOp::Exists);
+
+    Filters<Object>::Filter top_filter = make_filter();
+    top_filter.children = { left, option };
+
+    filters.add_filter(top_filter);
+
+    ASSERT_TRUE(filters.match(Object().with_number(1).with_text("test")));
+    ASSERT_TRUE(filters.match(Object().with_number(5).with_text("test")));
+    ASSERT_FALSE(filters.match(Object().with_number(2).with_text("test2")));
+    ASSERT_FALSE(filters.match(Object().with_number(0).with_text("test")));
+    ASSERT_FALSE(filters.match(Object().with_number(1).with_text("test2")));
+    ASSERT_FALSE(filters.match(Object().with_number(5).with_text("test2")));
+    ASSERT_TRUE(filters.match(Object().with_number(5).with_text("test2").with_option(0)));
+    ASSERT_TRUE(filters.match(Object().with_number(5).with_text("test").with_option(0)));
+}

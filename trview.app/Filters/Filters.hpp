@@ -149,7 +149,7 @@ namespace trview
     template <typename T>
     bool Filters<T>::empty() const
     {
-        return _filters.empty() || std::all_of(_filters.begin(), _filters.end(), [](auto&& f) { return f.key == "" && f.value == ""; });
+        return _filters.empty() || std::all_of(_filters.begin(), _filters.end(), [](auto&& f) { return f.key == "" && f.value == "" && f.children.empty(); });
     }
 
     template <typename T>
@@ -260,19 +260,32 @@ namespace trview
     }
 
     template <typename T>
-    bool Filters<T>::match(const T& value) const
+    bool Filters<T>::match(const Filters<T>::Filter& filter, const T& value) const
     {
-        if (!_enabled || empty())
+        bool filter_result = filter.initial_state();
+
+        if (!filter.children.empty())
         {
-            return true;
+            bool child_match = false;
+            Op child_op = Op::Or;
+
+            for (const auto& child : filter.children)
+            {
+                const bool child_filter_result = match(child, value);
+
+                child_match = child_op == Op::Or ? child_match | child_filter_result : child_match & child_filter_result;
+                child_op = child.op;
+
+                if (child_op == Op::And && !child_match)
+                {
+                    break;
+                }
+            }
+
+            filter_result = child_match;
         }
-
-        bool match = false;
-        Op op = Op::Or;
-        for (const auto& filter : _filters)
+        else
         {
-            bool filter_result = filter.initial_state();
-
             const auto& getter = _getters.find(filter.key);
             if (getter != _getters.end())
             {
@@ -299,7 +312,24 @@ namespace trview
                     }
                 }
             }
+        }
 
+        return filter_result;
+    }
+
+    template <typename T>
+    bool Filters<T>::match(const T& value) const
+    {
+        if (!_enabled || empty())
+        {
+            return true;
+        }
+
+        bool match = false;
+        Op op = Op::Or;
+        for (const auto& filter : _filters)
+        {
+            const bool filter_result = this->match(filter, value); 
             match = op == Op::Or ? match | filter_result : match & filter_result;
             op = filter.op;
 

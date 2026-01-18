@@ -62,6 +62,7 @@ namespace trview
             CompareOp compare{ CompareOp::Equal };
             std::string value;
             std::string value2;
+            std::vector<Filter> children;
             Op op{ Op::And };
 
             auto operator <=> (const Filter&) const = default;
@@ -191,6 +192,7 @@ namespace trview
         std::vector<Filter> filters() const;
     private:
         int column_count() const;
+        bool match(const Filter& filter, const T& value) const;
 
         using Value = std::variant<std::string, float, bool, int>;
 
