@@ -68,6 +68,7 @@
 #include "Windows/TriggersWindow.h"
 #include "Windows/Viewer.h"
 #include "Windows/Log/LogWindow.h"
+#include "Windows/Models/ModelsWindow.h"
 #include "UI/DX11ImGuiBackend.h"
 #include "Windows/Textures/TexturesWindow.h"
 #include "Windows/CameraSink/CameraSinkWindow.h"
@@ -498,6 +499,15 @@ namespace trview
                 return pack_window;
             };
 
+        auto transparency_buffer_source = [=](auto&& lts) { return std::make_unique<TransparencyBuffer>(device, lts); };
+
+        auto models_window_source = [=]()
+            {
+                auto models_window = std::make_shared<ModelsWindow>(device, render_target_source, shader_storage, buffer_source, transparency_buffer_source, sampler_source, std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window)), messaging);
+                models_window->initialise();
+                return models_window;
+            };
+
         auto windows = std::make_shared<Windows>(window, shortcuts);
         windows->register_window("About", about_window_source);
         windows->register_window("CameraSink", camera_sink_window_source);
@@ -506,6 +516,7 @@ namespace trview
         windows->register_window("Items", items_window_source);
         windows->register_window("Lights", lights_window_source);
         windows->register_window("Log", log_window_source);
+        windows->register_window("Models", models_window_source);
         windows->register_window("Pack", pack_window_source);
         windows->register_window("Plugins", plugins_window_source);
         windows->register_window("Rooms", rooms_window_source);

@@ -305,9 +305,9 @@ namespace trlevel
         _floor_data = read_floor_data(activity, file, callbacks);
         _mesh_data = read_mesh_data(activity, file, callbacks);
         _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
-        read_animations_tr1_3(activity, file, callbacks);
-        read_state_changes(activity, file, callbacks);
-        read_anim_dispatches(activity, file, callbacks);
+        _animations = convert_animations(read_animations_tr1_3(activity, file, callbacks));
+        _state_changes = read_state_changes(activity, file, callbacks);
+        _anim_dispatches = read_anim_dispatches(activity, file, callbacks);
         read_anim_commands(activity, file, callbacks);
         _meshtree = read_meshtree(activity, file, callbacks);
         _frames = read_frames(activity, file, callbacks);
@@ -434,9 +434,9 @@ namespace trlevel
         _floor_data = read_floor_data(activity, file, callbacks);
         _mesh_data = read_mesh_data(activity, file, callbacks);
         _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
-        read_animations_tr1_3(activity, file, callbacks);
-        read_state_changes(activity, file, callbacks);
-        read_anim_dispatches(activity, file, callbacks);
+        _animations = convert_animations(read_animations_tr1_3(activity, file, callbacks));
+        _state_changes = read_state_changes(activity, file, callbacks);
+        _anim_dispatches = read_anim_dispatches(activity, file, callbacks);
         read_anim_commands(activity, file, callbacks);
         _meshtree = read_meshtree(activity, file, callbacks);
         _frames = read_frames(activity, file, callbacks);
@@ -484,11 +484,11 @@ namespace trlevel
         _mesh_data = read_mesh_data(activity, file, callbacks);
         _mesh_pointers = read_mesh_pointers(activity, file, callbacks);
 
-        uint32_t num_animations = read<uint32_t>(file);
+        uint32_t num_animations = read<uint32_t>(file); // TODO: Read animations
         skip(file, num_animations * 28);
 
-        read_state_changes(activity, file, callbacks);
-        read_anim_dispatches(activity, file, callbacks);
+        _state_changes = read_state_changes(activity, file, callbacks);
+        _anim_dispatches = read_anim_dispatches(activity, file, callbacks);
         read_anim_commands(activity, file, callbacks);
         _meshtree = read_meshtree(activity, file, callbacks);
         _frames = read_frames(activity, file, callbacks);

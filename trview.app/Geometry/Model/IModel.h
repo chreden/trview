@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trlevel/trtypes.h>
+
 #include "../PickResult.h"
 
 namespace trview

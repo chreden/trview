@@ -1,5 +1,6 @@
 #include "ModelStorage.h"
 #include "../../Graphics/IMeshStorage.h"
+#include <ranges>
 
 namespace trview
 {
@@ -67,6 +68,39 @@ namespace trview
             }
 
             return false;
+        }
+
+        std::vector<std::shared_ptr<IMesh>> load_meshes(
+            const trlevel::tr_model& model,
+            const trlevel::PlatformAndVersion& version,
+            const std::shared_ptr<IMeshStorage> mesh_storage)
+        {
+            std::vector<std::shared_ptr<IMesh>> meshes;
+            if (version.platform == trlevel::Platform::PSX && equals_any(version.version, trlevel::LevelVersion::Tomb4, trlevel::LevelVersion::Tomb5))
+            {
+                const uint32_t end_pointer = static_cast<uint32_t>(model.StartingMesh + model.NumMeshes * 2);
+                for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < end_pointer; mesh_pointer += 2)
+                {
+                    auto mesh = mesh_storage->mesh(mesh_pointer);
+                    if (mesh)
+                    {
+                        meshes.push_back(mesh);
+                    }
+                }
+            }
+            else
+            {
+                const uint32_t end_pointer = static_cast<uint32_t>(model.StartingMesh + model.NumMeshes);
+                for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < end_pointer; ++mesh_pointer)
+                {
+                    auto mesh = mesh_storage->mesh(mesh_pointer);
+                    if (mesh)
+                    {
+                        meshes.push_back(mesh);
+                    }
+                }
+            }
+            return meshes;
         }
 
         std::vector<DirectX::SimpleMath::Matrix> load_transforms(
@@ -176,38 +210,12 @@ namespace trview
         for (uint32_t i = 0; i < level.num_models(); ++i)
         {
             const auto model = level.get_model(i);
-            if (model.NumMeshes > 0xff00)
+            if (model.NumMeshes > 0xff00 || model.NumMeshes == 0)
             {
                 continue;
             }
 
-            std::vector<std::shared_ptr<IMesh>> meshes;
-
-            if (version.platform == trlevel::Platform::PSX && equals_any(version.version, trlevel::LevelVersion::Tomb4, trlevel::LevelVersion::Tomb5))
-            {
-                const uint32_t end_pointer = static_cast<uint32_t>(model.StartingMesh + model.NumMeshes * 2);
-                for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < end_pointer; mesh_pointer += 2)
-                {
-                    auto mesh = mesh_storage->mesh(mesh_pointer);
-                    if (mesh)
-                    {
-                        meshes.push_back(mesh);
-                    }
-                }
-            }
-            else
-            {
-                const uint32_t end_pointer = static_cast<uint32_t>(model.StartingMesh + model.NumMeshes);
-                for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < end_pointer; ++mesh_pointer)
-                {
-                    auto mesh = mesh_storage->mesh(mesh_pointer);
-                    if (mesh)
-                    {
-                        meshes.push_back(mesh);
-                    }
-                }
-            }
-
+            auto meshes = load_meshes(model, version, mesh_storage);
             auto transforms = load_transforms(model, level);
             _models.push_back(model_source(model, meshes, transforms));
         }
@@ -224,5 +232,10 @@ namespace trview
             }
         }
         return {};
+    }
+
+    std::vector<std::weak_ptr<IModel>> ModelStorage::models() const
+    {
+        return _models | std::ranges::to<std::vector<std::weak_ptr<IModel>>>();
     }
 }

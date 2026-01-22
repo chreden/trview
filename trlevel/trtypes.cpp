@@ -201,4 +201,30 @@ namespace trlevel
                     };
                 }) | std::ranges::to<std::vector>();
     }
+
+    std::vector<tr4_animation> convert_animations(std::vector<tr_animation> animations)
+    {
+        return animations | std::views::transform([](auto&& a) -> tr4_animation
+            {
+                return
+                {
+                    .FrameOffset = a.FrameOffset,
+                    .FrameRate = a.FrameRate,
+                    .FrameSize = a.FrameSize,
+                    .State_ID = a.State_ID,
+                    .Speed = a.Speed,
+                    .Accel = a.Accel,
+                    .SpeedLateral = 0, // TODO: Is this correct?
+                    .AccelLateral = 0, // TODO: Is this correct?
+                    .FrameStart = a.FrameStart,
+                    .FrameEnd = a.FrameEnd,
+                    .NextAnimation = a.NextAnimation,
+                    .NextFrame = a.NextFrame,
+                    .NumStateChanges = a.NumStateChanges,
+                    .StateChangeOffset = a.StateChangeOffset,
+                    .NumAnimCommands = a.NumAnimCommands,
+                    .AnimCommand = a.AnimCommand,
+                };
+            }) | std::ranges::to<std::vector>();
+    }
 }

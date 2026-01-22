@@ -54,6 +54,7 @@
 #define ID_WINDOWS_DIFF                 33031
 #define ID_WINDOWS_PACK                 33032
 #define IDR_LEVEL_HASHES                33033
+#define ID_WINDOWS_MODELS               33033
 
 // Next default values for new objects
 // 

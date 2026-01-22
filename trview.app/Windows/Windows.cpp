@@ -72,6 +72,11 @@ namespace trview
                     create("Log");
                     break;
                 }
+                case ID_WINDOWS_MODELS:
+                {
+                    create("Models");
+                    break;
+                }
                 case ID_WINDOWS_PACK:
                 {
                     create("Pack");

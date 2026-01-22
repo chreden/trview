@@ -37,7 +37,7 @@ namespace trview
         /// @param camera The current camera.
         /// @param texture_storage Texture storage for the level.
         /// @param ignore_blend Optional. Set to true to render this without transparency.
-        void render(const ICamera& camera, bool ignore_blend = false) override;
+        void render(const DirectX::SimpleMath::Matrix& view_projection, bool ignore_blend = false) override;
 
         // Reset the triangles buffer.
         void reset() override;
