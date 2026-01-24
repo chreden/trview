@@ -64,6 +64,7 @@ namespace trview
             std::string value2;
             std::vector<Filter> children;
             Op op{ Op::And };
+            bool invert{ false };
 
             auto operator <=> (const Filter&) const = default;
 

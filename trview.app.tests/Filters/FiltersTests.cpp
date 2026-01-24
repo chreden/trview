@@ -81,6 +81,12 @@ namespace
                 return *this;
             }
 
+            FilterBuilder& invert(bool value)
+            {
+                filter.invert = value;
+                return *this;
+            }
+
             operator Filters<Object>::Filter() const
             {
                 return filter;
@@ -422,4 +428,18 @@ TEST(Filters, DoubleNested)
     ASSERT_FALSE(filters.match(Object().with_number(5).with_text("test2")));
     ASSERT_TRUE(filters.match(Object().with_number(5).with_text("test2").with_option(0)));
     ASSERT_TRUE(filters.match(Object().with_number(5).with_text("test").with_option(0)));
+}
+
+TEST(Filters, UnaryNot)
+{
+    Filters<Object> filters;
+    filters.add_getter<std::string>("text", [](auto&& o) { return o.text; });
+
+    // Filter: !(text starts with s)
+    Filters<Object>::Filter text = make_filter().key("text").compare_op(CompareOp::StartsWith).value("s").invert(true);
+
+    filters.add_filter(text);
+
+    ASSERT_TRUE(filters.match(Object().with_text("test")));
+    ASSERT_FALSE(filters.match(Object().with_text("six")));
 }

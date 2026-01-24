@@ -315,7 +315,7 @@ namespace trview
             }
         }
 
-        return filter_result;
+        return filter_result ^ filter.invert;
     }
 
     template <typename T>
@@ -375,6 +375,10 @@ namespace trview
 
                             break;
                         }
+                        if (ImGui::IsItemHovered())
+                        {
+                            ImGui::SetTooltip("Move this condition into the parent condition");
+                        }
                     }
 
                     ImGui::SameLine();
@@ -384,6 +388,10 @@ namespace trview
                         child = {};
                         child.children.push_back(filter_to_group);
                         break;
+                    }
+                    if (ImGui::IsItemHovered())
+                    {
+                        ImGui::SetTooltip("Make this condition a child of the current condition");
                     }
 
                     if (child_index != filter.children.size() - 1)
@@ -418,6 +426,30 @@ namespace trview
         else
         {
             const std::string suffix = std::format("{}-{}", depth, index);
+
+            const std::string not_id = "!##" + suffix;
+            const bool inverted = filter.invert;
+            if (inverted)
+            {
+                ImGui::PushID(not_id.c_str());
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.06f, 0.53f, 0.98f, 1.00f));
+                ImGui::PopID();
+            }
+            if (ImGui::Button(not_id.c_str()))
+            {
+                _changed = true;
+                filter.invert = !filter.invert;
+            }
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::SetTooltip("Invert the condition");
+            }
+            if (inverted)
+            {
+                ImGui::PopStyleColor();
+            }
+            ImGui::SameLine();
+
             if (ImGui::BeginCombo((Names::FilterKey + suffix).c_str(), filter.key.c_str()))
             {
                 for (const auto& key : keys)
@@ -518,6 +550,10 @@ namespace trview
             {
                 _changed = true;
                 return Action::Remove;
+            }
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::SetTooltip("Remove this condition");
             }
         }
 
