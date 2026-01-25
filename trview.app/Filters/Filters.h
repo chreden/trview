@@ -62,7 +62,9 @@ namespace trview
             CompareOp compare{ CompareOp::Equal };
             std::string value;
             std::string value2;
+            std::vector<Filter> children;
             Op op{ Op::And };
+            bool invert{ false };
 
             auto operator <=> (const Filter&) const = default;
 
@@ -191,6 +193,15 @@ namespace trview
         std::vector<Filter> filters() const;
     private:
         int column_count() const;
+        bool match(const Filter& filter, const T& value) const;
+
+        enum class Action
+        {
+            None,
+            Remove
+        };
+
+        Action render(Filter& filter, const std::vector<std::string>& keys, int32_t depth, int32_t index, Filter& parent);
 
         using Value = std::variant<std::string, float, bool, int>;
 
@@ -213,7 +224,7 @@ namespace trview
         /// </summary>
         using MultiGetter = Getter<std::vector<Value>>;
 
-        std::vector<Filter> _filters;
+        Filter _filter;
         std::vector<std::string> keys() const;
         /// <summary>
         /// Returns whether there are any filters of consequence.

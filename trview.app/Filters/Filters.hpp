@@ -39,7 +39,7 @@ namespace trview
     template <typename T>
     void Filters<T>::add_filter(const Filter& filter)
     {
-        _filters.push_back(filter);
+        _filter.children.push_back(filter);
         _changed = true;
     }
 
@@ -149,7 +149,8 @@ namespace trview
     template <typename T>
     bool Filters<T>::empty() const
     {
-        return _filters.empty() || std::all_of(_filters.begin(), _filters.end(), [](auto&& f) { return f.key == "" && f.value == ""; });
+        return _filter.children.empty()
+            || std::ranges::all_of(_filter.children, [](auto&& c) { return c.key == "" && c.value == "" && c.children.empty(); });
     }
 
     template <typename T>
@@ -260,19 +261,32 @@ namespace trview
     }
 
     template <typename T>
-    bool Filters<T>::match(const T& value) const
+    bool Filters<T>::match(const Filters<T>::Filter& filter, const T& value) const
     {
-        if (!_enabled || empty())
+        bool filter_result = filter.initial_state();
+
+        if (!filter.children.empty())
         {
-            return true;
+            bool child_match = false;
+            Op child_op = Op::Or;
+
+            for (const auto& child : filter.children)
+            {
+                const bool child_filter_result = match(child, value);
+
+                child_match = child_op == Op::Or ? child_match | child_filter_result : child_match & child_filter_result;
+                child_op = child.op;
+
+                if (child_op == Op::And && !child_match)
+                {
+                    break;
+                }
+            }
+
+            filter_result = child_match;
         }
-
-        bool match = false;
-        Op op = Op::Or;
-        for (const auto& filter : _filters)
+        else
         {
-            bool filter_result = filter.initial_state();
-
             const auto& getter = _getters.find(filter.key);
             if (getter != _getters.end())
             {
@@ -299,16 +313,15 @@ namespace trview
                     }
                 }
             }
-
-            match = op == Op::Or ? match | filter_result : match & filter_result;
-            op = filter.op;
-
-            if (op == Op::And && !match)
-            {
-                break;
-            }
         }
-        return match;
+
+        return filter_result ^ filter.invert;
+    }
+
+    template <typename T>
+    bool Filters<T>::match(const T& value) const
+    {
+        return _filter.children.empty() || match(_filter, value);
     }
 
     template <typename T>
@@ -319,6 +332,232 @@ namespace trview
             ImGui::OpenPopup(Names::Popup.c_str());
         }
         _show_filters = !_show_filters;
+    }
+
+    template <typename T>
+    Filters<T>::Action Filters<T>::render(Filter& filter, const std::vector<std::string>& keys, int32_t depth, int32_t index, Filter& parent)
+    {
+        // For the 0th element we always just draw children.
+        if (!filter.children.empty() || depth == 0)
+        {
+            const std::string suffix = std::format("{}-{}", depth, index);
+
+            if (ImGui::BeginChild((std::string("FilterGroup##") + suffix).c_str(), ImVec2(), ImGuiChildFlags_Border | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY))
+            {
+                int32_t child_index = 0;
+                for (auto& child : filter.children)
+                {
+                    const std::string child_suffix = std::format("{}-{}-{}", depth, index, child_index);
+                    if (Action::Remove == render(child, keys, depth + 1, child_index, filter))
+                    {
+                        filter.children.erase(filter.children.begin() + child_index);
+                        break;
+                    }
+
+                    if (depth > 0)
+                    {
+                        ImGui::SameLine();
+                        if (ImGui::Button((std::string("<##") + child_suffix).c_str()))
+                        {
+                            const auto filter_to_promote = child;
+                            filter.children.erase(filter.children.begin() + child_index);
+
+                            const auto filter_in_parent = std::ranges::find(parent.children, filter);
+                            const auto filter_in_parent_index = filter_in_parent - parent.children.begin();
+
+                            const bool last_filter_in_filter = filter.children.size() == 0;
+                            parent.children.insert(filter_in_parent, filter_to_promote);
+
+                            if (last_filter_in_filter)
+                            {
+                                parent.children.erase(parent.children.begin() + filter_in_parent_index + 1);
+                            }
+
+                            break;
+                        }
+                        if (ImGui::IsItemHovered())
+                        {
+                            ImGui::SetTooltip("Move this condition into the parent condition");
+                        }
+                    }
+
+                    ImGui::SameLine();
+                    if (ImGui::Button((std::string(">##") + child_suffix).c_str()))
+                    {
+                        auto filter_to_group = child;
+                        child = {};
+                        child.children.push_back(filter_to_group);
+                        break;
+                    }
+                    if (ImGui::IsItemHovered())
+                    {
+                        ImGui::SetTooltip("Make this condition a child of the current condition");
+                    }
+
+                    if (child_index != filter.children.size() - 1)
+                    {
+                        std::vector<Op> ops{ Op::And, Op::Or };
+                        if (ImGui::BeginCombo((Names::FilterOp + child_suffix).c_str(), to_string(child.op).c_str()))
+                        {
+                            for (const auto& op : ops)
+                            {
+                                if (ImGui::Selectable(to_string(op).c_str(), op == child.op))
+                                {
+                                    child.op = op;
+                                    _changed = true;
+                                    ImGui::SetItemDefaultFocus();
+                                }
+                            }
+                            ImGui::EndCombo();
+                        }
+                    }
+                    ++child_index;
+                }
+
+                if (ImGui::Button(std::format("{}##{}", Names::AddFilter, suffix).c_str()))
+                {
+                    _changed = true;
+                    filter.children.push_back({});
+                }
+            }
+
+            ImGui::EndChild();
+        }
+        else
+        {
+            const std::string suffix = std::format("{}-{}", depth, index);
+
+            const std::string not_id = "!##" + suffix;
+            const bool inverted = filter.invert;
+            if (inverted)
+            {
+                ImGui::PushID(not_id.c_str());
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.06f, 0.53f, 0.98f, 1.00f));
+                ImGui::PopID();
+            }
+            if (ImGui::Button(not_id.c_str()))
+            {
+                _changed = true;
+                filter.invert = !filter.invert;
+            }
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::SetTooltip("Invert the condition");
+            }
+            if (inverted)
+            {
+                ImGui::PopStyleColor();
+            }
+            ImGui::SameLine();
+
+            if (ImGui::BeginCombo((Names::FilterKey + suffix).c_str(), filter.key.c_str()))
+            {
+                for (const auto& key : keys)
+                {
+                    if (ImGui::Selectable(key.c_str(), key == filter.key))
+                    {
+                        filter.key = key;
+                        _changed = true;
+
+                        // If the current value is not in the options then set to one of them.
+                        if (has_options(filter.key))
+                        {
+                            const auto options = options_for_key(filter.key);
+                            bool value_valid = std::find(options.begin(), options.end(), filter.value) != options.end();
+                            if (!value_valid)
+                            {
+                                filter.value = options.back();
+                            }
+                        }
+
+                        ImGui::SetItemDefaultFocus();
+                    }
+                }
+                ImGui::EndCombo();
+            }
+            ImGui::SameLine();
+
+            auto available_compare_ops = ops_for_key(filter.key);
+            if (ImGui::BeginCombo((Names::FilterCompareOp + suffix).c_str(), to_string(filter.compare).c_str()))
+            {
+                for (const auto& compare_op : available_compare_ops)
+                {
+                    if (ImGui::Selectable(to_string(compare_op).c_str(), compare_op == filter.compare))
+                    {
+                        filter.compare = compare_op;
+                        _changed = true;
+                        ImGui::SetItemDefaultFocus();
+                    }
+                }
+                ImGui::EndCombo();
+            }
+            ImGui::SameLine();
+
+            if (has_options(filter.key) && filter.compare != CompareOp::StartsWith && filter.compare != CompareOp::EndsWith)
+            {
+                auto available_options = options_for_key(filter.key);
+                if (filter.value_count() > 0 && ImGui::BeginCombo((Names::FilterValue + suffix).c_str(), filter.value.c_str()))
+                {
+                    for (const auto& option : available_options)
+                    {
+                        if (ImGui::Selectable(option.c_str(), option == filter.value))
+                        {
+                            filter.value = option;
+                            _changed = true;
+                            ImGui::SetItemDefaultFocus();
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
+                ImGui::SameLine();
+
+                if (filter.value_count() > 1 && ImGui::BeginCombo((Names::FilterValue + "2-" + suffix).c_str(), filter.value2.c_str()))
+                {
+                    for (const auto& option : available_options)
+                    {
+                        if (ImGui::Selectable(option.c_str(), option == filter.value2))
+                        {
+                            filter.value2 = option;
+                            _changed = true;
+                            ImGui::SetItemDefaultFocus();
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
+                ImGui::SameLine();
+            }
+            else
+            {
+                if (filter.value_count() > 0)
+                {
+                    if (ImGui::InputText((Names::FilterValue + suffix).c_str(), &filter.value))
+                    {
+                        _changed = true;
+                    }
+                    ImGui::SameLine();
+                }
+                if (filter.value_count() > 1)
+                {
+                    if (ImGui::InputText((Names::FilterValue + "2-" + suffix).c_str(), &filter.value2))
+                    {
+                        _changed = true;
+                    }
+                    ImGui::SameLine();
+                }
+            }
+
+            if (ImGui::Button((Names::RemoveFilter + suffix).c_str()))
+            {
+                _changed = true;
+                return Action::Remove;
+            }
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::SetTooltip("Remove this condition");
+            }
+        }
+
+        return Action::None;
     }
 
     template <typename T>
@@ -346,144 +585,8 @@ namespace trview
         if (_show_filters && ImGui::BeginPopup(Names::Popup.c_str()))
         {
             const auto keys = this->keys();
-
             ImGui::Text("Filters");
-
-            std::vector<uint32_t> remove;
-            for (uint32_t i = 0; i < _filters.size(); ++i)
-            {
-                auto& filter = _filters[i];
-                if (ImGui::BeginCombo((Names::FilterKey + std::to_string(i)).c_str(), filter.key.c_str()))
-                {
-                    for (const auto& key : keys)
-                    {
-                        if (ImGui::Selectable(key.c_str(), key == filter.key))
-                        {
-                            filter.key = key;
-                            _changed = true;
-
-                            // If the current value is not in the options then set to one of them.
-                            if (has_options(filter.key))
-                            {
-                                const auto options = options_for_key(filter.key);
-                                bool value_valid = std::find(options.begin(), options.end(), filter.value) != options.end();
-                                if (!value_valid)
-                                {
-                                    filter.value = options.back();
-                                }
-                            }
-
-                            ImGui::SetItemDefaultFocus();
-                        }
-                    }
-                    ImGui::EndCombo();
-                }
-                ImGui::SameLine();
-
-                auto available_compare_ops = ops_for_key(filter.key);
-                if (ImGui::BeginCombo((Names::FilterCompareOp + std::to_string(i)).c_str(), to_string(filter.compare).c_str()))
-                {
-                    for (const auto& compare_op : available_compare_ops)
-                    {
-                        if (ImGui::Selectable(to_string(compare_op).c_str(), compare_op == filter.compare))
-                        {
-                            filter.compare = compare_op;
-                            _changed = true;
-                            ImGui::SetItemDefaultFocus();
-                        }
-                    }
-                    ImGui::EndCombo();
-                }
-                ImGui::SameLine();
-
-                if (has_options(filter.key) && filter.compare != CompareOp::StartsWith && filter.compare != CompareOp::EndsWith)
-                {
-                    auto available_options = options_for_key(filter.key);
-                    if (filter.value_count() > 0 && ImGui::BeginCombo((Names::FilterValue + std::to_string(i)).c_str(), filter.value.c_str()))
-                    {
-                        for (const auto& option : available_options)
-                        {
-                            if (ImGui::Selectable(option.c_str(), option == filter.value))
-                            {
-                                filter.value = option;
-                                _changed = true;
-                                ImGui::SetItemDefaultFocus();
-                            }
-                        }
-                        ImGui::EndCombo();
-                    }
-                    ImGui::SameLine();
-
-                    if (filter.value_count() > 1 && ImGui::BeginCombo((Names::FilterValue + "2-" + std::to_string(i)).c_str(), filter.value2.c_str()))
-                    {
-                        for (const auto& option : available_options)
-                        {
-                            if (ImGui::Selectable(option.c_str(), option == filter.value2))
-                            {
-                                filter.value2 = option;
-                                _changed = true;
-                                ImGui::SetItemDefaultFocus();
-                            }
-                        }
-                        ImGui::EndCombo();
-                    }
-                    ImGui::SameLine();
-                }
-                else
-                {
-                    if (filter.value_count() > 0)
-                    {
-                        if (ImGui::InputText((Names::FilterValue + std::to_string(i)).c_str(), &filter.value))
-                        {
-                            _changed = true;
-                        }
-                        ImGui::SameLine();
-                    }
-                    if (filter.value_count() > 1)
-                    {
-                        if (ImGui::InputText((Names::FilterValue + "2-" + std::to_string(i)).c_str(), &filter.value2))
-                        {
-                            _changed = true;
-                        }
-                        ImGui::SameLine();
-                    }
-                }
-
-                if (ImGui::Button((Names::RemoveFilter + std::to_string(i)).c_str()))
-                {
-                    _changed = true;
-                    remove.push_back(i);
-                }
-
-                if (i != _filters.size() - 1)
-                {
-                    std::vector<Op> ops{ Op::And, Op::Or };
-                    if (ImGui::BeginCombo((Names::FilterOp + std::to_string(i)).c_str(), to_string(filter.op).c_str()))
-                    {
-                        for (const auto& op : ops)
-                        {
-                            if (ImGui::Selectable(to_string(op).c_str(), op == filter.op))
-                            {
-                                filter.op = op;
-                                _changed = true;
-                                ImGui::SetItemDefaultFocus();
-                            }
-                        }
-                        ImGui::EndCombo();
-                    }
-                }
-            }
-
-            for (auto iter = remove.rbegin(); iter < remove.rend(); ++iter)
-            {
-                _filters.erase(_filters.begin() + *iter);
-            }
-
-            if (ImGui::Button(Names::AddFilter.c_str()))
-            {
-                _filters.push_back({});
-                _changed = true;
-            }
+            render(_filter, keys, 0, 0, _filter);
             ImGui::EndPopup();
         }
         else
@@ -655,7 +758,7 @@ namespace trview
     template <typename T>
     void Filters<T>::set_filters(const std::vector<Filter> filters)
     {
-        _filters = filters;
+        _filter.children = filters;
     }
 
     template <typename T>
@@ -969,6 +1072,6 @@ namespace trview
     template <typename T>
     std::vector<typename Filters<T>::Filter> Filters<T>::filters() const
     {
-        return _filters;
+        return _filter.children;
     }
 }
