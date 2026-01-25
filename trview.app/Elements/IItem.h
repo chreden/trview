@@ -8,6 +8,7 @@
 #include <trlevel/trtypes.h>
 #include "../Geometry/IRenderable.h"
 #include "../Geometry/PickResult.h"
+#include "../Filters/IFilterable.h"
 
 namespace trview
 {
@@ -15,7 +16,7 @@ namespace trview
     struct IRoom;
     struct IModelStorage;
 
-    struct IItem : public IRenderable
+    struct IItem : public IRenderable, public IFilterable
     {
         using EntitySource =
             std::function<std::shared_ptr<IItem> (const trlevel::ILevel&, const trlevel::tr2_entity&, uint32_t, const std::vector<std::weak_ptr<ITrigger>>&, const IModelStorage&, const std::weak_ptr<ILevel>&, const std::weak_ptr<IRoom>&)>;

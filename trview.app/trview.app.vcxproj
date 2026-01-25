@@ -42,6 +42,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\StaticMesh.cpp" />
     <ClCompile Include="Elements\Trigger.cpp" />
     <ClCompile Include="Elements\TypeInfoLookup.cpp" />
+    <ClCompile Include="Filters\Filters.cpp" />
     <ClCompile Include="Geometry\IMesh.cpp" />
     <ClCompile Include="Geometry\IRenderable.cpp" />
     <ClCompile Include="Geometry\Matrix.cpp" />
@@ -101,6 +102,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h" />
     <ClInclude Include="Elements\SoundSource\ISoundSource.h" />
     <ClInclude Include="Elements\SoundSource\SoundSource.h" />
+    <ClInclude Include="Filters\IFilterable.h" />
     <ClInclude Include="Geometry\Model\IModel.h" />
     <ClInclude Include="Geometry\Model\IModelStorage.h" />
     <ClInclude Include="Geometry\Model\Model.h" />

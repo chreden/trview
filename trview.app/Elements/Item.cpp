@@ -350,6 +350,11 @@ namespace trview
         return _is_remastered_extra;
     }
 
+    int32_t Item::filterable_index() const
+    {
+        return static_cast<int32_t>(number());
+    }
+
     bool is_mutant_egg(const IItem& item)
     {
         return is_mutant_egg(item.type_id());

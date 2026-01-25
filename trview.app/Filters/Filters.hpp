@@ -1074,4 +1074,312 @@ namespace trview
     {
         return _filter.children;
     }
+
+    template <typename T>
+    Filters2::Getters Filters2::GettersBuilder::build() const
+    {
+        return
+        {
+            .type_key = _type_key,
+            .type_matcher = [](const std::weak_ptr<IFilterable>& f)
+            {
+                const auto f_ptr = f.lock();
+                return f_ptr && std::dynamic_pointer_cast<T>(f_ptr);
+            },
+            .getters = _getters,
+            .multi_getters = _multi_getters
+        };
+    }
+
+    template <typename T, typename ValueType>
+    Filters2::GettersBuilder& Filters2::GettersBuilder::with_getter(const std::string& key, const std::function<ValueType (const T&)>& getter, EditMode can_change)
+    {
+        return with_getter(key, available_options<ValueType>(), getter, {}, can_change);
+    }
+
+    template <typename T, typename ValueType>
+    Filters2::GettersBuilder& Filters2::GettersBuilder::with_getter(const std::string& key, const std::vector<std::string>& options, const std::function<ValueType(const T&)>& getter, EditMode can_change)
+    {
+        return with_getter(key, options, getter, {}, can_change);
+    }
+
+    template <typename T, typename ValueType>
+    Filters2::GettersBuilder& Filters2::GettersBuilder::with_getter(const std::string& key, const std::function<ValueType(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change)
+    {
+        return with_getter(key, available_options<ValueType>(), getter, predicate, can_change);
+    }
+
+    template <typename T, typename ValueType>
+    Filters2::GettersBuilder& Filters2::GettersBuilder::with_getter(const std::string& key, const std::vector<std::string>& options, const std::function<ValueType(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change)
+    {
+        ValueGetter new_getter
+        {
+            .ops = compare_ops<ValueType>(),
+            .options = options,
+            .function = [=](const IFilterable& f) -> Filters2::Value
+            {
+                return getter(static_cast<const T&>(f));
+            },
+            .can_change = can_change
+        };
+
+        if (predicate)
+        {
+            new_getter.predicate = [=](const IFilterable& f) -> bool
+                {
+                    return predicate(static_cast<const T&>(f));
+                };
+        }
+
+        _getters[key] = new_getter;
+        return *this;
+    }
+
+    template <typename T, typename ValueType>
+    Filters2::GettersBuilder& Filters2::GettersBuilder::with_multi_getter(const std::string& key, const std::function<std::vector<ValueType>(const T&)>& getter)
+    {
+        return with_multi_getter(key, available_options<ValueType>(), getter, {});
+    }
+
+    template <typename T, typename ValueType>
+    Filters2::GettersBuilder& Filters2::GettersBuilder::with_multi_getter(const std::string& key, const std::vector<std::string>& options, const std::function<std::vector<ValueType>(const T&)>& getter)
+    {
+        return with_multi_getter(key, options, getter, {});
+    }
+
+    template <typename T, typename ValueType>
+    Filters2::GettersBuilder& Filters2::GettersBuilder::with_multi_getter(const std::string& key, const std::function<std::vector<ValueType>(const T&)>& getter, const std::function<bool(const T&)>& predicate)
+    {
+        return with_multi_getter(key, available_options<ValueType>(), getter, predicate);
+    }
+
+    template <typename T, typename ValueType>
+    Filters2::GettersBuilder& Filters2::GettersBuilder::with_multi_getter(const std::string& key, const std::vector<std::string>& options, const std::function<std::vector<ValueType>(const T&)>& getter, const std::function<bool(const T&)>& predicate)
+    {
+        MultiGetter new_getter
+        {
+            .ops = compare_ops<ValueType>(),
+            .options = options,
+            .function = [=](const IFilterable& f) -> std::vector<Filters2::Value>
+            {
+                return getter(static_cast<const T&>(f)) |
+                    std::ranges::to<std::vector<Filters2::Value>>();
+            },
+            .can_change = EditMode::Read
+        };
+
+        if (predicate)
+        {
+            new_getter.predicate = [=](const IFilterable& f) -> bool
+                {
+                    return predicate(static_cast<const T&>(f));
+                };
+        }
+
+        _multi_getters[key] = new_getter;
+        return *this;
+    }
+
+    template <typename T>
+    std::unordered_map<std::string, Filters2::Toggle> default_hide2(const std::vector<std::shared_ptr<T>>& filtered_entries)
+    {
+        return
+        {
+            {
+                "Hide",
+                {
+                    .on_toggle = [&](auto&& entry, auto&& value)
+                    {
+                        if (auto entry_ptr = entry.lock())
+                        {
+                            auto t_ptr = std::static_pointer_cast<T>(entry_ptr);
+                            t_ptr->set_visible(!value);
+                        }
+                    },
+                    .on_toggle_all = [&](bool value)
+                    {
+                        std::ranges::for_each(filtered_entries, [=](auto&& entry) { entry->set_visible(!value); });
+                    },
+                    .all_toggled = [&]() { return std::ranges::all_of(filtered_entries, [](auto&& entry) { return !entry->visible(); }); }
+                }
+            }
+        };
+    }
+
+    template < typename T >
+    void imgui_sort_weak_filters(std::vector<std::weak_ptr<T>>& container, std::vector<std::function<bool(const IFilterable&, const IFilterable&)>> callbacks, bool force_sort = false)
+    {
+        container.erase(std::remove_if(container.begin(), container.end(), [](auto& e) { return e.lock() == nullptr; }), container.end());
+
+        auto specs = ImGui::TableGetSortSpecs();
+        if (specs && (specs->SpecsDirty || force_sort))
+        {
+            std::sort(container.begin(), container.end(),
+                [&](const auto& l, const auto& r) -> bool
+                {
+                    const auto& callback = callbacks[specs->Specs[0].ColumnIndex];
+                    const auto result = callback(*l.lock(), *r.lock());
+                    return specs->Specs->SortDirection == ImGuiSortDirection_Ascending ? result : !result;
+                });
+            specs->SpecsDirty = false;
+        }
+    }
+
+    void Filters2::render_table(const std::ranges::forward_range auto& items,
+        std::ranges::forward_range auto& all_items,
+        const std::weak_ptr<IFilterable>& selected_item,
+        RowCounter counter,
+        const std::function<void(std::weak_ptr<IFilterable>)>& on_item_selected,
+        const std::unordered_map<std::string, Toggle>& on_toggle)
+    {
+        auto columns = column_count();
+        if (columns == 0)
+        {
+            return;
+        }
+
+        const auto& getters = find_getter(_filter.type_key);
+        if (ImGui::BeginTable("filter-list", columns, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Reorderable, ImVec2(0, -counter.height())))
+        {
+            for (const auto& column_name : _columns)
+            {
+                ImGui::TableSetupColumn(column_name.c_str(), ImGuiTableColumnFlags_WidthFixed);
+            }
+            ImGui::TableSetupScrollFreeze(0, 1);
+            ImGui::TableNextRow(ImGuiTableRowFlags_Headers, ImGui::TableGetHeaderRowHeight());
+
+            int column_n = 0;
+            for (const auto& column_name : _columns)
+            {
+                if (!ImGui::TableSetColumnIndex(column_n++))
+                {
+                    continue;
+                }
+
+                const auto found_getter = getters.getters.find(column_name);
+                if (found_getter == getters.getters.end())
+                {
+                    continue;
+                }
+                const auto& getter = found_getter->second;
+                if (getter.can_change == EditMode::ReadWrite)
+                {
+                    auto found_toggle = on_toggle.find(column_name);
+                    if (found_toggle != on_toggle.end())
+                    {
+                        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                        bool value = found_toggle->second.all_toggled();
+                        if (ImGui::Checkbox("##checkall", &value))
+                        {
+                            found_toggle->second.on_toggle_all(value);
+                        }
+                        ImGui::PopStyleVar();
+                        ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                    }
+                }
+                ImGui::TableHeader(column_name.c_str());
+            }
+
+            std::vector<std::function<bool(const IFilterable&, const IFilterable&)>> sorting_functions;
+            for (const auto& column : _columns)
+            {
+                const auto found_getter = getters.getters.find(column);
+                if (found_getter != getters.getters.end())
+                {
+                    const auto getter = found_getter->second;
+                    sorting_functions.push_back([=](const IFilterable& l, const IFilterable& r) -> bool
+                        {
+                            return std::tuple(getter.function(l), static_cast<uint32_t>(l.filterable_index())) < std::tuple(getter.function(r), static_cast<uint32_t>(r.filterable_index()));
+                        });
+                }
+            }
+
+            imgui_sort_weak_filters(all_items, sorting_functions, _force_sort);
+            _force_sort = false;
+
+            for (const auto& item : items)
+            {
+                counter.count();
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                auto selected_item_ptr = selected_item.lock();
+                bool selected = selected_item_ptr && selected_item_ptr == item;
+
+                ImGuiScroller scroller;
+                if (selected && _scroll_to_item)
+                {
+                    scroller.scroll_to_item();
+                    _scroll_to_item = false;
+                }
+
+                ImGui::SetNextItemAllowOverlap();
+                if (ImGui::Selectable(std::format("##{0}", item->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                {
+                    scroller.fix_scroll();
+                    on_item_selected(item);
+                    _scroll_to_item = false;
+                }
+                ImGui::SameLine();
+
+                int remaining = columns;
+                for (const auto& column_name : _columns)
+                {
+                    const auto found_getter = getters.getters.find(column_name);
+                    if (found_getter == getters.getters.end())
+                    {
+                        continue;
+                    }
+                    const auto& getter = found_getter->second;
+                    const auto result = getter.function(*item);
+                    result;
+
+                    if (std::holds_alternative<std::string>(result))
+                    {
+                        ImGui::Text(std::get<std::string>(result).c_str());
+                    }
+                    else if (std::holds_alternative<bool>(result))
+                    {
+                        bool toggle_value = std::get<bool>(result);
+
+                        ImGui::BeginDisabled(getter.can_change == EditMode::Read);
+                        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                        if (ImGui::Checkbox(std::format("##{}-{}", column_name, item->number()).c_str(), &toggle_value))
+                        {
+                            auto found_toggle = on_toggle.find(column_name);
+                            if (found_toggle != on_toggle.end())
+                            {
+                                found_toggle->second.on_toggle(item, toggle_value);
+                            }
+                        }
+                        ImGui::PopStyleVar();
+                        ImGui::EndDisabled();
+                    }
+                    else if (std::holds_alternative<float>(result))
+                    {
+                        ImGui::Text(std::to_string(std::get<float>(result)).c_str());
+                    }
+                    else if (std::holds_alternative<int>(result))
+                    {
+                        ImGui::Text(std::to_string(std::get<int>(result)).c_str());
+                    }
+                    // else if (std::holds_alternative<std::weak_ptr<IFilterable>>(result))
+                    // {
+                    //     // TODO: No idea what to show for this as a column.
+                    // }
+
+                    if (--remaining > 0)
+                    {
+                        ImGui::TableNextColumn();
+                    }
+                }
+            }
+
+            // Track current order in case a column is removed - have to restore the order
+            // manually otherwise it resets.
+            _column_order = { std::from_range, ImGui::GetCurrentTable()->DisplayOrderToIndex };
+
+            ImGui::EndTable();
+            counter.render();
+        }
+    }
 }

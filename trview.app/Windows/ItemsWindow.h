@@ -73,7 +73,7 @@ namespace trview
         std::weak_ptr<IItem> _global_selected_item;
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
 
-        Filters<IItem> _filters;
+        Filters2 _filters;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         std::function<bool(uint32_t)> _model_checker;
         bool _force_sort{ false };
