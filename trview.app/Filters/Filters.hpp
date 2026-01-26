@@ -1289,7 +1289,29 @@ namespace trview
                     const auto getter = found_getter->second;
                     sorting_functions.push_back([=](const IFilterable& l, const IFilterable& r) -> bool
                         {
-                            return std::tuple(getter.function(l), static_cast<uint32_t>(l.filterable_index())) < std::tuple(getter.function(r), static_cast<uint32_t>(r.filterable_index()));
+                            const auto l_value = getter.function(l);
+                            const auto r_value = getter.function(r);
+                            if (std::holds_alternative<std::string>(l_value))
+                            {
+                                return std::tuple(std::get<std::string>(l_value), l.filterable_index()) <
+                                    std::tuple(std::get<std::string>(r_value), r.filterable_index());
+                            }
+                            else if (std::holds_alternative<bool>(l_value))
+                            {
+                                return std::tuple(std::get<bool>(l_value), l.filterable_index()) <
+                                    std::tuple(std::get<bool>(r_value), r.filterable_index());
+                            }
+                            else if (std::holds_alternative<float>(l_value))
+                            {
+                                return std::tuple(std::get<float>(l_value), l.filterable_index()) <
+                                    std::tuple(std::get<float>(r_value), r.filterable_index());
+                            }
+                            else if (std::holds_alternative<int>(l_value))
+                            {
+                                return std::tuple(std::get<int>(l_value), l.filterable_index()) <
+                                    std::tuple(std::get<int>(r_value), r.filterable_index());
+                            }
+                            return l.filterable_index() < r.filterable_index();
                         });
                 }
             }

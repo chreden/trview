@@ -196,11 +196,12 @@ namespace trview
 
     bool Filters2::match(const IFilterable& value) const
     {
-        return _filter.children.empty() || match(_filter, value);
+        return _filter.children.empty() || match(_filter, value, _filter.type_key);
     }
 
-    bool Filters2::match(const Filters2::Filter& filter, const IFilterable& value) const
+    bool Filters2::match(const Filters2::Filter& filter, const IFilterable& value, const std::string& type_key) const
     {
+        const std::string current_type_key = filter.type_key != "" ? filter.type_key : type_key;
         bool filter_result = filter.initial_state();
 
         if (!filter.children.empty())
@@ -210,7 +211,7 @@ namespace trview
 
             for (const auto& child : filter.children)
             {
-                const bool child_filter_result = match(child, value);
+                const bool child_filter_result = match(child, value, current_type_key);
 
                 child_match = child_op == Op::Or ? child_match | child_filter_result : child_match & child_filter_result;
                 child_op = child.op;
@@ -225,7 +226,7 @@ namespace trview
         }
         else
         {
-            const auto& getters = find_getter(filter.type_key);
+            const auto& getters = find_getter(current_type_key);
             const auto& getter = getters.getters.find(filter.key);
             if (getter != getters.getters.end())
             {
@@ -238,7 +239,7 @@ namespace trview
             }
             else
             {
-                const auto& multi_getter = getters.multi_getters.find(filter.key);
+                const auto& multi_getter = getters.multi_getters.find(current_type_key);
                 if (multi_getter != getters.multi_getters.end())
                 {
                     const auto getter_predicate = multi_getter->second.predicate;
@@ -355,7 +356,7 @@ namespace trview
         {
             const auto keys = this->keys(_filter.type_key);
             ImGui::Text("Filters");
-            render(_filter, keys, 0, 0, _filter);
+            render(_filter, keys, 0, 0, _filter, _filter.type_key);
             ImGui::EndPopup();
         }
         else
@@ -364,8 +365,9 @@ namespace trview
         }
     }
 
-    Filters2::Action Filters2::render(Filter& filter, const std::vector<std::string>& keys, int32_t depth, int32_t index, Filter& parent)
+    Filters2::Action Filters2::render(Filter& filter, const std::vector<std::string>& keys, int32_t depth, int32_t index, Filter& parent, const std::string& type_key)
     {
+        const std::string current_type_key = filter.type_key != "" ? filter.type_key : type_key;
         // For the 0th element we always just draw children.
         if (!filter.children.empty() || depth == 0)
         {
@@ -377,7 +379,7 @@ namespace trview
                 for (auto& child : filter.children)
                 {
                     const std::string child_suffix = std::format("{}-{}-{}", depth, index, child_index);
-                    if (Action::Remove == render(child, keys, depth + 1, child_index, filter))
+                    if (Action::Remove == render(child, keys, depth + 1, child_index, filter, current_type_key))
                     {
                         filter.children.erase(filter.children.begin() + child_index);
                         break;
@@ -489,9 +491,9 @@ namespace trview
                         _changed = true;
 
                         // If the current value is not in the options then set to one of them.
-                        if (has_options(filter.type_key, filter.key))
+                        if (has_options(current_type_key, filter.key))
                         {
-                            const auto options = options_for_key(filter.type_key, filter.key);
+                            const auto options = options_for_key(current_type_key, filter.key);
                             bool value_valid = std::find(options.begin(), options.end(), filter.value) != options.end();
                             if (!value_valid)
                             {
@@ -506,7 +508,7 @@ namespace trview
             }
             ImGui::SameLine();
 
-            auto available_compare_ops = ops_for_key(filter.type_key, filter.key);
+            auto available_compare_ops = ops_for_key(current_type_key, filter.key);
             if (ImGui::BeginCombo((Names::FilterCompareOp + suffix).c_str(), to_string(filter.compare).c_str()))
             {
                 for (const auto& compare_op : available_compare_ops)
@@ -522,9 +524,9 @@ namespace trview
             }
             ImGui::SameLine();
 
-            if (has_options(filter.type_key, filter.key) && filter.compare != CompareOp::StartsWith && filter.compare != CompareOp::EndsWith)
+            if (has_options(current_type_key, filter.key) && filter.compare != CompareOp::StartsWith && filter.compare != CompareOp::EndsWith)
             {
-                auto available_options = options_for_key(filter.type_key, filter.key);
+                auto available_options = options_for_key(current_type_key, filter.key);
                 if (filter.value_count() > 0 && ImGui::BeginCombo((Names::FilterValue + suffix).c_str(), filter.value.c_str()))
                 {
                     for (const auto& option : available_options)
@@ -673,6 +675,11 @@ namespace trview
     void Filters2::set_filters(const std::vector<Filter> filters)
     {
         _filter.children = filters;
+    }
+
+    void Filters2::set_type_key(const std::string& type_key)
+    {
+        _filter.type_key = type_key;
     }
 
     bool Filters2::test_and_reset_changed()

@@ -268,9 +268,7 @@ namespace trview
             static const inline std::string FilterOp{ "##filter-op-" };
         };
 
-        // using TypeMatcher = std::function<bool(const std::weak_ptr<IFilterable>&)>;
-
-        using Value = std::variant<std::string, float, bool, int>;//, std::weak_ptr<IFilterable>>;
+        using Value = std::variant<std::string, float, bool, int, std::weak_ptr<IFilterable>>;
         using TypeMatcher = std::function<bool(const std::weak_ptr<IFilterable>&)>;
 
         struct Filter
@@ -369,7 +367,7 @@ namespace trview
         bool is_match(bool value, const Filter& filter) const;
         std::vector<std::string> keys(const std::string& type_key) const;
         bool match(const IFilterable& value) const;
-        bool match(const Filters2::Filter& filter, const IFilterable& value) const;
+        bool match(const Filters2::Filter& filter, const IFilterable& value, const std::string& type_key) const;
         void render();
         void render_settings();
         void render_table(const std::ranges::forward_range auto& items,
@@ -380,6 +378,7 @@ namespace trview
             const std::unordered_map<std::string, Toggle>& on_toggle);
         void set_columns(const std::vector<std::string>& columns);
         void set_filters(const std::vector<Filter> filters);
+        void set_type_key(const std::string& type_key);
         void scroll_to_item();
         bool test_and_reset_changed();
         void toggle_visible();
@@ -395,7 +394,7 @@ namespace trview
         bool has_options(const std::string& type_key, const std::string& key) const;
         std::vector<CompareOp> ops_for_key(const std::string& type_key, const std::string& key) const;
         std::vector<std::string> options_for_key(const std::string& type_key, const std::string& key) const;
-        Action render(Filter& filter, const std::vector<std::string>& keys, int32_t depth, int32_t index, Filter& parent);
+        Action render(Filter& filter, const std::vector<std::string>& keys, int32_t depth, int32_t index, Filter& parent, const std::string& type_key);
 
         bool                     _changed{ true };
         std::vector<std::string> _columns;

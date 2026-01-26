@@ -365,6 +365,7 @@ namespace trview
 
         // TODO: Set up new style filters:
         auto getters = Filters2::GettersBuilder()
+            .with_type_key("IItem")
             .with_getter<IItem, int>("#", [](auto&& item) { return static_cast<int>(item.number()); })
             .with_getter<IItem, std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return item.type(); })
             .with_multi_getter<IItem, std::string>("Category", { available_categories.begin(), available_categories.end() }, [](auto&& item)
@@ -384,7 +385,7 @@ namespace trview
             .with_getter<IItem, int>("Angle Degrees", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle()) / 182); })
             .with_getter<IItem, int>("Type ID", [](auto&& item) { return static_cast<int>(item.type_id()); }, EditMode::Read)
             .with_getter<IItem, int>("Room", [](auto&& item) { return static_cast<int>(item_room(item)); }, EditMode::Read)
-            // .with_getter<IItem, std::weak_ptr<IFilterable>>("Room P", [](auto&& item) { return item.room(); })
+            .with_getter<IItem, std::weak_ptr<IFilterable>>("Room P", [](auto&& item) { return item.room(); })
             .with_getter<IItem, bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); })
             .with_getter<IItem, bool>("Invisible", [](auto&& item) { return item.invisible_flag(); })
             .with_getter<IItem, std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); })
@@ -418,6 +419,7 @@ namespace trview
             .build<IItem>();
 
         _filters.add_getters(getters);
+        _filters.set_type_key("IItem");
     }
 
     void ItemsWindow::set_level_version(trlevel::LevelVersion version)
