@@ -1174,6 +1174,12 @@ namespace trview
     template <typename T, typename ValueType>
     Filters2::GettersBuilder& Filters2::GettersBuilder::with_multi_getter(const std::string& key, const std::vector<std::string>& options, const std::function<std::vector<ValueType>(const T&)>& getter, const std::function<bool(const T&)>& predicate)
     {
+        return with_multi_getter(key, options, getter, predicate, "");
+    }
+
+    template <typename T, typename ValueType>
+    Filters2::GettersBuilder& Filters2::GettersBuilder::with_multi_getter(const std::string& key, const std::vector<std::string>& options, const std::function<std::vector<ValueType>(const T&)>& getter, const std::function<bool(const T&)>& predicate, const std::string& type_key)
+    {
         MultiGetter new_getter
         {
             .ops = compare_ops<ValueType>(),
@@ -1183,7 +1189,8 @@ namespace trview
                 return getter(static_cast<const T&>(f)) |
                     std::ranges::to<std::vector<Filters2::Value>>();
             },
-            .can_change = EditMode::Read
+            .can_change = EditMode::Read,
+            .type_key = type_key
         };
 
         if (predicate)

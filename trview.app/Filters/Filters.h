@@ -339,6 +339,8 @@ namespace trview
             GettersBuilder& with_multi_getter(const std::string& key, const std::function<std::vector<ValueType>(const T&)>& getter, const std::function<bool(const T&)>& predicate);
             template <typename T, typename ValueType>
             GettersBuilder& with_multi_getter(const std::string& key, const std::vector<std::string>& options, const std::function<std::vector<ValueType>(const T&)>& getter, const std::function<bool(const T&)>& predicate);
+            template <typename T, typename ValueType>
+            GettersBuilder& with_multi_getter(const std::string& key, const std::vector<std::string>& options, const std::function<std::vector<ValueType>(const T&)>& getter, const std::function<bool(const T&)>& predicate, const std::string& type_key);
 
             GettersBuilder& with_type_key(const std::string& key);
 

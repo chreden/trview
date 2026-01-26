@@ -36,6 +36,140 @@ namespace trview
         }
     }
 
+    void add_trigger_filters(Filters2& filters, const std::weak_ptr<ILevel>& level)
+    {
+        if (filters.has_type_key("ITrigger"))
+        {
+            return;
+        }
+
+        const auto level_ptr = level.lock();
+        if (!level_ptr)
+        {
+            return;
+        }
+
+        const auto all_items = level_ptr->items();
+        const auto all_triggers = level_ptr->triggers();
+
+        std::set<std::string> available_types;
+        for (const auto& trigger : all_triggers)
+        {
+            if (auto trigger_ptr = trigger.lock())
+            {
+                available_types.insert(to_string(trigger_ptr->type()));
+            }
+        }
+
+        auto getters = Filters2::GettersBuilder()
+            .with_type_key("ITrigger")
+            .with_getter<ITrigger, std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& trigger) { return to_string(trigger.type()); })
+            .with_getter<ITrigger, int>("#", [](auto&& trigger) { return static_cast<int>(trigger.number()); })
+            .with_getter<ITrigger, int>("Room", [](auto&& trigger) { return static_cast<int>(trigger_room(trigger)); })
+            .with_getter<ITrigger, std::string>("Flags", [](auto&& trigger) { return format_binary(trigger.flags()); })
+            .with_getter<ITrigger, bool>("Only once", [](auto&& trigger) { return trigger.only_once(); })
+            .with_getter<ITrigger, int>("Timer", [](auto&& trigger) { return static_cast<int>(trigger.timer()); })
+            .with_getter<ITrigger, bool>("Hide", [](auto&& trigger) { return !trigger.visible(); }, EditMode::ReadWrite)
+            .with_getter<ITrigger, bool>("In Visible Room", [](auto&& trigger)
+            {
+                if (const auto level = trigger.level().lock())
+                {
+                    return level->is_in_visible_set(trigger.room());
+                }
+                return false;
+            })
+            .with_multi_getter<ITrigger, std::string>("Command", [=](auto&& trigger)
+            {
+                return trigger.commands()
+                    | std::views::transform([](auto&& t) { return command_type_name(t.type()); })
+                    | std::ranges::to<std::vector>();
+            })
+            .with_multi_getter<ITrigger, float>("Trigger triggerer", [=](auto&& trigger)
+            {
+                const auto sector = trigger.sector().lock();
+                return all_items
+                    | std::views::filter([&](const auto& i)
+                        {
+                            auto item = i.lock();
+                            return item && item->type() == "Trigger triggerer" && sector_for_item(item) == sector;
+                        })
+                    | std::views::transform([](const auto& i) -> std::shared_ptr<IItem> { return i.lock(); })
+                    | std::views::filter([](const auto& i) { return i != nullptr; })
+                    | std::views::transform([](const auto& i) { return static_cast<float>(i->number()); })
+                    | std::ranges::to<std::vector>();
+            })
+            .with_multi_getter<ITrigger, float>("Extra", [&](auto&& trigger)
+            {
+                return trigger.commands()
+                    | std::views::transform([](auto&& t) -> std::vector<float>
+                        {
+                            const auto data = t.data();
+                            return data.size() < 2 ? std::vector<float>{} : (
+                                std::ranges::subrange(data.begin() + 1, data.end())
+                                | std::views::transform([](auto&& d) { return static_cast<float>(d); })
+                                | std::ranges::to<std::vector>());
+                        })
+                    | std::views::join
+                    | std::ranges::to<std::vector>();
+            });
+        
+        auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)
+            {
+                std::vector<float> indices;
+                for (const auto& command : trigger.commands())
+                {
+                    if (command.type() == type)
+                    {
+                        indices.push_back(static_cast<float>(command.index()));
+                    }
+                }
+                return indices;
+            };
+
+        auto any_of_command = [=](TriggerCommandType type)
+            {
+                for (auto& trigger : all_triggers)
+                {
+                    if (auto trigger_ptr = trigger.lock())
+                    {
+                        for (auto command : trigger_ptr->commands())
+                        {
+                            if (command.type() == type)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            };
+
+        auto add_multi_getter = [&getters, any_of_command, all_trigger_indices](TriggerCommandType type)
+            {
+                if (any_of_command(type))
+                {
+                    getters.with_multi_getter<ITrigger, float>(command_type_name(type), [=](auto&& trigger) { return all_trigger_indices(type, trigger); });
+                }
+            };
+
+        add_multi_getter(TriggerCommandType::Object);
+        add_multi_getter(TriggerCommandType::Camera);
+        add_multi_getter(TriggerCommandType::UnderwaterCurrent);
+        add_multi_getter(TriggerCommandType::FlipMap);
+        add_multi_getter(TriggerCommandType::FlipOn);
+        add_multi_getter(TriggerCommandType::FlipOff);
+        add_multi_getter(TriggerCommandType::LookAtItem);
+        add_multi_getter(TriggerCommandType::EndLevel);
+        add_multi_getter(TriggerCommandType::PlaySoundtrack);
+        add_multi_getter(TriggerCommandType::Flipeffect);
+        add_multi_getter(TriggerCommandType::SecretFound);
+        add_multi_getter(TriggerCommandType::ClearBodies);
+        add_multi_getter(TriggerCommandType::Flyby);
+        add_multi_getter(TriggerCommandType::Cutscene);
+
+        filters.add_getters(getters.build<ITrigger>());
+    }
+
     TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _messaging(messaging)
     {

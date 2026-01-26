@@ -8,6 +8,7 @@
 #include "../Messages/Messages.h"
 #include "../Elements/ILevel.h"
 #include "../Elements/ElementFilters.h"
+#include "../Elements/ITrigger.h"
 
 namespace trview
 {
@@ -58,8 +59,8 @@ namespace trview
             .with_getter<IItem, int>("Angle", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle())); })
             .with_getter<IItem, int>("Angle Degrees", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle()) / 182); })
             .with_getter<IItem, int>("Type ID", [](auto&& item) { return static_cast<int>(item.type_id()); }, EditMode::Read)
-            .with_getter<IItem, int>("Room", [](auto&& item) { return static_cast<int>(item_room(item)); }, EditMode::Read)
-            .with_getter<IItem, std::weak_ptr<IFilterable>>("Room P", {}, [](auto&& item) { return item.room(); }, {}, EditMode::Read, "IRoom")
+            .with_getter<IItem, int>("Room Number", [](auto&& item) { return static_cast<int>(item_room(item)); }, EditMode::Read)
+            .with_getter<IItem, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& item) { return item.room(); }, {}, EditMode::Read, "IRoom")
             .with_getter<IItem, bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); })
             .with_getter<IItem, bool>("Invisible", [](auto&& item) { return item.invisible_flag(); })
             .with_getter<IItem, std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); })
@@ -78,6 +79,7 @@ namespace trview
                     }
                     return results;
                 })
+            .with_multi_getter<IItem, std::weak_ptr<IFilterable>>("Trigger", {}, [](auto&& item) {  return item.triggers() |  std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "ITrigger")
             .with_multi_getter<IItem, bool>("NG+", [](auto&& item)
                 {
                     return item.ng_plus() == std::nullopt ? std::vector<bool>{} : std::vector<bool>{ false,true };
@@ -432,6 +434,7 @@ namespace trview
 
         add_item_filters(_filters, available_types, available_categories);
         add_room_filters(_filters, _level);
+        add_trigger_filters(_filters, _level);
 
         _filters.set_type_key("IItem");
     }

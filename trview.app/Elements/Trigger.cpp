@@ -181,4 +181,9 @@ namespace trview
     {
         return _sector;
     }
+
+    int32_t Trigger::filterable_index() const
+    {
+        return static_cast<int32_t>(number());
+    }
 }

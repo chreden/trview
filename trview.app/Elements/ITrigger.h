@@ -10,6 +10,7 @@
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.app/Elements/Types.h>
 #include <trview.common/Event.h>
+#include "../Filters/IFilterable.h"
 
 namespace trview
 {
@@ -17,7 +18,7 @@ namespace trview
     struct IRoom;
     struct ISector;
 
-    struct ITrigger : public IRenderable
+    struct ITrigger : public IRenderable, public IFilterable
     {
         const static inline Colour Trigger_Colour{ 0.5f, 1, 0, 1 };
 

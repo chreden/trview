@@ -39,6 +39,7 @@ namespace trview
         virtual void set_visible(bool value) override;
         std::weak_ptr<ILevel> level() const override;
         std::weak_ptr<ISector> sector() const override;
+        int32_t filterable_index() const override;
     private:
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;
