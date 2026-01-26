@@ -59,7 +59,7 @@ namespace trview
             .with_getter<IItem, int>("Angle", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle())); })
             .with_getter<IItem, int>("Angle Degrees", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle()) / 182); })
             .with_getter<IItem, int>("Type ID", [](auto&& item) { return static_cast<int>(item.type_id()); }, EditMode::Read)
-            .with_getter<IItem, int>("Room Number", [](auto&& item) { return static_cast<int>(item_room(item)); }, EditMode::Read)
+            .with_getter<IItem, int>("Room #", [](auto&& item) { return static_cast<int>(item_room(item)); }, EditMode::Read)
             .with_getter<IItem, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& item) { return item.room(); }, {}, EditMode::Read, "IRoom")
             .with_getter<IItem, bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); })
             .with_getter<IItem, bool>("Invisible", [](auto&& item) { return item.invisible_flag(); })
@@ -109,10 +109,10 @@ namespace trview
 
         setup_filters();
 
-        _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type ID", "Type", "Hide" });
+        _filters.set_columns(std::vector<std::string>{ "#", "Room #", "Type ID", "Type", "Hide" });
         _token_store += _filters.on_columns_reset += [this]()
             {
-                _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type ID", "Type", "Hide" });
+                _filters.set_columns(std::vector<std::string>{ "#", "Room #", "Type ID", "Type", "Hide" });
             };
         _token_store += _filters.on_columns_saved += [this]()
             {

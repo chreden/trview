@@ -1378,7 +1378,6 @@ namespace trview
                     }
                     const auto& getter = found_getter->second;
                     const auto result = getter.function(*item);
-                    result;
 
                     if (std::holds_alternative<std::string>(result))
                     {

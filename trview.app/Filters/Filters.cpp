@@ -543,6 +543,14 @@ namespace trview
                     {
                         filter.type_key = found_getter->second.type_key;
                     }
+                    else
+                    {
+                        const auto found_multi_getter = getters.multi_getters.find(filter.key);
+                        if (found_multi_getter != getters.multi_getters.end())
+                        {
+                            filter.type_key = found_multi_getter->second.type_key;
+                        }
+                    }
 
                     // If the current value is not in the options then set to one of them.
                     if (has_options(type_key, filter.key))
