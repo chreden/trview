@@ -38,6 +38,7 @@ namespace trview
             MOCK_METHOD(bool, is_ai, (), (const, override));
             MOCK_METHOD(bool, is_remastered_extra, (), (const, override));
             MOCK_METHOD(void, set_remastered_extra, (bool), (override));
+            MOCK_METHOD(int32_t, filterable_index, (), (const, override));
 
             bool _visible_state;
 

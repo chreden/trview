@@ -962,6 +962,8 @@ namespace trview
             return "starts with";
         case CompareOp::EndsWith:
             return "ends with";
+        case CompareOp::Matches:
+            return "matches";
         }
         return "?";
     }
@@ -1032,6 +1034,15 @@ namespace trview
         };
     }
 
+    template <>
+    constexpr std::vector<CompareOp> compare_ops<std::weak_ptr<IFilterable>>() noexcept
+    {
+        return
+        {
+            CompareOp::Matches
+        };
+    }
+
     template <typename T>
     constexpr std::vector<std::string> available_options() noexcept
     {
@@ -1094,23 +1105,29 @@ namespace trview
     template <typename T, typename ValueType>
     Filters2::GettersBuilder& Filters2::GettersBuilder::with_getter(const std::string& key, const std::function<ValueType (const T&)>& getter, EditMode can_change)
     {
-        return with_getter(key, available_options<ValueType>(), getter, {}, can_change);
+        return with_getter(key, available_options<ValueType>(), getter, {}, can_change, "");
     }
 
     template <typename T, typename ValueType>
     Filters2::GettersBuilder& Filters2::GettersBuilder::with_getter(const std::string& key, const std::vector<std::string>& options, const std::function<ValueType(const T&)>& getter, EditMode can_change)
     {
-        return with_getter(key, options, getter, {}, can_change);
+        return with_getter(key, options, getter, {}, can_change, "");
     }
 
     template <typename T, typename ValueType>
     Filters2::GettersBuilder& Filters2::GettersBuilder::with_getter(const std::string& key, const std::function<ValueType(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change)
     {
-        return with_getter(key, available_options<ValueType>(), getter, predicate, can_change);
+        return with_getter(key, available_options<ValueType>(), getter, predicate, can_change, "");
     }
 
     template <typename T, typename ValueType>
     Filters2::GettersBuilder& Filters2::GettersBuilder::with_getter(const std::string& key, const std::vector<std::string>& options, const std::function<ValueType(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change)
+    {
+        return with_getter(key, options, getter, predicate, can_change, "");
+    }
+
+    template <typename T, typename ValueType>
+    Filters2::GettersBuilder& Filters2::GettersBuilder::with_getter(const std::string& key, const std::vector<std::string>& options, const std::function<ValueType(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change, const std::string& type_key)
     {
         ValueGetter new_getter
         {
@@ -1120,7 +1137,8 @@ namespace trview
             {
                 return getter(static_cast<const T&>(f));
             },
-            .can_change = can_change
+            .can_change = can_change,
+            .type_key = type_key
         };
 
         if (predicate)

@@ -92,6 +92,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\Pack\PackWindow.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
+    <ClInclude Include="Elements\ElementFilters.h" />
     <ClInclude Include="Elements\Level\ILevelNameLookup.h" />
     <ClInclude Include="Elements\Level\LevelNameLookup.h" />
     <ClInclude Include="Elements\Flyby\Flyby.h" />

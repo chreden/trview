@@ -25,7 +25,8 @@ namespace trview
         Exists,
         NotExists,
         StartsWith,
-        EndsWith
+        EndsWith,
+        Matches
     };
 
     enum class Op
@@ -296,6 +297,7 @@ namespace trview
             std::function<return_type(const IFilterable&)> function;
             std::function<bool(const IFilterable&)> predicate;
             EditMode can_change{ EditMode::Read };
+            std::string type_key;
         };
 
         /// <summary>
@@ -326,6 +328,8 @@ namespace trview
             GettersBuilder& with_getter(const std::string& key, const std::function<ValueType(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change = EditMode::Read);
             template <typename T, typename ValueType>
             GettersBuilder& with_getter(const std::string& key, const std::vector<std::string>& options, const std::function<ValueType(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change = EditMode::Read);
+            template <typename T, typename ValueType>
+            GettersBuilder& with_getter(const std::string& key, const std::vector<std::string>& options, const std::function<ValueType(const T&)>& getter, const std::function<bool(const T&)>& predicate, EditMode can_change = EditMode::Read, const std::string& type_key = "");
 
             template <typename T, typename ValueType>
             GettersBuilder& with_multi_getter(const std::string& key, const std::function<std::vector<ValueType>(const T&)>& getter);
@@ -361,6 +365,7 @@ namespace trview
         std::vector<std::string> columns() const;
         void force_sort();
         bool group_match(std::ranges::input_range auto&& results, const Filter& filter) const;
+        bool has_type_key(const std::string& type) const;
         bool is_match(const Value& value, const Filter& filter) const;
         bool is_match(const std::string& value, const Filter& filter) const;
         bool is_match(float value, const Filter& filter) const;
@@ -394,7 +399,8 @@ namespace trview
         bool has_options(const std::string& type_key, const std::string& key) const;
         std::vector<CompareOp> ops_for_key(const std::string& type_key, const std::string& key) const;
         std::vector<std::string> options_for_key(const std::string& type_key, const std::string& key) const;
-        Action render(Filter& filter, const std::vector<std::string>& keys, int32_t depth, int32_t index, Filter& parent, const std::string& type_key);
+        Action render(Filter& filter, int32_t depth, int32_t index, Filter& parent, const std::string& type_key);
+        Action render_leaf(Filter& filter, int32_t depth, int32_t index, const std::string& type_key);
 
         bool                     _changed{ true };
         std::vector<std::string> _columns;

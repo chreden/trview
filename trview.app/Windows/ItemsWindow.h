@@ -86,5 +86,6 @@ namespace trview
         bool _columns_set{ false };
 
         std::weak_ptr<IMessageSystem> _messaging;
+        std::weak_ptr<ILevel> _level;
     };
 }
