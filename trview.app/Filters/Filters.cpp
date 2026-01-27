@@ -236,6 +236,40 @@ namespace trview
                         new_focus = std::get<std::weak_ptr<IFilterable>>(getter_value).lock();
                     }
                 }
+                else
+                {
+                    const auto& multi_getter = getters.multi_getters.find(filter.key);
+                    if (multi_getter != getters.multi_getters.end())
+                    {
+                        const auto multi_getter_predicate = multi_getter->second.predicate;
+                        if (!multi_getter_predicate || multi_getter_predicate(value))
+                        {
+                            const auto multi_getter_value = multi_getter->second.function(value);
+                            auto new_focuses = multi_getter_value |
+                                std::views::transform([](auto&& v) { return std::get<std::weak_ptr<IFilterable>>(v).lock(); }) |
+                                std::ranges::to<std::vector>();
+
+                            for (const auto& f : new_focuses)
+                            {
+                                for (const auto& child : filter.children)
+                                {
+                                    const bool child_filter_result = match(child, *f, filter.type_key != "" ? filter.type_key : type_key);
+
+                                    child_match = child_op == Op::Or ? child_match | child_filter_result : child_match & child_filter_result;
+                                    child_op = child.op;
+
+                                    if (child_op == Op::And && !child_match)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+
+                            filter_result = child_match;
+                            return filter_result ^ filter.invert;
+                        }
+                    }
+                }
             }
 
             for (const auto& child : filter.children)
