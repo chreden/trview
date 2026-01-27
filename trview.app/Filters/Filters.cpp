@@ -218,9 +218,6 @@ namespace trview
 
         if (!filter.children.empty())
         {
-            bool child_match = false;
-            Op child_op = Op::Or;
-
             // Switch focus if required
             std::shared_ptr<IFilterable> new_focus;
             if (filter.compare == CompareOp::Matches)
@@ -249,29 +246,37 @@ namespace trview
                                 std::views::transform([](auto&& v) { return std::get<std::weak_ptr<IFilterable>>(v).lock(); }) |
                                 std::ranges::to<std::vector>();
 
+                            bool any_focus_match = false;
                             for (const auto& f : new_focuses)
                             {
+                                Op focus_child_op = Op::Or;
+                                bool focus_match = false;
+
                                 for (const auto& child : filter.children)
                                 {
                                     const bool child_filter_result = match(child, *f, filter.type_key != "" ? filter.type_key : type_key);
 
-                                    child_match = child_op == Op::Or ? child_match | child_filter_result : child_match & child_filter_result;
-                                    child_op = child.op;
+                                    focus_match = focus_child_op == Op::Or ? focus_match | child_filter_result : focus_match & child_filter_result;
+                                    focus_child_op = child.op;
 
-                                    if (child_op == Op::And && !child_match)
+                                    if (focus_child_op == Op::And && !focus_match)
                                     {
                                         break;
                                     }
                                 }
+
+                                any_focus_match |= focus_match;
                             }
 
-                            filter_result = child_match;
+                            filter_result = any_focus_match;
                             return filter_result ^ filter.invert;
                         }
                     }
                 }
             }
 
+            bool child_match = false;
+            Op child_op = Op::Or;
             for (const auto& child : filter.children)
             {
                 const bool child_filter_result = match(child, new_focus ? *new_focus : value, filter.type_key != "" ? filter.type_key : type_key);
