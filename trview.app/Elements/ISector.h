@@ -10,12 +10,14 @@
 #include "trlevel/trtypes.h"
 #include "Floordata.h"
 
+#include "../Filters/IFilterable.h"
+
 namespace trview
 {
     struct IRoom;
     struct ITrigger;
 
-    struct ISector
+    struct ISector : public IFilterable
     {
         using Source = std::function<std::shared_ptr<ISector>(const trlevel::ILevel&, const trlevel::tr3_room&,
             const trlevel::tr_room_sector&, int, const std::weak_ptr<IRoom>&, uint32_t)>;

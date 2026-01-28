@@ -30,6 +30,7 @@ namespace trview
         void set_visible(bool value) override;
         bool has_collision() const override;
         std::weak_ptr<ILevel> level() const override;
+        int32_t filterable_index() const override;
     private:
         float _rotation;
         DirectX::SimpleMath::Vector3 _position;

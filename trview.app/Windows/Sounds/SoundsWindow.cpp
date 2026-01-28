@@ -12,6 +12,43 @@
 
 namespace trview
 {
+    void add_sounds_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
+    {
+        if (filters.has_type_key("ISoundSource"))
+        {
+            return;
+        }
+
+        const auto level_ptr = level.lock();
+        if (!level_ptr)
+        {
+            return;
+        }
+
+        const auto level_version = level_ptr->platform_and_version().version;
+        auto sound_getters = Filters::GettersBuilder()
+            .with_type_key("ISoundSource")
+            .with_getter<ISoundSource, int>("#", [](auto&& sound_source) { return static_cast<int>(sound_source.number()); })
+            .with_getter<ISoundSource, int>("X", [](auto&& sound_source) { return static_cast<int>(sound_source.position().x * trlevel::Scale_X); })
+            .with_getter<ISoundSource, int>("Y", [](auto&& sound_source) { return static_cast<int>(sound_source.position().y * trlevel::Scale_Y); })
+            .with_getter<ISoundSource, int>("Z", [](auto&& sound_source) { return static_cast<int>(sound_source.position().z * trlevel::Scale_Z); })
+            .with_getter<ISoundSource, int>("ID", [](auto&& sound_source) { return static_cast<int>(sound_source.id()); })
+            .with_getter<ISoundSource, int>("Flags", [](auto&& sound_source) { return static_cast<int>(sound_source.flags()); })
+            .with_getter<ISoundSource, int>("Chance", [](auto&& sound_source) { return static_cast<int>(sound_source.chance()); })
+            .with_getter<ISoundSource, int>("Characteristics", [](auto&& sound_source) { return static_cast<int>(sound_source.characteristics()); })
+            .with_getter<ISoundSource, int>("Sample", [](auto&& sound_source) { return static_cast<int>(sound_source.sample().value_or(-1)); })
+            .with_getter<ISoundSource, int>("Volume", [](auto&& sound_source) { return static_cast<int>(sound_source.volume()); })
+            .with_getter<ISoundSource, bool>("Hide", [](auto&& sound_source) { return !sound_source.visible(); }, EditMode::ReadWrite);
+
+        if (level_version >= trlevel::LevelVersion::Tomb3)
+        {
+            sound_getters.with_getter<ISoundSource, int>("Pitch", [](auto&& sound_source) { return static_cast<int>(sound_source.pitch()); })
+                .with_getter<ISoundSource, int>("Range", [](auto&& sound_source) { return static_cast<int>(sound_source.range()); });
+        }
+
+        filters.add_getters(sound_getters.build<ISoundSource>());
+    }
+
     SoundsWindow::SoundsWindow(const std::weak_ptr<IMessageSystem>& messaging)
         : _messaging(messaging)
     {
@@ -136,16 +173,17 @@ namespace trview
                 std::views::transform([](auto&& sound) { return sound.lock(); }) |
                 std::ranges::to<std::vector>();
 
-            _auto_hider.apply(_all_sound_sources, filtered_sound_sources, _filters);
+            _auto_hider.apply(_all_sound_sources, filtered_sound_sources, _filters.test_and_reset_changed());
 
             RowCounter counter{ "sound source", _all_sound_sources.size() };
             _filters.render_table(filtered_sound_sources, _all_sound_sources, _selected_sound_source, counter,
                 [&](auto&& sound_source)
                 {
-                    set_local_selected_sound_source(sound_source);
+                    const std::shared_ptr<ISoundSource> f_ptr = std::static_pointer_cast<ISoundSource>(sound_source.lock());
+                    set_local_selected_sound_source(f_ptr);
                     if (_sync_sound_source)
                     {
-                        messages::send_select_sound_source(_messaging, sound_source);
+                        messages::send_select_sound_source(_messaging, f_ptr);
                     }
                 }, default_hide(filtered_sound_sources));
         }
@@ -314,22 +352,8 @@ namespace trview
     void SoundsWindow::setup_filters()
     {
         _filters.clear_all_getters();
-        _filters.add_getter<int>("#", [](auto&& sound_source) { return static_cast<int>(sound_source.number()); });
-        _filters.add_getter<int>("X", [](auto&& sound_source) { return static_cast<int>(sound_source.position().x * trlevel::Scale_X); });
-        _filters.add_getter<int>("Y", [](auto&& sound_source) { return static_cast<int>(sound_source.position().y * trlevel::Scale_Y); });
-        _filters.add_getter<int>("Z", [](auto&& sound_source) { return static_cast<int>(sound_source.position().z * trlevel::Scale_Z); });
-        _filters.add_getter<int>("ID", [](auto&& sound_source) { return static_cast<int>(sound_source.id()); });
-        _filters.add_getter<int>("Flags", [](auto&& sound_source) { return static_cast<int>(sound_source.flags()); });
-        _filters.add_getter<int>("Chance", [](auto&& sound_source) { return static_cast<int>(sound_source.chance()); });
-        _filters.add_getter<int>("Characteristics", [](auto&& sound_source) { return static_cast<int>(sound_source.characteristics()); });
-        _filters.add_getter<int>("Sample", [](auto&& sound_source) { return static_cast<int>(sound_source.sample().value_or(-1)); });
-        _filters.add_getter<int>("Volume", [](auto&& sound_source) { return static_cast<int>(sound_source.volume()); });
-        _filters.add_getter<bool>("Hide", [](auto&& sound_source) { return !sound_source.visible(); }, EditMode::ReadWrite);
-        if (_level_version >= trlevel::LevelVersion::Tomb3)
-        {
-            _filters.add_getter<int>("Pitch", [](auto&& sound_source) { return static_cast<int>(sound_source.pitch()); });
-            _filters.add_getter<int>("Range", [](auto&& sound_source) { return static_cast<int>(sound_source.range()); });
-        }
+        add_sounds_filters(_filters, _level);
+        _filters.set_type_key("ISoundSource");
     }
 
     void SoundsWindow::receive_message(const Message& message)
@@ -351,6 +375,7 @@ namespace trview
         {
             if (auto level_ptr = level->lock())
             {
+                _level = level.value();
                 set_level_platform(level_ptr->platform());
                 set_level_version(level_ptr->version());
                 set_sound_sources(level_ptr->sound_sources());

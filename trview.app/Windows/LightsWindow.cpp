@@ -4,9 +4,88 @@
 #include "RowCounter.h"
 #include "../Messages/Messages.h"
 #include "../Elements/ILevel.h"
+#include "../Elements/ElementFilters.h"
 
 namespace trview
 {
+    void add_light_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
+    {
+        if (filters.has_type_key("ILight"))
+        {
+            return;
+        }
+
+        const auto level_ptr = level.lock();
+        if (!level_ptr)
+        {
+            return;
+        }
+
+        std::set<std::string> available_types;
+        for (const auto& light : level_ptr->lights())
+        {
+            if (auto light_ptr = light.lock())
+            {
+                available_types.insert(to_string(light_ptr->type()));
+            }
+        }
+
+        const auto level_version = level_ptr->platform_and_version().version;
+        auto light_getters = Filters::GettersBuilder()
+            .with_type_key("ILight")
+            .with_getter<ILight, std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& light) { return to_string(light.type()); })
+            .with_getter<ILight, int>("#", [](auto&& light) { return static_cast<int>(light.number()); })
+            .with_getter<ILight, int>("Room", [](auto&& light) { return static_cast<int>(light_room(light)); })
+            .with_getter<ILight, int>("X", [](auto&& light) { return static_cast<int>(light.position().x * trlevel::Scale_X); }, has_position)
+            .with_getter<ILight, int>("Y", [](auto&& light) { return static_cast<int>(light.position().y * trlevel::Scale_Y); }, has_position)
+            .with_getter<ILight, int>("Z", [](auto&& light) { return static_cast<int>(light.position().z * trlevel::Scale_Z); }, has_position)
+            .with_getter<ILight, int>("Intensity", [](auto&& light) { return static_cast<int>(light.intensity()); }, has_intensity)
+            .with_getter<ILight, int>("Fade", [](auto&& light) { return static_cast<int>(light.fade()); }, has_fade)
+            .with_getter<ILight, bool>("Hide", [](auto&& light) { return !light.visible(); }, EditMode::ReadWrite)
+            .with_getter<ILight, bool>("In Visible Room", [](auto&& light)
+                {
+                    if (const auto level = light.level().lock())
+                    {
+                        return level->is_in_visible_set(light.room());
+                    }
+                    return false;
+                });
+
+        if (level_version >= trlevel::LevelVersion::Tomb3)
+        {
+            light_getters.with_getter<ILight, int>("R", [](auto&& light) { return static_cast<int>(std::floor(light.colour().r * 255.0f)); }, has_colour)
+                .with_getter<ILight, int>("G", [](auto&& light) { return static_cast<int>(std::floor(light.colour().g * 255.0f)); }, has_colour)
+                .with_getter<ILight, int>("B", [](auto&& light) { return static_cast<int>(std::floor(light.colour().b * 255.0f)); }, has_colour)
+                .with_getter<ILight, float>("DX", [](auto&& light) { return light.direction().x * trlevel::Scale_X; }, has_direction)
+                .with_getter<ILight, float>("DY", [](auto&& light) { return light.direction().y * trlevel::Scale_Y; }, has_direction)
+                .with_getter<ILight, float>("DZ", [](auto&& light) { return light.direction().z * trlevel::Scale_Z; }, has_direction);
+        }
+
+        if (level_version == trlevel::LevelVersion::Tomb4)
+        {
+            light_getters.with_getter<ILight, float>("Length", [](auto&& light) { return length(light); }, has_length)
+                .with_getter<ILight, float>("Cutoff", [](auto&& light) { return cutoff(light); }, has_cutoff);
+        }
+
+        if (level_version >= trlevel::LevelVersion::Tomb4)
+        {
+            light_getters.with_getter<ILight, float>("Hotspot", [](auto&& light) { return hotspot(light); }, has_hotspot)
+                .with_getter<ILight, float>("Falloff", [](auto&& light) { return falloff(light); }, has_falloff)
+                .with_getter<ILight, float>("Falloff Angle", [](auto&& light) { return falloff_angle(light); }, has_falloff_angle)
+                .with_getter<ILight, float>("Density", [](auto&& light) { return density(light); }, has_density)
+                .with_getter<ILight, float>("Radius", [](auto&& light) { return radius(light); }, has_radius);
+        }
+
+        if (level_version >= trlevel::LevelVersion::Tomb5)
+        {
+            light_getters.with_getter<ILight, float>("Rad In", [](auto&& light) { return rad_in(light); }, has_rad_in)
+                .with_getter<ILight, float>("Rad Out", [](auto&& light) { return rad_out(light); }, has_rad_out)
+                .with_getter<ILight, float>("Range", [](auto&& light) { return range(light); }, has_range);
+        }
+
+        filters.add_getters(light_getters.build<ILight>());
+    }
+
     LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _messaging(messaging)
     {
@@ -125,16 +204,17 @@ namespace trview
                 std::views::transform([](auto&& light) { return light.lock(); }) |
                 std::ranges::to<std::vector>();
 
-            _auto_hider.apply(_all_lights, filtered_lights, _filters);
+            _auto_hider.apply(_all_lights, filtered_lights, _filters.test_and_reset_changed());
 
             RowCounter counter{ "light", _all_lights.size() };
             _filters.render_table(filtered_lights, _all_lights, _selected_light, counter,
                 [&](auto&& light)
                 {
-                    set_local_selected_light(light);
+                    const std::shared_ptr<ILight> f_ptr = std::static_pointer_cast<ILight>(light.lock());
+                    set_local_selected_light(f_ptr);
                     if (_sync_light)
                     {
-                        messages::send_select_light(_messaging, light);
+                        messages::send_select_light(_messaging, f_ptr);
                     }
                 }, default_hide(filtered_lights));
         }
@@ -269,63 +349,8 @@ namespace trview
     void LightsWindow::setup_filters()
     {
         _filters.clear_all_getters();
-        std::set<std::string> available_types;
-        for (const auto& light : _all_lights)
-        {
-            if (auto light_ptr = light.lock())
-            {
-                available_types.insert(to_string(light_ptr->type()));
-            }
-        }
-        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& light) { return to_string(light.type()); });
-        _filters.add_getter<int>("#", [](auto&& light) { return static_cast<int>(light.number()); });
-        _filters.add_getter<int>("Room", [](auto&& light) { return static_cast<int>(light_room(light)); });
-        _filters.add_getter<int>("X", [](auto&& light) { return static_cast<int>(light.position().x * trlevel::Scale_X); }, has_position);
-        _filters.add_getter<int>("Y", [](auto&& light) { return static_cast<int>(light.position().y * trlevel::Scale_Y); }, has_position);
-        _filters.add_getter<int>("Z", [](auto&& light) { return static_cast<int>(light.position().z * trlevel::Scale_Z); }, has_position);
-        _filters.add_getter<int>("Intensity", [](auto&& light) { return static_cast<int>(light.intensity()); }, has_intensity);
-        _filters.add_getter<int>("Fade", [](auto&& light) { return static_cast<int>(light.fade()); }, has_fade);
-        _filters.add_getter<bool>("Hide", [](auto&& light) { return !light.visible(); }, EditMode::ReadWrite);
-        _filters.add_getter<bool>("In Visible Room", [](auto&& light)
-            {
-                if (const auto level = light.level().lock())
-                {
-                    return level->is_in_visible_set(light.room());
-                }
-                return false;
-            });
-
-        if (_level_version >= trlevel::LevelVersion::Tomb3)
-        {
-            _filters.add_getter<int>("R", [](auto&& light) { return static_cast<int>(std::floor(light.colour().r * 255.0f)); }, has_colour);
-            _filters.add_getter<int>("G", [](auto&& light) { return static_cast<int>(std::floor(light.colour().g * 255.0f)); }, has_colour);
-            _filters.add_getter<int>("B", [](auto&& light) { return static_cast<int>(std::floor(light.colour().b * 255.0f)); }, has_colour);
-            _filters.add_getter<float>("DX", [](auto&& light) { return light.direction().x * trlevel::Scale_X; }, has_direction);
-            _filters.add_getter<float>("DY", [](auto&& light) { return light.direction().y * trlevel::Scale_Y; }, has_direction);
-            _filters.add_getter<float>("DZ", [](auto&& light) { return light.direction().z * trlevel::Scale_Z; }, has_direction);
-        }
-
-        if (_level_version == trlevel::LevelVersion::Tomb4)
-        {
-            _filters.add_getter<float>("Length", [](auto&& light) { return length(light); }, has_length);
-            _filters.add_getter<float>("Cutoff", [](auto&& light) { return cutoff(light); }, has_cutoff);
-        }
-
-        if (_level_version >= trlevel::LevelVersion::Tomb4)
-        {
-            _filters.add_getter<float>("Hotspot", [](auto&& light) { return hotspot(light); }, has_hotspot);
-            _filters.add_getter<float>("Falloff", [](auto&& light) { return falloff(light); }, has_falloff);
-            _filters.add_getter<float>("Falloff Angle", [](auto&& light) { return falloff_angle(light); }, has_falloff_angle);
-            _filters.add_getter<float>("Density", [](auto&& light) { return density(light); }, has_density);
-            _filters.add_getter<float>("Radius", [](auto&& light) { return radius(light); }, has_radius);
-        }
-
-        if (_level_version >= trlevel::LevelVersion::Tomb5)
-        {
-            _filters.add_getter<float>("Rad In", [](auto&& light) { return rad_in(light); }, has_rad_in);
-            _filters.add_getter<float>("Rad Out", [](auto&& light) { return rad_out(light); }, has_rad_out);
-            _filters.add_getter<float>("Range", [](auto&& light) { return range(light); }, has_range);
-        }
+        add_light_filters(_filters, _level);
+        _filters.set_type_key("ILight");
     }
 
     void LightsWindow::receive_message(const Message& message)
@@ -347,6 +372,7 @@ namespace trview
         {
             if (auto level_ptr = level->lock())
             {
+                _level = level.value();
                 clear_selected_light();
                 set_lights(level_ptr->lights());
                 set_level_version(level_ptr->version());

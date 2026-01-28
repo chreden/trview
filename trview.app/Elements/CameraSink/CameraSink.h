@@ -32,6 +32,7 @@ namespace trview
         virtual Type type() const override;
         virtual bool visible() const override;
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const override;
+        int32_t filterable_index() const override;
     private:
         uint32_t _number{ 0 };
         DirectX::SimpleMath::Vector3 _position;

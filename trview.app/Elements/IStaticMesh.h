@@ -7,13 +7,15 @@
 #include <trview.app/Geometry/IMesh.h>
 #include <trview.common/Event.h>
 
+#include "../Filters/IFilterable.h"
+
 namespace trview
 {
     struct ITransparencyBuffer;
     struct IRoom;
     struct ILevel;
 
-    struct IStaticMesh
+    struct IStaticMesh : public IFilterable
     {
         enum class Type
         {

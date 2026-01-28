@@ -211,4 +211,9 @@ namespace trview
     {
         return _version.version;
     }
+
+    int32_t Light::filterable_index() const
+    {
+        return static_cast<int32_t>(_number);
+    }
 }

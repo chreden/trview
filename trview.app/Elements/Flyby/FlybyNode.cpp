@@ -78,4 +78,9 @@ namespace trview
     {
         return _timer;
     }
+
+    int32_t FlybyNode::filterable_index() const
+    {
+        return static_cast<int32_t>(_number);
+    }
 }

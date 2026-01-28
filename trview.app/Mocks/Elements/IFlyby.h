@@ -19,6 +19,7 @@ namespace trview
             MOCK_METHOD(void, set_visible, (bool), (override));
             MOCK_METHOD(CameraState, update_state, (const CameraState&, float), (const, override));
             MOCK_METHOD(bool, visible, (), (const, override));
+            MOCK_METHOD(int32_t, filterable_index, (), (const, override));
         };
     }
 }

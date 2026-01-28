@@ -183,6 +183,11 @@ namespace trview
         return _level;
     }
 
+    int32_t StaticMesh::filterable_index() const
+    {
+        return static_cast<int32_t>(_number);
+    }
+
     uint32_t static_mesh_room(const std::shared_ptr<IStaticMesh>& static_mesh)
     {
         if (!static_mesh)

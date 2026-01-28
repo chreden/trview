@@ -34,7 +34,7 @@ namespace trview
 
         explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~ItemsWindow() = default;
-        void set_filters(std::vector<Filters<IItem>::Filter> filters);
+        void set_filters(std::vector<Filters::Filter> filters);
         virtual void render() override;
         void set_items(const std::vector<std::weak_ptr<IItem>>& items);
         void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
@@ -73,7 +73,7 @@ namespace trview
         std::weak_ptr<IItem> _global_selected_item;
         std::vector<std::weak_ptr<ITrigger>> _triggered_by;
 
-        Filters2 _filters;
+        Filters _filters;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
         std::function<bool(uint32_t)> _model_checker;
         bool _force_sort{ false };

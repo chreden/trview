@@ -74,14 +74,14 @@ namespace trview
         std::vector<std::weak_ptr<ICameraSink>> _all_camera_sinks;
         std::weak_ptr<ICameraSink> _selected_camera_sink;
         std::weak_ptr<ICameraSink> _global_selected_camera_sink;
-        Filters<ICameraSink> _filters;
+        Filters _filters;
 
         // Flybys
         std::vector<std::weak_ptr<IFlyby>> _all_flybys;
         std::weak_ptr<IFlyby> _selected_flyby;
         std::weak_ptr<IFlybyNode> _global_selected_flyby_node;
-        Filters<IFlyby> _flyby_filters;
-        Filters<IFlybyNode> _node_filters;
+        Filters _flyby_filters;
+        Filters _node_filters;
         std::weak_ptr<IFlybyNode> _selected_node;
 
         std::unordered_map<std::string, std::string> _tips;
@@ -105,6 +105,7 @@ namespace trview
         trlevel::PlatformAndVersion _platform_and_version;
         bool _go_to_flybys{ false };
         std::weak_ptr<IMessageSystem> _messaging;
+        std::weak_ptr<ILevel> _level;
     };
 }
 

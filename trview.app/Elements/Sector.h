@@ -55,6 +55,7 @@ namespace trview
         uint16_t material() const override;
         uint16_t box_index() const override;
         bool stopper() const override;
+        int32_t filterable_index() const override;
     private:
         bool parse(const trlevel::ILevel& level);
         void parse_slope();

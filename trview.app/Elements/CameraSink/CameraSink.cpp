@@ -136,6 +136,11 @@ namespace trview
         return _triggers;
     }
 
+    int32_t CameraSink::filterable_index() const
+    {
+        return static_cast<int32_t>(_number);
+    }
+
     std::weak_ptr<IRoom> actual_room(const ICameraSink& camera_sink)
     {
         if (camera_sink.type() == ICameraSink::Type::Camera)

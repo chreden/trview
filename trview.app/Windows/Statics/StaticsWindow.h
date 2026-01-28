@@ -51,7 +51,7 @@ namespace trview
 
         std::string _id{ "Statics 0" };
         std::vector<std::weak_ptr<IStaticMesh>> _all_statics;
-        Filters<IStaticMesh> _filters;
+        Filters _filters;
         std::weak_ptr<IStaticMesh> _selected_static_mesh;
         bool _sync_static{ true };
         Track<Type::Room> _track;
@@ -63,6 +63,7 @@ namespace trview
         std::optional<UserSettings> _settings;
         bool _columns_set{ false };
         std::weak_ptr<IMessageSystem> _messaging;
+        std::weak_ptr<ILevel> _level;
     };
 }
 

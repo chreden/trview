@@ -11,7 +11,7 @@ namespace trview
     {
         void show_room_filter(
             std::weak_ptr<IWindows> windows,
-            const std::vector<Filters<IRoom>::Filter>& filters)
+            const std::vector<Filters::Filter>& filters)
         {
             if (ImGui::BeginPopupContextItem())
             {
@@ -27,7 +27,7 @@ namespace trview
                             if (const auto new_window = windows_ptr->create("Rooms").lock())
                             {
                                 new_window->receive_message(
-                                    Message{ .type = "room_filters", .data = std::make_shared<MessageData<std::vector<Filters<IRoom>::Filter>>>(filters) });
+                                    Message{ .type = "room_filters", .data = std::make_shared<MessageData<std::vector<Filters::Filter>>>(filters) });
                             }
                         }
 
@@ -38,7 +38,7 @@ namespace trview
                                 if (ImGui::MenuItem(actual_window->title().c_str()))
                                 {
                                     actual_window->receive_message(
-                                        Message{ .type = "room_filters", .data = std::make_shared<MessageData<std::vector<Filters<IRoom>::Filter>>>(filters) });
+                                        Message{ .type = "room_filters", .data = std::make_shared<MessageData<std::vector<Filters::Filter>>>(filters) });
                                 }
                             }
                         }

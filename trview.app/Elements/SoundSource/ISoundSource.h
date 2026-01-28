@@ -11,6 +11,8 @@
 #include "../../Geometry/IRenderable.h"
 #include "../../Geometry/PickResult.h"
 
+#include "../../Filters/IFilterable.h"
+
 namespace trlevel
 {
     struct tr_sound_source;
@@ -19,7 +21,7 @@ namespace trlevel
 
 namespace trview
 {
-    struct ISoundSource : public IRenderable
+    struct ISoundSource : public IRenderable, public IFilterable
     {
         using Source = std::function<std::shared_ptr<ISoundSource>(uint32_t, const trlevel::tr_sound_source&, const std::optional<trlevel::tr_x_sound_details>&, trlevel::LevelVersion, const std::weak_ptr<ILevel>&)>;
         virtual ~ISoundSource() = 0;

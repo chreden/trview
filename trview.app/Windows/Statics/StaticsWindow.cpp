@@ -6,6 +6,54 @@
 
 namespace trview
 {
+    void add_statics_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
+    {
+        if (filters.has_type_key("IStaticMesh"))
+        {
+            return;
+        }
+
+        const auto level_ptr = level.lock();
+        if (!level_ptr)
+        {
+            return;
+        }
+
+        std::set<std::string> available_types;
+        for (const auto& stat : level_ptr->static_meshes())
+        {
+            if (auto stat_ptr = stat.lock())
+            {
+                available_types.insert(to_string(stat_ptr->type()));
+            }
+        }
+
+        auto static_mesh_getters = Filters::GettersBuilder()
+            .with_type_key("IStaticMesh")
+            .with_getter<IStaticMesh, int>("#", [](auto&& stat) { return static_cast<int>(stat.number()); })
+            .with_getter<IStaticMesh, std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& stat) { return to_string(stat.type()); })
+            .with_getter<IStaticMesh, int>("X", [](auto&& stat) { return static_cast<int>(stat.position().x * trlevel::Scale_X); })
+            .with_getter<IStaticMesh, int>("Y", [](auto&& stat) { return static_cast<int>(stat.position().y * trlevel::Scale_Y); })
+            .with_getter<IStaticMesh, int>("Z", [](auto&& stat) { return static_cast<int>(stat.position().z * trlevel::Scale_Z); })
+            .with_getter<IStaticMesh, int>("Rotation", [](auto&& stat) { return static_cast<int>(DirectX::XMConvertToDegrees(stat.rotation())); })
+            .with_getter<IStaticMesh, int>("ID", [](auto&& stat) { return static_cast<int>(stat.id()); })
+            .with_getter<IStaticMesh, int>("Room", [](auto&& stat) { return static_cast<int>(static_mesh_room(stat)); })
+            .with_getter<IStaticMesh, bool>("Breakable", [](auto&& item) { return item.breakable(); })
+            .with_getter<IStaticMesh, std::string>("Flags", [](auto&& stat) { return format_binary(stat.flags()); })
+            .with_getter<IStaticMesh, bool>("Has Collision", [](auto&& stat) { return stat.has_collision(); })
+            .with_getter<IStaticMesh, bool>("Hide", [](auto&& stat) { return !stat.visible(); }, EditMode::ReadWrite)
+            .with_getter<IStaticMesh, bool>("In Visible Room", [](auto&& stat)
+                {
+                    if (const auto level = stat.level().lock())
+                    {
+                        return level->is_in_visible_set(stat.room());
+                    }
+                    return false;
+                });
+
+        filters.add_getters(static_mesh_getters.build<IStaticMesh>());
+    }
+
     StaticsWindow::StaticsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _messaging(messaging)
     {
@@ -82,17 +130,18 @@ namespace trview
                 std::views::transform([](auto&& stat) { return stat.lock(); }) |
                 std::ranges::to<std::vector>();
 
-            _auto_hider.apply(_all_statics, filtered_statics, _filters);
+            _auto_hider.apply(_all_statics, filtered_statics, _filters.test_and_reset_changed());
 
             RowCounter counter{ "static", _all_statics.size() };
 
             _filters.render_table(filtered_statics, _all_statics, _selected_static_mesh, counter,
                 [&](auto&& stat)
                 {
-                    set_local_selected_static_mesh(stat);
+                    const std::shared_ptr<IStaticMesh> f_ptr = std::static_pointer_cast<IStaticMesh>(stat.lock());
+                    set_local_selected_static_mesh(f_ptr);
                     if (_sync_static)
                     {
-                        messages::send_select_static_mesh(_messaging, stat);
+                        messages::send_select_static_mesh(_messaging, f_ptr);
                     }
                 }, default_hide(filtered_statics));
         }
@@ -176,36 +225,8 @@ namespace trview
     void StaticsWindow::setup_filters()
     {
         _filters.clear_all_getters();
-
-        std::set<std::string> available_types;
-        for (const auto& stat : _all_statics)
-        {
-            if (auto stat_ptr = stat.lock())
-            {
-                available_types.insert(to_string(stat_ptr->type()));
-            }
-        }
-
-        _filters.add_getter<int>("#", [](auto&& stat) { return static_cast<int>(stat.number()); });
-        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& stat) { return to_string(stat.type()); });
-        _filters.add_getter<int>("X", [](auto&& stat) { return static_cast<int>(stat.position().x * trlevel::Scale_X); });
-        _filters.add_getter<int>("Y", [](auto&& stat) { return static_cast<int>(stat.position().y * trlevel::Scale_Y); });
-        _filters.add_getter<int>("Z", [](auto&& stat) { return static_cast<int>(stat.position().z * trlevel::Scale_Z); });
-        _filters.add_getter<int>("Rotation", [](auto&& stat) { return static_cast<int>(DirectX::XMConvertToDegrees(stat.rotation())); });
-        _filters.add_getter<int>("ID", [](auto&& stat) { return static_cast<int>(stat.id()); });
-        _filters.add_getter<int>("Room", [](auto&& stat) { return static_cast<int>(static_mesh_room(stat)); });
-        _filters.add_getter<bool>("Breakable", [](auto&& item) { return item.breakable(); });
-        _filters.add_getter<std::string>("Flags", [](auto&& stat) { return format_binary(stat.flags()); });
-        _filters.add_getter<bool>("Has Collision", [](auto&& stat) { return stat.has_collision(); });
-        _filters.add_getter<bool>("Hide", [](auto&& stat) { return !stat.visible(); }, EditMode::ReadWrite);
-        _filters.add_getter<bool>("In Visible Room", [](auto&& stat)
-            {
-                if (const auto level = stat.level().lock())
-                {
-                    return level->is_in_visible_set(stat.room());
-                }
-                return false;
-            });
+        add_statics_filters(_filters, _level);
+        _filters.set_type_key("IStaticMesh");
     }
 
     void StaticsWindow::set_local_selected_static_mesh(std::weak_ptr<IStaticMesh> static_mesh)
@@ -265,6 +286,7 @@ namespace trview
         {
             if (auto level_ptr = level->lock())
             {
+                _level = level.value();
                 set_statics(level_ptr->static_meshes());
             }
         }

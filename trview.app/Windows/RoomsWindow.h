@@ -52,7 +52,7 @@ namespace trview
         void set_ng_plus(bool value);
         void set_trng(bool value);
         std::string name() const;
-        void set_filters(std::vector<Filters<IRoom>::Filter> filters);
+        void set_filters(std::vector<Filters::Filter> filters);
         void set_selected_sector(const std::weak_ptr<ISector>& sector);
         void receive_message(const Message& message) override;
         void initialise();
@@ -78,7 +78,7 @@ namespace trview
         void select_room(std::weak_ptr<IRoom> room);
         void render_statics_tab();
         void set_static_meshes(const std::vector<std::weak_ptr<IStaticMesh>>& static_meshes);
-        std::optional<Filters<ISector>> convert_to_sector_filters() const;
+        std::optional<Filters> convert_to_sector_filters() const;
         void apply_sector_filters();
 
 
@@ -124,7 +124,7 @@ namespace trview
         std::string _id{ "Rooms 0" };
         std::optional<float> _tooltip_timer;
 
-        Filters<IRoom> _filters;
+        Filters _filters;
         bool _force_sort{ false };
         std::vector<uint16_t> _floordata;
         bool _simple_mode{ true };
@@ -138,5 +138,7 @@ namespace trview
         std::optional<UserSettings> _settings;
         bool _columns_set{ false };
         std::weak_ptr<IMessageSystem> _messaging;
+
+        std::weak_ptr<ILevel> _level;
     };
 }

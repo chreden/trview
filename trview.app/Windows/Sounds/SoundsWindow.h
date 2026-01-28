@@ -62,12 +62,13 @@ namespace trview
         std::weak_ptr<ISoundSource> _selected_sound_source;
         std::weak_ptr<ISoundSource> _global_selected_sound_source;
         trlevel::LevelVersion _level_version{ trlevel::LevelVersion::Unknown };
-        Filters<ISoundSource> _filters;
+        Filters _filters;
         trlevel::Platform _level_platform{ trlevel::Platform::Unknown };
         TokenStore _token_store;
         AutoHider _auto_hider;
         bool _columns_set{ false };
         std::optional<UserSettings> _settings;
         std::weak_ptr<IMessageSystem> _messaging;
+        std::weak_ptr<ILevel> _level;
     };
 }

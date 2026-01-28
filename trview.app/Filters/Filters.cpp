@@ -6,7 +6,7 @@ namespace trview
     {
     }
 
-    int Filters2::Filter::value_count() const noexcept
+    int Filters::Filter::value_count() const noexcept
     {
         switch (compare)
         {
@@ -21,7 +21,7 @@ namespace trview
         return 1;
     }
 
-    bool Filters2::Filter::initial_state() const noexcept
+    bool Filters::Filter::initial_state() const noexcept
     {
         switch (compare)
         {
@@ -31,23 +31,29 @@ namespace trview
         return false;
     }
 
-    Filters2::GettersBuilder& Filters2::GettersBuilder::with_type_key(const std::string& key)
+    Filters::GettersBuilder& Filters::GettersBuilder::with_type_key(const std::string& key)
     {
         _type_key = key;
         return *this;
     }
 
-    void Filters2::add_getters(const Getters& getters)
+    void Filters::add_filter(const Filter& filter)
+    {
+        _filter.children.push_back(filter);
+        _changed = true;
+    }
+
+    void Filters::add_getters(const Getters& getters)
     {
         _getters.push_back(getters);
     }
 
-    int Filters2::column_count() const
+    int Filters::column_count() const
     {
         return static_cast<int>(_columns.size());
     }
 
-    const Filters2::Getters& Filters2::find_getter(const std::string& type_key) const
+    const Filters::Getters& Filters::find_getter(const std::string& type_key) const
     {
         for (const auto& getter : _getters)
         {
@@ -59,22 +65,27 @@ namespace trview
         throw std::exception("Invalid type for filter");
     }
 
-    void Filters2::clear_all_getters()
+    void Filters::clear_all_getters()
     {
         _getters.clear();
     }
 
-    std::vector<std::string> Filters2::columns() const
+    std::vector<std::string> Filters::columns() const
     {
         return _columns;
     }
 
-    void Filters2::force_sort()
+    std::vector<Filters::Filter> Filters::filters() const
+    {
+        return _filter.children;
+    }
+
+    void Filters::force_sort()
     {
         _force_sort = true;
     }
 
-    bool Filters2::group_match(std::ranges::input_range auto&& results, const Filter& filter) const
+    bool Filters::group_match(std::ranges::input_range auto&& results, const Filter& filter) const
     {
         if (filter.compare == CompareOp::NotEqual)
         {
@@ -83,7 +94,7 @@ namespace trview
         return std::ranges::any_of(results, [](auto&& v) { return v; });
     }
 
-    bool Filters2::has_options(const std::string& type_key, const std::string& key) const
+    bool Filters::has_options(const std::string& type_key, const std::string& key) const
     {
         const auto& getters = find_getter(type_key);
         const auto& getter = getters.getters.find(key);
@@ -102,7 +113,7 @@ namespace trview
         return false;
     }
 
-    bool Filters2::has_type_key(const std::string& type) const
+    bool Filters::has_type_key(const std::string& type) const
     {
         for (const auto& getter : _getters)
         {
@@ -114,7 +125,7 @@ namespace trview
         return false;
     }
 
-    bool Filters2::is_match(const Value& value, const Filter& filter) const
+    bool Filters::is_match(const Value& value, const Filter& filter) const
     {
         if (const std::string* value_string = std::get_if<std::string>(&value))
         {
@@ -135,7 +146,7 @@ namespace trview
         return false;
     }
 
-    bool Filters2::is_match(const std::string& value, const Filter& filter) const
+    bool Filters::is_match(const std::string& value, const Filter& filter) const
     {
         switch (filter.compare)
         {
@@ -153,7 +164,7 @@ namespace trview
         return false;
     }
 
-    bool Filters2::is_match(float value, const Filter& filter) const
+    bool Filters::is_match(float value, const Filter& filter) const
     {
         if (filter.compare == CompareOp::Exists)
         {
@@ -192,7 +203,7 @@ namespace trview
         return false;
     }
 
-    bool Filters2::is_match(bool value, const Filter& filter) const
+    bool Filters::is_match(bool value, const Filter& filter) const
     {
         const bool actual_value = filter.value == "true";
         switch (filter.compare)
@@ -207,12 +218,12 @@ namespace trview
         return false;
     }
 
-    bool Filters2::match(const IFilterable& value) const
+    bool Filters::match(const IFilterable& value) const
     {
         return _filter.children.empty() || match(_filter, value, _filter.type_key);
     }
 
-    bool Filters2::match(const Filters2::Filter& filter, const IFilterable& value, const std::string& type_key) const
+    bool Filters::match(const Filters::Filter& filter, const IFilterable& value, const std::string& type_key) const
     {
         bool filter_result = filter.initial_state();
 
@@ -326,7 +337,7 @@ namespace trview
         return filter_result ^ filter.invert;
     }
 
-    std::vector<CompareOp> Filters2::ops_for_key(const std::string& type_key, const std::string& key) const
+    std::vector<CompareOp> Filters::ops_for_key(const std::string& type_key, const std::string& key) const
     {
         const auto& getters = find_getter(type_key);
         const auto& getter = getters.getters.find(key);
@@ -365,7 +376,7 @@ namespace trview
         };
     }
 
-    std::vector<std::string> Filters2::options_for_key(const std::string& type_key, const std::string& key) const
+    std::vector<std::string> Filters::options_for_key(const std::string& type_key, const std::string& key) const
     {
         const auto& getters = find_getter(type_key);
         const auto& getter = getters.getters.find(key);
@@ -384,7 +395,7 @@ namespace trview
         return {};
     }
 
-    std::vector<std::string> Filters2::keys(const std::string& type_key) const
+    std::vector<std::string> Filters::keys(const std::string& type_key) const
     {
         std::vector<std::string> result;
         const auto& getters = find_getter(type_key);
@@ -399,7 +410,7 @@ namespace trview
         return result;
     }
 
-    void Filters2::render()
+    void Filters::render()
     {
         bool filter_enabled = _enabled;
         if (ImGui::Checkbox(Names::Enable.c_str(), &filter_enabled))
@@ -432,7 +443,7 @@ namespace trview
         }
     }
 
-    Filters2::Action Filters2::render(Filter& filter, int32_t depth, int32_t index, Filter& parent, const std::string& type_key)
+    Filters::Action Filters::render(Filter& filter, int32_t depth, int32_t index, Filter& parent, const std::string& type_key)
     {
         const auto keys = this->keys(type_key);
 
@@ -538,7 +549,7 @@ namespace trview
         return Action::None;
     }
 
-    Filters2::Action Filters2::render_leaf(Filter& filter, int32_t depth, int32_t index, const std::string& type_key)
+    Filters::Action Filters::render_leaf(Filter& filter, int32_t depth, int32_t index, const std::string& type_key)
     {
         const auto keys = this->keys(type_key);
         const std::string suffix = std::format("{}-{}", depth, index);
@@ -690,7 +701,7 @@ namespace trview
         return Action::None;
     }
 
-    void Filters2::render_settings()
+    void Filters::render_settings()
     {
         if (ImGui::Button("Columns"))
         {
@@ -761,34 +772,34 @@ namespace trview
         }
     }
 
-    void Filters2::scroll_to_item()
+    void Filters::scroll_to_item()
     {
         _scroll_to_item = true;
     }
 
-    void Filters2::set_columns(const std::vector<std::string>& columns)
+    void Filters::set_columns(const std::vector<std::string>& columns)
     {
         _columns = columns;
     }
 
-    void Filters2::set_filters(const std::vector<Filter> filters)
+    void Filters::set_filters(const std::vector<Filter> filters)
     {
         _filter.children = filters;
     }
 
-    void Filters2::set_type_key(const std::string& type_key)
+    void Filters::set_type_key(const std::string& type_key)
     {
         _filter.type_key = type_key;
     }
 
-    bool Filters2::test_and_reset_changed()
+    bool Filters::test_and_reset_changed()
     {
         bool current_value = _changed;
         _changed = false;
         return current_value;
     }
 
-    void Filters2::toggle_visible()
+    void Filters::toggle_visible()
     {
         if (!_show_filters)
         {

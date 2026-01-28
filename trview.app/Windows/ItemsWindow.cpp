@@ -30,7 +30,7 @@ namespace trview
         return v;
     }
 
-    void add_item_filters(Filters2& filters,
+    void add_item_filters(Filters& filters,
         const std::set<std::string>& available_types,
         const std::set<std::string>& available_categories)
     {
@@ -39,7 +39,7 @@ namespace trview
             return;
         }
 
-        auto getters = Filters2::GettersBuilder()
+        auto getters = Filters::GettersBuilder()
             .with_type_key("IItem")
             .with_getter<IItem, int>("#", [](auto&& item) { return static_cast<int>(item.number()); })
             .with_getter<IItem, std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return item.type(); })
@@ -228,7 +228,7 @@ namespace trview
                     {
                         messages::send_select_item(_messaging, f_ptr);
                     }
-                }, default_hide2(filtered_items));
+                }, default_hide(filtered_items));
         }
         ImGui::EndChild();
     }
@@ -369,7 +369,7 @@ namespace trview
         return stay_open;
     }
 
-    void ItemsWindow::set_filters(std::vector<Filters<IItem>::Filter> filters)
+    void ItemsWindow::set_filters(std::vector<Filters::Filter> filters)
     {
         filters;
         // TODO: Reinstate
@@ -535,7 +535,7 @@ namespace trview
         }
         else if (message.type == "item_filters")
         {
-            set_filters(std::static_pointer_cast<MessageData<std::vector<Filters<IItem>::Filter>>>(message.data)->value);
+            set_filters(std::static_pointer_cast<MessageData<std::vector<Filters::Filter>>>(message.data)->value);
         }
     }
 

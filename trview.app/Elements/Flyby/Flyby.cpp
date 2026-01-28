@@ -288,4 +288,9 @@ namespace trview
 
         return result;
     }
+
+    int32_t Flyby::filterable_index() const
+    {
+        return static_cast<int32_t>(_index);
+    }
 }
