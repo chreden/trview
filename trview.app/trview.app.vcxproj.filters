@@ -363,9 +363,7 @@
     <ClInclude Include="Windows\IWindow.h" Filter="Windows" />
     <ClInclude Include="Mocks\Windows\IWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Filters\IFilterable.h" Filter="Filters" />
-    <ClInclude Include="Elements\ElementFilters.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
+    <ClInclude Include="Elements\ElementFilters.h" Filter="Elements" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

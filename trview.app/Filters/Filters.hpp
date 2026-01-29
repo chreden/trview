@@ -453,10 +453,6 @@ namespace trview
                     {
                         ImGui::Text(std::to_string(std::get<int>(result)).c_str());
                     }
-                    // else if (std::holds_alternative<std::weak_ptr<IFilterable>>(result))
-                    // {
-                    //     // TODO: No idea what to show for this as a column.
-                    // }
 
                     if (--remaining > 0)
                     {

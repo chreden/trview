@@ -7,6 +7,7 @@
 #include "RowCounter.h"
 #include "../Elements/ILevel.h"
 #include "../Messages/Messages.h"
+#include "../Elements/ElementFilters.h"
 
 namespace trview
 {
@@ -137,9 +138,11 @@ namespace trview
             .with_getter<IRoom, int>("X", [](auto&& room) { return static_cast<int>(room.info().x); })
             .with_getter<IRoom, int>("Y", [](auto&& room) { return static_cast<int>(room.info().yBottom); })
             .with_getter<IRoom, int>("Z", [](auto&& room) { return static_cast<int>(room.info().z); })
-            .with_getter<IRoom, int>("Triggers", [](auto&& room) { return static_cast<int>(room.triggers().size()); })
+            .with_getter<IRoom, int>("Triggers #", [](auto&& room) { return static_cast<int>(room.triggers().size()); })
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Triggers", {}, [](auto&& room) { return room.triggers() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "ITrigger")
             .with_getter<IRoom, int>("Statics", [](auto&& room) { return static_cast<int>(room.static_meshes().size()); })
-            .with_getter<IRoom, int>("Items", [&](auto&& room) { return static_cast<int>(room.items().size()); })
+            .with_getter<IRoom, int>("Items #", [](auto&& room) { return static_cast<int>(room.items().size()); })
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Items", {}, [](auto&& room) { return room.items() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "IItem")
             .with_multi_getter<IRoom, float>("Neighbours", [](auto&& room)
                 {
                     std::vector<float> results;
@@ -361,10 +364,10 @@ namespace trview
 
         generate_filters();
 
-        _filters.set_columns(std::vector<std::string>{ "#", "Items", "Triggers", "Statics", "Hide" });
+        _filters.set_columns(std::vector<std::string>{ "#", "Items #", "Triggers #", "Statics", "Hide" });
         _token_store += _filters.on_columns_reset += [this]()
             {
-                _filters.set_columns(std::vector<std::string>{ "#", "Items", "Triggers", "Statics", "Hide" });
+                _filters.set_columns(std::vector<std::string>{ "#", "Items #", "Triggers #", "Statics", "Hide" });
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
@@ -711,6 +714,8 @@ namespace trview
     {
         _filters.clear_all_getters();
         add_room_filters(_filters, _level);
+        add_item_filters(_filters, _level);
+        add_trigger_filters(_filters, _level);
         _filters.set_type_key("IRoom");
     }
 
