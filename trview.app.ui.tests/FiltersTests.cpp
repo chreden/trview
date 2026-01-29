@@ -6,7 +6,7 @@ using namespace trview;
 
 namespace
 {
-    struct Object
+    struct Object : public IFilterable
     {
         float number = 0;
         std::vector<float> numbers;
@@ -44,13 +44,17 @@ namespace
             return *this;
         }
 
+        int32_t filterable_index() const
+        {
+            return static_cast<int32_t>(number);
+        }
     };
 
     auto make_filter()
     {
         struct FilterBuilder
         {
-            Filters<Object>::Filter filter;
+            Filters::Filter filter;
 
             FilterBuilder& compare_op(CompareOp compare)
             {
@@ -82,7 +86,7 @@ namespace
                 return *this;
             }
 
-            operator Filters<Object>::Filter() const
+            operator Filters::Filter() const
             {
                 return filter;
             }
@@ -94,12 +98,14 @@ namespace
 
 void register_filters_tests(ImGuiTestEngine* engine)
 {
-    test<Filters<Object>>(engine, "Filters", "Add Filters Using UI",
-        [](ImGuiTestContext* ctx) { if (ImGui::Begin("Filters Host")) { ctx->GetVars<Filters<Object>>().render(); ImGui::End(); } },
+    test<Filters>(engine, "Filters", "Add Filters Using UI",
+        [](ImGuiTestContext* ctx) { if (ImGui::Begin("Filters Host")) { ctx->GetVars<Filters>().render(); ImGui::End(); } },
         [](ImGuiTestContext* ctx)
         {
-            auto& window = ctx->GetVars<Filters<Object>>();
-            window.add_getter<float>("value", [](auto&& o) { return o.number; });
+            auto& window = ctx->GetVars<Filters>();
+            window.add_getters(Filters::GettersBuilder()
+                .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
+                .build<Object>());
 
             ctx->ItemClick("/**/Filters##FiltersButton");
             ctx->SetRef(ctx->ItemInfo("/**/+")->Window);
@@ -120,23 +126,25 @@ void register_filters_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(window.match(Object().with_number(16)), true);
         });
 
-    test<Filters<Object>>(engine, "Filters", "Button Toggles Visibility",
-        [](ImGuiTestContext* ctx) { if (ImGui::Begin("Filters Host")) { ctx->GetVars<Filters<Object>>().render(); ImGui::End(); } },
+    test<Filters>(engine, "Filters", "Button Toggles Visibility",
+        [](ImGuiTestContext* ctx) { if (ImGui::Begin("Filters Host")) { ctx->GetVars<Filters>().render(); ImGui::End(); } },
         [](ImGuiTestContext* ctx)
         {
-            auto& window = ctx->GetVars<Filters<Object>>();
+            auto& window = ctx->GetVars<Filters>();
             IM_CHECK_EQ(ctx->ItemExists("/**/+"), false);
             ctx->ItemClick("/**/Filters##FiltersButton");
             IM_CHECK_EQ(ctx->ItemExists("/**/+"), true);
         });
 
-    test<Filters<Object>>(engine, "Filters", "Checkbox Disables Filters",
-        [](ImGuiTestContext* ctx) { if (ImGui::Begin("Filters Host")) { ctx->GetVars<Filters<Object>>().render(); ImGui::End(); } },
+    test<Filters>(engine, "Filters", "Checkbox Disables Filters",
+        [](ImGuiTestContext* ctx) { if (ImGui::Begin("Filters Host")) { ctx->GetVars<Filters>().render(); ImGui::End(); } },
         [](ImGuiTestContext* ctx)
         {
-            auto& window = ctx->GetVars<Filters<Object>>();
-            window.add_getter<float>("value", [](auto&& o) { return o.number; });
-            Filters<Object>::Filter is_float = make_filter().key("value").compare_op(CompareOp::Equal).value("12");
+            auto& window = ctx->GetVars<Filters>();
+            window.add_getters(Filters::GettersBuilder()
+                .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
+                .build<Object>());
+            Filters::Filter is_float = make_filter().key("value").compare_op(CompareOp::Equal).value("12");
             window.set_filters({ is_float });
 
             IM_CHECK_EQ(window.match(Object().with_number(13)), false);
@@ -146,11 +154,11 @@ void register_filters_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(window.match(Object().with_number(13)), true);
         });
 
-    test<Filters<Object>>(engine, "Filters", "Checkbox Shows Tooltip",
-        [](ImGuiTestContext* ctx) { if (ImGui::Begin("Filters Host")) { ctx->GetVars<Filters<Object>>().render(); ImGui::End(); } },
+    test<Filters>(engine, "Filters", "Checkbox Shows Tooltip",
+        [](ImGuiTestContext* ctx) { if (ImGui::Begin("Filters Host")) { ctx->GetVars<Filters>().render(); ImGui::End(); } },
         [](ImGuiTestContext* ctx)
         {
-            auto& window = ctx->GetVars<Filters<Object>>();
+            auto& window = ctx->GetVars<Filters>();
             ctx->MouseMoveToVoid();
             IM_CHECK_EQ(ctx->ItemExists("/**/##Tooltip_00"), false);
             ctx->MouseMove("/**/##filter_enabled");
