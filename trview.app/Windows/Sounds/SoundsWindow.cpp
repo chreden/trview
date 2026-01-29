@@ -19,13 +19,6 @@ namespace trview
             return;
         }
 
-        const auto level_ptr = level.lock();
-        if (!level_ptr)
-        {
-            return;
-        }
-
-        const auto level_version = level_ptr->platform_and_version().version;
         auto sound_getters = Filters::GettersBuilder()
             .with_type_key("ISoundSource")
             .with_getter<ISoundSource, int>("#", [](auto&& sound_source) { return static_cast<int>(sound_source.number()); })
@@ -40,7 +33,8 @@ namespace trview
             .with_getter<ISoundSource, int>("Volume", [](auto&& sound_source) { return static_cast<int>(sound_source.volume()); })
             .with_getter<ISoundSource, bool>("Hide", [](auto&& sound_source) { return !sound_source.visible(); }, EditMode::ReadWrite);
 
-        if (level_version >= trlevel::LevelVersion::Tomb3)
+        const auto level_ptr = level.lock();
+        if (level_ptr && level_ptr->version() >= trlevel::LevelVersion::Tomb3)
         {
             sound_getters.with_getter<ISoundSource, int>("Pitch", [](auto&& sound_source) { return static_cast<int>(sound_source.pitch()); })
                 .with_getter<ISoundSource, int>("Range", [](auto&& sound_source) { return static_cast<int>(sound_source.range()); });

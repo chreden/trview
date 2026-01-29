@@ -275,8 +275,8 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(windows.get()));
             IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(window.get()));
 
-            const std::vector<Filters<IRoom>::Filter> expected{ {.key = "Alternate", .compare = CompareOp::Exists, .op = Op::And } };
-            IM_CHECK_EQ(expected, std::static_pointer_cast<MessageData<std::vector<Filters<IRoom>::Filter>>>(message.data)->value);
+            const std::vector<Filters::Filter> expected{ {.key = "Alternate", .compare = CompareOp::Exists, .op = Op::And } };
+            IM_CHECK_EQ(expected, std::static_pointer_cast<MessageData<std::vector<Filters::Filter>>>(message.data)->value);
         });
 
     test<ViewOptionsContext>(engine, "View Options", "Flip Flags Toggle",
@@ -355,8 +355,8 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(windows.get()));
             IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(window.get()));
 
-            const std::vector<Filters<IRoom>::Filter> expected{ {.key = "Alternate Group", .compare = CompareOp::Equal, .value = "3", .op = Op::And } };
-            IM_CHECK_EQ(expected, std::static_pointer_cast<MessageData<std::vector<Filters<IRoom>::Filter>>>(message.data)->value);
+            const std::vector<Filters::Filter> expected{ {.key = "Alternate Group", .compare = CompareOp::Equal, .value = "3", .op = Op::And } };
+            IM_CHECK_EQ(expected, std::static_pointer_cast<MessageData<std::vector<Filters::Filter>>>(message.data)->value);
         });
 
     test<ViewOptionsContext>(engine, "View Options", "Hidden Geometry Checkbox Toggle",

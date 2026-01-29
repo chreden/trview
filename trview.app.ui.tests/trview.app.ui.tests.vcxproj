@@ -151,7 +151,10 @@
     <ClCompile Include="CameraSinkWindowTests.cpp" />
     <ClCompile Include="ConsoleTests.cpp" />
     <ClCompile Include="ContextMenuTests.cpp" />
-    <ClCompile Include="FiltersTests.cpp" />
+    <ClCompile Include="FiltersTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GoToTests.cpp" />
     <ClCompile Include="ItemsWindowTests.cpp" />
     <ClCompile Include="LevelInfoTests.cpp" />

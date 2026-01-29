@@ -6,25 +6,22 @@
 
 namespace trview
 {
-    void add_statics_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
+    void add_static_mesh_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
     {
         if (filters.has_type_key("IStaticMesh"))
         {
             return;
         }
 
-        const auto level_ptr = level.lock();
-        if (!level_ptr)
-        {
-            return;
-        }
-
         std::set<std::string> available_types;
-        for (const auto& stat : level_ptr->static_meshes())
+        if (const auto level_ptr = level.lock())
         {
-            if (auto stat_ptr = stat.lock())
+            for (const auto& stat : level_ptr->static_meshes())
             {
-                available_types.insert(to_string(stat_ptr->type()));
+                if (auto stat_ptr = stat.lock())
+                {
+                    available_types.insert(to_string(stat_ptr->type()));
+                }
             }
         }
 
@@ -225,7 +222,7 @@ namespace trview
     void StaticsWindow::setup_filters()
     {
         _filters.clear_all_getters();
-        add_statics_filters(_filters, _level);
+        add_static_mesh_filters(_filters, _level);
         _filters.set_type_key("IStaticMesh");
     }
 

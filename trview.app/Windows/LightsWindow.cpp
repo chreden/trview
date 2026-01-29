@@ -16,21 +16,22 @@ namespace trview
         }
 
         const auto level_ptr = level.lock();
-        if (!level_ptr)
-        {
-            return;
-        }
 
         std::set<std::string> available_types;
-        for (const auto& light : level_ptr->lights())
+        std::optional<trlevel::LevelVersion> level_version;
+
+        if (level_ptr)
         {
-            if (auto light_ptr = light.lock())
+            level_version = level_ptr->version();
+            for (const auto& light : level_ptr->lights())
             {
-                available_types.insert(to_string(light_ptr->type()));
+                if (auto light_ptr = light.lock())
+                {
+                    available_types.insert(to_string(light_ptr->type()));
+                }
             }
         }
 
-        const auto level_version = level_ptr->platform_and_version().version;
         auto light_getters = Filters::GettersBuilder()
             .with_type_key("ILight")
             .with_getter<ILight, std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& light) { return to_string(light.type()); })
@@ -51,7 +52,7 @@ namespace trview
                     return false;
                 });
 
-        if (level_version >= trlevel::LevelVersion::Tomb3)
+        if (level_version && level_version >= trlevel::LevelVersion::Tomb3)
         {
             light_getters.with_getter<ILight, int>("R", [](auto&& light) { return static_cast<int>(std::floor(light.colour().r * 255.0f)); }, has_colour)
                 .with_getter<ILight, int>("G", [](auto&& light) { return static_cast<int>(std::floor(light.colour().g * 255.0f)); }, has_colour)
@@ -61,13 +62,13 @@ namespace trview
                 .with_getter<ILight, float>("DZ", [](auto&& light) { return light.direction().z * trlevel::Scale_Z; }, has_direction);
         }
 
-        if (level_version == trlevel::LevelVersion::Tomb4)
+        if (level_version && level_version == trlevel::LevelVersion::Tomb4)
         {
             light_getters.with_getter<ILight, float>("Length", [](auto&& light) { return length(light); }, has_length)
                 .with_getter<ILight, float>("Cutoff", [](auto&& light) { return cutoff(light); }, has_cutoff);
         }
 
-        if (level_version >= trlevel::LevelVersion::Tomb4)
+        if (level_version && level_version >= trlevel::LevelVersion::Tomb4)
         {
             light_getters.with_getter<ILight, float>("Hotspot", [](auto&& light) { return hotspot(light); }, has_hotspot)
                 .with_getter<ILight, float>("Falloff", [](auto&& light) { return falloff(light); }, has_falloff)
@@ -76,7 +77,7 @@ namespace trview
                 .with_getter<ILight, float>("Radius", [](auto&& light) { return radius(light); }, has_radius);
         }
 
-        if (level_version >= trlevel::LevelVersion::Tomb5)
+        if (level_version && level_version >= trlevel::LevelVersion::Tomb5)
         {
             light_getters.with_getter<ILight, float>("Rad In", [](auto&& light) { return rad_in(light); }, has_rad_in)
                 .with_getter<ILight, float>("Rad Out", [](auto&& light) { return rad_out(light); }, has_rad_out)

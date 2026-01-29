@@ -121,14 +121,11 @@ namespace trview
         }
 
         const auto level_ptr = level.lock();
-        if (!level_ptr)
+        std::optional<trlevel::PlatformAndVersion> platform_and_version;
+        if (level_ptr)
         {
-            return;
+            platform_and_version = level_ptr->platform_and_version();
         }
-
-        const auto platform_and_version = level_ptr->platform_and_version();
-        const auto level_version = platform_and_version.version;
-        const auto trng = level_ptr->trng();
 
         auto room_getters = Filters::GettersBuilder()
             .with_type_key("IRoom")
@@ -162,21 +159,19 @@ namespace trview
                     }
                     return results;
                 });
-        
+
         std::set<std::string> available_trigger_types;
-        for (const auto& room : level_ptr->rooms())
+        if (level_ptr)
         {
-            if (auto room_ptr = room.lock())
+            for (const auto& trigger : level_ptr->triggers())
             {
-                for (const auto& trigger : room_ptr->triggers())
+                if (auto trigger_ptr = trigger.lock())
                 {
-                    if (auto trigger_ptr = trigger.lock())
-                    {
-                        available_trigger_types.insert(to_string(trigger_ptr->type()));
-                    }
+                    available_trigger_types.insert(to_string(trigger_ptr->type()));
                 }
             }
         }
+
         room_getters
             .with_multi_getter<IRoom, std::string>("Trigger Type", { available_trigger_types.begin(), available_trigger_types.end() }, [&](auto&& room)
             {
@@ -204,13 +199,17 @@ namespace trview
             });
 
         std::set<std::string> available_item_types;
-        for (const auto& item : level_ptr->items())
+        if (level_ptr)
         {
-            if (auto item_ptr = item.lock())
+            for (const auto& item : level_ptr->items())
             {
-                available_item_types.insert(item_ptr->type());
+                if (auto item_ptr = item.lock())
+                {
+                    available_item_types.insert(item_ptr->type());
+                }
             }
         }
+
         room_getters
             .with_multi_getter<IRoom, std::string>("Item Type", { available_item_types.begin(), available_item_types.end() }, [&](auto&& room)
             {
@@ -227,7 +226,7 @@ namespace trview
             .with_getter<IRoom, bool>("Hide", [](auto&& room) { return !room.visible(); }, EditMode::ReadWrite)
             .with_getter<IRoom, bool>("Water", [](auto&& room) { return room.water(); });
 
-        if (level_version >= trlevel::LevelVersion::Tomb3)
+        if (platform_and_version && platform_and_version->version >= trlevel::LevelVersion::Tomb3)
         {
             room_getters.with_getter<IRoom, int>("Water Scheme", [](auto&& room) { return room.water_scheme(); });
         }
@@ -251,8 +250,9 @@ namespace trview
             .with_getter<IRoom, int>("Alternate Group", [](auto&& room) { return room.alternate_group(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; })
             .with_getter<IRoom, bool>("No Space", room_is_no_space);
 
-        if (level_version < trlevel::LevelVersion::Tomb4)
+        if (platform_and_version && platform_and_version->version < trlevel::LevelVersion::Tomb4)
         {
+            const auto level_version = platform_and_version->version;
             room_getters.with_getter<IRoom, int>("Ambient Intensity", [](auto&& room) { return room.ambient_intensity_1(); });
             room_getters.with_getter<IRoom, float>("Ambient Intensity %%", [](auto&& room) { return ambient_percentage(room.ambient_intensity_1()) * 100.0f; });
             if (level_version > trlevel::LevelVersion::Tomb1)
@@ -277,19 +277,24 @@ namespace trview
             | std::views::transform([](auto c) { return to_string(static_cast<Floordata::Command::Function>(c)); })
             | std::ranges::to<std::set>();
 
-        const auto floordata = level_ptr->floor_data();
-        room_getters.with_multi_getter<IRoom, std::string>("Floordata Type", { available_floordata_types.begin(), available_floordata_types.end() }, [=](auto&& room)
-            {
-                const auto& sectors = room.sectors();
-                return sectors
-                    | std::views::transform([&](auto&& s) { return parse_floordata(floordata, s->floordata_index(), FloordataMeanings::None, trng, platform_and_version).commands; })
-                    | std::views::join
-                    | std::views::transform([](auto&& c) { return c.type; })
-                    | std::ranges::to<std::unordered_set>()
-                    | std::views::transform([](auto&& s) { return to_string(s); })
-                    | std::ranges::to<std::vector>();
-            })
-            .with_multi_getter<IRoom, int>("Floordata Index", [&](auto&& room)
+        if (level_ptr)
+        {
+            const auto floordata = level_ptr->floor_data();
+            const auto trng = level_ptr->trng();
+            room_getters.with_multi_getter<IRoom, std::string>("Floordata Type", { available_floordata_types.begin(), available_floordata_types.end() }, [=](auto&& room)
+                {
+                    const auto& sectors = room.sectors();
+                    return sectors
+                        | std::views::transform([&](auto&& s) { return parse_floordata(floordata, s->floordata_index(), FloordataMeanings::None, trng, platform_and_version).commands; })
+                        | std::views::join
+                        | std::views::transform([](auto&& c) { return c.type; })
+                        | std::ranges::to<std::unordered_set>()
+                        | std::views::transform([](auto&& s) { return to_string(s); })
+                        | std::ranges::to<std::vector>();
+                });
+        }
+
+        room_getters.with_multi_getter<IRoom, int>("Floordata Index", [&](auto&& room)
             {
                 return room.sectors()
                     | std::views::transform([&](auto&& s) { return static_cast<int>(s->floordata_index()); })

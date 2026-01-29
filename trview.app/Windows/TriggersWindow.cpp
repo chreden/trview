@@ -45,20 +45,20 @@ namespace trview
         }
 
         const auto level_ptr = level.lock();
-        if (!level_ptr)
-        {
-            return;
-        }
-
-        const auto all_items = level_ptr->items();
-        const auto all_triggers = level_ptr->triggers();
-
+        std::vector<std::weak_ptr<IItem>> all_items;
+        std::vector<std::weak_ptr<ITrigger>> all_triggers;
         std::set<std::string> available_types;
-        for (const auto& trigger : all_triggers)
+
+        if (level_ptr)
         {
-            if (auto trigger_ptr = trigger.lock())
+            all_items = level_ptr->items();
+            all_triggers = level_ptr->triggers();
+            for (const auto& trigger : level_ptr->triggers())
             {
-                available_types.insert(to_string(trigger_ptr->type()));
+                if (auto trigger_ptr = trigger.lock())
+                {
+                    available_types.insert(to_string(trigger_ptr->type()));
+                }
             }
         }
 

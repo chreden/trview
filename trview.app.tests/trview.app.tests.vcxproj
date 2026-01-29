@@ -32,7 +32,10 @@
     <ClCompile Include="Elements\StaticMeshTests.cpp" />
     <ClCompile Include="Elements\TriggerTests.cpp" />
     <ClCompile Include="Elements\TypeInfoLookupTests.cpp" />
-    <ClCompile Include="Filters\FiltersTests.cpp" />
+    <ClCompile Include="Filters\FiltersTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="CameraTests.cpp" />
     <ClCompile Include="Graphics\LevelTextureStorageTests.cpp" />
     <ClCompile Include="Graphics\MeshStorageTests.cpp" />

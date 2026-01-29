@@ -123,15 +123,9 @@ namespace trview
         }
     }
 
-    void add_camera_sink_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
+    void add_camera_sink_filters(Filters& filters)
     {
         if (filters.has_type_key("ICameraSink"))
-        {
-            return;
-        }
-
-        const auto level_ptr = level.lock();
-        if (!level_ptr)
         {
             return;
         }
@@ -248,12 +242,8 @@ namespace trview
         }
 
         const auto level_ptr = level.lock();
-        if (!level_ptr)
-        {
-            return;
-        }
+        const auto platform_and_version = level_ptr ? level_ptr->platform_and_version() : trlevel::PlatformAndVersion{ .platform = trlevel::Platform::PC, .version = trlevel::LevelVersion::Tomb4 };
 
-        const auto platform_and_version = level_ptr->platform_and_version();
         auto flyby_node_getters = Filters::GettersBuilder()
             .with_type_key("IFlybyNode")
             .with_getter<IFlybyNode, int>("#", [](auto&& node) { return static_cast<int>(node.number()); })
@@ -577,7 +567,7 @@ namespace trview
     void CameraSinkWindow::setup_filters()
     {
         _filters.clear_all_getters();
-        add_camera_sink_filters(_filters, _level);
+        add_camera_sink_filters(_filters);
 
         _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
         _token_store += _filters.on_columns_reset += [this]()

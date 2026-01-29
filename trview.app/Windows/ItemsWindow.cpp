@@ -30,13 +30,28 @@ namespace trview
         return v;
     }
 
-    void add_item_filters(Filters& filters,
-        const std::set<std::string>& available_types,
-        const std::set<std::string>& available_categories)
+    void add_item_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
     {
         if (filters.has_type_key("IItem"))
         {
             return;
+        }
+
+        auto level_ptr = level.lock();
+
+        std::set<std::string> available_types;
+        std::set<std::string> available_categories;
+
+        if (level_ptr)
+        {
+            for (const auto& item : level_ptr->items())
+            {
+                if (auto item_ptr = item.lock())
+                {
+                    available_types.insert(item_ptr->type());
+                    available_categories.insert_range(item_ptr->categories());
+                }
+            }
         }
 
         auto getters = Filters::GettersBuilder()
@@ -421,18 +436,7 @@ namespace trview
     void ItemsWindow::setup_filters()
     {
         _filters.clear_all_getters();
-        std::set<std::string> available_types;
-        std::set<std::string> available_categories;
-        for (const auto& item : _all_items)
-        {
-            if (auto item_ptr = item.lock())
-            {
-                available_types.insert(item_ptr->type());
-                available_categories.insert_range(item_ptr->categories());
-            }
-        }
-
-        add_item_filters(_filters, available_types, available_categories);
+        add_item_filters(_filters, _level);
         add_room_filters(_filters, _level);
         add_trigger_filters(_filters, _level);
 
