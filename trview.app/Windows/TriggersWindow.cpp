@@ -627,8 +627,7 @@ namespace trview
     void TriggersWindow::setup_filters()
     {
         _filters.clear_all_getters();
-        add_trigger_filters(_filters, _level);
-        add_room_filters(_filters, _level);
+        add_all_filters(_filters, _level);
         _filters.set_type_key("ITrigger");
     }
 

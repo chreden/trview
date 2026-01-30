@@ -3,6 +3,7 @@
 #include "../../trview_imgui.h"
 #include "../../Messages/Messages.h"
 #include "../../Elements/ILevel.h"
+#include "../../Elements/ElementFilters.h"
 
 namespace trview
 {
@@ -222,7 +223,7 @@ namespace trview
     void StaticsWindow::setup_filters()
     {
         _filters.clear_all_getters();
-        add_static_mesh_filters(_filters, _level);
+        add_all_filters(_filters, _level);
         _filters.set_type_key("IStaticMesh");
     }
 

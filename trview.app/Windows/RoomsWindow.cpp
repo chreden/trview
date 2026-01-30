@@ -357,6 +357,51 @@ namespace trview
         filters.add_getters(room_getters.build<IRoom>());
     }
 
+    void add_sector_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
+    {
+        if (filters.has_type_key("ISector"))
+        {
+            return;
+        }
+
+        const auto level_ptr = level.lock();
+        std::optional<trlevel::PlatformAndVersion> platform_and_version;
+        std::vector<uint16_t> floordata;
+        bool trng = false;
+
+        if (level_ptr)
+        {
+            platform_and_version = level_ptr->platform_and_version();
+            floordata = level_ptr->floor_data();
+            trng = level_ptr->trng();
+        }
+
+        const auto available_floordata_types =
+            std::views::iota(std::to_underlying(Floordata::Command::Function::None) + 1, std::to_underlying(Floordata::Command::Function::Count) + 0)
+            | std::views::transform([](auto c) { return to_string(static_cast<Floordata::Command::Function>(c)); })
+            | std::ranges::to<std::set>();
+
+        auto sector_getters = Filters::GettersBuilder()
+            .with_type_key("ISector")
+            .with_multi_getter<ISector, std::string>("Floordata Type", { available_floordata_types.begin(), available_floordata_types.end() }, [=](auto&& sector)
+                {
+                    return parse_floordata(floordata, sector.floordata_index(), FloordataMeanings::None, trng, platform_and_version.value_or({ .platform = trlevel::Platform::PC, .version = trlevel::LevelVersion::Tomb1 })).commands
+                        | std::views::transform([](auto&& c) { return c.type; })
+                        | std::ranges::to<std::unordered_set>()
+                        | std::views::transform([](auto&& s) { return to_string(s); })
+                        | std::ranges::to<std::vector>();
+                })
+            .with_getter<ISector, int>("Floordata Index", [&](auto&& sector) { return sector.floordata_index(); })
+            .with_getter<ISector, int>("Material", [&](auto&& sector) { return sector.material(); })
+            .with_getter<ISector, int>("Box Index", [&](auto&& sector) { return sector.box_index(); })
+            .with_getter<ISector, bool>("Stopper", [&](auto&& sector) { return sector.stopper(); })
+            .with_getter<ISector, int>("Room Above", [&](auto&& sector) { return sector.room_above(); })
+            .with_getter<ISector, int>("Floor", [&](auto&& sector) { return sector.floor(); })
+            .with_getter<ISector, int>("Room Below", [&](auto&& sector) { return sector.room_below(); })
+            .with_getter<ISector, int>("Ceiling", [&](auto&& sector) { return sector.ceiling(); });
+        filters.add_getters(sector_getters.build<ISector>());
+    }
+
     RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _map_renderer(map_renderer_source()), _clipboard(clipboard), _messaging(messaging)
     {
@@ -713,9 +758,7 @@ namespace trview
     void RoomsWindow::generate_filters()
     {
         _filters.clear_all_getters();
-        add_room_filters(_filters, _level);
-        add_item_filters(_filters, _level);
-        add_trigger_filters(_filters, _level);
+        add_all_filters(_filters, _level);
         _filters.set_type_key("IRoom");
     }
 
@@ -1437,31 +1480,7 @@ namespace trview
 
         if (!sector_filters.filters().empty())
         {
-            const auto available_floordata_types =
-                std::views::iota(std::to_underlying(Floordata::Command::Function::None) + 1, std::to_underlying(Floordata::Command::Function::Count) + 0)
-                | std::views::transform([](auto c) { return to_string(static_cast<Floordata::Command::Function>(c)); })
-                | std::ranges::to<std::set>();
-
-            auto sector_getters = Filters::GettersBuilder()
-                .with_type_key("ISector")
-                .with_multi_getter<ISector, std::string>("Floordata Type", { available_floordata_types.begin(), available_floordata_types.end() }, [&](auto&& sector)
-                    {
-                        return parse_floordata(_floordata, sector.floordata_index(), FloordataMeanings::None, _trng, _platform_and_version).commands
-                            | std::views::transform([](auto&& c) { return c.type; })
-                            | std::ranges::to<std::unordered_set>()
-                            | std::views::transform([](auto&& s) { return to_string(s); })
-                            | std::ranges::to<std::vector>();
-                    })
-                .with_getter<ISector, int>("Floordata Index", [&](auto&& sector) { return sector.floordata_index(); })
-                .with_getter<ISector, int>("Material", [&](auto&& sector) { return sector.material(); })
-                .with_getter<ISector, int>("Box Index", [&](auto&& sector) { return sector.box_index(); })
-                .with_getter<ISector, bool>("Stopper", [&](auto&& sector) { return sector.stopper(); })
-                .with_getter<ISector, int>("Room Above", [&](auto&& sector) { return sector.room_above(); })
-                .with_getter<ISector, int>("Floor", [&](auto&& sector) { return sector.floor(); })
-                .with_getter<ISector, int>("Room Below", [&](auto&& sector) { return sector.room_below(); })
-                .with_getter<ISector, int>("Ceiling", [&](auto&& sector) { return sector.ceiling(); });
-
-            sector_filters.add_getters(sector_getters.build<ISector>());
+            add_sector_filters(sector_filters, _level);
             sector_filters.set_type_key("ISector");
             return sector_filters;
         }

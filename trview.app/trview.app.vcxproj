@@ -25,6 +25,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Camera\CameraInput.cpp" />
     <ClCompile Include="Elements\CameraSink\CameraSink.cpp" />
+    <ClCompile Include="Elements\ElementFilters.cpp" />
     <ClCompile Include="Elements\Flyby\Flyby.cpp" />
     <ClCompile Include="Elements\Flyby\FlybyNode.cpp" />
     <ClCompile Include="Elements\Item.cpp" />

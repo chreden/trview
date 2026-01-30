@@ -5,6 +5,7 @@
 #include "../../Elements/Flyby/IFlybyNode.h"
 #include "../../Messages/Messages.h"
 #include "../../Elements/ILevel.h"
+#include "../../Elements/ElementFilters.h"
 
 namespace trview
 {
@@ -567,7 +568,7 @@ namespace trview
     void CameraSinkWindow::setup_filters()
     {
         _filters.clear_all_getters();
-        add_camera_sink_filters(_filters);
+        add_all_filters(_filters, _level);
 
         _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
         _token_store += _filters.on_columns_reset += [this]()
@@ -588,11 +589,11 @@ namespace trview
     void CameraSinkWindow::setup_flyby_filters()
     {
         _flyby_filters.clear_all_getters();
-        add_flyby_filters(_flyby_filters);
+        add_all_filters(_flyby_filters, _level);
         _flyby_filters.set_type_key("IFlyby");
 
         _node_filters.clear_all_getters();
-        add_flyby_node_filters(_node_filters, _level);
+        add_all_filters(_node_filters, _level);
         _node_filters.set_type_key("IFlybyNode");
 
         _flyby_filters.set_columns(std::vector<std::string>{ "#", "Hide" });

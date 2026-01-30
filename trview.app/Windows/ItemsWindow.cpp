@@ -436,10 +436,7 @@ namespace trview
     void ItemsWindow::setup_filters()
     {
         _filters.clear_all_getters();
-        add_item_filters(_filters, _level);
-        add_room_filters(_filters, _level);
-        add_trigger_filters(_filters, _level);
-
+        add_all_filters(_filters, _level);
         _filters.set_type_key("IItem");
     }
 

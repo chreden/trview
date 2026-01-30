@@ -118,9 +118,8 @@
     <ClCompile Include="Elements\Flyby\FlybyNode.cpp" Filter="Elements\Flyby" />
     <ClCompile Include="Messages\Messages.cpp" Filter="Messages" />
     <ClCompile Include="Elements\Level\LevelNameLookup.cpp" Filter="Elements\Level" />
-    <ClCompile Include="Filters\Filters.cpp">
-      <Filter>Filters</Filter>
-    </ClCompile>
+    <ClCompile Include="Filters\Filters.cpp" Filter="Filters" />
+    <ClCompile Include="Elements\ElementFilters.cpp" Filter="Elements" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />

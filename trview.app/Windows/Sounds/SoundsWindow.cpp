@@ -7,6 +7,7 @@
 #include <trlevel/trtypes.h>
 #include "../../Elements/ILevel.h"
 #include "../../Messages/Messages.h"
+#include "../../Elements/ElementFilters.h"
 
 #include <map>
 
@@ -346,7 +347,7 @@ namespace trview
     void SoundsWindow::setup_filters()
     {
         _filters.clear_all_getters();
-        add_sounds_filters(_filters, _level);
+        add_all_filters(_filters, _level);
         _filters.set_type_key("ISoundSource");
     }
 
