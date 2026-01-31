@@ -139,7 +139,16 @@ namespace trview
             .with_getter<ICameraSink, int>("X", [](auto&& camera_sink) { return static_cast<int>(camera_sink.position().x * trlevel::Scale_X); })
             .with_getter<ICameraSink, int>("Y", [](auto&& camera_sink) { return static_cast<int>(camera_sink.position().y * trlevel::Scale_Y); })
             .with_getter<ICameraSink, int>("Z", [](auto&& camera_sink) { return static_cast<int>(camera_sink.position().z * trlevel::Scale_Z); })
-            .with_getter<ICameraSink, int>("Room", [](auto&& camera_sink)
+            .with_getter<ICameraSink, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& camera_sink) -> std::weak_ptr<IFilterable>
+                { 
+                    if (camera_sink.type() == ICameraSink::Type::Camera)
+                    {
+                        return camera_sink.room();
+                    }
+                    const auto rooms = camera_sink.inferred_rooms() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
+                    return !rooms.empty() ? rooms[0] : std::weak_ptr<IFilterable>{};
+                }, {}, EditMode::Read, "IRoom")
+            .with_getter<ICameraSink, int>("Room #", [](auto&& camera_sink)
                 {
                     if (camera_sink.type() == ICameraSink::Type::Camera)
                     {
@@ -150,7 +159,15 @@ namespace trview
                         std::ranges::to<std::vector>();
                     return rooms.empty() ? 0 : rooms[0];
                 })
-            .with_multi_getter<ICameraSink, int>("Rooms", [](auto&& camera_sink) -> std::vector<int>
+            .with_multi_getter<ICameraSink, std::weak_ptr<IFilterable>>("Rooms", {}, [](auto&& camera_sink) -> std::vector<std::weak_ptr<IFilterable>>
+                {
+                    if (camera_sink.type() == ICameraSink::Type::Camera)
+                    {
+                        return { camera_sink.room() };
+                    }
+                    return camera_sink.inferred_rooms() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
+                }, {}, "IRoom")
+            .with_multi_getter<ICameraSink, int>("Rooms #", [](auto&& camera_sink) -> std::vector<int>
                 {
                     if (camera_sink.type() == ICameraSink::Type::Camera)
                     {
@@ -161,6 +178,10 @@ namespace trview
                         [](const auto& r) { if (auto room = r.lock()) { return static_cast<int>(room->number()); } return 0; }) |
                         std::ranges::to<std::vector>();
                 })
+            .with_multi_getter<ICameraSink, std::weak_ptr<IFilterable>>("Triggers", {}, [](auto&& camera_sink) -> std::vector<std::weak_ptr<IFilterable>>
+                {
+                    return camera_sink.triggers() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
+                }, {}, "ITrigger")
             .with_multi_getter<ICameraSink, int>("Trigger References", [&](auto&& camera_sink)
                 {
                     std::vector<int> results;

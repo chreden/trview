@@ -229,7 +229,6 @@ namespace trview
 
         if (!filter.children.empty())
         {
-            // Switch focus if required
             std::shared_ptr<IFilterable> new_focus;
             if (filter.compare == CompareOp::Matches)
             {
@@ -242,6 +241,10 @@ namespace trview
                     {
                         const auto getter_value = getter->second.function(value);
                         new_focus = std::get<std::weak_ptr<IFilterable>>(getter_value).lock();
+                        if (!new_focus)
+                        {
+                            return false;
+                        }
                     }
                 }
                 else
@@ -263,16 +266,19 @@ namespace trview
                                 Op focus_child_op = Op::Or;
                                 bool focus_match = false;
 
-                                for (const auto& child : filter.children)
+                                if (f)
                                 {
-                                    const bool child_filter_result = match(child, *f, filter.type_key != "" ? filter.type_key : type_key);
-
-                                    focus_match = focus_child_op == Op::Or ? focus_match | child_filter_result : focus_match & child_filter_result;
-                                    focus_child_op = child.op;
-
-                                    if (focus_child_op == Op::And && !focus_match)
+                                    for (const auto& child : filter.children)
                                     {
-                                        break;
+                                        const bool child_filter_result = match(child, *f, filter.type_key != "" ? filter.type_key : type_key);
+
+                                        focus_match = focus_child_op == Op::Or ? focus_match | child_filter_result : focus_match & child_filter_result;
+                                        focus_child_op = child.op;
+
+                                        if (focus_child_op == Op::And && !focus_match)
+                                        {
+                                            break;
+                                        }
                                     }
                                 }
 
