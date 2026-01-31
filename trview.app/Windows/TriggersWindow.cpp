@@ -89,7 +89,20 @@ namespace trview
                     | std::views::transform([](auto&& t) { return command_type_name(t.type()); })
                     | std::ranges::to<std::vector>();
             })
-            .with_multi_getter<ITrigger, float>("Trigger triggerer", [=](auto&& trigger)
+            .with_multi_getter<ITrigger, std::weak_ptr<IFilterable>>("Trigger triggerer", {}, [=](auto&& trigger)
+                {  
+                    const auto sector = trigger.sector().lock();
+                    return all_items
+                        | std::views::filter([&](const auto& i)
+                            {
+                                auto item = i.lock();
+                                return item && item->type() == "Trigger triggerer" && sector_for_item(item) == sector;
+                            })
+                        | std::views::transform([](const auto& i) -> std::shared_ptr<IItem> { return i.lock(); })
+                        | std::views::filter([](const auto& i) { return i != nullptr; })
+                        | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
+                }, {}, "ITrigger")
+            .with_multi_getter<ITrigger, float>("Trigger triggerer #", [=](auto&& trigger)
             {
                 const auto sector = trigger.sector().lock();
                 return all_items

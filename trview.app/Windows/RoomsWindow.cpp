@@ -132,7 +132,6 @@ namespace trview
             .with_type_key("IRoom")
             .with_getter<IRoom, int>("#", [](auto&& room) { return static_cast<int>(room.number()); })
             .with_getter<IRoom, int>("Alternate", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; })
-            .with_getter<IRoom, int>("#", [](auto&& room) { return static_cast<int>(room.number()); })
             .with_getter<IRoom, int>("X size", [](auto&& room) { return static_cast<int>(room.num_x_sectors()); })
             .with_getter<IRoom, int>("Z size", [](auto&& room) { return static_cast<int>(room.num_z_sectors()); })
             .with_getter<IRoom, int>("X", [](auto&& room) { return static_cast<int>(room.info().x); })
@@ -140,10 +139,15 @@ namespace trview
             .with_getter<IRoom, int>("Z", [](auto&& room) { return static_cast<int>(room.info().z); })
             .with_getter<IRoom, int>("Triggers #", [](auto&& room) { return static_cast<int>(room.triggers().size()); })
             .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Triggers", {}, [](auto&& room) { return room.triggers() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "ITrigger")
-            .with_getter<IRoom, int>("Statics", [](auto&& room) { return static_cast<int>(room.static_meshes().size()); })
+            .with_getter<IRoom, int>("Statics #", [](auto&& room) { return static_cast<int>(room.static_meshes().size()); })
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Statics", {}, [](auto&& room) { return room.static_meshes() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "IStaticMesh")
             .with_getter<IRoom, int>("Items #", [](auto&& room) { return static_cast<int>(room.items().size()); })
             .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Items", {}, [](auto&& room) { return room.items() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "IItem")
-            .with_multi_getter<IRoom, float>("Neighbours", [](auto&& room)
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Neighbours", {}, [](auto&& room)
+                { 
+                    return room.neighbours() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }
+                , {}, "IRoom")
+            .with_multi_getter<IRoom, float>("Neighbours #", [](auto&& room)
                 {
                     std::vector<float> results;
                     const auto neighbours = room.neighbours();

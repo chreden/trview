@@ -178,7 +178,7 @@ namespace trview
                         [](const auto& r) { if (auto room = r.lock()) { return static_cast<int>(room->number()); } return 0; }) |
                         std::ranges::to<std::vector>();
                 })
-            .with_multi_getter<ICameraSink, std::weak_ptr<IFilterable>>("Triggers", {}, [](auto&& camera_sink) -> std::vector<std::weak_ptr<IFilterable>>
+            .with_multi_getter<ICameraSink, std::weak_ptr<IFilterable>>("Trigger", {}, [](auto&& camera_sink) -> std::vector<std::weak_ptr<IFilterable>>
                 {
                     return camera_sink.triggers() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
                 }, {}, "ITrigger")
