@@ -143,10 +143,16 @@ namespace trview
             .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Statics", {}, [](auto&& room) { return room.static_meshes() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "IStaticMesh")
             .with_getter<IRoom, int>("Items #", [](auto&& room) { return static_cast<int>(room.items().size()); })
             .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Items", {}, [](auto&& room) { return room.items() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "IItem")
-            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Neighbours", {}, [](auto&& room)
-                { 
-                    return room.neighbours() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }
-                , {}, "IRoom")
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Neighbours", {}, [](auto&& room) -> std::vector<std::weak_ptr<IFilterable>>
+                {
+                    if (const auto room_level = room.level().lock())
+                    {
+                        return room.neighbours() | 
+                            std::views::transform([=](auto&& r) { return room_level->room(r); }) |
+                            std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
+                    }
+                    return {};
+                }, {}, "IRoom")
             .with_multi_getter<IRoom, float>("Neighbours #", [](auto&& room)
                 {
                     std::vector<float> results;
