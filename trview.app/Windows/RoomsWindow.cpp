@@ -362,7 +362,8 @@ namespace trview
                     return level->is_in_visible_set(level->room(room.number()));
                 }
                 return false;
-            });
+            })
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Sectors", {}, [&](auto&& room) { return room.sectors() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "ISector");
 
         filters.add_getters(room_getters.build());
     }
