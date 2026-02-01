@@ -58,7 +58,6 @@ namespace trview
         };
 
         using Value = std::variant<std::string, float, bool, int, std::weak_ptr<IFilterable>>;
-        using TypeMatcher = std::function<bool(const std::weak_ptr<IFilterable>&)>;
 
         struct Filter
         {
