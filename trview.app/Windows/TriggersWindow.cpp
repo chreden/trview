@@ -76,21 +76,21 @@ namespace trview
             .with_getter<ITrigger, int>("Timer", [](auto&& trigger) { return static_cast<int>(trigger.timer()); })
             .with_getter<ITrigger, bool>("Hide", [](auto&& trigger) { return !trigger.visible(); }, EditMode::ReadWrite)
             .with_getter<ITrigger, bool>("In Visible Room", [](auto&& trigger)
-            {
-                if (const auto level = trigger.level().lock())
                 {
-                    return level->is_in_visible_set(trigger.room());
-                }
-                return false;
-            })
+                    if (const auto level = trigger.level().lock())
+                    {
+                        return level->is_in_visible_set(trigger.room());
+                    }
+                    return false;
+                })
             .with_multi_getter<ITrigger, std::string>("Command", [=](auto&& trigger)
-            {
-                return trigger.commands()
-                    | std::views::transform([](auto&& t) { return command_type_name(t.type()); })
-                    | std::ranges::to<std::vector>();
-            })
+                {
+                    return trigger.commands()
+                        | std::views::transform([](auto&& t) { return command_type_name(t.type()); })
+                        | std::ranges::to<std::vector>();
+                })
             .with_multi_getter<ITrigger, std::weak_ptr<IFilterable>>("Trigger triggerer", {}, [=](auto&& trigger)
-                {  
+                {
                     const auto sector = trigger.sector().lock();
                     return all_items
                         | std::views::filter([&](const auto& i)
@@ -103,33 +103,46 @@ namespace trview
                         | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
                 }, {}, "ITrigger")
             .with_multi_getter<ITrigger, float>("Trigger triggerer #", [=](auto&& trigger)
-            {
-                const auto sector = trigger.sector().lock();
-                return all_items
-                    | std::views::filter([&](const auto& i)
-                        {
-                            auto item = i.lock();
-                            return item && item->type() == "Trigger triggerer" && sector_for_item(item) == sector;
-                        })
-                    | std::views::transform([](const auto& i) -> std::shared_ptr<IItem> { return i.lock(); })
-                    | std::views::filter([](const auto& i) { return i != nullptr; })
-                    | std::views::transform([](const auto& i) { return static_cast<float>(i->number()); })
-                    | std::ranges::to<std::vector>();
-            })
+                {
+                    const auto sector = trigger.sector().lock();
+                    return all_items
+                        | std::views::filter([&](const auto& i)
+                            {
+                                auto item = i.lock();
+                                return item && item->type() == "Trigger triggerer" && sector_for_item(item) == sector;
+                            })
+                        | std::views::transform([](const auto& i) -> std::shared_ptr<IItem> { return i.lock(); })
+                        | std::views::filter([](const auto& i) { return i != nullptr; })
+                        | std::views::transform([](const auto& i) { return static_cast<float>(i->number()); })
+                        | std::ranges::to<std::vector>();
+                })
             .with_multi_getter<ITrigger, float>("Extra", [&](auto&& trigger)
-            {
-                return trigger.commands()
-                    | std::views::transform([](auto&& t) -> std::vector<float>
-                        {
-                            const auto data = t.data();
-                            return data.size() < 2 ? std::vector<float>{} : (
-                                std::ranges::subrange(data.begin() + 1, data.end())
-                                | std::views::transform([](auto&& d) { return static_cast<float>(d); })
-                                | std::ranges::to<std::vector>());
-                        })
-                    | std::views::join
-                    | std::ranges::to<std::vector>();
-            });
+                {
+                    return trigger.commands()
+                        | std::views::transform([](auto&& t) -> std::vector<float>
+                            {
+                                const auto data = t.data();
+                                return data.size() < 2 ? std::vector<float>{} : (
+                                    std::ranges::subrange(data.begin() + 1, data.end())
+                                    | std::views::transform([](auto&& d) { return static_cast<float>(d); })
+                                    | std::ranges::to<std::vector>());
+                            })
+                        | std::views::join
+                        | std::ranges::to<std::vector>();
+                })
+            .with_multi_getter<ITrigger, std::weak_ptr<IFilterable>>("Items", {}, [=](auto&& trigger) -> std::vector<std::weak_ptr<IFilterable>>
+                {
+                    const auto trigger_level = trigger.level().lock();
+                    if (trigger_level)
+                    {
+                        return trigger.commands()
+                            | std::views::filter([](auto&& c) { return command_is_item(c.type()); })
+                            | std::views::transform([&](auto&& c) { return trigger_level->item(c.index()); })
+                            | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
+                    }
+                    return {};
+                }, {}, "IItem");
+
         
         auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)
             {
