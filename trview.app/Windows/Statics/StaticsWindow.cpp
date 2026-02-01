@@ -50,7 +50,7 @@ namespace trview
                     return false;
                 });
 
-        filters.add_getters(static_mesh_getters.build<IStaticMesh>());
+        filters.add_getters(static_mesh_getters.build());
     }
 
     StaticsWindow::StaticsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)

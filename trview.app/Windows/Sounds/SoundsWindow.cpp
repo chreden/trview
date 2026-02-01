@@ -41,7 +41,7 @@ namespace trview
                 .with_getter<ISoundSource, int>("Range", [](auto&& sound_source) { return static_cast<int>(sound_source.range()); });
         }
 
-        filters.add_getters(sound_getters.build<ISoundSource>());
+        filters.add_getters(sound_getters.build());
     }
 
     SoundsWindow::SoundsWindow(const std::weak_ptr<IMessageSystem>& messaging)

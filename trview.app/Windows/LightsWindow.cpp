@@ -85,7 +85,7 @@ namespace trview
                 .with_getter<ILight, float>("Range", [](auto&& light) { return range(light); }, has_range);
         }
 
-        filters.add_getters(light_getters.build<ILight>());
+        filters.add_getters(light_getters.build());
     }
 
     LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)

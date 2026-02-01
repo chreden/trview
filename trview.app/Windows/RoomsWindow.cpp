@@ -364,7 +364,7 @@ namespace trview
                 return false;
             });
 
-        filters.add_getters(room_getters.build<IRoom>());
+        filters.add_getters(room_getters.build());
     }
 
     void add_sector_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
@@ -409,7 +409,7 @@ namespace trview
             .with_getter<ISector, int>("Floor", [&](auto&& sector) { return sector.floor(); })
             .with_getter<ISector, int>("Room Below", [&](auto&& sector) { return sector.room_below(); })
             .with_getter<ISector, int>("Ceiling", [&](auto&& sector) { return sector.ceiling(); });
-        filters.add_getters(sector_getters.build<ISector>());
+        filters.add_getters(sector_getters.build());
     }
 
     RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)

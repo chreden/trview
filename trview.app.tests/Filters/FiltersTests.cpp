@@ -108,7 +108,7 @@ TEST(Filters, IsFloat)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
-        .build<Object>());
+        .build());
 
     Filters::Filter is_float = make_filter().key("value").compare_op(CompareOp::Equal).value("12");
     filters.set_filters({ is_float });
@@ -122,7 +122,7 @@ TEST(Filters, IsNotFloat)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
-        .build<Object>());
+        .build());
 
     Filters::Filter is_not_float = make_filter().key("value").compare_op(CompareOp::NotEqual).value("12");
     filters.set_filters({ is_not_float });
@@ -136,7 +136,7 @@ TEST(Filters, GreaterThanFloat)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
-        .build<Object>());
+        .build());
 
     Filters::Filter gt_float = make_filter().key("value").compare_op(CompareOp::GreaterThan).value("15");
     filters.set_filters({ gt_float });
@@ -150,7 +150,7 @@ TEST(Filters, GreaterThanEqualFloat)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
-        .build<Object>());
+        .build());
 
     Filters::Filter gte_float = make_filter().key("value").compare_op(CompareOp::GreaterThanOrEqual).value("15");
     filters.set_filters({ gte_float });
@@ -164,7 +164,7 @@ TEST(Filters, LessThanFloat)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
-        .build<Object>());
+        .build());
 
     Filters::Filter lt_float = make_filter().key("value").compare_op(CompareOp::LessThan).value("15");
     filters.set_filters({ lt_float });
@@ -178,7 +178,7 @@ TEST(Filters, LessThanEqualFloat)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
-        .build<Object>());
+        .build());
 
     Filters::Filter lte_float = make_filter().key("value").compare_op(CompareOp::LessThanOrEqual).value("15");
     filters.set_filters({ lte_float });
@@ -192,7 +192,7 @@ TEST(Filters, BetweenFloat)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
-        .build<Object>());
+        .build());
 
     Filters::Filter b_float = make_filter().key("value").compare_op(CompareOp::Between).value("10").value2("15");
     filters.set_filters({ b_float });
@@ -208,7 +208,7 @@ TEST(Filters, BetweenInclusiveFloat)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
-        .build<Object>());
+        .build());
 
     Filters::Filter bi_float = make_filter().key("value").compare_op(CompareOp::BetweenInclusive).value("10").value2("15");
     filters.set_filters({ bi_float });
@@ -224,7 +224,7 @@ TEST(Filters, PresentFloat)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_multi_getter<Object, float>("value", [](auto&& o) { return o.numbers; })
-        .build<Object>());
+        .build());
 
     Filters::Filter present_float = make_filter().key("value").compare_op(CompareOp::Exists);
     filters.set_filters({ present_float });
@@ -238,7 +238,7 @@ TEST(Filters, IsString)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, std::string>("value", [](auto&& o) { return o.text; })
-        .build<Object>());
+        .build());
 
     Filters::Filter is_string = make_filter().key("value").compare_op(CompareOp::Equal).value("first");
     filters.set_filters({ is_string });
@@ -252,7 +252,7 @@ TEST(Filters, IsNotString)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, std::string>("value", [](auto&& o) { return o.text; })
-        .build<Object>());
+        .build());
 
     Filters::Filter is_not_string = make_filter().key("value").compare_op(CompareOp::NotEqual).value("first");
     filters.set_filters({ is_not_string });
@@ -266,7 +266,7 @@ TEST(Filters, PresentString)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_multi_getter<Object, std::string>("value", [](auto&& o) { return o.texts; })
-        .build<Object>());
+        .build());
 
     Filters::Filter present_string = make_filter().key("value").compare_op(CompareOp::Exists);
     filters.set_filters({ present_string });
@@ -280,7 +280,7 @@ TEST(Filters, StartsWithString)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, std::string>("value", [](auto&& o) { return o.text; })
-        .build<Object>());
+        .build());
 
     Filters::Filter starts_with_string = make_filter().key("value").compare_op(CompareOp::StartsWith).value("fir");
     filters.set_filters({ starts_with_string });
@@ -295,7 +295,7 @@ TEST(Filters, EndsWithString)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, std::string>("value", [](auto&& o) { return o.text; })
-        .build<Object>());
+        .build());
 
     Filters::Filter ends_with_string = make_filter().key("value").compare_op(CompareOp::EndsWith).value("st");
     filters.set_filters({ ends_with_string });
@@ -310,7 +310,7 @@ TEST(Filters, Or)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
-        .build<Object>());
+        .build());
 
     Filters::Filter value_gt = make_filter().key("value").compare_op(CompareOp::GreaterThan).value("10").op(Op::Or);
     Filters::Filter value_lt = make_filter().key("value").compare_op(CompareOp::LessThan).value("5");
@@ -326,7 +326,7 @@ TEST(Filters, And)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
-        .build<Object>());
+        .build());
 
     Filters::Filter value_gt = make_filter().key("value").compare_op(CompareOp::GreaterThan).value("5").op(Op::And);
     Filters::Filter value_lt = make_filter().key("value").compare_op(CompareOp::LessThan).value("10");
@@ -342,7 +342,7 @@ TEST(Filters, NotPresentFloat)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_multi_getter<Object, float>("value", [](auto&& o) { return o.numbers; })
-        .build<Object>());
+        .build());
 
     Filters::Filter present_float = make_filter().key("value").compare_op(CompareOp::NotExists);
     filters.set_filters({ present_float });
@@ -356,7 +356,7 @@ TEST(Filters, NotPresentString)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_multi_getter<Object, std::string>("value", [](auto&& o) { return o.texts; })
-        .build<Object>());
+        .build());
 
     Filters::Filter present_string = make_filter().key("value").compare_op(CompareOp::NotExists);
     filters.set_filters({ present_string });
@@ -370,7 +370,7 @@ TEST(Filters, PresentSingleWithPredicate)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, float>("option", [](auto&& o) { return o.option.value(); }, [](auto&& o) { return o.option.has_value(); })
-        .build<Object>());
+        .build());
 
     Filters::Filter present = make_filter().key("option").compare_op(CompareOp::Exists);
     filters.set_filters({ present });
@@ -384,7 +384,7 @@ TEST(Filters, NotPresentSingleWithPredicate)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, float>("option", [](auto&& o) { return o.option.value(); }, [](auto&& o) { return o.option.has_value(); })
-        .build<Object>());
+        .build());
 
     Filters::Filter present = make_filter().key("option").compare_op(CompareOp::NotExists);
     filters.set_filters({ present });
@@ -398,7 +398,7 @@ TEST(Filters, IsNotMultiValue)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_multi_getter<Object, std::string>("value", [](auto&& o) { return o.texts; })
-        .build<Object>());
+        .build());
 
     Filters::Filter is_not_string = make_filter().key("value").compare_op(CompareOp::NotEqual).value("first");
     filters.set_filters({ is_not_string });
@@ -413,7 +413,7 @@ TEST(Filters, NestedFilter)
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, float>("number", [](auto&& o) { return o.number; })
         .with_getter<Object, std::string>("text", [](auto&& o) { return o.text; })
-        .build<Object>());
+        .build());
 
     // Filter: (number == 1 || number == 5) && text == "test"
 
@@ -446,7 +446,7 @@ TEST(Filters, DoubleNested)
         .with_getter<Object, float>("number", [](auto&& o) { return o.number; })
         .with_getter<Object, std::string>("text", [](auto&& o) { return o.text; })
         .with_getter<Object, float>("option", [](auto&& o) { return o.option.value(); }, [](auto&& o) { return o.option.has_value(); })
-        .build<Object>());
+        .build());
 
     // Filter: ((number == 1 || number == 5) && text == "test") || option
 
@@ -485,7 +485,7 @@ TEST(Filters, UnaryNot)
     Filters filters;
     filters.add_getters(Filters::GettersBuilder()
         .with_getter<Object, std::string>("text", [](auto&& o) { return o.text; })
-        .build<Object>());
+        .build());
 
     // Filter: !(text starts with s)
     Filters::Filter text = make_filter().key("text").compare_op(CompareOp::StartsWith).value("s").invert(true);

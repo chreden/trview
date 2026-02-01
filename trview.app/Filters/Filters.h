@@ -100,7 +100,6 @@ namespace trview
         struct Getters
         {
             std::string type_key;
-            TypeMatcher type_matcher;
             std::map<std::string, ValueGetter> getters;
             std::map<std::string, MultiGetter> multi_getters;
         };
@@ -132,7 +131,6 @@ namespace trview
 
             GettersBuilder& with_type_key(const std::string& key);
 
-            template <typename T>
             Getters build() const;
         private:
             std::string _type_key;

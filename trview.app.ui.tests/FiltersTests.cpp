@@ -105,7 +105,7 @@ void register_filters_tests(ImGuiTestEngine* engine)
             auto& window = ctx->GetVars<Filters>();
             window.add_getters(Filters::GettersBuilder()
                 .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
-                .build<Object>());
+                .build());
 
             ctx->ItemClick("/**/Filters##FiltersButton");
             ctx->SetRef(ctx->ItemInfo("/**/+")->Window);
@@ -143,7 +143,7 @@ void register_filters_tests(ImGuiTestEngine* engine)
             auto& window = ctx->GetVars<Filters>();
             window.add_getters(Filters::GettersBuilder()
                 .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
-                .build<Object>());
+                .build());
             Filters::Filter is_float = make_filter().key("value").compare_op(CompareOp::Equal).value("12");
             window.set_filters({ is_float });
 

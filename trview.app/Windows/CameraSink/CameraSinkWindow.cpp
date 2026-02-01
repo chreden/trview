@@ -209,7 +209,7 @@ namespace trview
                     return false;
                 });
 
-        filters.add_getters(camera_sink_getters.build<ICameraSink>());
+        filters.add_getters(camera_sink_getters.build());
     }
 
     void add_flyby_filters(Filters& filters)
@@ -253,7 +253,7 @@ namespace trview
                 return false;
             });
 
-        filters.add_getters(flyby_getters.build<IFlyby>());
+        filters.add_getters(flyby_getters.build());
     }
 
     void add_flyby_node_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
@@ -282,7 +282,7 @@ namespace trview
                 flyby_node_getters.with_getter<IFlybyNode, bool>(flag_name(platform_and_version, i), [=](auto&& node) { return (node.flags() & (1 << i)) != 0; });
             }
 
-        filters.add_getters(flyby_node_getters.build<IFlybyNode>());
+        filters.add_getters(flyby_node_getters.build());
     }
 
     CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera, const std::weak_ptr<IMessageSystem>& messaging)

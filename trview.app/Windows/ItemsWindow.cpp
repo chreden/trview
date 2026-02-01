@@ -107,7 +107,7 @@ namespace trview
                     }
                     return false;
                 })
-            .build<IItem>();
+            .build();
 
         filters.add_getters(getters);
     }

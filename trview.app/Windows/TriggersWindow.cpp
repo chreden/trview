@@ -185,7 +185,7 @@ namespace trview
         add_multi_getter(TriggerCommandType::Flyby);
         add_multi_getter(TriggerCommandType::Cutscene);
 
-        filters.add_getters(getters.build<ITrigger>());
+        filters.add_getters(getters.build());
     }
 
     TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)

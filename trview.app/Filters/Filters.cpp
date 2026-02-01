@@ -813,4 +813,14 @@ namespace trview
         }
         _show_filters = !_show_filters;
     }
+
+    Filters::Getters Filters::GettersBuilder::build() const
+    {
+        return
+        {
+            .type_key = _type_key,
+            .getters = _getters,
+            .multi_getters = _multi_getters
+        };
+    }
 }

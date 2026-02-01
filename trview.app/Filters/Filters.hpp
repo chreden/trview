@@ -131,22 +131,6 @@ namespace trview
         return { "false", "true" };
     }
 
-    template <typename T>
-    Filters::Getters Filters::GettersBuilder::build() const
-    {
-        return
-        {
-            .type_key = _type_key,
-            .type_matcher = [](const std::weak_ptr<IFilterable>& f)
-            {
-                const auto f_ptr = f.lock();
-                return f_ptr && std::dynamic_pointer_cast<T>(f_ptr);
-            },
-            .getters = _getters,
-            .multi_getters = _multi_getters
-        };
-    }
-
     template <typename T, typename ValueType>
     Filters::GettersBuilder& Filters::GettersBuilder::with_getter(const std::string& key, const std::function<ValueType (const T&)>& getter, EditMode can_change)
     {
