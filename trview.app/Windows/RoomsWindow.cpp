@@ -259,7 +259,15 @@ namespace trview
             .with_getter<IRoom, bool>("Bit 13", [](auto&& room) { return room.flag(IRoom::Flag::Bit13); })
             .with_getter<IRoom, bool>("Bit 14", [](auto&& room) { return room.flag(IRoom::Flag::Bit14); })
             .with_getter<IRoom, bool>("Bit 15", [](auto&& room) { return room.flag(IRoom::Flag::Bit15); })
-            .with_getter<IRoom, int>("Alternate", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; })
+            .with_getter<IRoom, int>("Alternate #", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; })
+            .with_getter<IRoom, std::weak_ptr<IFilterable>>("Alternate", {}, [](auto&& room) -> std::weak_ptr<IFilterable>
+                {
+                    if (const auto room_level = room.level().lock())
+                    {
+                        return room_level->room(room.alternate_room());
+                    }
+                    return {};
+                }, {}, EditMode::Read, "IRoom")
             .with_getter<IRoom, int>("Alternate Group", [](auto&& room) { return room.alternate_group(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; })
             .with_getter<IRoom, bool>("No Space", room_is_no_space);
 
@@ -307,49 +315,49 @@ namespace trview
                 });
         }
 
-        room_getters.with_multi_getter<IRoom, int>("Floordata Index", [&](auto&& room)
+        room_getters.with_multi_getter<IRoom, int>("Floordata Index", [](auto&& room)
             {
                 return room.sectors()
                     | std::views::transform([&](auto&& s) { return static_cast<int>(s->floordata_index()); })
                     | std::ranges::to<std::vector>();
             })
-            .with_multi_getter<IRoom, int>("Material", [&](auto&& room)
+            .with_multi_getter<IRoom, int>("Material", [](auto&& room)
             {
                 return room.sectors()
                     | std::views::transform([&](auto&& s) { return static_cast<int>(s->material()); })
                     | std::ranges::to<std::vector>();
             })
-            .with_multi_getter<IRoom, int>("Box Index", [&](auto&& room)
+            .with_multi_getter<IRoom, int>("Box Index", [](auto&& room)
             {
                 return room.sectors()
                     | std::views::transform([&](auto&& s) { return static_cast<int>(s->box_index()); })
                     | std::ranges::to<std::vector>();
             })
-            .with_multi_getter<IRoom, bool>("Stopper", [&](auto&& room)
+            .with_multi_getter<IRoom, bool>("Stopper", [](auto&& room)
             {
                 return room.sectors()
                     | std::views::transform([&](auto&& s) { return s->stopper(); })
                     | std::ranges::to<std::vector>();
             })
-            .with_multi_getter<IRoom, int>("Room Below", [&](auto&& room)
+            .with_multi_getter<IRoom, int>("Room Below", [](auto&& room)
             {
                 return room.sectors()
                     | std::views::transform([&](auto&& s) { return static_cast<int>(s->room_below()); })
                     | std::ranges::to<std::vector>();
             })
-            .with_multi_getter<IRoom, int>("Floor", [&](auto&& room)
+            .with_multi_getter<IRoom, int>("Floor", [](auto&& room)
             {
                 return room.sectors()
                     | std::views::transform([&](auto&& s) { return static_cast<int>(s->floor()); })
                     | std::ranges::to<std::vector>();
             })
-            .with_multi_getter<IRoom, int>("Room Above", [&](auto&& room)
+            .with_multi_getter<IRoom, int>("Room Above", [](auto&& room)
             {
                 return room.sectors()
                     | std::views::transform([&](auto&& s) { return static_cast<int>(s->room_above()); })
                     | std::ranges::to<std::vector>();
             })
-            .with_multi_getter<IRoom, int>("Ceiling", [&](auto&& room)
+            .with_multi_getter<IRoom, int>("Ceiling", [](auto&& room)
             {
                 return room.sectors()
                     | std::views::transform([&](auto&& s) { return static_cast<int>(s->ceiling()); })
