@@ -186,7 +186,7 @@ namespace trview
         int column_count() const;
         const Getters& find_getter(const std::string& type_key) const;
         bool has_options(const std::string& type_key, const std::string& key) const;
-        std::vector<CompareOp> ops_for_key(const std::string& type_key, const std::string& key) const;
+        std::vector<CompareOp> compare_ops_for_key(const std::string& type_key, const std::string& key) const;
         std::vector<std::string> options_for_key(const std::string& type_key, const std::string& key) const;
         Action render(Filter& filter, int32_t depth, int32_t index, Filter& parent, const std::string& type_key);
         Action render_leaf(Filter& filter, int32_t depth, int32_t index, const std::string& type_key);

@@ -343,7 +343,7 @@ namespace trview
         return filter_result ^ filter.invert;
     }
 
-    std::vector<CompareOp> Filters::ops_for_key(const std::string& type_key, const std::string& key) const
+    std::vector<CompareOp> Filters::compare_ops_for_key(const std::string& type_key, const std::string& key) const
     {
         const auto& getters = find_getter(type_key);
         const auto& getter = getters.getters.find(key);
@@ -608,6 +608,14 @@ namespace trview
                         }
                     }
 
+                    // If the current op is not valid, make it a valid one
+                    const auto compare_ops = compare_ops_for_key(type_key, filter.key);
+                    if (std::ranges::find(compare_ops, filter.compare) == compare_ops.end() &&
+                        !compare_ops.empty())
+                    {
+                        filter.compare = compare_ops[0];
+                    }
+
                     // If the current value is not in the options then set to one of them.
                     if (has_options(type_key, filter.key))
                     {
@@ -626,10 +634,9 @@ namespace trview
         }
         ImGui::SameLine();
 
-        auto available_compare_ops = ops_for_key(type_key, filter.key);
         if (ImGui::BeginCombo((Names::FilterCompareOp + suffix).c_str(), to_string(filter.compare).c_str()))
         {
-            for (const auto& compare_op : available_compare_ops)
+            for (const auto& compare_op : compare_ops_for_key(type_key, filter.key))
             {
                 if (ImGui::Selectable(to_string(compare_op).c_str(), compare_op == filter.compare))
                 {
