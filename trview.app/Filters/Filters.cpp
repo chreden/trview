@@ -749,6 +749,11 @@ namespace trview
                 const auto& getters = find_getter(_filter.type_key);
                 for (const auto& getter : getters.getters)
                 {
+                    if (std::ranges::contains(getter.second.ops, CompareOp::Matches))
+                    {
+                        continue;
+                    }
+
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     ImGui::Text(getter.first.c_str());
