@@ -120,6 +120,9 @@
     <ClCompile Include="Elements\Level\LevelNameLookup.cpp" Filter="Elements\Level" />
     <ClCompile Include="Filters\Filters.cpp" Filter="Filters" />
     <ClCompile Include="Elements\ElementFilters.cpp" Filter="Elements" />
+    <ClCompile Include="Settings\UserSettingsPatches.cpp">
+      <Filter>Settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -363,6 +366,9 @@
     <ClInclude Include="Mocks\Windows\IWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Filters\IFilterable.h" Filter="Filters" />
     <ClInclude Include="Elements\ElementFilters.h" Filter="Elements" />
+    <ClInclude Include="Settings\UserSettingsPatches.h">
+      <Filter>Settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

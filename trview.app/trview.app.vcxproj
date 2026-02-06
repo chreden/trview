@@ -85,6 +85,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Plugins\Plugin.cpp" />
     <ClCompile Include="Plugins\Plugins.cpp" />
     <ClCompile Include="Routing\RandomizerRoute.cpp" />
+    <ClCompile Include="Settings\UserSettingsPatches.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
     <ClCompile Include="Sound\SoundStorage.cpp" />
     <ClCompile Include="Windows\AutoHider.cpp" />
@@ -184,6 +185,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Routing\IRandomizerRoute.h" />
     <ClInclude Include="Routing\RandomizerRoute.h" />
     <ClInclude Include="Settings\PluginSetting.h" />
+    <ClInclude Include="Settings\UserSettingsPatches.h" />
     <ClInclude Include="Sound\ISound.h" />
     <ClInclude Include="Sound\ISoundStorage.h" />
     <ClInclude Include="Sound\Sound.h" />

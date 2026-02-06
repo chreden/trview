@@ -223,7 +223,22 @@ namespace trview
             .with_type_key("IFlyby")
             .with_getter<IFlyby, int>("#", [](auto&& flyby) { return static_cast<int>(flyby.number()); })
             .with_getter<IFlyby, bool>("Hide", [](auto&& flyby) { return !flyby.visible(); }, EditMode::ReadWrite)
-            .with_multi_getter<IFlyby, int>("Room", [](auto&& flyby)
+            .with_multi_getter<IFlyby, std::weak_ptr<IFilterable>>("Room", [](auto&& flyby)
+                {
+                    std::vector<std::weak_ptr<IFilterable>> rooms;
+                    if (const auto level = flyby.level().lock())
+                    {
+                        for (const auto& node : flyby.nodes())
+                        {
+                            if (const auto node_ptr = node.lock())
+                            {
+                                rooms.push_back(level->room(node_ptr->room()));
+                            }
+                        }
+                    }
+                    return rooms;
+                })
+            .with_multi_getter<IFlyby, int>("Room #", [](auto&& flyby)
             {
                 std::unordered_set<int> rooms;
                 for (const auto& node : flyby.nodes())
@@ -272,7 +287,15 @@ namespace trview
             .with_getter<IFlybyNode, int>("X", [](auto&& node) { return static_cast<int>(node.position().x * trlevel::Scale_X); })
             .with_getter<IFlybyNode, int>("Y", [](auto&& node) { return static_cast<int>(node.position().y * trlevel::Scale_Y); })
             .with_getter<IFlybyNode, int>("Z", [](auto&& node) { return static_cast<int>(node.position().z * trlevel::Scale_Z); })
-            .with_getter<IFlybyNode, int>("Room", [](auto&& node) { return node.room(); })
+            .with_getter<IFlybyNode, std::weak_ptr<IFilterable>>("Room", [](auto&& node) -> std::weak_ptr<IFilterable>
+                { 
+                    if (const auto node_level = node.level().lock())
+                    {
+                        return node_level->room(node.room());
+                    }
+                    return {};
+                })
+            .with_getter<IFlybyNode, int>("Room #", [](auto&& node) { return node.room(); })
             .with_getter<IFlybyNode, int>("Roll", [](auto&& node) { return node.roll(); })
             .with_getter<IFlybyNode, int>("Speed", [](auto&& node) { return node.speed(); })
             .with_getter<IFlybyNode, int>("Fov", [](auto&& node) { return node.fov(); })

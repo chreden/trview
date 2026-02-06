@@ -2,6 +2,8 @@
 #include <trview.common/Json.h>
 #include <trview.common/Strings.h>
 #include <trview.common/JsonSerializers.h>
+#include <trview.common/Version.h>
+#include "UserSettingsPatches.h"
 
 namespace trview
 {
@@ -130,6 +132,7 @@ namespace trview
             read_attribute(json, settings.flyby_columns, "flyby_columns");
             read_attribute(json, settings.flyby_node_columns, "flyby_node_columns");
             read_attribute(json, settings.linear_filtering, "linear_filtering");
+            read_attribute(json, settings.version, "version");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -141,19 +144,18 @@ namespace trview
         try
         {
             auto data = _files->load_file(_files->appdata_directory() + "\\trview\\randomizer.json");
-            if (!data.has_value())
+            if (data.has_value())
             {
-                return settings;
+                auto json = nlohmann::json::parse(data.value().begin(), data.value().end(), nullptr, true, true, true);
+                from_json(json, settings.randomizer);
             }
-
-            auto json = nlohmann::json::parse(data.value().begin(), data.value().end(), nullptr, true, true, true);
-            from_json(json, settings.randomizer);
         }
         catch (...)
         {
             // Nowhere to log this yet...
         }
 
+        patch_settings(settings);
         return settings;
     }
 
@@ -212,6 +214,7 @@ namespace trview
             json["flyby_columns"] = settings.flyby_columns;
             json["flyby_node_columns"] = settings.flyby_node_columns;
             json["linear_filtering"] = settings.linear_filtering;
+            json["version"] = trview::version();
             _files->save_file(file_path, json.dump());
         }
         catch (...)
