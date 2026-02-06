@@ -94,10 +94,10 @@ namespace trview
         _tips["Direction"] = "Direction is inverted in-game. 3D view shows correct direction.";
         setup_filters();
 
-        _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+        _filters.set_columns(std::vector<std::string>{ "#", "Room #", "Type", "Hide" });
         _token_store += _filters.on_columns_reset += [this]()
             {
-                _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+                _filters.set_columns(std::vector<std::string>{ "#", "Room #", "Type", "Hide" });
             };
         _token_store += _filters.on_columns_saved += [this]()
             {

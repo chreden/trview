@@ -58,10 +58,10 @@ namespace trview
     {
         setup_filters();
 
-        _filters.set_columns(std::vector<std::string>{ "#", "Room", "ID", "Type", "Hide" });
+        _filters.set_columns(std::vector<std::string>{ "#", "Room #", "ID", "Type", "Hide" });
         _token_store += _filters.on_columns_reset += [this]()
             {
-                _filters.set_columns(std::vector<std::string>{ "#", "Room", "ID", "Type", "Hide" });
+                _filters.set_columns(std::vector<std::string>{ "#", "Room #", "ID", "Type", "Hide" });
             };
         _token_store += _filters.on_columns_saved += [this]()
             {

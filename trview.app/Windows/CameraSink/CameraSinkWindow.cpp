@@ -614,10 +614,10 @@ namespace trview
         _filters.clear_all_getters();
         add_all_filters(_filters, _level);
 
-        _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+        _filters.set_columns(std::vector<std::string>{ "#", "Room #", "Type", "Hide" });
         _token_store += _filters.on_columns_reset += [this]()
             {
-                _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+                _filters.set_columns(std::vector<std::string>{ "#", "Room #", "Type", "Hide" });
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
@@ -654,10 +654,10 @@ namespace trview
                 }
             };
 
-        _node_filters.set_columns(std::vector<std::string>{ "#", "Room" });
+        _node_filters.set_columns(std::vector<std::string>{ "#", "Room #" });
         _token_store += _node_filters.on_columns_reset += [this]()
             {
-                _node_filters.set_columns(std::vector<std::string>{ "#", "Room" });
+                _node_filters.set_columns(std::vector<std::string>{ "#", "Room #" });
             };
         _token_store += _node_filters.on_columns_saved += [this]()
             {

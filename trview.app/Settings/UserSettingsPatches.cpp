@@ -33,6 +33,7 @@ namespace trview
         std::ranges::replace(settings.rooms_window_columns, "Items", "Items #");
         std::ranges::replace(settings.rooms_window_columns, "Triggers", "Triggers #");
         std::ranges::replace(settings.rooms_window_columns, "Statics", "Statics #");
+        std::ranges::replace(settings.statics_window_columns, "Room", "Room #");
     }
 
     /// <summary>
@@ -51,6 +52,6 @@ namespace trview
         std::ranges::replace(settings.rooms_window_columns, "Alternate #", "Alternate");
         std::ranges::replace(settings.rooms_window_columns, "Items #", "Items");
         std::ranges::replace(settings.rooms_window_columns, "Triggers #", "Triggers");
-        std::ranges::replace(settings.rooms_window_columns, "Statics #", "Statics");
+        std::ranges::replace(settings.statics_window_columns, "Room #", "Room");
     }
 }

@@ -428,10 +428,10 @@ namespace trview
 
         generate_filters();
 
-        _filters.set_columns(std::vector<std::string>{ "#", "Items #", "Triggers #", "Statics", "Hide" });
+        _filters.set_columns(std::vector<std::string>{ "#", "Items #", "Triggers #", "Statics #", "Hide" });
         _token_store += _filters.on_columns_reset += [this]()
             {
-                _filters.set_columns(std::vector<std::string>{ "#", "Items #", "Triggers #", "Statics", "Hide" });
+                _filters.set_columns(std::vector<std::string>{ "#", "Items #", "Triggers #", "Statics #", "Hide" });
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
