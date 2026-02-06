@@ -155,15 +155,18 @@ namespace trview
             // Nowhere to log this yet...
         }
 
-        patch_settings(settings);
+        patch_settings_load(settings);
         return settings;
     }
 
-    void SettingsLoader::save_user_settings(const UserSettings& settings)
+    void SettingsLoader::save_user_settings(const UserSettings& settings_to_save)
     {
         const auto directory = _files->appdata_directory() + "\\trview";
         _files->create_directory(directory);
         const auto file_path = directory + "\\settings.txt";
+
+        UserSettings settings = settings_to_save;
+        patch_settings_save(settings);
 
         try
         {

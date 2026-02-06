@@ -3,11 +3,17 @@
 
 namespace trview
 {
-    void filter_columns_replacement(UserSettings& settings);
+    void filter_columns_replacement_load(UserSettings& settings);
+    void filter_columns_replacement_save(UserSettings& settings);
 
-    void patch_settings(UserSettings& settings)
+    void patch_settings_load(UserSettings& settings)
     {
-        filter_columns_replacement(settings);
+        filter_columns_replacement_load(settings);
+    }
+
+    void patch_settings_save(UserSettings& settings)
+    {
+        filter_columns_replacement_save(settings);
     }
 
     /// <summary>
@@ -15,15 +21,11 @@ namespace trview
     /// so columns need to be remapped to their equivalents.
     /// Change after 2.8.0 (2.8.0 was last version without version in settings)
     /// </summary>
-    void filter_columns_replacement(UserSettings& settings)
+    void filter_columns_replacement_load(UserSettings& settings)
     {
-        if (!settings.version.empty())
-        {
-            return;
-        }
-
         std::ranges::replace(settings.camera_sink_window_columns, "Room", "Room #");
         std::ranges::replace(settings.flyby_columns, "Room", "Room #");
+        std::ranges::replace(settings.flyby_node_columns, "Room", "Room #");
         std::ranges::replace(settings.items_window_columns, "Room", "Room #");
         std::ranges::replace(settings.lights_window_columns, "Room", "Room #");
         std::ranges::replace(settings.triggers_window_columns, "Room", "Room #");
@@ -31,5 +33,24 @@ namespace trview
         std::ranges::replace(settings.rooms_window_columns, "Items", "Items #");
         std::ranges::replace(settings.rooms_window_columns, "Triggers", "Triggers #");
         std::ranges::replace(settings.rooms_window_columns, "Statics", "Statics #");
+    }
+
+    /// <summary>
+    /// Certain default filter columns were replaced by filterable property versions
+    /// so columns need to be remapped to their equivalents so that old versions don't crash.
+    /// Change after 2.8.0 (2.8.0 was last version without version in settings)
+    /// </summary>
+    void filter_columns_replacement_save(UserSettings& settings)
+    {
+        std::ranges::replace(settings.camera_sink_window_columns, "Room #", "Room");
+        std::ranges::replace(settings.flyby_columns, "Room #", "Room");
+        std::ranges::replace(settings.flyby_node_columns, "Room #", "Room");
+        std::ranges::replace(settings.items_window_columns, "Room #", "Room");
+        std::ranges::replace(settings.lights_window_columns, "Room #", "Room");
+        std::ranges::replace(settings.triggers_window_columns, "Room #", "Room");
+        std::ranges::replace(settings.rooms_window_columns, "Alternate #", "Alternate");
+        std::ranges::replace(settings.rooms_window_columns, "Items #", "Items");
+        std::ranges::replace(settings.rooms_window_columns, "Triggers #", "Triggers");
+        std::ranges::replace(settings.rooms_window_columns, "Statics #", "Statics");
     }
 }
