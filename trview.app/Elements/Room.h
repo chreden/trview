@@ -105,6 +105,7 @@ namespace trview
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
         void update(float delta) override;
         uint16_t water_scheme() const override;
+        int32_t filterable_index() const override;
     private:
         void generate_geometry(const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();

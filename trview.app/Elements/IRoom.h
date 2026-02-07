@@ -20,6 +20,7 @@
 #include "RenderFilter.h"
 #include "CameraSink/ICameraSink.h"
 #include "IStaticMesh.h"
+#include "../Filters/IFilterable.h"
 
 namespace trview
 {
@@ -28,7 +29,7 @@ namespace trview
     /// <summary>
     /// Represents a room in a level.
     /// </summary>
-    struct IRoom
+    struct IRoom : public IFilterable
     {
         /// <summary>
         /// The different types of alternate modes for a <see cref="IRoom"/>.

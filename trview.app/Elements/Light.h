@@ -38,6 +38,7 @@ namespace trview
         virtual float density() const override;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) override;
         virtual trlevel::LevelVersion level_version() const override;
+        int32_t filterable_index() const override;
     private:
         std::shared_ptr<IMesh> _mesh;
         std::weak_ptr<ILevel> _level;

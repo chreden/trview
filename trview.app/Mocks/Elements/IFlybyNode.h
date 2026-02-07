@@ -21,6 +21,7 @@ namespace trview
             MOCK_METHOD(uint32_t, room, (), (const, override));
             MOCK_METHOD(uint16_t, speed, (), (const, override));
             MOCK_METHOD(uint16_t, timer, (), (const, override));
+            MOCK_METHOD(int32_t, filterable_index, (), (const, override));
         };
     }
 }

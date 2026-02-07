@@ -5,12 +5,13 @@
 #include <trview.app/Geometry/IRenderable.h>
 #include <trview.app/Geometry/PickResult.h>
 #include <trlevel/tr_lights.h>
+#include "../Filters/IFilterable.h"
 
 namespace trview
 {
     struct IRoom;
 
-    struct ILight : public IRenderable
+    struct ILight : public IRenderable, public IFilterable
     {
         Event<> on_changed;
 

@@ -36,6 +36,7 @@ namespace trview
             MOCK_METHOD(void, set_position, (const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(void, render_direction, (const ICamera&), (override));
             MOCK_METHOD(trlevel::LevelVersion, level_version, (), (const, override));
+            MOCK_METHOD(int32_t, filterable_index, (), (const, override));
 
             bool _visible_state{ false };
 

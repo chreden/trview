@@ -7,11 +7,13 @@
 
 #include <trlevel/trtypes.h>
 
+#include "../../Filters/IFilterable.h"
+
 namespace trview
 {
     struct ILevel;
     struct IFlyby;
-    struct IFlybyNode
+    struct IFlybyNode : public IFilterable
     {
         using Source = std::function<std::shared_ptr<IFlybyNode>(const trlevel::tr4_flyby_camera&, const std::weak_ptr<IFlyby>&, const std::weak_ptr<ILevel>&)>;
 

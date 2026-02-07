@@ -33,6 +33,7 @@ namespace trview
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const, override));
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));
             MOCK_METHOD(std::weak_ptr<ISector>, sector, (), (const, override));
+            MOCK_METHOD(int32_t, filterable_index, (), (const, override));
 
             bool _visible_state{ false };
 

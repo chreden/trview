@@ -13,7 +13,7 @@ namespace trview
         void render();
 
         template <std::ranges::forward_range T, std::ranges::forward_range R, typename F>
-        bool apply(T&& full_range, R&& partial_range, Filters<F>& filters);
+        bool apply(T&& full_range, R&& partial_range, Filters& filters);
 
         template <std::ranges::forward_range T, std::ranges::forward_range R>
         bool apply(T&& full_range, R&& partial_range, bool filter_changed = true);

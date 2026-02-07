@@ -225,7 +225,7 @@ namespace trlevel
         _sprite_textures = read_sprite_textures(activity, file, callbacks);
         _sprite_sequences = read_sprite_sequences(activity, file, callbacks);
         _cameras = read_cameras(activity, file, callbacks);
-        read_flyby_cameras(activity, file, callbacks);
+        _flyby_cameras = read_flyby_cameras(activity, file, callbacks);
 
         _sound_sources = read_sound_sources(activity, file, callbacks);
         const auto boxes = read_boxes(activity, file, callbacks);

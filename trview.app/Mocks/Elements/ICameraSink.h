@@ -29,6 +29,7 @@ namespace trview
             MOCK_METHOD(Type, type, (), (const, override));
             MOCK_METHOD(bool, visible, (), (const, override));
             MOCK_METHOD(std::vector<std::weak_ptr<ITrigger>>, triggers, (), (const, override));
+            MOCK_METHOD(int32_t, filterable_index, (), (const, override));
 
             bool _visible_state{ false };
 

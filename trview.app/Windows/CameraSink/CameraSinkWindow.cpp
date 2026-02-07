@@ -5,6 +5,7 @@
 #include "../../Elements/Flyby/IFlybyNode.h"
 #include "../../Messages/Messages.h"
 #include "../../Elements/ILevel.h"
+#include "../../Elements/ElementFilters.h"
 
 namespace trview
 {
@@ -123,6 +124,190 @@ namespace trview
         }
     }
 
+    void add_camera_sink_filters(Filters& filters)
+    {
+        if (filters.has_type_key("ICameraSink"))
+        {
+            return;
+        }
+
+        std::set<std::string> available_types{ "Camera", "Sink" };
+        auto camera_sink_getters = Filters::GettersBuilder()
+            .with_type_key("ICameraSink")
+            .with_getter<ICameraSink, std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& camera_sink) { return to_string(camera_sink.type()); })
+            .with_getter<ICameraSink, int>("#", [](auto&& camera_sink) { return static_cast<int>(camera_sink.number()); })
+            .with_getter<ICameraSink, int>("X", [](auto&& camera_sink) { return static_cast<int>(camera_sink.position().x * trlevel::Scale_X); })
+            .with_getter<ICameraSink, int>("Y", [](auto&& camera_sink) { return static_cast<int>(camera_sink.position().y * trlevel::Scale_Y); })
+            .with_getter<ICameraSink, int>("Z", [](auto&& camera_sink) { return static_cast<int>(camera_sink.position().z * trlevel::Scale_Z); })
+            .with_getter<ICameraSink, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& camera_sink) -> std::weak_ptr<IFilterable>
+                { 
+                    if (camera_sink.type() == ICameraSink::Type::Camera)
+                    {
+                        return camera_sink.room();
+                    }
+                    const auto rooms = camera_sink.inferred_rooms() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
+                    return !rooms.empty() ? rooms[0] : std::weak_ptr<IFilterable>{};
+                }, {}, EditMode::Read, "IRoom")
+            .with_getter<ICameraSink, int>("Room #", [](auto&& camera_sink)
+                {
+                    if (camera_sink.type() == ICameraSink::Type::Camera)
+                    {
+                        return static_cast<int>(primary_room(camera_sink));
+                    }
+                    const auto rooms = std::views::transform(camera_sink.inferred_rooms(),
+                        [](const auto& r) { if (auto room = r.lock()) { return static_cast<int>(room->number()); } return 0; }) |
+                        std::ranges::to<std::vector>();
+                    return rooms.empty() ? 0 : rooms[0];
+                })
+            .with_multi_getter<ICameraSink, std::weak_ptr<IFilterable>>("Rooms", {}, [](auto&& camera_sink) -> std::vector<std::weak_ptr<IFilterable>>
+                {
+                    if (camera_sink.type() == ICameraSink::Type::Camera)
+                    {
+                        return { camera_sink.room() };
+                    }
+                    return camera_sink.inferred_rooms() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
+                }, {}, "IRoom")
+            .with_multi_getter<ICameraSink, int>("Rooms #", [](auto&& camera_sink) -> std::vector<int>
+                {
+                    if (camera_sink.type() == ICameraSink::Type::Camera)
+                    {
+                        return { static_cast<int>(primary_room(camera_sink)) };
+                    }
+                    return std::views::transform(
+                        camera_sink.inferred_rooms(),
+                        [](const auto& r) { if (auto room = r.lock()) { return static_cast<int>(room->number()); } return 0; }) |
+                        std::ranges::to<std::vector>();
+                })
+            .with_multi_getter<ICameraSink, std::weak_ptr<IFilterable>>("Trigger", {}, [](auto&& camera_sink) -> std::vector<std::weak_ptr<IFilterable>>
+                {
+                    return camera_sink.triggers() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
+                }, {}, "ITrigger")
+            .with_multi_getter<ICameraSink, int>("Trigger References", [&](auto&& camera_sink)
+                {
+                    std::vector<int> results;
+                    for (const auto& trigger : camera_sink.triggers())
+                    {
+                        const auto trigger_ptr = trigger.lock();
+                        results.push_back(static_cast<int>(trigger_ptr->number()));
+                    }
+                    return results;
+                })
+            .with_getter<ICameraSink, bool>("Hide", [](auto&& camera_sink) { return !camera_sink.visible(); }, EditMode::ReadWrite)
+            // Camera:
+            .with_getter<ICameraSink, int>("Flag", [](auto&& camera_sink) { return static_cast<int>(camera_sink.flag()); }, is_camera)
+            .with_getter<ICameraSink, bool>("Persistent", [](auto&& camera_sink) { return (camera_sink.flag() & 0x1) == 1; }, is_camera)
+
+            // Sink:
+            .with_getter<ICameraSink, int>("Strength", [](auto&& camera_sink) { return static_cast<int>(camera_sink.strength()); }, is_sink)
+            .with_getter<ICameraSink, int>("Box Index", [](auto&& camera_sink) { return static_cast<int>(camera_sink.flag()); }, is_sink)
+            .with_getter<ICameraSink, bool>("In Visible Room", [](auto&& camera_sink)
+                {
+                    if (const auto level = camera_sink.level().lock())
+                    {
+                        return level->is_in_visible_set(camera_sink.room());
+                    }
+                    return false;
+                });
+
+        filters.add_getters(camera_sink_getters.build());
+    }
+
+    void add_flyby_filters(Filters& filters)
+    {
+        if (filters.has_type_key("IFlyby"))
+        {
+            return;
+        }
+
+        auto flyby_getters = Filters::GettersBuilder()
+            .with_type_key("IFlyby")
+            .with_getter<IFlyby, int>("#", [](auto&& flyby) { return static_cast<int>(flyby.number()); })
+            .with_getter<IFlyby, bool>("Hide", [](auto&& flyby) { return !flyby.visible(); }, EditMode::ReadWrite)
+            .with_multi_getter<IFlyby, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& flyby)
+                {
+                    std::vector<std::weak_ptr<IFilterable>> rooms;
+                    if (const auto level = flyby.level().lock())
+                    {
+                        for (const auto& node : flyby.nodes())
+                        {
+                            if (const auto node_ptr = node.lock())
+                            {
+                                rooms.push_back(level->room(node_ptr->room()));
+                            }
+                        }
+                    }
+                    return rooms;
+                }, {}, "IRoom")
+            .with_multi_getter<IFlyby, int>("Room #", [](auto&& flyby)
+            {
+                std::unordered_set<int> rooms;
+                for (const auto& node : flyby.nodes())
+                {
+                    if (const auto node_ptr = node.lock())
+                    {
+                        rooms.insert(node_ptr->room());
+                    }
+                }
+                return rooms | std::ranges::to<std::vector>();
+            })
+            .with_getter<IFlyby, bool>("In Visible Room", [](auto&& flyby)
+            {
+                if (const auto level = flyby.level().lock())
+                {
+                    for (const auto& node : flyby.nodes())
+                    {
+                        if (const auto node_ptr = node.lock())
+                        {
+                            if (level->is_in_visible_set(level->room(node_ptr->room())))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            });
+
+        filters.add_getters(flyby_getters.build());
+    }
+
+    void add_flyby_node_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
+    {
+        if (filters.has_type_key("IFlybyNode"))
+        {
+            return;
+        }
+
+        const auto level_ptr = level.lock();
+        const auto platform_and_version = level_ptr ? level_ptr->platform_and_version() : trlevel::PlatformAndVersion{ .platform = trlevel::Platform::PC, .version = trlevel::LevelVersion::Tomb4 };
+
+        auto flyby_node_getters = Filters::GettersBuilder()
+            .with_type_key("IFlybyNode")
+            .with_getter<IFlybyNode, int>("#", [](auto&& node) { return static_cast<int>(node.number()); })
+            .with_getter<IFlybyNode, int>("X", [](auto&& node) { return static_cast<int>(node.position().x * trlevel::Scale_X); })
+            .with_getter<IFlybyNode, int>("Y", [](auto&& node) { return static_cast<int>(node.position().y * trlevel::Scale_Y); })
+            .with_getter<IFlybyNode, int>("Z", [](auto&& node) { return static_cast<int>(node.position().z * trlevel::Scale_Z); })
+            .with_getter<IFlybyNode, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& node) -> std::weak_ptr<IFilterable>
+                { 
+                    if (const auto node_level = node.level().lock())
+                    {
+                        return node_level->room(node.room());
+                    }
+                    return {};
+                }, {}, EditMode::Read, "IRoom")
+            .with_getter<IFlybyNode, int>("Room #", [](auto&& node) { return node.room(); })
+            .with_getter<IFlybyNode, int>("Roll", [](auto&& node) { return node.roll(); })
+            .with_getter<IFlybyNode, int>("Speed", [](auto&& node) { return node.speed(); })
+            .with_getter<IFlybyNode, int>("Fov", [](auto&& node) { return node.fov(); })
+            .with_getter<IFlybyNode, int>("Timer", [](auto&& node) { return node.timer(); });
+            for (int i = 0; i < 16; ++i)
+            {
+                flyby_node_getters.with_getter<IFlybyNode, bool>(flag_name(platform_and_version, i), [=](auto&& node) { return (node.flags() & (1 << i)) != 0; });
+            }
+
+        filters.add_getters(flyby_node_getters.build());
+    }
+
     CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _camera(camera), _messaging(messaging)
     {
@@ -153,6 +338,7 @@ namespace trview
     {
         _all_camera_sinks = camera_sinks;
         _force_sort = true;
+        setup_filters();
         _filters.force_sort();
     }
 
@@ -283,16 +469,17 @@ namespace trview
                 std::views::transform([](auto&& cs) { return cs.lock(); }) |
                 std::ranges::to<std::vector>();
 
-            _auto_hider.apply(_all_camera_sinks, filtered_camera_sinks, _filters);
+            _auto_hider.apply(_all_camera_sinks, filtered_camera_sinks, _filters.test_and_reset_changed());
 
             RowCounter counter{ "camera/sink", _all_camera_sinks.size() };
             _filters.render_table(filtered_camera_sinks, _all_camera_sinks, _selected_camera_sink, counter,
                 [&](auto&& camera)
                 {
-                    set_local_selected_camera_sink(camera);
+                    const std::shared_ptr<ICameraSink> f_ptr = std::static_pointer_cast<ICameraSink>(camera.lock());
+                    set_local_selected_camera_sink(f_ptr);
                     if (_sync)
                     {
-                        messages::send_select_camera_sink(_messaging, camera);
+                        messages::send_select_camera_sink(_messaging, f_ptr);
                     }
                 }, default_hide(filtered_camera_sinks));
         }
@@ -425,68 +612,12 @@ namespace trview
     void CameraSinkWindow::setup_filters()
     {
         _filters.clear_all_getters();
+        add_all_filters(_filters, _level);
 
-        // All:
-        std::set<std::string> available_types{ "Camera", "Sink" };
-        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& camera_sink) { return to_string(camera_sink.type()); });
-        _filters.add_getter<int>("#", [](auto&& camera_sink) { return static_cast<int>(camera_sink.number()); });
-        _filters.add_getter<int>("X", [](auto&& camera_sink) { return static_cast<int>(camera_sink.position().x * trlevel::Scale_X); });
-        _filters.add_getter<int>("Y", [](auto&& camera_sink) { return static_cast<int>(camera_sink.position().y * trlevel::Scale_Y); });
-        _filters.add_getter<int>("Z", [](auto&& camera_sink) { return static_cast<int>(camera_sink.position().z * trlevel::Scale_Z); });
-        _filters.add_getter<int>("Room", [](auto&& camera_sink)
-            {
-                if (camera_sink.type() == ICameraSink::Type::Camera)
-                {
-                    return static_cast<int>(primary_room(camera_sink));
-                }
-                const auto rooms = std::views::transform(camera_sink.inferred_rooms(),
-                    [](const auto& r) { if (auto room = r.lock()) { return static_cast<int>(room->number()); } return 0; }) |
-                    std::ranges::to<std::vector>();
-                return rooms.empty() ? 0 : rooms[0];
-            });
-        _filters.add_multi_getter<int>("Rooms", [](auto&& camera_sink) -> std::vector<int>
-            {
-                if (camera_sink.type() == ICameraSink::Type::Camera)
-                {
-                    return { static_cast<int>(primary_room(camera_sink)) };
-                }
-                return std::views::transform(
-                    camera_sink.inferred_rooms(),
-                    [](const auto& r) { if (auto room = r.lock()) { return static_cast<int>(room->number()); } return 0; }) |
-                    std::ranges::to<std::vector>();
-            });
-        _filters.add_multi_getter<int>("Trigger References", [&](auto&& camera_sink)
-            {
-                std::vector<int> results;
-                for (const auto& trigger : camera_sink.triggers())
-                {
-                    const auto trigger_ptr = trigger.lock();
-                    results.push_back(static_cast<int>(trigger_ptr->number()));
-                }
-                return results;
-            });
-        _filters.add_getter<bool>("Hide", [](auto&& camera_sink) { return !camera_sink.visible(); }, EditMode::ReadWrite);
-
-        // Camera:
-        _filters.add_getter<int>("Flag", [](auto&& camera_sink) { return static_cast<int>(camera_sink.flag()); }, is_camera);
-        _filters.add_getter<bool>("Persistent", [](auto&& camera_sink) { return (camera_sink.flag() & 0x1) == 1; }, is_camera);
-
-        // Sink:
-        _filters.add_getter<int>("Strength", [](auto&& camera_sink) { return static_cast<int>(camera_sink.strength()); }, is_sink);
-        _filters.add_getter<int>("Box Index", [](auto&& camera_sink) { return static_cast<int>(camera_sink.flag()); }, is_sink);
-        _filters.add_getter<bool>("In Visible Room", [](auto&& camera_sink)
-            {
-                if (const auto level = camera_sink.level().lock())
-                {
-                    return level->is_in_visible_set(camera_sink.room());
-                }
-                return false;
-            });
-
-        _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+        _filters.set_columns(std::vector<std::string>{ "#", "Room #", "Type", "Hide" });
         _token_store += _filters.on_columns_reset += [this]()
             {
-                _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type", "Hide" });
+                _filters.set_columns(std::vector<std::string>{ "#", "Room #", "Type", "Hide" });
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
@@ -496,44 +627,18 @@ namespace trview
                     messages::send_settings(_messaging, *_settings);
                 }
             };
+        _filters.set_type_key("ICameraSink");
     }
 
     void CameraSinkWindow::setup_flyby_filters()
     {
         _flyby_filters.clear_all_getters();
-        _node_filters.clear_all_getters();
+        add_all_filters(_flyby_filters, _level);
+        _flyby_filters.set_type_key("IFlyby");
 
-        _flyby_filters.add_getter<int>("#", [](auto&& flyby) { return static_cast<int>(flyby.number()); });
-        _flyby_filters.add_getter<bool>("Hide", [](auto&& flyby) { return !flyby.visible(); }, EditMode::ReadWrite);
-        _flyby_filters.add_multi_getter<int>("Room", [](auto&& flyby)
-            {
-                std::unordered_set<int> rooms;
-                for (const auto& node : flyby.nodes())
-                {
-                    if (const auto node_ptr = node.lock())
-                    {
-                        rooms.insert(node_ptr->room());
-                    }
-                }
-                return rooms | std::ranges::to<std::vector>();
-            });
-        _flyby_filters.add_getter<bool>("In Visible Room", [](auto&& flyby)
-            {
-                if (const auto level = flyby.level().lock())
-                {
-                    for (const auto& node : flyby.nodes())
-                    {
-                        if (const auto node_ptr = node.lock())
-                        {
-                            if (level->is_in_visible_set(level->room(node_ptr->room())))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-                return false;
-            });
+        _node_filters.clear_all_getters();
+        add_all_filters(_node_filters, _level);
+        _node_filters.set_type_key("IFlybyNode");
 
         _flyby_filters.set_columns(std::vector<std::string>{ "#", "Hide" });
         _token_store += _flyby_filters.on_columns_reset += [this]()
@@ -549,24 +654,10 @@ namespace trview
                 }
             };
 
-        _node_filters.add_getter<int>("#", [](auto&& node) { return static_cast<int>(node.number()); });
-        _node_filters.add_getter<int>("X", [](auto&& node) { return static_cast<int>(node.position().x * trlevel::Scale_X); });
-        _node_filters.add_getter<int>("Y", [](auto&& node) { return static_cast<int>(node.position().y * trlevel::Scale_Y); });
-        _node_filters.add_getter<int>("Z", [](auto&& node) { return static_cast<int>(node.position().z * trlevel::Scale_Z); });
-        _node_filters.add_getter<int>("Room", [](auto&& node) { return node.room(); });
-        _node_filters.add_getter<int>("Roll", [](auto&& node) { return node.roll(); });
-        _node_filters.add_getter<int>("Speed", [](auto&& node) { return node.speed(); });
-        _node_filters.add_getter<int>("Fov", [](auto&& node) { return node.fov(); });
-        _node_filters.add_getter<int>("Timer", [](auto&& node) { return node.timer(); });
-        for (int i = 0; i < 16; ++i)
-        {
-            _node_filters.add_getter<bool>(flag_name(_platform_and_version, i), [=](auto&& node) { return (node.flags() & (1 << i)) != 0; });
-        }
-
-        _node_filters.set_columns(std::vector<std::string>{ "#", "Room" });
+        _node_filters.set_columns(std::vector<std::string>{ "#", "Room #" });
         _token_store += _node_filters.on_columns_reset += [this]()
             {
-                _node_filters.set_columns(std::vector<std::string>{ "#", "Room" });
+                _node_filters.set_columns(std::vector<std::string>{ "#", "Room #" });
             };
         _token_store += _node_filters.on_columns_saved += [this]()
             {
@@ -836,7 +927,8 @@ namespace trview
             _flyby_filters.render_table(filtered_flybys, _all_flybys, _selected_flyby, counter,
                 [&](auto&& flyby)
                 {
-                    set_local_selected_flyby(flyby);
+                    const std::shared_ptr<IFlyby> f_ptr = std::static_pointer_cast<IFlyby>(flyby.lock());
+                    set_local_selected_flyby(f_ptr);
                 }, default_hide(filtered_flybys));
 
             ImGui::EndChild();
@@ -892,10 +984,11 @@ namespace trview
                 _node_filters.render_table(filtered_nodes, all_nodes, _selected_node, counter,
                     [&](auto&& node)
                     {
-                        set_local_selected_flyby_node(node);
+                        const std::shared_ptr<IFlybyNode> f_ptr = std::static_pointer_cast<IFlybyNode>(node.lock());
+                        set_local_selected_flyby_node(f_ptr);
                         if (_sync)
                         {
-                            messages::send_select_flyby_node(_messaging, node);
+                            messages::send_select_flyby_node(_messaging, f_ptr);
                         }
                     }, {});
 
@@ -1000,6 +1093,7 @@ namespace trview
         {
             if (auto level_ptr = level->lock())
             {
+                _level = level.value();
                 set_camera_sinks(level_ptr->camera_sinks());
                 set_flybys(level_ptr->flybys());
                 set_platform_and_version(level_ptr->platform_and_version());

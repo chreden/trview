@@ -921,5 +921,10 @@ namespace trview
     {
         return _stopper;
     }
+
+    int32_t Sector::filterable_index() const
+    {
+        return static_cast<int32_t>(_sector_id);
+    }
 }
 

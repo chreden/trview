@@ -83,7 +83,7 @@ namespace trview
         std::optional<float> _tooltip_timer;
         std::vector<Command> _local_selected_trigger_commands;
         std::vector<std::weak_ptr<IItem>> _local_selected_trigger_trigger_triggerers;
-        Filters<ITrigger> _filters;
+        Filters _filters;
         bool _force_sort{ false };
         Track<Type::Room> _track;
         AutoHider _auto_hider;
@@ -91,5 +91,6 @@ namespace trview
         std::optional<UserSettings> _settings;
         bool _columns_set{ false };
         std::weak_ptr<IMessageSystem> _messaging;
+        std::weak_ptr<ILevel> _level;
     };
 }

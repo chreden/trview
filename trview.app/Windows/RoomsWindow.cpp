@@ -7,6 +7,7 @@
 #include "RowCounter.h"
 #include "../Elements/ILevel.h"
 #include "../Messages/Messages.h"
+#include "../Elements/ElementFilters.h"
 
 namespace trview
 {
@@ -113,6 +114,313 @@ namespace trview
         }
     }
 
+    void add_room_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
+    {
+        if (filters.has_type_key("IRoom"))
+        {
+            return;
+        }
+
+        const auto level_ptr = level.lock();
+        std::optional<trlevel::PlatformAndVersion> platform_and_version;
+        if (level_ptr)
+        {
+            platform_and_version = level_ptr->platform_and_version();
+        }
+
+        auto room_getters = Filters::GettersBuilder()
+            .with_type_key("IRoom")
+            .with_getter<IRoom, int>("#", [](auto&& room) { return static_cast<int>(room.number()); })
+            .with_getter<IRoom, int>("Alternate", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; })
+            .with_getter<IRoom, int>("X size", [](auto&& room) { return static_cast<int>(room.num_x_sectors()); })
+            .with_getter<IRoom, int>("Z size", [](auto&& room) { return static_cast<int>(room.num_z_sectors()); })
+            .with_getter<IRoom, int>("X", [](auto&& room) { return static_cast<int>(room.info().x); })
+            .with_getter<IRoom, int>("Y", [](auto&& room) { return static_cast<int>(room.info().yBottom); })
+            .with_getter<IRoom, int>("Z", [](auto&& room) { return static_cast<int>(room.info().z); })
+            .with_getter<IRoom, int>("Triggers #", [](auto&& room) { return static_cast<int>(room.triggers().size()); })
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Triggers", {}, [](auto&& room) { return room.triggers() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "ITrigger")
+            .with_getter<IRoom, int>("Statics #", [](auto&& room) { return static_cast<int>(room.static_meshes().size()); })
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Statics", {}, [](auto&& room) { return room.static_meshes() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "IStaticMesh")
+            .with_getter<IRoom, int>("Items #", [](auto&& room) { return static_cast<int>(room.items().size()); })
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Items", {}, [](auto&& room) { return room.items() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "IItem")
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Neighbours", {}, [](auto&& room) -> std::vector<std::weak_ptr<IFilterable>>
+                {
+                    if (const auto room_level = room.level().lock())
+                    {
+                        return room.neighbours() | 
+                            std::views::transform([=](auto&& r) { return room_level->room(r); }) |
+                            std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
+                    }
+                    return {};
+                }, {}, "IRoom")
+            .with_multi_getter<IRoom, float>("Neighbours #", [](auto&& room)
+                {
+                    std::vector<float> results;
+                    const auto neighbours = room.neighbours();
+                    std::copy(neighbours.begin(), neighbours.end(), std::back_inserter(results));
+                    return results;
+                })
+            .with_multi_getter<IRoom, float>("Trigger Index", [&](auto&& room)
+                {
+                    std::vector<float> results;
+                    for (const auto& trigger : room.triggers())
+                    {
+                        if (const auto trigger_ptr = trigger.lock())
+                        {
+                            results.push_back(static_cast<float>(trigger_ptr->number()));
+                        }
+                    }
+                    return results;
+                });
+
+        std::set<std::string> available_trigger_types;
+        if (level_ptr)
+        {
+            for (const auto& trigger : level_ptr->triggers())
+            {
+                if (auto trigger_ptr = trigger.lock())
+                {
+                    available_trigger_types.insert(to_string(trigger_ptr->type()));
+                }
+            }
+        }
+
+        room_getters
+            .with_multi_getter<IRoom, std::string>("Trigger Type", { available_trigger_types.begin(), available_trigger_types.end() }, [&](auto&& room)
+            {
+                std::vector<std::string> results;
+                for (const auto& trigger : room.triggers())
+                {
+                    if (const auto trigger_ptr = trigger.lock())
+                    {
+                        results.push_back(to_string(trigger_ptr->type()));
+                    }
+                }
+                return results;
+            })
+            .with_multi_getter<IRoom, int>("Item Index", [&](auto&& room)
+            {
+                std::vector<int> results;
+                for (const auto& item : room.items())
+                {
+                    if (const auto item_ptr = item.lock())
+                    {
+                        results.push_back(static_cast<int>(item_ptr->number()));
+                    }
+                }
+                return results;
+            });
+
+        std::set<std::string> available_item_types;
+        if (level_ptr)
+        {
+            for (const auto& item : level_ptr->items())
+            {
+                if (auto item_ptr = item.lock())
+                {
+                    available_item_types.insert(item_ptr->type());
+                }
+            }
+        }
+
+        room_getters
+            .with_multi_getter<IRoom, std::string>("Item Type", { available_item_types.begin(), available_item_types.end() }, [&](auto&& room)
+            {
+                std::vector<std::string> results;
+                for (const auto& item : room.items())
+                {
+                    if (auto item_ptr = item.lock())
+                    {
+                        results.push_back(item_ptr->type());
+                    }
+                }
+                return results;
+            })
+            .with_getter<IRoom, bool>("Hide", [](auto&& room) { return !room.visible(); }, EditMode::ReadWrite)
+            .with_getter<IRoom, bool>("Water", [](auto&& room) { return room.water(); });
+
+        if (platform_and_version && platform_and_version->version >= trlevel::LevelVersion::Tomb3)
+        {
+            room_getters.with_getter<IRoom, int>("Water Scheme", [](auto&& room) { return room.water_scheme(); });
+        }
+
+        room_getters.with_getter<IRoom, bool>("Bit 1", [](auto&& room) { return room.flag(IRoom::Flag::Bit1); })
+            .with_getter<IRoom, bool>("Bit 2", [](auto&& room) { return room.flag(IRoom::Flag::Bit2); })
+            .with_getter<IRoom, bool>("Outside/Bit 3", [](auto&& room) { return room.outside(); })
+            .with_getter<IRoom, bool>("Bit 4", [](auto&& room) { return room.flag(IRoom::Flag::Bit4); })
+            .with_getter<IRoom, bool>("Wind/Bit 5", [](auto&& room) { return room.flag(IRoom::Flag::Wind); })
+            .with_getter<IRoom, bool>("Bit 6", [](auto&& room) { return room.flag(IRoom::Flag::Bit6); })
+            .with_getter<IRoom, bool>("Quicksand/Block Lens Flare/Bit 7", [](auto&& room) { return room.flag(IRoom::Flag::Bit7); })
+            .with_getter<IRoom, bool>("Caustics/Bit 8", [](auto&& room) { return room.flag(IRoom::Flag::Caustics); })
+            .with_getter<IRoom, bool>("Reflectivity/Bit 9", [](auto&& room) { return room.flag(IRoom::Flag::WaterReflectivity); })
+            .with_getter<IRoom, bool>("Snow (NGLE)/Bit 10", [](auto&& room) { return room.flag(IRoom::Flag::Bit10); })
+            .with_getter<IRoom, bool>("D/Rain/Bit 11", [](auto&& room) { return room.flag(IRoom::Flag::Bit11); })
+            .with_getter<IRoom, bool>("P/Cold/Bit 12", [](auto&& room) { return room.flag(IRoom::Flag::Bit12); })
+            .with_getter<IRoom, bool>("Bit 13", [](auto&& room) { return room.flag(IRoom::Flag::Bit13); })
+            .with_getter<IRoom, bool>("Bit 14", [](auto&& room) { return room.flag(IRoom::Flag::Bit14); })
+            .with_getter<IRoom, bool>("Bit 15", [](auto&& room) { return room.flag(IRoom::Flag::Bit15); })
+            .with_getter<IRoom, int>("Alternate #", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; })
+            .with_getter<IRoom, std::weak_ptr<IFilterable>>("Alternate", {}, [](auto&& room) -> std::weak_ptr<IFilterable>
+                {
+                    if (const auto room_level = room.level().lock())
+                    {
+                        return room_level->room(room.alternate_room());
+                    }
+                    return {};
+                }, {}, EditMode::Read, "IRoom")
+            .with_getter<IRoom, int>("Alternate Group", [](auto&& room) { return room.alternate_group(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; })
+            .with_getter<IRoom, bool>("No Space", room_is_no_space);
+
+        if (platform_and_version && platform_and_version->version < trlevel::LevelVersion::Tomb4)
+        {
+            const auto level_version = platform_and_version->version;
+            room_getters.with_getter<IRoom, int>("Ambient Intensity", [](auto&& room) { return room.ambient_intensity_1(); });
+            room_getters.with_getter<IRoom, float>("Ambient Intensity %%", [](auto&& room) { return ambient_percentage(room.ambient_intensity_1()) * 100.0f; });
+            if (level_version > trlevel::LevelVersion::Tomb1)
+            {
+                if (level_version == trlevel::LevelVersion::Tomb2)
+                {
+                    room_getters.with_getter<IRoom, int>("Ambient Intensity 2", [](auto&& room) { return room.ambient_intensity_2(); });
+                    room_getters.with_getter<IRoom, float>("Ambient Intensity 2 %%", [](auto&& room) { return ambient_percentage(room.ambient_intensity_2()) * 100.0f; });
+                }
+                room_getters.with_getter<IRoom, int>("Light Mode", [](auto&& room) { return room.light_mode(); });
+            }
+        }
+        else
+        {
+            room_getters.with_getter<IRoom, float>("Ambient R", [](auto&& room) { return room.ambient().r; });
+            room_getters.with_getter<IRoom, float>("Ambient G", [](auto&& room) { return room.ambient().g; });
+            room_getters.with_getter<IRoom, float>("Ambient B", [](auto&& room) { return room.ambient().b; });
+        }
+
+        const auto available_floordata_types =
+            std::views::iota(std::to_underlying(Floordata::Command::Function::None) + 1, std::to_underlying(Floordata::Command::Function::Count) + 0)
+            | std::views::transform([](auto c) { return to_string(static_cast<Floordata::Command::Function>(c)); })
+            | std::ranges::to<std::set>();
+
+        if (level_ptr)
+        {
+            const auto floordata = level_ptr->floor_data();
+            const auto trng = level_ptr->trng();
+            room_getters.with_multi_getter<IRoom, std::string>("Floordata Type", { available_floordata_types.begin(), available_floordata_types.end() }, [=](auto&& room)
+                {
+                    const auto& sectors = room.sectors();
+                    return sectors
+                        | std::views::transform([&](auto&& s) { return parse_floordata(floordata, s->floordata_index(), FloordataMeanings::None, trng, platform_and_version).commands; })
+                        | std::views::join
+                        | std::views::transform([](auto&& c) { return c.type; })
+                        | std::ranges::to<std::unordered_set>()
+                        | std::views::transform([](auto&& s) { return to_string(s); })
+                        | std::ranges::to<std::vector>();
+                });
+        }
+
+        room_getters.with_multi_getter<IRoom, int>("Floordata Index", [](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->floordata_index()); })
+                    | std::ranges::to<std::vector>();
+            })
+            .with_multi_getter<IRoom, int>("Material", [](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->material()); })
+                    | std::ranges::to<std::vector>();
+            })
+            .with_multi_getter<IRoom, int>("Box Index", [](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->box_index()); })
+                    | std::ranges::to<std::vector>();
+            })
+            .with_multi_getter<IRoom, bool>("Stopper", [](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return s->stopper(); })
+                    | std::ranges::to<std::vector>();
+            })
+            .with_multi_getter<IRoom, int>("Room Below", [](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->room_below()); })
+                    | std::ranges::to<std::vector>();
+            })
+            .with_multi_getter<IRoom, int>("Floor", [](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->floor()); })
+                    | std::ranges::to<std::vector>();
+            })
+            .with_multi_getter<IRoom, int>("Room Above", [](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->room_above()); })
+                    | std::ranges::to<std::vector>();
+            })
+            .with_multi_getter<IRoom, int>("Ceiling", [](auto&& room)
+            {
+                return room.sectors()
+                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->ceiling()); })
+                    | std::ranges::to<std::vector>();
+            })
+            .with_getter<IRoom, bool>("In Visible Room", [](auto&& room)
+            {
+                if (const auto level = room.level().lock())
+                {
+                    return level->is_in_visible_set(level->room(room.number()));
+                }
+                return false;
+            })
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Sectors", {}, [&](auto&& room) { return room.sectors() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "ISector");
+
+        filters.add_getters(room_getters.build());
+    }
+
+    void add_sector_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
+    {
+        if (filters.has_type_key("ISector"))
+        {
+            return;
+        }
+
+        const auto level_ptr = level.lock();
+        std::optional<trlevel::PlatformAndVersion> platform_and_version;
+        std::vector<uint16_t> floordata;
+        bool trng = false;
+
+        if (level_ptr)
+        {
+            platform_and_version = level_ptr->platform_and_version();
+            floordata = level_ptr->floor_data();
+            trng = level_ptr->trng();
+        }
+
+        const auto available_floordata_types =
+            std::views::iota(std::to_underlying(Floordata::Command::Function::None) + 1, std::to_underlying(Floordata::Command::Function::Count) + 0)
+            | std::views::transform([](auto c) { return to_string(static_cast<Floordata::Command::Function>(c)); })
+            | std::ranges::to<std::set>();
+
+        auto sector_getters = Filters::GettersBuilder()
+            .with_type_key("ISector")
+            .with_multi_getter<ISector, std::string>("Floordata Type", { available_floordata_types.begin(), available_floordata_types.end() }, [=](auto&& sector)
+                {
+                    return parse_floordata(floordata, sector.floordata_index(), FloordataMeanings::None, trng, platform_and_version.value_or({ .platform = trlevel::Platform::PC, .version = trlevel::LevelVersion::Tomb1 })).commands
+                        | std::views::transform([](auto&& c) { return c.type; })
+                        | std::ranges::to<std::unordered_set>()
+                        | std::views::transform([](auto&& s) { return to_string(s); })
+                        | std::ranges::to<std::vector>();
+                })
+            .with_getter<ISector, int>("Floordata Index", [&](auto&& sector) { return sector.floordata_index(); })
+            .with_getter<ISector, int>("Material", [&](auto&& sector) { return sector.material(); })
+            .with_getter<ISector, int>("Box Index", [&](auto&& sector) { return sector.box_index(); })
+            .with_getter<ISector, bool>("Stopper", [&](auto&& sector) { return sector.stopper(); })
+            .with_getter<ISector, int>("Room Above", [&](auto&& sector) { return sector.room_above(); })
+            .with_getter<ISector, int>("Floor", [&](auto&& sector) { return sector.floor(); })
+            .with_getter<ISector, int>("Room Below", [&](auto&& sector) { return sector.room_below(); })
+            .with_getter<ISector, int>("Ceiling", [&](auto&& sector) { return sector.ceiling(); });
+        filters.add_getters(sector_getters.build());
+    }
+
     RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _map_renderer(map_renderer_source()), _clipboard(clipboard), _messaging(messaging)
     {
@@ -120,10 +428,10 @@ namespace trview
 
         generate_filters();
 
-        _filters.set_columns(std::vector<std::string>{ "#", "Items", "Triggers", "Statics", "Hide" });
+        _filters.set_columns(std::vector<std::string>{ "#", "Items #", "Triggers #", "Statics #", "Hide" });
         _token_store += _filters.on_columns_reset += [this]()
             {
-                _filters.set_columns(std::vector<std::string>{ "#", "Items", "Triggers", "Statics", "Hide" });
+                _filters.set_columns(std::vector<std::string>{ "#", "Items #", "Triggers #", "Statics #", "Hide" });
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
@@ -342,8 +650,9 @@ namespace trview
             _filters.render_table(filtered_rooms, _all_rooms, _selected_room, counter,
                 [&](auto&& room)
                 {
-                    select_room(room);
-                    _map_renderer->load(room.lock());
+                    const std::shared_ptr<IRoom> f_ptr = std::static_pointer_cast<IRoom>(room.lock());
+                    select_room(f_ptr);
+                    _map_renderer->load(f_ptr);
                     filter_changed = true;
                     if (_sync_room)
                     {
@@ -468,226 +777,8 @@ namespace trview
     void RoomsWindow::generate_filters()
     {
         _filters.clear_all_getters();
-        _filters.add_getter<int>("#", [](auto&& room) { return static_cast<int>(room.number()); });
-        _filters.add_getter<int>("X size", [](auto&& room) { return static_cast<int>(room.num_x_sectors()); });
-        _filters.add_getter<int>("Z size", [](auto&& room) { return static_cast<int>(room.num_z_sectors()); });
-        _filters.add_getter<int>("X", [](auto&& room) { return static_cast<int>(room.info().x); });
-        _filters.add_getter<int>("Y", [](auto&& room) { return static_cast<int>(room.info().yBottom); });
-        _filters.add_getter<int>("Z", [](auto&& room) { return static_cast<int>(room.info().z); });
-        _filters.add_getter<int>("Triggers", [](auto&& room) { return static_cast<int>(room.triggers().size()); });
-        _filters.add_getter<int>("Statics", [](auto&& room) { return static_cast<int>(room.static_meshes().size()); });
-        _filters.add_getter<int>("Items", [&](auto&& room) { return static_cast<int>(item_count(_all_items, room)); });
-        _filters.add_multi_getter<float>("Neighbours", [](auto&& room)
-            {
-                std::vector<float> results;
-                const auto neighbours = room.neighbours();
-                std::copy(neighbours.begin(), neighbours.end(), std::back_inserter(results));
-                return results;
-            });
-        _filters.add_multi_getter<float>("Trigger Index", [&](auto&& room)
-            {
-                std::vector<float> results;
-                for (const auto& trigger : room.triggers())
-                {
-                    if (const auto trigger_ptr = trigger.lock())
-                    {
-                        results.push_back(static_cast<float>(trigger_ptr->number()));
-                    }
-                }
-                return results;
-            });
-
-        std::set<std::string> available_trigger_types;
-        for (const auto& room : _all_rooms)
-        {
-            if (auto room_ptr = room.lock())
-            {
-                for (const auto& trigger : room_ptr->triggers())
-                {
-                    if (auto trigger_ptr = trigger.lock())
-                    {
-                        available_trigger_types.insert(to_string(trigger_ptr->type()));
-                    }
-                }
-            }
-        }
-        _filters.add_multi_getter<std::string>("Trigger Type", { available_trigger_types.begin(), available_trigger_types.end() }, [&](auto&& room)
-            {
-                std::vector<std::string> results;
-                for (const auto& trigger : room.triggers())
-                {
-                    if (const auto trigger_ptr = trigger.lock())
-                    {
-                        results.push_back(to_string(trigger_ptr->type()));
-                    }
-                }
-                return results;
-            });
-        _filters.add_multi_getter<float>("Item Index", [&](auto&& room)
-            {
-                std::vector<float> results;
-                for (const auto& item : _all_items)
-                {
-                    if (const auto item_ptr = item.lock())
-                    {
-                        if (item_room(item_ptr) == room.number())
-                        {
-                            results.push_back(static_cast<float>(item_ptr->number()));
-                        }
-                    }
-                }
-                return results;
-            });
-
-        std::set<std::string> available_item_types;
-        for (const auto& item : _all_items)
-        {
-            if (auto item_ptr = item.lock())
-            {
-                available_item_types.insert(item_ptr->type());
-            }
-        }
-        _filters.add_multi_getter<std::string>("Item Type", { available_item_types.begin(), available_item_types.end() }, [&](auto&& room)
-            {
-                std::vector<std::string> results;
-                for (const auto& item : _all_items)
-                {
-                    if (auto item_ptr = item.lock())
-                    {
-                        if (item_room(item_ptr) == room.number())
-                        {
-                            results.push_back(item_ptr->type());
-                        }
-                    }
-                }
-                return results;
-            });
-        _filters.add_getter<bool>("Hide", [](auto&& room) { return !room.visible(); }, EditMode::ReadWrite);
-        _filters.add_getter<bool>("Water", [](auto&& room) { return room.water(); });
-        if (_level_version >= trlevel::LevelVersion::Tomb3)
-        {
-            _filters.add_getter<int>("Water Scheme", [](auto&& room) { return room.water_scheme(); });
-        }
-        _filters.add_getter<bool>("Bit 1", [](auto&& room) { return room.flag(IRoom::Flag::Bit1); });
-        _filters.add_getter<bool>("Bit 2", [](auto&& room) { return room.flag(IRoom::Flag::Bit2); });
-        _filters.add_getter<bool>("Outside/Bit 3", [](auto&& room) { return room.outside(); });
-        _filters.add_getter<bool>("Bit 4", [](auto&& room) { return room.flag(IRoom::Flag::Bit4); });
-        _filters.add_getter<bool>("Wind/Bit 5", [](auto&& room) { return room.flag(IRoom::Flag::Wind); });
-        _filters.add_getter<bool>("Bit 6", [](auto&& room) { return room.flag(IRoom::Flag::Bit6); });
-        _filters.add_getter<bool>("Quicksand/Block Lens Flare/Bit 7", [](auto&& room) { return room.flag(IRoom::Flag::Bit7); });
-        _filters.add_getter<bool>("Caustics/Bit 8", [](auto&& room) { return room.flag(IRoom::Flag::Caustics); });
-        _filters.add_getter<bool>("Reflectivity/Bit 9", [](auto&& room) { return room.flag(IRoom::Flag::WaterReflectivity); });
-        _filters.add_getter<bool>("Snow (NGLE)/Bit 10", [](auto&& room) { return room.flag(IRoom::Flag::Bit10); });
-        _filters.add_getter<bool>("D/Rain/Bit 11", [](auto&& room) { return room.flag(IRoom::Flag::Bit11); });
-        _filters.add_getter<bool>("P/Cold/Bit 12", [](auto&& room) { return room.flag(IRoom::Flag::Bit12); });
-        _filters.add_getter<bool>("Bit 13", [](auto&& room) { return room.flag(IRoom::Flag::Bit13); });
-        _filters.add_getter<bool>("Bit 14", [](auto&& room) { return room.flag(IRoom::Flag::Bit14); });
-        _filters.add_getter<bool>("Bit 15", [](auto&& room) { return room.flag(IRoom::Flag::Bit15); });
-        _filters.add_getter<int>("Alternate", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
-        _filters.add_getter<int>("Alternate Group", [](auto&& room) { return room.alternate_group(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; });
-        _filters.add_getter<bool>("No Space", room_is_no_space);
-        if (_level_version < trlevel::LevelVersion::Tomb4)
-        {
-            _filters.add_getter<int>("Ambient Intensity", [](auto&& room) { return room.ambient_intensity_1(); });
-            _filters.add_getter<float>("Ambient Intensity %%", [](auto&& room) { return ambient_percentage(room.ambient_intensity_1()) * 100.0f; });
-            if (_level_version > trlevel::LevelVersion::Tomb1)
-            {
-                if (_level_version == trlevel::LevelVersion::Tomb2)
-                {
-                    _filters.add_getter<int>("Ambient Intensity 2", [](auto&& room) { return room.ambient_intensity_2(); });
-                    _filters.add_getter<float>("Ambient Intensity 2 %%", [](auto&& room) { return ambient_percentage(room.ambient_intensity_2()) * 100.0f; });
-                }
-                _filters.add_getter<int>("Light Mode", [](auto&& room) { return room.light_mode(); });
-            }
-        }
-        else
-        {
-            _filters.add_getter<float>("Ambient R", [](auto&& room) { return room.ambient().r; });
-            _filters.add_getter<float>("Ambient G", [](auto&& room) { return room.ambient().g; });
-            _filters.add_getter<float>("Ambient B", [](auto&& room) { return room.ambient().b; });
-        }
-
-        const auto available_floordata_types = 
-              std::views::iota(std::to_underlying(Floordata::Command::Function::None) + 1, std::to_underlying(Floordata::Command::Function::Count) + 0)
-            | std::views::transform([](auto c) { return to_string(static_cast<Floordata::Command::Function>(c)); })
-            | std::ranges::to<std::set>();
-
-        _filters.add_multi_getter<std::string>("Floordata Type", { available_floordata_types.begin(), available_floordata_types.end() }, [&](auto&& room)
-            {
-                const auto& sectors = room.sectors();
-                return sectors
-                    | std::views::transform([&](auto&& s) { return parse_floordata(_floordata, s->floordata_index(), FloordataMeanings::None, _trng, _platform_and_version).commands; })
-                    | std::views::join
-                    | std::views::transform([](auto&& c) { return c.type; })
-                    | std::ranges::to<std::unordered_set>()
-                    | std::views::transform([](auto&& s) { return to_string(s); })
-                    | std::ranges::to<std::vector>();
-            });
-
-        _filters.add_multi_getter<int>("Floordata Index", [&](auto&& room)
-            {
-                return room.sectors()
-                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->floordata_index()); })
-                    | std::ranges::to<std::vector>();
-            });
-
-        _filters.add_multi_getter<int>("Material", [&](auto&& room)
-            {
-                return room.sectors()
-                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->material()); })
-                    | std::ranges::to<std::vector>();
-            });
-
-        _filters.add_multi_getter<int>("Box Index", [&](auto&& room)
-            {
-                return room.sectors()
-                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->box_index()); })
-                    | std::ranges::to<std::vector>();
-            });
-
-        _filters.add_multi_getter<bool>("Stopper", [&](auto&& room)
-            {
-                return room.sectors()
-                    | std::views::transform([&](auto&& s) { return s->stopper(); })
-                    | std::ranges::to<std::vector>();
-            });
-
-        _filters.add_multi_getter<int>("Room Below", [&](auto&& room)
-            {
-                return room.sectors()
-                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->room_below()); })
-                    | std::ranges::to<std::vector>();
-            });
-
-        _filters.add_multi_getter<int>("Floor", [&](auto&& room)
-            {
-                return room.sectors()
-                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->floor()); })
-                    | std::ranges::to<std::vector>();
-            });
-
-        _filters.add_multi_getter<int>("Room Above", [&](auto&& room)
-            {
-                return room.sectors()
-                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->room_above()); })
-                    | std::ranges::to<std::vector>();
-            });
-
-        _filters.add_multi_getter<int>("Ceiling", [&](auto&& room)
-            {
-                return room.sectors()
-                    | std::views::transform([&](auto&& s) { return static_cast<int>(s->ceiling()); })
-                    | std::ranges::to<std::vector>();
-            });
-
-        _filters.add_getter<bool>("In Visible Room", [](auto&& room)
-            {
-                if (const auto level = room.level().lock())
-                {
-                    return level->is_in_visible_set(level->room(room.number()));
-                }
-                return false;
-            });
+        add_all_filters(_filters, _level);
+        _filters.set_type_key("IRoom");
     }
 
     void RoomsWindow::render_properties_tab(const std::shared_ptr<IRoom>& room)
@@ -1317,7 +1408,7 @@ namespace trview
         return _id;
     }
 
-    void RoomsWindow::set_filters(std::vector<Filters<IRoom>::Filter> filters)
+    void RoomsWindow::set_filters(std::vector<Filters::Filter> filters)
     {
         _filters.set_filters(filters);
     }
@@ -1361,6 +1452,7 @@ namespace trview
         {
             if (auto level_ptr = level->lock())
             {
+                _level = level.value();
                 set_rooms(level_ptr->rooms());
                 set_items(level_ptr->items());
                 set_triggers(level_ptr->triggers());
@@ -1377,7 +1469,7 @@ namespace trview
         }
         else if (message.type == "room_filters")
         {
-            set_filters(std::static_pointer_cast<MessageData<std::vector<Filters<IRoom>::Filter>>>(message.data)->value);
+            set_filters(std::static_pointer_cast<MessageData<std::vector<Filters::Filter>>>(message.data)->value);
         }
     }
 
@@ -1392,44 +1484,26 @@ namespace trview
         messages::get_selected_sector(_messaging, weak_from_this());
     }
 
-    std::optional<Filters<ISector>> RoomsWindow::convert_to_sector_filters() const
+    std::optional<Filters> RoomsWindow::convert_to_sector_filters() const
     {
-        Filters<ISector> sector_filters;
+        Filters sector_filters;
+        bool any_added = false;
         for (const auto& filter : _filters.filters())
         {
             if (equals_any(filter.key, "Floordata Type", "Floordata Index", "Material", "Box Index", "Stopper", "Room Below", "Floor", "Room Above", "Ceiling"))
             {
                 sector_filters.add_filter({ .key = filter.key, .compare = filter.compare, .value = filter.value, .value2 = filter.value, .op = filter.op });
+                any_added = true;
             }
         }
 
         if (!sector_filters.filters().empty())
         {
-            const auto available_floordata_types =
-                std::views::iota(std::to_underlying(Floordata::Command::Function::None) + 1, std::to_underlying(Floordata::Command::Function::Count) + 0)
-                | std::views::transform([](auto c) { return to_string(static_cast<Floordata::Command::Function>(c)); })
-                | std::ranges::to<std::set>();
-
-            sector_filters.add_multi_getter<std::string>("Floordata Type", { available_floordata_types.begin(), available_floordata_types.end() }, [&](auto&& sector)
-                {
-                    return parse_floordata(_floordata, sector.floordata_index(), FloordataMeanings::None, _trng, _platform_and_version).commands
-                        | std::views::transform([](auto&& c) { return c.type; })
-                        | std::ranges::to<std::unordered_set>()
-                        | std::views::transform([](auto&& s) { return to_string(s); })
-                        | std::ranges::to<std::vector>();
-                });
-
-            sector_filters.add_getter<int>("Floordata Index", [&](auto&& sector) { return sector.floordata_index(); });
-            sector_filters.add_getter<int>("Material", [&](auto&& sector) { return sector.material(); });
-            sector_filters.add_getter<int>("Box Index", [&](auto&& sector) { return sector.box_index(); });
-            sector_filters.add_getter<bool>("Stopper", [&](auto&& sector) { return sector.stopper(); });
-            sector_filters.add_getter<int>("Room Above", [&](auto&& sector) { return sector.room_above(); });
-            sector_filters.add_getter<int>("Floor", [&](auto&& sector) { return sector.floor(); });
-            sector_filters.add_getter<int>("Room Below", [&](auto&& sector) { return sector.room_below(); });
-            sector_filters.add_getter<int>("Ceiling", [&](auto&& sector) { return sector.ceiling(); });
+            add_sector_filters(sector_filters, _level);
+            sector_filters.set_type_key("ISector");
             return sector_filters;
         }
-        
+
         return std::nullopt;
     }
 

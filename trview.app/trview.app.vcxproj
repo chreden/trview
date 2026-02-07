@@ -25,6 +25,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Camera\CameraInput.cpp" />
     <ClCompile Include="Elements\CameraSink\CameraSink.cpp" />
+    <ClCompile Include="Elements\ElementFilters.cpp" />
     <ClCompile Include="Elements\Flyby\Flyby.cpp" />
     <ClCompile Include="Elements\Flyby\FlybyNode.cpp" />
     <ClCompile Include="Elements\Item.cpp" />
@@ -42,6 +43,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\StaticMesh.cpp" />
     <ClCompile Include="Elements\Trigger.cpp" />
     <ClCompile Include="Elements\TypeInfoLookup.cpp" />
+    <ClCompile Include="Filters\Filters.cpp" />
     <ClCompile Include="Geometry\IMesh.cpp" />
     <ClCompile Include="Geometry\IRenderable.cpp" />
     <ClCompile Include="Geometry\Matrix.cpp" />
@@ -83,6 +85,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Plugins\Plugin.cpp" />
     <ClCompile Include="Plugins\Plugins.cpp" />
     <ClCompile Include="Routing\RandomizerRoute.cpp" />
+    <ClCompile Include="Settings\UserSettingsPatches.cpp" />
     <ClCompile Include="Sound\Sound.cpp" />
     <ClCompile Include="Sound\SoundStorage.cpp" />
     <ClCompile Include="Windows\AutoHider.cpp" />
@@ -91,6 +94,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\Pack\PackWindow.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
+    <ClInclude Include="Elements\ElementFilters.h" />
     <ClInclude Include="Elements\Level\ILevelNameLookup.h" />
     <ClInclude Include="Elements\Level\LevelNameLookup.h" />
     <ClInclude Include="Elements\Flyby\Flyby.h" />
@@ -101,6 +105,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h" />
     <ClInclude Include="Elements\SoundSource\ISoundSource.h" />
     <ClInclude Include="Elements\SoundSource\SoundSource.h" />
+    <ClInclude Include="Filters\IFilterable.h" />
     <ClInclude Include="Geometry\Model\IModel.h" />
     <ClInclude Include="Geometry\Model\IModelStorage.h" />
     <ClInclude Include="Geometry\Model\Model.h" />
@@ -180,6 +185,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Routing\IRandomizerRoute.h" />
     <ClInclude Include="Routing\RandomizerRoute.h" />
     <ClInclude Include="Settings\PluginSetting.h" />
+    <ClInclude Include="Settings\UserSettingsPatches.h" />
     <ClInclude Include="Sound\ISound.h" />
     <ClInclude Include="Sound\ISoundStorage.h" />
     <ClInclude Include="Sound\Sound.h" />

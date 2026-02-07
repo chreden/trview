@@ -20,6 +20,7 @@ namespace trview
         uint32_t room() const override;
         uint16_t speed() const override;
         uint16_t timer() const override;
+        int32_t filterable_index() const override;
     private:
         std::weak_ptr<ILevel> _level;
         std::weak_ptr<IFlyby> _flyby;

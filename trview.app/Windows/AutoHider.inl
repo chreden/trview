@@ -3,7 +3,7 @@
 namespace trview
 {
     template <std::ranges::forward_range T, std::ranges::forward_range R, typename F>
-    bool AutoHider::apply(T&& full_range, R&& partial_range, Filters<F>& filters)
+    bool AutoHider::apply(T&& full_range, R&& partial_range, Filters& filters)
     {
         return apply(full_range, partial_range, filters.test_and_reset_changed());
     }

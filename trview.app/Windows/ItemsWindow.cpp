@@ -7,6 +7,8 @@
 #include "../Elements/ISector.h"
 #include "../Messages/Messages.h"
 #include "../Elements/ILevel.h"
+#include "../Elements/ElementFilters.h"
+#include "../Elements/ITrigger.h"
 
 namespace trview
 {
@@ -28,6 +30,88 @@ namespace trview
         return v;
     }
 
+    void add_item_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
+    {
+        if (filters.has_type_key("IItem"))
+        {
+            return;
+        }
+
+        auto level_ptr = level.lock();
+
+        std::set<std::string> available_types;
+        std::set<std::string> available_categories;
+
+        if (level_ptr)
+        {
+            for (const auto& item : level_ptr->items())
+            {
+                if (auto item_ptr = item.lock())
+                {
+                    available_types.insert(item_ptr->type());
+                    available_categories.insert_range(item_ptr->categories());
+                }
+            }
+        }
+
+        auto getters = Filters::GettersBuilder()
+            .with_type_key("IItem")
+            .with_getter<IItem, int>("#", [](auto&& item) { return static_cast<int>(item.number()); })
+            .with_getter<IItem, std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return item.type(); })
+            .with_multi_getter<IItem, std::string>("Category", { available_categories.begin(), available_categories.end() }, [](auto&& item)
+                {
+                    std::vector<std::string> results;
+                    for (const auto& category : item.categories())
+                    {
+                        results.push_back(category);
+                    }
+                    return results;
+                })
+            .with_getter<IItem, int>("X", [](auto&& item) { return static_cast<int>(item.position().x * trlevel::Scale_X); })
+            .with_getter<IItem, int>("Y", [](auto&& item) { return static_cast<int>(item.position().y * trlevel::Scale_Y); })
+            .with_getter<IItem, int>("Z", [](auto&& item) { return static_cast<int>(item.position().z * trlevel::Scale_Z); })
+            .with_getter<IItem, bool>("AI", [](auto&& item) { return item.is_ai(); })
+            .with_getter<IItem, int>("Angle", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle())); })
+            .with_getter<IItem, int>("Angle Degrees", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle()) / 182); })
+            .with_getter<IItem, int>("Type ID", [](auto&& item) { return static_cast<int>(item.type_id()); }, EditMode::Read)
+            .with_getter<IItem, int>("Room #", [](auto&& item) { return static_cast<int>(item_room(item)); }, EditMode::Read)
+            .with_getter<IItem, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& item) { return item.room(); }, {}, EditMode::Read, "IRoom")
+            .with_getter<IItem, bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); })
+            .with_getter<IItem, bool>("Invisible", [](auto&& item) { return item.invisible_flag(); })
+            .with_getter<IItem, std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); })
+            .with_getter<IItem, int>("OCB", [](auto&& item) { return static_cast<int>(item.ocb()); })
+            .with_getter<IItem, bool>("Hide", [](auto&& item) { return !item.visible(); }, EditMode::ReadWrite)
+            .with_getter<IItem, bool>("Remastered Extra", [](auto&& item) { return item.is_remastered_extra(); })
+            .with_multi_getter<IItem, float>("Trigger References", [](auto&& item)
+                {
+                    std::vector<float> results;
+                    for (auto trigger : item.triggers())
+                    {
+                        if (auto trigger_ptr = trigger.lock())
+                        {
+                            results.push_back(static_cast<float>(trigger_ptr->number()));
+                        }
+                    }
+                    return results;
+                })
+            .with_multi_getter<IItem, std::weak_ptr<IFilterable>>("Trigger", {}, [](auto&& item) {  return item.triggers() |  std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "ITrigger")
+            .with_multi_getter<IItem, bool>("NG+", [](auto&& item)
+                {
+                    return item.ng_plus() == std::nullopt ? std::vector<bool>{} : std::vector<bool>{ false,true };
+                })
+            .with_getter<IItem, bool>("In Visible Room", [](auto&& item)
+                {
+                    if (const auto level = item.level().lock())
+                    {
+                        return level->is_in_visible_set(item.room());
+                    }
+                    return false;
+                })
+            .build();
+
+        filters.add_getters(getters);
+    }
+
     ItemsWindow::ItemsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
         : _clipboard(clipboard), _messaging(messaging)
     {
@@ -40,10 +124,10 @@ namespace trview
 
         setup_filters();
 
-        _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type ID", "Type", "Hide" });
+        _filters.set_columns(std::vector<std::string>{ "#", "Room #", "Type ID", "Type", "Hide" });
         _token_store += _filters.on_columns_reset += [this]()
             {
-                _filters.set_columns(std::vector<std::string>{ "#", "Room", "Type ID", "Type", "Hide" });
+                _filters.set_columns(std::vector<std::string>{ "#", "Room #", "Type ID", "Type", "Hide" });
             };
         _token_store += _filters.on_columns_saved += [this]()
             {
@@ -139,7 +223,7 @@ namespace trview
                     }) |
                 std::ranges::to<std::vector>();
 
-            _auto_hider.apply(_all_items, filtered_items, _filters);
+            _auto_hider.apply(_all_items, filtered_items, _filters.test_and_reset_changed());
 
             ImGui::SameLine();
             _filters.render_settings();
@@ -150,14 +234,14 @@ namespace trview
                         const auto item_ptr = item.lock();
                         return item_ptr && item_ptr->ng_plus().value_or(_ng_plus) == _ng_plus;
                     }))};
-
             _filters.render_table(filtered_items, _all_items, _selected_item, counter,
                 [&](auto&& item)
                 {
-                    set_local_selected_item(item);
+                    const std::shared_ptr<IItem> f_ptr = std::static_pointer_cast<IItem>(item.lock());
+                    set_local_selected_item(f_ptr);
                     if (_sync_item)
                     {
-                        messages::send_select_item(_messaging, item);
+                        messages::send_select_item(_messaging, f_ptr);
                     }
                 }, default_hide(filtered_items));
         }
@@ -300,9 +384,11 @@ namespace trview
         return stay_open;
     }
 
-    void ItemsWindow::set_filters(std::vector<Filters<IItem>::Filter> filters)
+    void ItemsWindow::set_filters(std::vector<Filters::Filter> filters)
     {
-        _filters.set_filters(filters);
+        filters;
+        // TODO: Reinstate
+        // _filters.set_filters(filters);
     }
 
     void ItemsWindow::render()
@@ -350,65 +436,8 @@ namespace trview
     void ItemsWindow::setup_filters()
     {
         _filters.clear_all_getters();
-        std::set<std::string> available_types;
-        std::set<std::string> available_categories;
-        for (const auto& item : _all_items)
-        {
-            if (auto item_ptr = item.lock())
-            {
-                available_types.insert(item_ptr->type());
-                available_categories.insert_range(item_ptr->categories());
-            }
-        }
-        _filters.add_getter<int>("#", [](auto&& item) { return static_cast<int>(item.number()); });
-        _filters.add_getter<std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return item.type(); });
-        _filters.add_multi_getter<std::string>("Category", { available_categories.begin(), available_categories.end() }, [](auto&& item)
-            {
-                std::vector<std::string> results;
-                for (const auto& category : item.categories())
-                {
-                    results.push_back(category);
-                }
-                return results;
-            });
-        _filters.add_getter<int>("X", [](auto&& item) { return static_cast<int>(item.position().x * trlevel::Scale_X); });
-        _filters.add_getter<int>("Y", [](auto&& item) { return static_cast<int>(item.position().y * trlevel::Scale_Y); });
-        _filters.add_getter<int>("Z", [](auto&& item) { return static_cast<int>(item.position().z * trlevel::Scale_Z); });
-        _filters.add_getter<bool>("AI", [](auto&& item) { return item.is_ai(); });
-        _filters.add_getter<int>("Angle", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle())); });
-        _filters.add_getter<int>("Angle Degrees", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle()) / 182); });
-        _filters.add_getter<int>("Type ID", [](auto&& item) { return static_cast<int>(item.type_id()); }, EditMode::Read);
-        _filters.add_getter<int>("Room", [](auto&& item) { return static_cast<int>(item_room(item)); }, EditMode::Read);
-        _filters.add_getter<bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); });
-        _filters.add_getter<bool>("Invisible", [](auto&& item) { return item.invisible_flag(); });
-        _filters.add_getter<std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); });
-        _filters.add_getter<int>("OCB", [](auto&& item) { return static_cast<int>(item.ocb()); });
-        _filters.add_getter<bool>("Hide", [](auto&& item) { return !item.visible(); }, EditMode::ReadWrite);
-        _filters.add_getter<bool>("Remastered Extra", [](auto&& item) { return item.is_remastered_extra(); });
-        _filters.add_multi_getter<float>("Trigger References", [](auto&& item)
-            {
-                std::vector<float> results;
-                for (auto trigger : item.triggers())
-                {
-                    if (auto trigger_ptr = trigger.lock())
-                    {
-                        results.push_back(static_cast<float>(trigger_ptr->number()));
-                    }
-                }
-                return results;
-            });
-        _filters.add_multi_getter<bool>("NG+", [](auto&& item)
-            {
-                return item.ng_plus() == std::nullopt ? std::vector<bool>{} : std::vector<bool>{false,true};
-            });
-        _filters.add_getter<bool>("In Visible Room", [](auto&& item)
-            {
-                if (const auto level = item.level().lock())
-                {
-                    return level->is_in_visible_set(item.room());
-                }
-                return false;
-            });
+        add_all_filters(_filters, _level);
+        _filters.set_type_key("IItem");
     }
 
     void ItemsWindow::set_level_version(trlevel::LevelVersion version)
@@ -493,6 +522,7 @@ namespace trview
         {
             if (auto level_ptr = level->lock())
             {
+                _level = level.value();
                 clear_selected_item();
                 set_items(level_ptr->items());
                 set_triggers(level_ptr->triggers());
@@ -506,7 +536,7 @@ namespace trview
         }
         else if (message.type == "item_filters")
         {
-            set_filters(std::static_pointer_cast<MessageData<std::vector<Filters<IItem>::Filter>>>(message.data)->value);
+            set_filters(std::static_pointer_cast<MessageData<std::vector<Filters::Filter>>>(message.data)->value);
         }
     }
 

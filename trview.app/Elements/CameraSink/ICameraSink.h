@@ -5,10 +5,11 @@
 #include "../../Geometry/PickResult.h"
 #include "../../Geometry/IMesh.h"
 #include "../ITrigger.h"
+#include "../../Filters/IFilterable.h"
 
 namespace trview
 {
-    struct ICameraSink : public IRenderable
+    struct ICameraSink : public IRenderable, public IFilterable
     {
         enum class Type
         {

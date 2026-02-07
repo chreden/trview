@@ -59,12 +59,13 @@ namespace trview
         std::weak_ptr<ILight> _global_selected_light;
         std::weak_ptr<IRoom> _current_room;
         std::unordered_map<std::string, std::string> _tips;
-        Filters<ILight> _filters;
+        Filters _filters;
         Track<Type::Room> _track;
         AutoHider _auto_hider;
         std::optional<UserSettings> _settings;
         TokenStore _token_store;
         bool _columns_set{ false };
         std::weak_ptr<IMessageSystem> _messaging;
+        std::weak_ptr<ILevel> _level;
     };
 }

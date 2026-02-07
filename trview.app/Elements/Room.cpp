@@ -1286,6 +1286,11 @@ namespace trview
         return _water_scheme;
     }
 
+    int32_t Room::filterable_index() const
+    {
+        return static_cast<int32_t>(number());
+    }
+
     std::shared_ptr<ISector> sector_from_point(const IRoom& room, const Vector3& point)
     {
         const auto info = room.info();

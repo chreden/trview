@@ -34,6 +34,7 @@ namespace trview
         bool visible() const override;
         uint16_t volume() const override;
         std::weak_ptr<ILevel> level() const override;
+        int32_t filterable_index() const override;
     private:
         uint16_t _chance{ 0u };
         uint16_t _characteristics{ 0u };
