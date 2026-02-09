@@ -73,7 +73,6 @@ namespace trview
                 {
                     if (ImGui::BeginMenu("Items..."))
                     {
-                        // TODO: Item window finding.
                         if (auto windows = _windows.lock())
                         {
                             if (ImGui::MenuItem("New Window"))

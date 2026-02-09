@@ -355,7 +355,7 @@ namespace trview
                                 Message{ .type = "item_filters", .data = std::make_shared<MessageData<std::vector<Filters::Filter>>>(
                                 std::vector<Filters::Filter>
                                 {
-                                    {.key = "Room", .compare = CompareOp::Equal, .value = std::to_string(room->number()), .op = Op::And },
+                                    {.key = "Room #", .compare = CompareOp::Equal, .value = std::to_string(room->number()), .op = Op::And },
                                     {.key = "X", .compare = CompareOp::Between, .value = std::to_string(info.x + sector_x * 1024), .value2 = std::to_string(info.x + (sector_x + 1) * 1024), .op = Op::And },
                                     {.key = "Z", .compare = CompareOp::Between, .value = std::to_string(info.z + sector_z * 1024), .value2 = std::to_string(info.z + (sector_z + 1) * 1024) }
                                 }) });

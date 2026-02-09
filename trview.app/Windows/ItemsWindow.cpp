@@ -386,9 +386,7 @@ namespace trview
 
     void ItemsWindow::set_filters(std::vector<Filters::Filter> filters)
     {
-        filters;
-        // TODO: Reinstate
-        // _filters.set_filters(filters);
+        _filters.set_filters(filters);
     }
 
     void ItemsWindow::render()
