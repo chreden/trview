@@ -120,10 +120,11 @@ namespace trview
         std::shared_ptr<ISoundStorage> sound_storage,
         std::shared_ptr<INgPlusSwitcher> ngplus_switcher,
         const std::shared_ptr<graphics::ISamplerState>& sampler_state,
+        const std::shared_ptr<ILevelNameLookup> level_name_lookup,
         const std::weak_ptr<IMessageSystem>& messaging)
         : _device(device), _texture_storage(level_texture_storage),
         _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log), _sound_storage(sound_storage),
-        _ngplus_switcher(ngplus_switcher), _room_sampler_state(sampler_state), _messaging(messaging)
+        _ngplus_switcher(ngplus_switcher), _room_sampler_state(sampler_state), _messaging(messaging), _level_name_lookup(level_name_lookup)
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -686,6 +687,7 @@ namespace trview
             }
         }
 
+        callbacks.on_progress("Generating AI items");
         const uint32_t num_ai_objects = level.num_ai_objects();
         for (uint32_t i = 0; i < num_ai_objects; ++i)
         {
@@ -700,6 +702,10 @@ namespace trview
             _entities.push_back(entity);
         }
 
+        callbacks.on_progress("Generating bonus items");
+        generate_bonus_items(level, entity_source, model_storage);
+
+        callbacks.on_progress("Generating virtual items");
         for (const auto& driver : skidoo_drivers)
         {
             if (auto man = driver.lock())
@@ -1762,6 +1768,58 @@ namespace trview
             }
         }
         return rooms;
+    }
+
+    void Level::generate_bonus_items(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IModelStorage& model_storage)
+    {
+
+        auto map_id = [](int16_t id) -> int16_t
+            {
+                if (id == 14)
+                {
+                    return 151;
+                }
+                else if (id < 17)
+                {
+                    return id + 135;
+                }
+
+                // todo: pickup, puzzle, key
+                // todo: tomb3
+                return 0;
+            };
+
+        const auto extra_items = _level_name_lookup->bonus_items(weak_from_this());
+
+        // Find a secret:
+        std::weak_ptr<IItem> last_secret;
+        find_last_item_by_type_id(*this, 190, last_secret);
+        std::shared_ptr<IItem> last_secret_ptr = last_secret.lock();
+        std::shared_ptr<IRoom> containing_room = last_secret_ptr->room().lock();;
+
+        for (const auto& item : extra_items)
+        {
+            trlevel::tr2_entity level_entity
+            {
+                .TypeID = map_id(static_cast<int16_t>(item)),
+                .Room = level.get_entity(last_secret_ptr->number()).Room,
+                .x = level.get_entity(last_secret_ptr->number()).x,
+                .y = level.get_entity(last_secret_ptr->number()).y,
+                .z = level.get_entity(last_secret_ptr->number()).z,
+                .Angle = 0,
+                .Intensity1 = 0,
+                .Intensity2 = 0,
+                .Flags = 0
+            };
+
+            auto entity = entity_source(level, level_entity, static_cast<uint32_t>(_entities.size()), {}, model_storage, shared_from_this(), containing_room);
+            auto categories = entity->categories();
+            categories.insert("Virtual");
+            entity->set_categories(categories);
+            containing_room->add_entity(entity);
+            _token_store += entity->on_changed += [this]() { content_changed(); };
+            _entities.push_back(entity);
+        }
     }
 
     bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

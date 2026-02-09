@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <memory>
 #include <optional>
 #include <string>
@@ -23,5 +24,6 @@ namespace trview
         virtual ~ILevelNameLookup() = 0;
         virtual std::optional<Name> lookup(const std::weak_ptr<ILevel>& level) const = 0;
         virtual std::optional<Name> lookup(const std::weak_ptr<trlevel::ILevel>& level) const = 0;
+        virtual std::vector<int32_t> bonus_items(const std::weak_ptr<ILevel>& level) const = 0;
     };
 }

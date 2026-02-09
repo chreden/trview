@@ -190,6 +190,120 @@ namespace trview
             return std::nullopt;
         }
 
+        std::optional<std::vector<int32_t>> read_tombpc_1_3_bonus_items(const std::shared_ptr<IFiles>& files, const std::string& level_filename)
+        {
+            const std::filesystem::path level_path{ level_filename };
+            if (const auto tombpc_data = get_tombpc_data(files, level_path))
+            {
+                try
+                {
+                    std::basic_ispanstream<uint8_t> file{ std::span(*tombpc_data) };
+                    file.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
+                    file.seekg(326);
+
+                    using namespace trlevel;
+
+                    uint16_t num_levels = read<uint16_t>(file);
+                    uint16_t num_chapters = read<uint16_t>(file);
+                    uint16_t num_titles = read<uint16_t>(file);
+                    uint16_t num_fmvs = read<uint16_t>(file);
+                    uint16_t num_cutscenes = read<uint16_t>(file);
+                    uint16_t num_demos = read<uint16_t>(file);
+                    skip(file, 36);
+                    uint16_t flags = read<uint16_t>(file);
+                    skip(file, 6);
+                    uint8_t xorkey = read<uint8_t>(file);
+                    skip(file, 7);
+
+                    num_demos;
+
+                    if (!(flags & 0x100))
+                    {
+                        xorkey = 0;
+                    }
+
+                    auto read_string_list = [&](int count)
+                        {
+                            auto offsets = read_vector<uint16_t>(file, count);
+                            uint16_t total_size = read<uint16_t>(file);
+                            auto data = read_vector<uint8_t>(file, total_size)
+                                | std::views::transform([=](auto x) -> uint8_t { return x ^ xorkey; })
+                                | std::ranges::to<std::vector>();
+                            return offsets
+                                | std::views::transform([&](auto off) { return std::string(reinterpret_cast<char*>(&data[off])); })
+                                | std::ranges::to<std::vector>();
+                        };
+
+                    const auto level_names = read_string_list(num_levels);
+                    const auto chapters = read_string_list(num_chapters);
+                    const auto titles = read_string_list(num_titles);
+                    const auto fmvs = read_string_list(num_fmvs);
+                    const auto level_paths = read_string_list(num_levels) | std::views::transform(to_lowercase) | std::ranges::to<std::vector>();
+                    const auto cutscenes = read_string_list(num_cutscenes);
+
+                    const auto lower_filename = to_lowercase(level_path.filename().string());
+                    const auto found_index = std::ranges::find_if(level_paths, [&](auto& f) { return f.contains(lower_filename); });
+                    if (found_index != level_paths.end())
+                    {
+                        const int32_t index = static_cast<int32_t>(found_index - level_paths.begin());
+
+                        const std::vector<uint16_t> sequence_offset = read_vector<uint16_t>(file, num_levels + 1);
+                        const uint16_t sequence_num_bytes = read<uint16_t>(file);
+                        sequence_num_bytes;
+
+                        for (int32_t i = 0; i <= num_levels; ++i)
+                        {
+                            std::vector<int32_t> items;
+
+                            uint16_t opcode = read<uint16_t>(file);
+                            uint16_t operand = 0;
+
+                            while (opcode != 9)
+                            {
+                                switch (opcode)
+                                {
+                                case 0:
+                                case 3:
+                                case 4:
+                                case 5:
+                                case 7:
+                                case 8:
+                                case 10:
+                                case 12:
+                                case 16:
+                                case 17:
+                                case 18:
+                                case 19:
+                                case 20:
+                                    operand = read<uint16_t>(file);
+                                    break;
+                                default:
+                                    operand = 0;
+                                    break;
+                                }
+
+                                if (opcode == 18)
+                                {
+                                    items.push_back(static_cast<int32_t>(operand));
+                                }
+
+                                opcode = read<uint16_t>(file);
+                            }
+
+                            if (i == index + 1)
+                            {
+                                return items;
+                            }
+                        }
+                    }
+                }
+                catch (...)
+                {
+                }
+            }
+            return std::nullopt;
+        }
+
         std::optional<uint8_t> string_index_for_level(const std::shared_ptr<IFiles>& files, const std::string& level_filename, trlevel::LevelVersion version)
         {
             const std::filesystem::path level_path{ level_filename };
@@ -391,6 +505,16 @@ namespace trview
         return get_name(level_ptr->filename(), level_ptr->platform_and_version(), level_ptr->hash());
     }
 
+    std::vector<int32_t> LevelNameLookup::bonus_items(const std::weak_ptr<ILevel>& level) const
+    {
+        const auto level_ptr = level.lock();
+        if (!level_ptr)
+        {
+            return {};
+        }
+        return get_bonus_items(level_ptr->filename(), level_ptr->platform_and_version(), level_ptr->hash());
+    }
+
     bool LevelNameLookup::is_trx() const
     {
         return false;
@@ -453,6 +577,59 @@ namespace trview
         }
 
         return std::nullopt;
+    }
+
+    std::optional<std::vector<int32_t>> LevelNameLookup::check_remastered_bonus_items(const std::string& filename, trlevel::PlatformAndVersion platform_and_version) const
+    {
+        if (!platform_and_version.remastered)
+        {
+            return std::nullopt;
+        }
+
+        filename;
+        return {};
+    }
+
+    std::vector<int32_t> LevelNameLookup::get_bonus_items(const std::string& filename, trlevel::PlatformAndVersion platform_and_version, const std::string& hash) const
+    {
+        using namespace trlevel;
+
+        // Mode 1: Check in the files (TOMBPC, English.DAT, etc)
+        if (platform_and_version.platform == Platform::PC)
+        {
+            if (auto remastered = check_remastered_bonus_items(filename, platform_and_version))
+            {
+                return {};
+            }
+
+            // if (auto trx = check_trx(filename, platform_and_version))
+            // {
+            //     return {};
+            // }
+
+            switch (platform_and_version.version)
+            {
+            case LevelVersion::Tomb2:
+            case LevelVersion::Tomb3:
+                if (auto bonus = read_tombpc_1_3_bonus_items(_files, filename))
+                {
+                    return bonus.value();
+                }
+                return {};
+            case LevelVersion::Tomb4:
+            case LevelVersion::Tomb5:
+                return {};
+            }
+        }
+
+        // Mode 2: Hash lookup - can hash be calculated on load and stored?
+        const auto found = _hashes.find(hash);
+        if (found != _hashes.end())
+        {
+            return {};
+        }
+
+        return {};
     }
 
     std::optional<ILevelNameLookup::Name> LevelNameLookup::get_name(const std::string& filename, trlevel::PlatformAndVersion platform_and_version, const std::string& hash) const

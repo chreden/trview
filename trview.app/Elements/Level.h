@@ -24,6 +24,8 @@
 
 #include <trview.common/Messages/IMessageSystem.h>
 
+#include "Level/ILevelNameLookup.h"
+
 namespace trview
 {
     struct ILevelTextureStorage;
@@ -49,6 +51,7 @@ namespace trview
             std::shared_ptr<ISoundStorage> sound_storage,
             std::shared_ptr<INgPlusSwitcher> ngplus_switcher,
             const std::shared_ptr<graphics::ISamplerState>& sampler_state,
+            const std::shared_ptr<ILevelNameLookup> level_name_lookup,
             const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~Level() = default;
         virtual std::vector<graphics::Texture> level_textures() const override;
@@ -202,6 +205,8 @@ namespace trview
         template <typename T>
         void sync_room(const std::shared_ptr<T>& element) const;
         std::vector<std::shared_ptr<IRoom>> get_potentially_visible_rooms() const;
+        void generate_bonus_items(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IModelStorage& model_storage);
+
 
         std::shared_ptr<graphics::IDevice> _device;
         std::vector<std::shared_ptr<IRoom>>   _rooms;
@@ -263,6 +268,7 @@ namespace trview
         bool _show_animation{ true };
 
         std::weak_ptr<IMessageSystem> _messaging;
+        std::shared_ptr<ILevelNameLookup> _level_name_lookup;
     };
 }
 
