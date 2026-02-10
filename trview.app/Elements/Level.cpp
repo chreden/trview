@@ -1772,16 +1772,23 @@ namespace trview
 
     void Level::generate_bonus_items(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IModelStorage& model_storage)
     {
-
         auto map_id = [](int16_t id) -> int16_t
             {
                 if (id == 14)
                 {
                     return 151;
                 }
-                else if (id < 17)
+                else if (id < 14)
                 {
                     return id + 135;
+                }
+                else if (id == 14)
+                {
+                    return 151;
+                }
+                else if (id < 17)
+                {
+                    return id + 134;
                 }
 
                 // todo: pickup, puzzle, key
@@ -1790,11 +1797,20 @@ namespace trview
             };
 
         const auto extra_items = _level_name_lookup->bonus_items(weak_from_this());
+        if (extra_items.empty())
+        {
+            return;
+        }
 
-        // Find a secret:
+        // Find a secret (TR2)
         std::weak_ptr<IItem> last_secret;
         find_last_item_by_type_id(*this, 190, last_secret);
         std::shared_ptr<IItem> last_secret_ptr = last_secret.lock();
+        if (!last_secret_ptr)
+        {
+            return;
+        }
+
         std::shared_ptr<IRoom> containing_room = last_secret_ptr->room().lock();;
 
         for (const auto& item : extra_items)
