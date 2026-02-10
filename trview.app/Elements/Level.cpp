@@ -104,6 +104,56 @@ namespace trview
             const auto level_ptr = element->level().lock();
             return level_ptr && level_ptr.get() == level;
         }
+
+        const std::map<int, int> tr2_bonus_ids
+        {
+            { 0, 135 }, { 1, 136 }, { 2, 137 }, { 3, 138 },
+            { 4, 139 }, { 5, 140 }, { 6, 141 }, { 7, 142 },
+            { 8, 143 }, { 9, 144 }, { 10, 145 }, { 11, 146 },
+            { 12, 147 }, { 13, 148 }, { 14, 151 }, { 15, 149 },
+            { 16, 150 },
+            { 17, 0 }, // Pickup 1
+            { 18, 0 }, // Pickup 2
+            { 19, 174 }, { 20, 175 }, { 21, 176 }, { 22, 177 },
+            { 23, 193 }, { 24, 194 }, { 25, 195 }, { 26, 196 }
+        };
+
+        const std::map<int, int> tr3_bonus_ids
+        {
+            { 0, 160 }, { 1, 161 }, { 2, 162 }, { 3, 163 },
+            { 4, 164 }, { 5, 165 }, { 6, 166 }, { 7, 167 },
+            { 8, 168 }, { 9, 169 }, { 10, 170 }, { 11, 171 },
+            { 12, 172 }, { 13, 173 }, { 14, 174 }, { 15, 175 },
+            { 16, 178 }, { 17, 176 }, { 18, 177 },
+            { 19, 0 },
+            { 20, 0 },
+            { 21, 205 }, { 22, 206 }, { 23, 207 }, { 24, 208 },
+            { 25, 224 }, { 26, 225 }, { 27, 226 }, { 28, 227 },
+            { 29, 180 }
+        };
+
+        int16_t map_bonus_id(trlevel::PlatformAndVersion platform_and_version, int16_t id)
+        {
+            if (platform_and_version.version == trlevel::LevelVersion::Tomb2)
+            {
+                const auto found = tr2_bonus_ids.find(id);
+                if (found != tr2_bonus_ids.end())
+                {
+                    return static_cast<int16_t>(found->second);
+                }
+                return 0;
+            }
+            else if (platform_and_version.version == trlevel::LevelVersion::Tomb3)
+            {
+                const auto found = tr3_bonus_ids.find(id);
+                if (found != tr3_bonus_ids.end())
+                {
+                    return static_cast<int16_t>(found->second);
+                }
+                return 0;
+            }
+            return 0;
+        }
     }
 
     ILevel::~ILevel()
@@ -1772,30 +1822,6 @@ namespace trview
 
     void Level::generate_bonus_items(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IModelStorage& model_storage)
     {
-        auto map_id = [](int16_t id) -> int16_t
-            {
-                if (id == 14)
-                {
-                    return 151;
-                }
-                else if (id < 14)
-                {
-                    return id + 135;
-                }
-                else if (id == 14)
-                {
-                    return 151;
-                }
-                else if (id < 17)
-                {
-                    return id + 134;
-                }
-
-                // todo: pickup, puzzle, key
-                // todo: tomb3
-                return 0;
-            };
-
         const auto extra_items = _level_name_lookup->bonus_items(weak_from_this());
         if (extra_items.empty())
         {
@@ -1815,9 +1841,15 @@ namespace trview
 
         for (const auto& item : extra_items)
         {
+            // Ignore starting items
+            if (item >= 1000)
+            {
+                continue;
+            }
+
             trlevel::tr2_entity level_entity
             {
-                .TypeID = map_id(static_cast<int16_t>(item)),
+                .TypeID = map_bonus_id(_platform_and_version, static_cast<int16_t>(item)),
                 .Room = level.get_entity(last_secret_ptr->number()).Room,
                 .x = level.get_entity(last_secret_ptr->number()).x,
                 .y = level.get_entity(last_secret_ptr->number()).y,
@@ -1831,6 +1863,7 @@ namespace trview
             auto entity = entity_source(level, level_entity, static_cast<uint32_t>(_entities.size()), {}, model_storage, shared_from_this(), containing_room);
             auto categories = entity->categories();
             categories.insert("Virtual");
+            categories.insert("Bonus");
             entity->set_categories(categories);
             containing_room->add_entity(entity);
             _token_store += entity->on_changed += [this]() { content_changed(); };
