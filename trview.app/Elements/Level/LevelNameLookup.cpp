@@ -138,13 +138,15 @@ namespace trview
                     switch (opcode)
                     {
                     case Opcode::Picture:
+                    case Opcode::ListStart:
+                    case Opcode::ListEnd:
                     case Opcode::FMV:
                     case Opcode::Level:
                     case Opcode::Cine:
                     case Opcode::Demo:
                     case Opcode::JumpToSeqence:
                     case Opcode::Track:
-                    case Opcode::DeadlyWater:
+                    case Opcode::LoadPic:
                     case Opcode::CutAngle:
                     case Opcode::NoFloor:
                     case Opcode::StartInv:
@@ -159,6 +161,11 @@ namespace trview
 
                     _levels[i].operations.push_back(Operation { .opcode = opcode, .operand = operand });
                     opcode = static_cast<Opcode>(read<uint16_t>(file));
+                }
+
+                if (opcode == Opcode::End)
+                {
+                    _levels[i].operations.push_back(Operation{ .opcode = opcode, .operand = 0 });
                 }
             }
         }
