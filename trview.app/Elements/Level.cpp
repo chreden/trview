@@ -702,6 +702,9 @@ namespace trview
             }
         }
 
+        callbacks.on_progress("Generating bonus items");
+        generate_bonus_items(level, entity_source, model_storage);
+
         if (_platform_and_version.remastered)
         {
             callbacks.on_progress("Generating NG+ items");
@@ -751,9 +754,6 @@ namespace trview
             _token_store += entity->on_changed += [this]() { content_changed(); };
             _entities.push_back(entity);
         }
-
-        callbacks.on_progress("Generating bonus items");
-        generate_bonus_items(level, entity_source, model_storage);
 
         callbacks.on_progress("Generating virtual items");
         for (const auto& driver : skidoo_drivers)

@@ -530,6 +530,26 @@ namespace trview
         {
             return std::format("tr{}*", static_cast<int>(version));
         }
+
+        const std::map<std::string, std::vector<int32_t>> remastered_bonus_items
+        {
+            { "wall.tr2", { 6, 13, 13, 15 } },
+            { "boat.tr2", { 9, 9, 9, 9 } },
+            { "venice.tr2", { 8, 8, 8, 8 } },
+            { "opera.tr2", { 3, 10, 10, 10, 10 } },
+            { "rig.tr2", { 3, 10, 10 } },
+            { "platform.tr2", { 10, 10, 10, 10 } },
+            { "unwater.tr2", { 11, 11, 11, 11 } },
+            { "keel.tr2", { 6, 13, 13 } },
+            { "living.tr2", { 12, 12, 12, 12 } },
+            { "deck.tr2", { 13, 13, 13, 13 } },
+            { "skidoo.tr2", { 10, 10, 10, 10 } },
+            { "monastry.tr2", { 12, 12, 12, 12 } },
+            { "catacomb.tr2", { 13, 13, 12, 12 } },
+            { "icecave.tr2", { 13, 13, 13, 13 } },
+            { "emprtomb.tr2", { 10, 10, 10, 10, 10, 10, 10, 10 } },
+            { "floating.tr2", { 13, 13, 13, 13, 13, 13, 13, 13 } }
+        };
     }
 
     ILevelNameLookup::~ILevelNameLookup()
@@ -647,7 +667,12 @@ namespace trview
             return std::nullopt;
         }
 
-        filename;
+        const std::filesystem::path file_path{ filename };
+        const auto found = remastered_bonus_items.find(to_lowercase(file_path.filename().string()));
+        if (found != remastered_bonus_items.end())
+        {
+            return found->second;
+        }
         return {};
     }
 
@@ -660,13 +685,8 @@ namespace trview
         {
             if (auto remastered = check_remastered_bonus_items(filename, platform_and_version))
             {
-                return {};
+                return remastered.value();
             }
-
-            // if (auto trx = check_trx(filename, platform_and_version))
-            // {
-            //     return {};
-            // }
 
             switch (platform_and_version.version)
             {
