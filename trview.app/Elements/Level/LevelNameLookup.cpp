@@ -333,34 +333,46 @@ namespace trview
 
         std::optional<ILevelNameLookup::Name> read_tombpc_1_3(const std::shared_ptr<IFiles>& files, const std::string& level_filename)
         {
-            const std::filesystem::path level_path{ level_filename };
-            if (const auto script = load_script(files, level_path))
+            try
             {
-                if (const auto name = script->name(level_path.filename().string()))
+                const std::filesystem::path level_path{ level_filename };
+                if (const auto script = load_script(files, level_path))
                 {
-                    return ILevelNameLookup::Name{ .name = name.value(), .index = script->index(level_path.filename().string()) };
+                    if (const auto name = script->name(level_path.filename().string()))
+                    {
+                        return ILevelNameLookup::Name{ .name = name.value(), .index = script->index(level_path.filename().string()) };
+                    }
                 }
+            }
+            catch(...)
+            {
             }
             return std::nullopt;
         }
 
         std::optional<std::vector<int32_t>> read_tombpc_1_3_bonus_items(const std::shared_ptr<IFiles>& files, const std::string& level_filename)
         {
-            const std::filesystem::path level_path{ level_filename };
-            if (const auto script = load_script(files, level_path))
+            try
             {
-                if (const auto operations = script->operations(level_path.filename().string()))
+                const std::filesystem::path level_path{ level_filename };
+                if (const auto script = load_script(files, level_path))
                 {
-                    std::vector<int32_t> items;
-                    for (const auto& operation : operations.value())
+                    if (const auto operations = script->operations(level_path.filename().string()))
                     {
-                        if (operation.opcode == TombScript::Opcode::StartInv)
+                        std::vector<int32_t> items;
+                        for (const auto& operation : operations.value())
                         {
-                            items.push_back(static_cast<int32_t>(operation.operand));
+                            if (operation.opcode == TombScript::Opcode::StartInv)
+                            {
+                                items.push_back(static_cast<int32_t>(operation.operand));
+                            }
                         }
+                        return items;
                     }
-                    return items;
                 }
+            }
+            catch(...)
+            {
             }
             return std::nullopt;
         }
