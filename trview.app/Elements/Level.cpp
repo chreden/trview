@@ -154,6 +154,54 @@ namespace trview
             }
             return 0;
         }
+
+        /// <summary>
+        /// Make a best effort to find where to put the bonus items for secrets.
+        /// </summary>
+        std::tuple<std::shared_ptr<IRoom>, Vector3> find_bonus_position(ILevel& level)
+        {
+            if (level.version() == trlevel::LevelVersion::Tomb2)
+            {
+                const bool is_beta = trlevel::is_tr2_version_44(level.platform_and_version());
+
+                // Search for dragons in order gold -> jade -> stone (because that's correct in TGW)
+                std::weak_ptr<IItem> last_secret;
+                if (find_last_item_by_type_id(level, is_beta ? 191 : 190, last_secret) ||
+                    find_last_item_by_type_id(level, is_beta ? 192 : 191, last_secret) ||
+                    find_last_item_by_type_id(level, is_beta ? 193 : 192, last_secret))
+                {
+                    if (const auto last_secret_ptr = last_secret.lock())
+                    {
+                        return { last_secret_ptr->room().lock(), last_secret_ptr->position() * trlevel::Scale };
+                    }
+                }
+            }
+
+            // In TR3 or if there are no dragons, look for a secret trigger.
+            for (const auto& trigger : level.triggers())
+            {
+                if (const auto trigger_ptr = trigger.lock())
+                {
+                    if (has_command(*trigger_ptr, TriggerCommandType::SecretFound))
+                    {
+                        return { trigger_ptr->room().lock(), trigger_ptr->position() * trlevel::Scale };
+                    }
+                }
+            }
+
+            // Lara instead?
+            std::weak_ptr<IItem> lara;
+            if (find_last_item_by_type_id(level, 0, lara))
+            {
+                if (const auto lara_ptr = lara.lock())
+                {
+                    return { lara_ptr->room().lock(), lara_ptr->position() * trlevel::Scale };
+                }
+            }
+
+            // Nowhere really
+            return { level.room(0).lock(), Vector3::Zero };
+        }
     }
 
     ILevel::~ILevel()
@@ -1828,16 +1876,12 @@ namespace trview
             return;
         }
 
-        // Find a secret (TR2)
-        std::weak_ptr<IItem> last_secret;
-        find_last_item_by_type_id(*this, 190, last_secret);
-        std::shared_ptr<IItem> last_secret_ptr = last_secret.lock();
-        if (!last_secret_ptr)
+        const auto [target_room, target_position] = find_bonus_position(*this);
+        if (!target_room)
         {
+            // Nowhere to put bonus items - give up.
             return;
         }
-
-        std::shared_ptr<IRoom> containing_room = last_secret_ptr->room().lock();;
 
         for (const auto& item : extra_items)
         {
@@ -1850,22 +1894,22 @@ namespace trview
             trlevel::tr2_entity level_entity
             {
                 .TypeID = map_bonus_id(_platform_and_version, static_cast<int16_t>(item)),
-                .Room = level.get_entity(last_secret_ptr->number()).Room,
-                .x = level.get_entity(last_secret_ptr->number()).x,
-                .y = level.get_entity(last_secret_ptr->number()).y,
-                .z = level.get_entity(last_secret_ptr->number()).z,
+                .Room = static_cast<int16_t>(target_room->number()),
+                .x = static_cast<int32_t>(target_position.x),
+                .y = static_cast<int32_t>(target_position.y),
+                .z = static_cast<int32_t>(target_position.z),
                 .Angle = 0,
                 .Intensity1 = 0,
                 .Intensity2 = 0,
                 .Flags = 0
             };
 
-            auto entity = entity_source(level, level_entity, static_cast<uint32_t>(_entities.size()), {}, model_storage, shared_from_this(), containing_room);
+            auto entity = entity_source(level, level_entity, static_cast<uint32_t>(_entities.size()), {}, model_storage, shared_from_this(), target_room);
             auto categories = entity->categories();
             categories.insert("Virtual");
             categories.insert("Bonus");
             entity->set_categories(categories);
-            containing_room->add_entity(entity);
+            target_room->add_entity(entity);
             _token_store += entity->on_changed += [this]() { content_changed(); };
             _entities.push_back(entity);
         }
