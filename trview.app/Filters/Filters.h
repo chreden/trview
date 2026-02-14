@@ -72,6 +72,7 @@ namespace trview
 
             auto operator <=> (const Filter&) const = default;
 
+            bool empty() const;
             int value_count() const noexcept;
             bool initial_state() const noexcept;
         };
