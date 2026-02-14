@@ -226,7 +226,7 @@ namespace trview
 
     bool Filters::match(const IFilterable& value) const
     {
-        return _filter.empty() || match(_filter, value, _filter.type_key);
+        return match(_filter, value, _filter.type_key);
     }
 
     bool Filters::match(const Filters::Filter& filter, const IFilterable& value, const std::string& type_key) const
