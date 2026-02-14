@@ -139,7 +139,8 @@ namespace trview
                 const auto found = tr2_bonus_ids.find(id);
                 if (found != tr2_bonus_ids.end())
                 {
-                    return static_cast<int16_t>(found->second);
+                    const bool beta = trlevel::is_tr2_version_44(platform_and_version);
+                    return static_cast<int16_t>(beta ? found->second + 1 : found->second);
                 }
                 return 0;
             }
