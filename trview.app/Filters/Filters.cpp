@@ -31,6 +31,12 @@ namespace trview
         return false;
     }
 
+    bool Filters::Filter::empty() const
+    {
+        const bool self_empty = key == "" && value == "";
+        return self_empty && std::ranges::all_of(children, [](auto&& c) { return c.empty(); });;
+    }
+
     Filters::GettersBuilder& Filters::GettersBuilder::with_type_key(const std::string& key)
     {
         _type_key = key;
@@ -220,11 +226,16 @@ namespace trview
 
     bool Filters::match(const IFilterable& value) const
     {
-        return _filter.children.empty() || match(_filter, value, _filter.type_key);
+        return match(_filter, value, _filter.type_key);
     }
 
     bool Filters::match(const Filters::Filter& filter, const IFilterable& value, const std::string& type_key) const
     {
+        if (!_enabled || filter.empty())
+        {
+            return true;
+        }
+
         bool filter_result = filter.initial_state();
 
         if (!filter.children.empty())
