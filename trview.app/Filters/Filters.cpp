@@ -424,6 +424,7 @@ namespace trview
         {
             result.push_back(key.first);
         }
+        std::ranges::sort(result);
         return result;
     }
 
