@@ -899,6 +899,11 @@ namespace trview
     {
         if (auto waypoint_ptr = waypoint.lock())
         {
+            if (auto level_ptr = _level.lock())
+            {
+                messages::send_select_room(_messaging, level_ptr->room(waypoint_ptr->room()));
+            }
+
             set_target(waypoint_ptr->position());
             if (_settings.auto_orbit)
             {
