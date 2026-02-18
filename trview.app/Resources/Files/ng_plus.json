@@ -187,7 +187,10 @@
             "WALL.TR2": {
                 "swaps": [
                     { "item":28, "type":148 },
-                    { "item":92, "type":148 }
+                    { "item":92, "type":148 },
+                    { "item":106, "type":150 },
+                    { "item":107, "type":150 },
+                    { "item":108, "type":150 }
                 ]
             },
             "BOAT.TR2": {
@@ -197,7 +200,11 @@
                     { "item":105, "type":147 },
                     { "item":122, "type":143 },
                     { "item":129, "type":147 },
-                    { "item":132, "type":144 }
+                    { "item":132, "type":144 },
+                    { "item":133, "type":150 },
+                    { "item":134, "type":150 },
+                    { "item":135, "type":149 },
+                    { "item":136, "type":149 },
                 ]
             },
             "VENICE.TR2": {
@@ -207,7 +214,11 @@
                     { "item":57, "type":143 },
                     { "item":65, "type":143 },
                     { "item":79, "type":144 },
-                    { "item":115, "type":143 }
+                    { "item":115, "type":143 },
+                    { "item":134, "type":150 },
+                    { "item":135, "type":150 },
+                    { "item":136, "type":150 },
+                    { "item":137, "type":150 },
                 ]
             },
             "OPERA.TR2": {
@@ -219,7 +230,12 @@
                     { "item":130, "type":145 },
                     { "item":141, "type":143 },
                     { "item":169, "type":147 },
-                    { "item":186, "type":148 }
+                    { "item":186, "type":148 },
+                    { "item":216, "type":150 },
+                    { "item":217, "type":150 },
+                    { "item":218, "type":150 },
+                    { "item":219, "type":149 },
+                    { "item":220, "type":149 },
                 ]
             },
             "RIG.TR2": {
@@ -230,7 +246,10 @@
                     { "item":64, "type":141 },
                     { "item":72, "type":145 },
                     { "item":81, "type":138 },
-                    { "item":111, "type":140 }
+                    { "item":111, "type":140 },
+                    { "item":112, "type":150 },
+                    { "item":113, "type":150 },
+                    { "item":114, "type":150 },
                 ]
             },
             "PLATFORM.TR2": {
@@ -240,13 +259,21 @@
                     { "item":44, "type":146 },
                     { "item":64, "type":146 },
                     { "item":76, "type":147 },
-                    { "item":104, "type":143 }
+                    { "item":104, "type":143 },
+                    { "item":131, "type":150 },
+                    { "item":132, "type":150 },
+                    { "item":133, "type":150 },
+                    { "item":134, "type":149 },
                 ]
             },
             "UNWATER.TR2": {
                 "swaps": [
                     { "item":58, "type":148 },
-                    { "item":63, "type":148 }
+                    { "item":63, "type":148 },
+                    { "item":69, "type":150 },
+                    { "item":70, "type":150 },
+                    { "item":71, "type":149 },
+                    { "item":72, "type":149 },
                 ]
             },
             "KEEL.TR2": {
@@ -259,19 +286,30 @@
                     { "item":95, "type":147 },
                     { "item":151, "type":147 },
                     { "item":154, "type":146 },
-                    { "item":170, "type":144 }
+                    { "item":170, "type":144 },
+                    { "item":199, "type":150 },
+                    { "item":200, "type":150 },
+                    { "item":201, "type":150 },
                 ]
             },
             "LIVING.TR2": {
                 "swaps": [
-                    { "item":4, "type":144 }
+                    { "item":4, "type":144 },
+                    { "item":92, "type":150 },
+                    { "item":93, "type":150 },
+                    { "item":94, "type":149 },
+                    { "item":95, "type":149 },
                 ]
             },
             "DECK.TR2": {
                 "swaps": [
                     { "item":16, "type":145 },
                     { "item":38, "type":145 },
-                    { "item":93, "type":145 }
+                    { "item":93, "type":145 },
+                    { "item":105, "type":150 },
+                    { "item":106, "type":150 },
+                    { "item":107, "type":150 },
+                    { "item":108, "type":150 },
                 ]
             },
             "SKIDOO.TR2": {
@@ -281,7 +319,11 @@
                     { "item":22, "type":144 },
                     { "item":80, "type":145 },
                     { "item":93, "type":148 },
-                    { "item":94, "type":148 }
+                    { "item":94, "type":148 },
+                    { "item":108, "type":150 },
+                    { "item":109, "type":150 },
+                    { "item":110, "type":150 },
+                    { "item":111, "type":150 },
                 ]
             },
             "MONASTRY.TR2": {
@@ -294,7 +336,11 @@
                     { "item":119, "type":147 },
                     { "item":121, "type":148 },
                     { "item":157, "type":147 },
-                    { "item":158, "type":148 }
+                    { "item":158, "type":148 },
+                    { "item":217, "type":150 },
+                    { "item":218, "type":150 },
+                    { "item":219, "type":150 },
+                    { "item":220, "type":149 },
                 ]
             },
             "CATACOMB.TR2": {
@@ -305,7 +351,11 @@
                     { "item":47, "type":148 },
                     { "item":55, "type":145 },
                     { "item":114, "type":147 },
-                    { "item":152, "type":144 }
+                    { "item":152, "type":144 },
+                    { "item":170, "type":150 },
+                    { "item":171, "type":150 },
+                    { "item":172, "type":150 },
+                    { "item":173, "type":150 },
                 ]
             },
             "ICECAVE.TR2": {
@@ -316,7 +366,11 @@
                     { "item":127, "type":145 },
                     { "item":130, "type":144 },
                     { "item":133, "type":148 },
-                    { "item":151, "type":148 }
+                    { "item":151, "type":148 },
+                    { "item":158, "type":150 },
+                    { "item":159, "type":150 },
+                    { "item":160, "type":150 },
+                    { "item":161, "type":150 },
                 ]
             },
             "EMPRTOMB.TR2": {
@@ -328,7 +382,15 @@
                     { "item":137, "type":143 },
                     { "item":160, "type":145 },
                     { "item":181, "type":145 },
-                    { "item":202, "type":148 }
+                    { "item":202, "type":148 },
+                    { "item":240, "type":150 },
+                    { "item":241, "type":150 },
+                    { "item":242, "type":149 },
+                    { "item":243, "type":149 },
+                    { "item":244, "type":149 },
+                    { "item":245, "type":149 },
+                    { "item":246, "type":149 },
+                    { "item":247, "type":149 },
                 ]
             },
             "FLOATING.TR2": {
@@ -338,7 +400,15 @@
                     { "item":45, "type":147 },
                     { "item":84, "type":147 },
                     { "item":112, "type":148 },
-                    { "item":117, "type":148 }
+                    { "item":117, "type":148 },
+                    { "item":141, "type":150 },
+                    { "item":142, "type":149 },
+                    { "item":143, "type":149 },
+                    { "item":144, "type":149 },
+                    { "item":145, "type":149 },
+                    { "item":146, "type":149 },
+                    { "item":147, "type":149 },
+                    { "item":148, "type":149 },
                 ]
             },
             "XIAN.TR2": {

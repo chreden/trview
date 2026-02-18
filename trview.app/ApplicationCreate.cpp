@@ -283,6 +283,9 @@ namespace trview
                     wrap_sampler_state : clamp_sampler_state;
             };
 
+        Resource level_hashes = get_resource_memory(IDR_LEVEL_HASHES, L"TEXT");
+        auto level_name_lookup = std::make_shared<LevelNameLookup>(files, std::string(level_hashes.data, level_hashes.data + level_hashes.size));
+
         auto level_source = [=](auto&& filename, auto&& pack, auto&& callbacks)
             {
                 auto level = trlevel_source(filename, pack);
@@ -346,11 +349,13 @@ namespace trview
                     sound_storage,
                     ngplus,
                     clamp_sampler_state,
+                    level_name_lookup,
                     messaging);
 
                 std::shared_ptr<ILevel> level_ptr = new_level;
                 std::shared_ptr<IRecipient> rec_ptr = new_level;
                 messaging->add_recipient(new_level);
+                new_level->set_filename(filename);
                 new_level->initialise(level,
                     mesh_storage,
                     model_storage,
@@ -408,9 +413,6 @@ namespace trview
 
         auto settings_window = std::make_shared<SettingsWindow>(dialogs, shell, fonts, texture_storage, messaging);
         messaging->add_recipient(settings_window);
-
-        Resource level_hashes = get_resource_memory(IDR_LEVEL_HASHES, L"TEXT");
-        auto level_name_lookup = std::make_shared<LevelNameLookup>(files, std::string(level_hashes.data, level_hashes.data + level_hashes.size));
 
         auto triggers_window_source = [=]()
             {

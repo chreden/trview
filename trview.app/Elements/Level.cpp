@@ -104,6 +104,105 @@ namespace trview
             const auto level_ptr = element->level().lock();
             return level_ptr && level_ptr.get() == level;
         }
+
+        const std::map<int, int> tr2_bonus_ids
+        {
+            { 0, 135 }, { 1, 136 }, { 2, 137 }, { 3, 138 },
+            { 4, 139 }, { 5, 140 }, { 6, 141 }, { 7, 142 },
+            { 8, 143 }, { 9, 144 }, { 10, 145 }, { 11, 146 },
+            { 12, 147 }, { 13, 148 }, { 14, 151 }, { 15, 149 },
+            { 16, 150 },
+            { 17, 0 }, // Pickup 1
+            { 18, 0 }, // Pickup 2
+            { 19, 174 }, { 20, 175 }, { 21, 176 }, { 22, 177 },
+            { 23, 193 }, { 24, 194 }, { 25, 195 }, { 26, 196 }
+        };
+
+        const std::map<int, int> tr3_bonus_ids
+        {
+            { 0, 160 }, { 1, 161 }, { 2, 162 }, { 3, 163 },
+            { 4, 164 }, { 5, 165 }, { 6, 166 }, { 7, 167 },
+            { 8, 168 }, { 9, 169 }, { 10, 170 }, { 11, 171 },
+            { 12, 172 }, { 13, 173 }, { 14, 174 }, { 15, 175 },
+            { 16, 178 }, { 17, 176 }, { 18, 177 },
+            { 19, 0 },
+            { 20, 0 },
+            { 21, 205 }, { 22, 206 }, { 23, 207 }, { 24, 208 },
+            { 25, 224 }, { 26, 225 }, { 27, 226 }, { 28, 227 },
+            { 29, 180 }
+        };
+
+        int16_t map_bonus_id(trlevel::PlatformAndVersion platform_and_version, int16_t id)
+        {
+            if (platform_and_version.version == trlevel::LevelVersion::Tomb2)
+            {
+                const auto found = tr2_bonus_ids.find(id);
+                if (found != tr2_bonus_ids.end())
+                {
+                    const bool beta = trlevel::is_tr2_version_44(platform_and_version);
+                    return static_cast<int16_t>(beta ? found->second + 1 : found->second);
+                }
+                return 0;
+            }
+            else if (platform_and_version.version == trlevel::LevelVersion::Tomb3)
+            {
+                const auto found = tr3_bonus_ids.find(id);
+                if (found != tr3_bonus_ids.end())
+                {
+                    return static_cast<int16_t>(found->second);
+                }
+                return 0;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// Make a best effort to find where to put the bonus items for secrets.
+        /// </summary>
+        std::tuple<std::shared_ptr<IRoom>, Vector3> find_bonus_position(ILevel& level)
+        {
+            if (level.version() == trlevel::LevelVersion::Tomb2)
+            {
+                const bool is_beta = trlevel::is_tr2_version_44(level.platform_and_version());
+
+                // Search for dragons in order gold -> jade -> stone (because that's correct in TGW)
+                std::weak_ptr<IItem> last_secret;
+                if (find_last_item_by_type_id(level, is_beta ? 191 : 190, last_secret) ||
+                    find_last_item_by_type_id(level, is_beta ? 192 : 191, last_secret) ||
+                    find_last_item_by_type_id(level, is_beta ? 193 : 192, last_secret))
+                {
+                    if (const auto last_secret_ptr = last_secret.lock())
+                    {
+                        return { last_secret_ptr->room().lock(), last_secret_ptr->position() * trlevel::Scale };
+                    }
+                }
+            }
+
+            // In TR3 or if there are no dragons, look for a secret trigger.
+            for (const auto& trigger : level.triggers())
+            {
+                if (const auto trigger_ptr = trigger.lock())
+                {
+                    if (has_command(*trigger_ptr, TriggerCommandType::SecretFound))
+                    {
+                        return { trigger_ptr->room().lock(), trigger_ptr->position() * trlevel::Scale };
+                    }
+                }
+            }
+
+            // Lara instead?
+            std::weak_ptr<IItem> lara;
+            if (find_last_item_by_type_id(level, 0, lara))
+            {
+                if (const auto lara_ptr = lara.lock())
+                {
+                    return { lara_ptr->room().lock(), lara_ptr->position() * trlevel::Scale };
+                }
+            }
+
+            // Nowhere really
+            return { level.room(0).lock(), Vector3::Zero };
+        }
     }
 
     ILevel::~ILevel()
@@ -120,10 +219,11 @@ namespace trview
         std::shared_ptr<ISoundStorage> sound_storage,
         std::shared_ptr<INgPlusSwitcher> ngplus_switcher,
         const std::shared_ptr<graphics::ISamplerState>& sampler_state,
+        const std::shared_ptr<ILevelNameLookup> level_name_lookup,
         const std::weak_ptr<IMessageSystem>& messaging)
         : _device(device), _texture_storage(level_texture_storage),
         _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer)), _log(log), _sound_storage(sound_storage),
-        _ngplus_switcher(ngplus_switcher), _room_sampler_state(sampler_state), _messaging(messaging)
+        _ngplus_switcher(ngplus_switcher), _room_sampler_state(sampler_state), _messaging(messaging), _level_name_lookup(level_name_lookup)
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -651,6 +751,9 @@ namespace trview
             }
         }
 
+        callbacks.on_progress("Generating bonus items");
+        generate_bonus_items(level, entity_source, model_storage);
+
         if (_platform_and_version.remastered)
         {
             callbacks.on_progress("Generating NG+ items");
@@ -686,6 +789,7 @@ namespace trview
             }
         }
 
+        callbacks.on_progress("Generating AI items");
         const uint32_t num_ai_objects = level.num_ai_objects();
         for (uint32_t i = 0; i < num_ai_objects; ++i)
         {
@@ -700,6 +804,7 @@ namespace trview
             _entities.push_back(entity);
         }
 
+        callbacks.on_progress("Generating virtual items");
         for (const auto& driver : skidoo_drivers)
         {
             if (auto man = driver.lock())
@@ -1762,6 +1867,53 @@ namespace trview
             }
         }
         return rooms;
+    }
+
+    void Level::generate_bonus_items(const trlevel::ILevel& level, const IItem::EntitySource& entity_source, const IModelStorage& model_storage)
+    {
+        const auto extra_items = _level_name_lookup->bonus_items(weak_from_this());
+        if (extra_items.empty())
+        {
+            return;
+        }
+
+        const auto [target_room, target_position] = find_bonus_position(*this);
+        if (!target_room)
+        {
+            // Nowhere to put bonus items - give up.
+            return;
+        }
+
+        for (const auto& item : extra_items)
+        {
+            // Ignore starting items
+            if (item >= 1000)
+            {
+                continue;
+            }
+
+            trlevel::tr2_entity level_entity
+            {
+                .TypeID = map_bonus_id(_platform_and_version, static_cast<int16_t>(item)),
+                .Room = static_cast<int16_t>(target_room->number()),
+                .x = static_cast<int32_t>(target_position.x),
+                .y = static_cast<int32_t>(target_position.y),
+                .z = static_cast<int32_t>(target_position.z),
+                .Angle = 0,
+                .Intensity1 = 0,
+                .Intensity2 = 0,
+                .Flags = 0
+            };
+
+            auto entity = entity_source(level, level_entity, static_cast<uint32_t>(_entities.size()), {}, model_storage, shared_from_this(), target_room);
+            auto categories = entity->categories();
+            categories.insert("Virtual");
+            categories.insert("Bonus");
+            entity->set_categories(categories);
+            target_room->add_entity(entity);
+            _token_store += entity->on_changed += [this]() { content_changed(); };
+            _entities.push_back(entity);
+        }
     }
 
     bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item)

@@ -131,10 +131,23 @@ namespace trview
 
             if (entry.second != -1)
             {
-                auto entity = tr_level.get_entity(entry.first);
+                trlevel::tr2_entity entity
+                {
+                    .TypeID = static_cast<int16_t>(existing_item->type_id()),
+                    .Room = static_cast<int16_t>(room_number(existing_item->room())),
+                    .x = static_cast<int32_t>(existing_item->position().x * trlevel::Scale),
+                    .y = static_cast<int32_t>(existing_item->position().y * trlevel::Scale),
+                    .z = static_cast<int32_t>(existing_item->position().z * trlevel::Scale),
+                    .Angle = static_cast<int16_t>(existing_item->angle()),
+                    .Intensity1 = 0,
+                    .Intensity2 = 0,
+                    .Flags = existing_item->activation_flags()
+                };
+
                 entity.TypeID = entry.second;
                 auto item = _item_source(tr_level, entity, entry.first, existing_item->triggers(), model_storage, level, existing_item->room());
                 item->set_ng_plus(true);
+                item->set_categories(existing_item->categories());
                 results[entry.first] = item;
             }
             else

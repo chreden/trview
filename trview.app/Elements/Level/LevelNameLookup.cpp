@@ -14,6 +14,203 @@ namespace trview
 {
     namespace
     {
+        class TombScript final
+        {
+        public:
+            // Load Tomb 2-3 script data.
+            explicit TombScript(const std::vector<uint8_t>& data);
+
+            enum class Opcode
+            {
+                Picture = 0,
+                ListStart,
+                ListEnd,
+                FMV,
+                Level,
+                Cine,
+                Complete,
+                Demo,
+                JumpToSeqence,
+                End,
+                Track,
+                Sunset,
+                LoadPic,
+                DeadlyWater,
+                RemoveWeapons,
+                GameComplete,
+                CutAngle,
+                NoFloor,
+                StartInv,
+                StartAnim,
+                Secrets,
+                KillToComplete,
+                RemoveAmmo
+            };
+
+            struct Operation
+            {
+                Opcode   opcode;
+                uint16_t operand;
+            };
+
+            std::optional<int32_t> index(const std::string& level_filename) const;
+            std::optional<std::string> name(const std::string& level_filename) const;
+            std::optional<std::vector<Operation>> operations(const std::string& level_filename) const;
+        private:
+
+            struct ScriptLevel
+            {
+                std::string filename;
+                std::string name;
+                std::vector<Operation> operations;
+            };
+            
+            std::vector<ScriptLevel> _levels;
+        };
+
+        TombScript::TombScript(const std::vector<uint8_t>& data)
+        {
+            std::basic_ispanstream<uint8_t> file{ std::span(data) };
+            file.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
+            file.seekg(326);
+
+            using namespace trlevel;
+
+            uint16_t num_levels = read<uint16_t>(file);
+            uint16_t num_chapters = read<uint16_t>(file);
+            uint16_t num_titles = read<uint16_t>(file);
+            uint16_t num_fmvs = read<uint16_t>(file);
+            uint16_t num_cutscenes = read<uint16_t>(file);
+            uint16_t num_demos = read<uint16_t>(file);
+            skip(file, 36);
+            uint16_t flags = read<uint16_t>(file);
+            skip(file, 6);
+            uint8_t xorkey = read<uint8_t>(file);
+            skip(file, 7);
+
+            num_demos;
+
+            if (!(flags & 0x100))
+            {
+                xorkey = 0;
+            }
+
+            auto read_string_list = [&](int count)
+                {
+                    auto offsets = read_vector<uint16_t>(file, count);
+                    uint16_t total_size = read<uint16_t>(file);
+                    auto data = read_vector<uint8_t>(file, total_size)
+                        | std::views::transform([=](auto x) -> uint8_t { return x ^ xorkey; })
+                        | std::ranges::to<std::vector>();
+                    return offsets
+                        | std::views::transform([&](auto off) { return std::string(reinterpret_cast<char*>(&data[off])); })
+                        | std::ranges::to<std::vector>();
+                };
+
+            const auto level_names = read_string_list(num_levels);
+            const auto chapters = read_string_list(num_chapters);
+            const auto titles = read_string_list(num_titles);
+            const auto fmvs = read_string_list(num_fmvs);
+            const auto level_paths = read_string_list(num_levels) | std::views::transform(to_lowercase) | std::ranges::to<std::vector>();
+            const auto cutscenes = read_string_list(num_cutscenes);
+
+            // Title
+            _levels.push_back({});
+
+            // Levels
+            for (int32_t i = 0; i < num_levels; ++i)
+            {
+                _levels.push_back(ScriptLevel { .filename = level_paths[i], .name = level_names[i] });
+            }
+
+            const std::vector<uint16_t> sequence_offset = read_vector<uint16_t>(file, num_levels + 1);
+            const uint16_t sequence_num_bytes = read<uint16_t>(file);
+            sequence_num_bytes;
+
+            for (int32_t i = 0; i <= num_levels; ++i)
+            {
+                std::vector<int32_t> items;
+
+                Opcode opcode = static_cast<Opcode>(read<uint16_t>(file));
+                while (opcode != Opcode::End)
+                {
+                    uint16_t operand = 0;
+                    switch (opcode)
+                    {
+                    case Opcode::Picture:
+                    case Opcode::ListStart:
+                    case Opcode::ListEnd:
+                    case Opcode::FMV:
+                    case Opcode::Level:
+                    case Opcode::Cine:
+                    case Opcode::Demo:
+                    case Opcode::JumpToSeqence:
+                    case Opcode::Track:
+                    case Opcode::LoadPic:
+                    case Opcode::CutAngle:
+                    case Opcode::NoFloor:
+                    case Opcode::StartInv:
+                    case Opcode::StartAnim:
+                    case Opcode::Secrets:
+                        operand = read<uint16_t>(file);
+                        break;
+                    default:
+                        operand = 0;
+                        break;
+                    }
+
+                    _levels[i].operations.push_back(Operation { .opcode = opcode, .operand = operand });
+                    opcode = static_cast<Opcode>(read<uint16_t>(file));
+                }
+
+                if (opcode == Opcode::End)
+                {
+                    _levels[i].operations.push_back(Operation{ .opcode = opcode, .operand = 0 });
+                }
+            }
+        }
+
+        std::optional<int32_t> TombScript::index(const std::string& level_filename) const
+        {
+            const auto lower_filename = to_lowercase(level_filename);
+            int32_t index = 0;
+            for (const auto& level : _levels)
+            {
+                if (level.filename.contains(lower_filename))
+                {
+                    return index;
+                }
+                ++index;
+            }
+            return std::nullopt;
+        }
+
+        std::optional<std::string> TombScript::name(const std::string& level_filename) const
+        {
+            const auto lower_filename = to_lowercase(level_filename);
+            for (const auto& level : _levels)
+            {
+                if (level.filename.contains(lower_filename))
+                {
+                    return level.name;
+                }
+            }
+            return std::nullopt;
+        }
+
+        std::optional<std::vector<TombScript::Operation>> TombScript::operations(const std::string& level_filename) const
+        {
+            const auto lower_filename = to_lowercase(level_filename);
+            for (const auto& level : _levels)
+            {
+                if (level.filename.contains(lower_filename))
+                {
+                    return level.operations;
+                }
+            }
+            return std::nullopt;
+        }
+
         uint8_t tr4_opcode_size(uint8_t opcode)
         {
             switch (opcode)
@@ -124,68 +321,58 @@ namespace trview
             return files->load_file(level_path.parent_path() /= "trtla.dat");
         }
 
+        std::optional<TombScript> load_script(const std::shared_ptr<IFiles>& files, const std::filesystem::path& level_path)
+        {
+            const auto data = get_tombpc_data(files, level_path);
+            if (data)
+            {
+                return TombScript(data.value());
+            }
+            return std::nullopt;
+        }
+
         std::optional<ILevelNameLookup::Name> read_tombpc_1_3(const std::shared_ptr<IFiles>& files, const std::string& level_filename)
         {
-            const std::filesystem::path level_path{ level_filename };
-            if (const auto tombpc_data = get_tombpc_data(files, level_path))
+            try
             {
-                try
+                const std::filesystem::path level_path{ level_filename };
+                if (const auto script = load_script(files, level_path))
                 {
-                    std::basic_ispanstream<uint8_t> file{ std::span(*tombpc_data) };
-                    file.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
-                    file.seekg(326);
-
-                    using namespace trlevel;
-
-                    uint16_t num_levels = read<uint16_t>(file);
-                    uint16_t num_chapters = read<uint16_t>(file);
-                    uint16_t num_titles = read<uint16_t>(file);
-                    uint16_t num_fmvs = read<uint16_t>(file);
-                    uint16_t num_cutscenes = read<uint16_t>(file);
-                    uint16_t num_demos = read<uint16_t>(file);
-                    skip(file, 36);
-                    uint16_t flags = read<uint16_t>(file);
-                    skip(file, 6);
-                    uint8_t xorkey = read<uint8_t>(file);
-                    skip(file, 7);
-
-                    num_demos;
-
-                    if (!(flags & 0x100))
+                    if (const auto name = script->name(level_path.filename().string()))
                     {
-                        xorkey = 0;
+                        return ILevelNameLookup::Name{ .name = name.value(), .index = script->index(level_path.filename().string()) };
                     }
+                }
+            }
+            catch(...)
+            {
+            }
+            return std::nullopt;
+        }
 
-                    auto read_string_list = [&](int count)
+        std::optional<std::vector<int32_t>> read_tombpc_1_3_bonus_items(const std::shared_ptr<IFiles>& files, const std::string& level_filename)
+        {
+            try
+            {
+                const std::filesystem::path level_path{ level_filename };
+                if (const auto script = load_script(files, level_path))
+                {
+                    if (const auto operations = script->operations(level_path.filename().string()))
+                    {
+                        std::vector<int32_t> items;
+                        for (const auto& operation : operations.value())
                         {
-                            auto offsets = read_vector<uint16_t>(file, count);
-                            uint16_t total_size = read<uint16_t>(file);
-                            auto data = read_vector<uint8_t>(file, total_size)
-                                | std::views::transform([=](auto x) -> uint8_t { return x ^ xorkey; })
-                                | std::ranges::to<std::vector>();
-                            return offsets
-                                | std::views::transform([&](auto off) { return std::string(reinterpret_cast<char*>(&data[off])); })
-                                | std::ranges::to<std::vector>();
-                        };
-
-                    const auto level_names = read_string_list(num_levels);
-                    const auto chapters = read_string_list(num_chapters);
-                    const auto titles = read_string_list(num_titles);
-                    const auto fmvs = read_string_list(num_fmvs);
-                    const auto level_paths = read_string_list(num_levels) | std::views::transform(to_lowercase) | std::ranges::to<std::vector>();
-                    const auto cutscenes = read_string_list(num_cutscenes);
-
-                    const auto lower_filename = to_lowercase(level_path.filename().string());
-                    const auto found_index = std::ranges::find_if(level_paths, [&](auto& f) { return f.contains(lower_filename); });
-                    if (found_index != level_paths.end())
-                    {
-                        const int32_t index = static_cast<int32_t>(found_index - level_paths.begin());
-                        return ILevelNameLookup::Name{ .name = level_names[index], .index = index };
+                            if (operation.opcode == TombScript::Opcode::StartInv)
+                            {
+                                items.push_back(static_cast<int32_t>(operation.operand));
+                            }
+                        }
+                        return items;
                     }
                 }
-                catch(...)
-                {
-                }
+            }
+            catch(...)
+            {
             }
             return std::nullopt;
         }
@@ -355,6 +542,26 @@ namespace trview
         {
             return std::format("tr{}*", static_cast<int>(version));
         }
+
+        const std::map<std::string, std::vector<int32_t>> remastered_bonus_items
+        {
+            { "wall.tr2", { 6, 13, 13, 15 } },
+            { "boat.tr2", { 9, 9, 9, 9 } },
+            { "venice.tr2", { 8, 8, 8, 8 } },
+            { "opera.tr2", { 3, 10, 10, 10, 10 } },
+            { "rig.tr2", { 3, 10, 10 } },
+            { "platform.tr2", { 10, 10, 10, 10 } },
+            { "unwater.tr2", { 11, 11, 11, 11 } },
+            { "keel.tr2", { 6, 13, 13 } },
+            { "living.tr2", { 12, 12, 12, 12 } },
+            { "deck.tr2", { 13, 13, 13, 13 } },
+            { "skidoo.tr2", { 10, 10, 10, 10 } },
+            { "monastry.tr2", { 12, 12, 12, 12 } },
+            { "catacomb.tr2", { 13, 13, 12, 12 } },
+            { "icecave.tr2", { 13, 13, 13, 13 } },
+            { "emprtomb.tr2", { 10, 10, 10, 10, 10, 10, 10, 10 } },
+            { "floating.tr2", { 13, 13, 13, 13, 13, 13, 13, 13 } }
+        };
     }
 
     ILevelNameLookup::~ILevelNameLookup()
@@ -389,6 +596,16 @@ namespace trview
             return std::nullopt;
         }
         return get_name(level_ptr->filename(), level_ptr->platform_and_version(), level_ptr->hash());
+    }
+
+    std::vector<int32_t> LevelNameLookup::bonus_items(const std::weak_ptr<ILevel>& level) const
+    {
+        const auto level_ptr = level.lock();
+        if (!level_ptr)
+        {
+            return {};
+        }
+        return get_bonus_items(level_ptr->filename(), level_ptr->platform_and_version(), level_ptr->hash());
     }
 
     bool LevelNameLookup::is_trx() const
@@ -453,6 +670,59 @@ namespace trview
         }
 
         return std::nullopt;
+    }
+
+    std::optional<std::vector<int32_t>> LevelNameLookup::check_remastered_bonus_items(const std::string& filename, trlevel::PlatformAndVersion platform_and_version) const
+    {
+        if (!platform_and_version.remastered)
+        {
+            return std::nullopt;
+        }
+
+        const std::filesystem::path file_path{ filename };
+        const auto found = remastered_bonus_items.find(to_lowercase(file_path.filename().string()));
+        if (found != remastered_bonus_items.end())
+        {
+            return found->second;
+        }
+        return {};
+    }
+
+    std::vector<int32_t> LevelNameLookup::get_bonus_items(const std::string& filename, trlevel::PlatformAndVersion platform_and_version, const std::string& hash) const
+    {
+        using namespace trlevel;
+
+        // Mode 1: Check in the files (TOMBPC, English.DAT, etc)
+        if (platform_and_version.platform == Platform::PC)
+        {
+            if (auto remastered = check_remastered_bonus_items(filename, platform_and_version))
+            {
+                return remastered.value();
+            }
+
+            switch (platform_and_version.version)
+            {
+            case LevelVersion::Tomb2:
+            case LevelVersion::Tomb3:
+                if (auto bonus = read_tombpc_1_3_bonus_items(_files, filename))
+                {
+                    return bonus.value();
+                }
+                return {};
+            case LevelVersion::Tomb4:
+            case LevelVersion::Tomb5:
+                return {};
+            }
+        }
+
+        // Mode 2: Hash lookup - can hash be calculated on load and stored?
+        const auto found = _hashes.find(hash);
+        if (found != _hashes.end())
+        {
+            return {};
+        }
+
+        return {};
     }
 
     std::optional<ILevelNameLookup::Name> LevelNameLookup::get_name(const std::string& filename, trlevel::PlatformAndVersion platform_and_version, const std::string& hash) const
