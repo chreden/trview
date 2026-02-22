@@ -126,14 +126,14 @@ namespace trview
 
     void add_camera_sink_filters(Filters& filters)
     {
-        if (filters.has_type_key("ICameraSink"))
+        if (filters.has_type_key("CameraSink"))
         {
             return;
         }
 
         std::set<std::string> available_types{ "Camera", "Sink" };
         auto camera_sink_getters = Filters::GettersBuilder()
-            .with_type_key("ICameraSink")
+            .with_type_key("CameraSink")
             .with_getter<ICameraSink, std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& camera_sink) { return to_string(camera_sink.type()); })
             .with_getter<ICameraSink, int>("#", [](auto&& camera_sink) { return static_cast<int>(camera_sink.number()); })
             .with_getter<ICameraSink, int>("X", [](auto&& camera_sink) { return static_cast<int>(camera_sink.position().x * trlevel::Scale_X); })
@@ -147,7 +147,7 @@ namespace trview
                     }
                     const auto rooms = camera_sink.inferred_rooms() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
                     return !rooms.empty() ? rooms[0] : std::weak_ptr<IFilterable>{};
-                }, {}, EditMode::Read, "IRoom")
+                }, {}, EditMode::Read, "Room")
             .with_getter<ICameraSink, int>("Room #", [](auto&& camera_sink)
                 {
                     if (camera_sink.type() == ICameraSink::Type::Camera)
@@ -166,7 +166,7 @@ namespace trview
                         return { camera_sink.room() };
                     }
                     return camera_sink.inferred_rooms() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
-                }, {}, "IRoom")
+                }, {}, "Room")
             .with_multi_getter<ICameraSink, int>("Rooms #", [](auto&& camera_sink) -> std::vector<int>
                 {
                     if (camera_sink.type() == ICameraSink::Type::Camera)
@@ -181,7 +181,7 @@ namespace trview
             .with_multi_getter<ICameraSink, std::weak_ptr<IFilterable>>("Trigger", {}, [](auto&& camera_sink) -> std::vector<std::weak_ptr<IFilterable>>
                 {
                     return camera_sink.triggers() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
-                }, {}, "ITrigger")
+                }, {}, "Trigger")
             .with_multi_getter<ICameraSink, int>("Trigger References", [&](auto&& camera_sink)
                 {
                     std::vector<int> results;
@@ -214,13 +214,13 @@ namespace trview
 
     void add_flyby_filters(Filters& filters)
     {
-        if (filters.has_type_key("IFlyby"))
+        if (filters.has_type_key("Flyby"))
         {
             return;
         }
 
         auto flyby_getters = Filters::GettersBuilder()
-            .with_type_key("IFlyby")
+            .with_type_key("Flyby")
             .with_getter<IFlyby, int>("#", [](auto&& flyby) { return static_cast<int>(flyby.number()); })
             .with_getter<IFlyby, bool>("Hide", [](auto&& flyby) { return !flyby.visible(); }, EditMode::ReadWrite)
             .with_multi_getter<IFlyby, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& flyby)
@@ -237,7 +237,7 @@ namespace trview
                         }
                     }
                     return rooms;
-                }, {}, "IRoom")
+                }, {}, "Room")
             .with_multi_getter<IFlyby, int>("Room #", [](auto&& flyby)
             {
                 std::unordered_set<int> rooms;
@@ -273,7 +273,7 @@ namespace trview
 
     void add_flyby_node_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
     {
-        if (filters.has_type_key("IFlybyNode"))
+        if (filters.has_type_key("FlybyNode"))
         {
             return;
         }
@@ -282,7 +282,7 @@ namespace trview
         const auto platform_and_version = level_ptr ? level_ptr->platform_and_version() : trlevel::PlatformAndVersion{ .platform = trlevel::Platform::PC, .version = trlevel::LevelVersion::Tomb4 };
 
         auto flyby_node_getters = Filters::GettersBuilder()
-            .with_type_key("IFlybyNode")
+            .with_type_key("FlybyNode")
             .with_getter<IFlybyNode, int>("#", [](auto&& node) { return static_cast<int>(node.number()); })
             .with_getter<IFlybyNode, int>("X", [](auto&& node) { return static_cast<int>(node.position().x * trlevel::Scale_X); })
             .with_getter<IFlybyNode, int>("Y", [](auto&& node) { return static_cast<int>(node.position().y * trlevel::Scale_Y); })
@@ -294,7 +294,7 @@ namespace trview
                         return node_level->room(node.room());
                     }
                     return {};
-                }, {}, EditMode::Read, "IRoom")
+                }, {}, EditMode::Read, "Room")
             .with_getter<IFlybyNode, int>("Room #", [](auto&& node) { return node.room(); })
             .with_getter<IFlybyNode, int>("Roll", [](auto&& node) { return node.roll(); })
             .with_getter<IFlybyNode, int>("Speed", [](auto&& node) { return node.speed(); })
@@ -332,6 +332,7 @@ namespace trview
     void CameraSinkWindow::set_number(int32_t number)
     {
         _id = std::format("Camera/Sink {}", number);
+        _filters.set_name(_id);
     }
 
     void CameraSinkWindow::set_camera_sinks(const std::vector<std::weak_ptr<ICameraSink>>& camera_sinks)
@@ -627,18 +628,18 @@ namespace trview
                     messages::send_settings(_messaging, *_settings);
                 }
             };
-        _filters.set_type_key("ICameraSink");
+        _filters.set_type_key("CameraSink");
     }
 
     void CameraSinkWindow::setup_flyby_filters()
     {
         _flyby_filters.clear_all_getters();
         add_all_filters(_flyby_filters, _level);
-        _flyby_filters.set_type_key("IFlyby");
+        _flyby_filters.set_type_key("Flyby");
 
         _node_filters.clear_all_getters();
         add_all_filters(_node_filters, _level);
-        _node_filters.set_type_key("IFlybyNode");
+        _node_filters.set_type_key("FlybyNode");
 
         _flyby_filters.set_columns(std::vector<std::string>{ "#", "Hide" });
         _token_store += _flyby_filters.on_columns_reset += [this]()

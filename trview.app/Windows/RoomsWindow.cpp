@@ -116,7 +116,7 @@ namespace trview
 
     void add_room_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
     {
-        if (filters.has_type_key("IRoom"))
+        if (filters.has_type_key("Room"))
         {
             return;
         }
@@ -129,7 +129,7 @@ namespace trview
         }
 
         auto room_getters = Filters::GettersBuilder()
-            .with_type_key("IRoom")
+            .with_type_key("Room")
             .with_getter<IRoom, int>("#", [](auto&& room) { return static_cast<int>(room.number()); })
             .with_getter<IRoom, int>("Alternate", [](auto&& room) { return room.alternate_room(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; })
             .with_getter<IRoom, int>("X size", [](auto&& room) { return static_cast<int>(room.num_x_sectors()); })
@@ -138,11 +138,11 @@ namespace trview
             .with_getter<IRoom, int>("Y", [](auto&& room) { return static_cast<int>(room.info().yBottom); })
             .with_getter<IRoom, int>("Z", [](auto&& room) { return static_cast<int>(room.info().z); })
             .with_getter<IRoom, int>("Triggers #", [](auto&& room) { return static_cast<int>(room.triggers().size()); })
-            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Triggers", {}, [](auto&& room) { return room.triggers() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "ITrigger")
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Triggers", {}, [](auto&& room) { return room.triggers() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "Trigger")
             .with_getter<IRoom, int>("Statics #", [](auto&& room) { return static_cast<int>(room.static_meshes().size()); })
-            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Statics", {}, [](auto&& room) { return room.static_meshes() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "IStaticMesh")
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Statics", {}, [](auto&& room) { return room.static_meshes() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "StaticMesh")
             .with_getter<IRoom, int>("Items #", [](auto&& room) { return static_cast<int>(room.items().size()); })
-            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Items", {}, [](auto&& room) { return room.items() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "IItem")
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Items", {}, [](auto&& room) { return room.items() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "Item")
             .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Neighbours", {}, [](auto&& room) -> std::vector<std::weak_ptr<IFilterable>>
                 {
                     if (const auto room_level = room.level().lock())
@@ -152,7 +152,7 @@ namespace trview
                             std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
                     }
                     return {};
-                }, {}, "IRoom")
+                }, {}, "Room")
             .with_multi_getter<IRoom, float>("Neighbours #", [](auto&& room)
                 {
                     std::vector<float> results;
@@ -267,7 +267,7 @@ namespace trview
                         return room_level->room(room.alternate_room());
                     }
                     return {};
-                }, {}, EditMode::Read, "IRoom")
+                }, {}, EditMode::Read, "Room")
             .with_getter<IRoom, int>("Alternate Group", [](auto&& room) { return room.alternate_group(); }, [](auto&& room) { return room.alternate_mode() != IRoom::AlternateMode::None; })
             .with_getter<IRoom, bool>("No Space", room_is_no_space);
 
@@ -371,14 +371,14 @@ namespace trview
                 }
                 return false;
             })
-            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Sectors", {}, [&](auto&& room) { return room.sectors() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "ISector");
+            .with_multi_getter<IRoom, std::weak_ptr<IFilterable>>("Sectors", {}, [&](auto&& room) { return room.sectors() | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "Sector");
 
         filters.add_getters(room_getters.build());
     }
 
     void add_sector_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
     {
-        if (filters.has_type_key("ISector"))
+        if (filters.has_type_key("Sector"))
         {
             return;
         }
@@ -401,7 +401,7 @@ namespace trview
             | std::ranges::to<std::set>();
 
         auto sector_getters = Filters::GettersBuilder()
-            .with_type_key("ISector")
+            .with_type_key("Sector")
             .with_multi_getter<ISector, std::string>("Floordata Type", { available_floordata_types.begin(), available_floordata_types.end() }, [=](auto&& sector)
                 {
                     return parse_floordata(floordata, sector.floordata_index(), FloordataMeanings::None, trng, platform_and_version.value_or({ .platform = trlevel::Platform::PC, .version = trlevel::LevelVersion::Tomb1 })).commands
@@ -772,13 +772,14 @@ namespace trview
     void RoomsWindow::set_number(int32_t number)
     {
         _id = "Rooms " + std::to_string(number);
+        _filters.set_name(_id);
     }
 
     void RoomsWindow::generate_filters()
     {
         _filters.clear_all_getters();
         add_all_filters(_filters, _level);
-        _filters.set_type_key("IRoom");
+        _filters.set_type_key("Room");
     }
 
     void RoomsWindow::render_properties_tab(const std::shared_ptr<IRoom>& room)
@@ -1500,7 +1501,7 @@ namespace trview
         if (!sector_filters.filters().empty())
         {
             add_sector_filters(sector_filters, _level);
-            sector_filters.set_type_key("ISector");
+            sector_filters.set_type_key("Sector");
             return sector_filters;
         }
 

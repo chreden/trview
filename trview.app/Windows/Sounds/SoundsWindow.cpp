@@ -15,13 +15,13 @@ namespace trview
 {
     void add_sounds_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
     {
-        if (filters.has_type_key("ISoundSource"))
+        if (filters.has_type_key("SoundSource"))
         {
             return;
         }
 
         auto sound_getters = Filters::GettersBuilder()
-            .with_type_key("ISoundSource")
+            .with_type_key("SoundSource")
             .with_getter<ISoundSource, int>("#", [](auto&& sound_source) { return static_cast<int>(sound_source.number()); })
             .with_getter<ISoundSource, int>("X", [](auto&& sound_source) { return static_cast<int>(sound_source.position().x * trlevel::Scale_X); })
             .with_getter<ISoundSource, int>("Y", [](auto&& sound_source) { return static_cast<int>(sound_source.position().y * trlevel::Scale_Y); })
@@ -98,6 +98,7 @@ namespace trview
     void SoundsWindow::set_number(int32_t number)
     {
         _id = std::format("Sounds {}", number);
+        _filters.set_name(_id);
     }
 
     void SoundsWindow::set_selected_sound_source(const std::weak_ptr<ISoundSource>& sound_source)
@@ -348,7 +349,7 @@ namespace trview
     {
         _filters.clear_all_getters();
         add_all_filters(_filters, _level);
-        _filters.set_type_key("ISoundSource");
+        _filters.set_type_key("SoundSource");
     }
 
     void SoundsWindow::receive_message(const Message& message)

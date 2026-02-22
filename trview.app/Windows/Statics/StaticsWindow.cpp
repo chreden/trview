@@ -9,7 +9,7 @@ namespace trview
 {
     void add_static_mesh_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
     {
-        if (filters.has_type_key("IStaticMesh"))
+        if (filters.has_type_key("StaticMesh"))
         {
             return;
         }
@@ -27,7 +27,7 @@ namespace trview
         }
 
         auto static_mesh_getters = Filters::GettersBuilder()
-            .with_type_key("IStaticMesh")
+            .with_type_key("StaticMesh")
             .with_getter<IStaticMesh, int>("#", [](auto&& stat) { return static_cast<int>(stat.number()); })
             .with_getter<IStaticMesh, std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& stat) { return to_string(stat.type()); })
             .with_getter<IStaticMesh, int>("X", [](auto&& stat) { return static_cast<int>(stat.position().x * trlevel::Scale_X); })
@@ -35,7 +35,7 @@ namespace trview
             .with_getter<IStaticMesh, int>("Z", [](auto&& stat) { return static_cast<int>(stat.position().z * trlevel::Scale_Z); })
             .with_getter<IStaticMesh, int>("Rotation", [](auto&& stat) { return static_cast<int>(DirectX::XMConvertToDegrees(stat.rotation())); })
             .with_getter<IStaticMesh, int>("ID", [](auto&& stat) { return static_cast<int>(stat.id()); })
-            .with_getter<IStaticMesh, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& stat) { return stat.room(); }, {}, EditMode::Read, "IRoom")
+            .with_getter<IStaticMesh, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& stat) { return stat.room(); }, {}, EditMode::Read, "Room")
             .with_getter<IStaticMesh, int>("Room #", [](auto&& stat) { return static_cast<int>(static_mesh_room(stat)); })
             .with_getter<IStaticMesh, bool>("Breakable", [](auto&& item) { return item.breakable(); })
             .with_getter<IStaticMesh, std::string>("Flags", [](auto&& stat) { return format_binary(stat.flags()); })
@@ -208,6 +208,7 @@ namespace trview
     void StaticsWindow::set_number(int32_t number)
     {
         _id = std::format("Statics {}", number);
+        _filters.set_name(_id);
     }
 
     void StaticsWindow::update(float)
@@ -225,7 +226,7 @@ namespace trview
     {
         _filters.clear_all_getters();
         add_all_filters(_filters, _level);
-        _filters.set_type_key("IStaticMesh");
+        _filters.set_type_key("StaticMesh");
     }
 
     void StaticsWindow::set_local_selected_static_mesh(std::weak_ptr<IStaticMesh> static_mesh)

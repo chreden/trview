@@ -34,6 +34,7 @@
 #include "Elements/Sector.h"
 #include "Elements/SoundSource/SoundSource.h"
 #include "Elements/Level.h"
+#include "Filters/FilterStore.h"
 #include "Graphics/TextureStorage.h"
 #include "Geometry/Mesh.h"
 #include "Geometry/Picking.h"
@@ -85,6 +86,7 @@
 #include "Windows/Pack/PackWindow.h"
 #include "UI/LevelInfo.h"
 #include "Elements/Level/LevelNameLookup.h"
+#include "Windows/Filters/FiltersWindow.h"
 
 #include <trview.common/Messages/MessageSystem.h>
 #include <trview.common/Windows/Shortcuts.h>
@@ -168,6 +170,9 @@ namespace trview
         auto files = std::make_shared<Files>();
         auto settings_loader = std::make_shared<SettingsLoader>(files);
         auto window = create_window(hInstance, command_show, settings_loader->load_user_settings());
+        auto filters = std::make_shared<FilterStore>(files, settings_loader->load_user_settings());
+        messaging->add_recipient(filters);
+        filters->load();
 
         auto device = std::make_shared<graphics::Device>();
         auto shortcuts = std::make_shared<Shortcuts>(window);
@@ -385,7 +390,12 @@ namespace trview
             settings_loader->load_user_settings());
         messaging->add_recipient(plugins);
 
-        auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell, dialogs, messaging); };
+        auto plugins_window_source = [=]() 
+            { 
+                auto plugins_window = std::make_shared<PluginsWindow>(plugins, shell, dialogs, messaging);
+                messaging->add_recipient(plugins_window);
+                return plugins_window;
+            };
         auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
         auto fonts = std::make_shared<Fonts>(files, imgui_backend);
         auto map_renderer_source = [=]()
@@ -398,7 +408,7 @@ namespace trview
         auto clipboard = std::make_shared<Clipboard>(window);
         auto items_window_source = [=]()
             {
-                auto new_window = std::make_shared<ItemsWindow>(clipboard, messaging);
+                auto new_window = std::make_shared<ItemsWindow>(clipboard, filters, messaging);
                 messaging->add_recipient(new_window);
                 new_window->initialise();
                 return new_window;
@@ -499,6 +509,13 @@ namespace trview
                 pack_window->initialise();
                 return pack_window;
             };
+        auto filters_window_source = [=]()
+            {
+                auto filters_window = std::make_shared<FiltersWindow>(filters, shell, dialogs, messaging);
+                messaging->add_recipient(filters_window);
+                filters_window->initialise();
+                return filters_window;
+            };
 
         auto windows = std::make_shared<Windows>(window, shortcuts);
         windows->register_window("About", about_window_source);
@@ -516,6 +533,7 @@ namespace trview
         windows->register_window("Statics", statics_window_source);
         windows->register_window("Textures", textures_window_source);
         windows->register_window("Triggers", triggers_window_source);
+        windows->register_window("Filters", filters_window_source);
 
         auto viewer_ui = std::make_shared<ViewerUI>(
             window,

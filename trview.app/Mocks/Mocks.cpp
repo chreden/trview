@@ -15,6 +15,8 @@
 #include "Elements/ITrigger.h"
 #include "Elements/ITypeInfoLookup.h"
 #include "Elements/ILevelNameLookup.h"
+#include "Filters/IFilterStore.h"
+#include "Filters/IFilterable.h"
 #include "Geometry/IMesh.h"
 #include "Geometry/IPicking.h"
 #include "Geometry/ITransparencyBuffer.h"
@@ -213,5 +215,11 @@ namespace trview
 
         MockFlybyNode::MockFlybyNode() {};
         MockFlybyNode::~MockFlybyNode() {};
+
+        MockFilterStore::MockFilterStore() {};
+        MockFilterStore::~MockFilterStore() {};
+
+        MockFilterable::MockFilterable() {};
+        MockFilterable::~MockFilterable() {};
     }
 }
