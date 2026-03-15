@@ -3,8 +3,9 @@
 namespace trview
 {
     template <typename State>
-    void Modal<State>::show(const State& state)
+    void Modal<State>::show(const std::string& id, const State& state)
     {
+        _id = id;
         _state = state;
         _open = true;
     }
@@ -19,12 +20,12 @@ namespace trview
 
         if (_open.value())
         {
-            ImGui::OpenPopup("Enter Filter Name");
+            ImGui::OpenPopup(_id.c_str());
             _open = false;
             _is_open = true;
         }
 
-        if (ImGui::BeginPopupModal("Enter Filter Name", &_is_open, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginPopupModal(_id.c_str(), &_is_open, ImGuiWindowFlags_AlwaysAutoResize))
         {
             if (!callback(_state))
             {

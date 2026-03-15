@@ -934,8 +934,7 @@ namespace trview
 
             if (ImGui::MenuItem("Save"))
             {
-                _save_modal.show({});
-                // _save_modal_open = true;
+                _save_modal.show("Enter Filter Name", {});
             }
 
             ImGui::EndMenuBar();
