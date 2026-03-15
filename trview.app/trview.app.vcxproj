@@ -229,6 +229,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\Fonts\Fonts.h" />
     <ClInclude Include="UI\Fonts\IFonts.h" />
     <ClInclude Include="UI\ILevelInfo.h" />
+    <ClInclude Include="UI\Modal.h" />
+    <ClInclude Include="UI\Modal.hpp" />
     <ClInclude Include="UserCancelledException.h" />
     <ClInclude Include="Windows\AutoHider.h" />
     <ClInclude Include="Windows\About\AboutWindow.h" />

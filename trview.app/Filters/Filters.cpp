@@ -470,6 +470,7 @@ namespace trview
 
         if (_show_filters)
         {
+            ImGui::SetNextWindowSizeConstraints(ImVec2(200, 50), ImVec2(FLT_MAX, FLT_MAX));
             if (ImGui::Begin(std::format("{} ({})", Names::Popup, _id).c_str(), &_show_filters, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize))
             {
                 render_menu_bar();
@@ -491,50 +492,42 @@ namespace trview
 
     void Filters::render_filter_name_modal()
     {
-        if (!_save_modal_open)
-        {
-            return;
-        }
-
-        if (_save_modal_open.value())
-        {
-            ImGui::OpenPopup("Choose Filter Name");
-            _save_modal_open = false;
-            _save_modal_is_open = true;
-        }
-
-        if (ImGui::BeginPopupModal("Choose Filter Name", &_save_modal_is_open, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            if (ImGui::IsWindowAppearing())
+        _save_modal.render(
+            [&](auto&& state)
             {
-                ImGui::SetKeyboardFocusHere();
-            }
-
-            std::string name_value;
-            if (ImGui::InputText("Filter Name", &name_value, ImGuiInputTextFlags_EnterReturnsTrue))
-            {
-                if (const auto store = _filter_store.lock())
+                if (ImGui::IsWindowAppearing())
                 {
-                    store->add(name_value, _filter);
-                    store->save();
+                    ImGui::SetKeyboardFocusHere();
                 }
-                _save_modal_open.reset();
-                ImGui::CloseCurrentPopup();
-            }
 
-            if (ImGui::IsKeyPressed(ImGuiKey_Escape))
-            {
-                _save_modal_open.reset();
-                ImGui::CloseCurrentPopup();
-            }
+                if (ImGui::InputText("##Filter Name", &state.name_value, ImGuiInputTextFlags_EnterReturnsTrue))
+                {
+                    if (const auto store = _filter_store.lock())
+                    {
+                        store->add(state.name_value, _filter);
+                        store->save();
+                    }
+                    return false;
+                }
 
-            ImGui::EndPopup();
-        }
+                ImGui::SameLine();
+                if (ImGui::Button("Save"))
+                {
+                    if (const auto store = _filter_store.lock())
+                    {
+                        store->add(state.name_value, _filter);
+                        store->save();
+                    }
+                    return false;
+                }
 
-        if (!_save_modal_is_open)
-        {
-            _save_modal_open.reset();
-        }
+                if (ImGui::IsKeyPressed(ImGuiKey_Escape))
+                {
+                    return false;
+                }
+
+                return true;
+            });
     }
 
     Filters::Action Filters::render(Filter& filter, int32_t depth, int32_t index, Filter& parent, const std::string& type_key)
@@ -924,29 +917,25 @@ namespace trview
     {
         if (ImGui::BeginMenuBar())
         {
-            if (ImGui::BeginMenu("File"))
+            if (ImGui::BeginMenu("Open"))
             {
-                if (ImGui::BeginMenu("Open"))
+                if (const auto store = _filter_store.lock())
                 {
-                    if (const auto store = _filter_store.lock())
+                    for (const auto& value : store->filters_for_key(_filter.type_key))
                     {
-                        for (const auto& value : store->filters_for_key(_filter.type_key))
+                        if (ImGui::MenuItem(value.first.c_str()))
                         {
-                            if (ImGui::MenuItem(value.first.c_str()))
-                            {
-                                _filter = { value.second };
-                            }
+                            _filter = { value.second };
                         }
                     }
-                    ImGui::EndMenu();
                 }
-
-                if (ImGui::MenuItem("Save"))
-                {
-                    _save_modal_open = true;
-                }
-
                 ImGui::EndMenu();
+            }
+
+            if (ImGui::MenuItem("Save"))
+            {
+                _save_modal.show({});
+                // _save_modal_open = true;
             }
 
             ImGui::EndMenuBar();

@@ -9,6 +9,7 @@
 
 #include "../Windows/RowCounter.h"
 #include "IFilterable.h"
+#include "../UI/Modal.h"
 
 namespace trview
 {
@@ -199,6 +200,7 @@ namespace trview
         Action render(Filter& filter, int32_t depth, int32_t index, Filter& parent, const std::string& type_key);
         Action render_leaf(Filter& filter, int32_t depth, int32_t index, const std::string& type_key);
         void render_menu_bar();
+        void render_menu_bar2();
         void render_filter_name_modal();
 
         bool                        _changed{ true };
@@ -211,9 +213,13 @@ namespace trview
         mutable bool                _scroll_to_item{ false };
         bool                        _show_filters{ false };
         std::weak_ptr<IFilterStore> _filter_store;
-        std::optional<bool>         _save_modal_open;
-        bool                        _save_modal_is_open{ false };
         std::string                 _id;
+
+        struct ModalState
+        {
+            std::string name_value;
+        };
+        Modal<ModalState> _save_modal;
     };
 
     constexpr std::string to_string(CompareOp op) noexcept;

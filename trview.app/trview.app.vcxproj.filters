@@ -372,6 +372,12 @@
     <ClInclude Include="Windows\Filters\FiltersWindow.h" Filters="Windows\Filters" />
     <ClInclude Include="Mocks\Filters\IFilterStore.h" Filters="Mocks\Filters" />
     <ClInclude Include="Mocks\Filters\IFilterable.h" Filters="Mocks\Filters" />
+    <ClInclude Include="UI\Modal.h">
+      <Filter>UI\Modal</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Modal.hpp">
+      <Filter>UI\Modal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -607,6 +613,9 @@
     </Filter>
     <Filter Include="Mocks\Filters">
       <UniqueIdentifier>{a790e61b-eddf-4acc-a368-29a916640695}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Modal">
+      <UniqueIdentifier>{29828ba3-89c1-4f39-b907-41e2b40d8341}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
