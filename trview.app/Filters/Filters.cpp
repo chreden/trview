@@ -919,17 +919,16 @@ namespace trview
     {
         if (ImGui::BeginMenuBar())
         {
-            if (ImGui::BeginMenu("Open"))
+            const auto store = _filter_store.lock();
+            const auto values = store ? store->filters_for_key(_filter.type_key) : std::map<std::string, Filter> { };
+            if (ImGui::BeginMenu("Open", !values.empty()))
             {
-                if (const auto store = _filter_store.lock())
+                for (const auto& value : values)
                 {
-                    for (const auto& value : store->filters_for_key(_filter.type_key))
+                    if (ImGui::MenuItem(value.first.c_str()))
                     {
-                        if (ImGui::MenuItem(value.first.c_str()))
-                        {
-                            _filter = { value.second };
-                            _name = value.first;
-                        }
+                        _filter = { value.second };
+                        _name = value.first;
                     }
                 }
                 ImGui::EndMenu();
