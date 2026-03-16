@@ -506,6 +506,7 @@ namespace trview
                     {
                         store->add(state.name_value, _filter);
                         store->save();
+                        _name = state.name_value;
                     }
                     return false;
                 }
@@ -517,6 +518,7 @@ namespace trview
                     {
                         store->add(state.name_value, _filter);
                         store->save();
+                        _name = state.name_value;
                     }
                     return false;
                 }
@@ -926,6 +928,7 @@ namespace trview
                         if (ImGui::MenuItem(value.first.c_str()))
                         {
                             _filter = { value.second };
+                            _name = value.first;
                         }
                     }
                 }
@@ -934,7 +937,7 @@ namespace trview
 
             if (ImGui::MenuItem("Save"))
             {
-                _save_modal.show("Enter Filter Name", {});
+                _save_modal.show("Enter Filter Name", { .name_value = _name });
             }
 
             ImGui::EndMenuBar();

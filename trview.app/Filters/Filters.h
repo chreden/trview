@@ -214,6 +214,7 @@ namespace trview
         bool                        _show_filters{ false };
         std::weak_ptr<IFilterStore> _filter_store;
         std::string                 _id;
+        std::string                 _name;
 
         struct ModalState
         {
