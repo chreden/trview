@@ -34,7 +34,7 @@ namespace trview
             static inline const std::string colour = "##colour";
         };
 
-        explicit TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
+        explicit TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~TriggersWindow() = default;
         virtual void render() override;
         void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);

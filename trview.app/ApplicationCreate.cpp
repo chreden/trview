@@ -426,7 +426,7 @@ namespace trview
 
         auto triggers_window_source = [=]()
             {
-                auto triggers_window = std::make_shared<TriggersWindow>(clipboard, messaging);
+                auto triggers_window = std::make_shared<TriggersWindow>(clipboard, filters, messaging);
                 messaging->add_recipient(triggers_window);
                 triggers_window->initialise();
                 return triggers_window;

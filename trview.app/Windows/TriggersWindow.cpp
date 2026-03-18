@@ -201,8 +201,8 @@ namespace trview
         filters.add_getters(getters.build());
     }
 
-    TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
-        : _clipboard(clipboard), _messaging(messaging)
+    TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _messaging(messaging), _filters(filter_store)
     {
         setup_filters();
 
