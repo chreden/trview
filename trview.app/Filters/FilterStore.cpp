@@ -5,6 +5,8 @@
 #include <trview.common/Strings.h>
 #include <trview.common/JsonSerializers.h>
 
+#include <ranges>
+
 namespace trview
 {
     void from_json(const nlohmann::json& json, CompareOp& op)
@@ -252,6 +254,20 @@ namespace trview
         {
             _settings = settings.value();
         }
+    }
+
+    void FilterStore::remove(const std::string& name)
+    {
+        const auto found = std::ranges::find_if(_filters, [&](auto&& f) { return f.name == name; });
+        if (found == _filters.end())
+        {
+            return;
+        }
+
+        const auto dir = _settings.filter_directory.empty() ?
+            (_files->appdata_directory() + "\\trview\\filters") : _settings.filter_directory;
+        _files->delete_file(found->filename);
+        _filters.erase(found);
     }
 
     void FilterStore::save()

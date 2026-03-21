@@ -930,6 +930,15 @@ namespace trview
                         _filter = { value.second };
                         _name = value.first;
                     }
+
+                    if (ImGui::BeginPopupContextItem())
+                    {
+                        if (ImGui::MenuItem("Delete"))
+                        {
+                            store->remove(value.first);
+                        }
+                        ImGui::EndPopup();
+                    }
                 }
                 ImGui::EndMenu();
             }
@@ -937,6 +946,11 @@ namespace trview
             if (ImGui::MenuItem("Save"))
             {
                 _save_modal.show("Enter Filter Name", { .name_value = _name });
+            }
+
+            if (ImGui::MenuItem("Clear"))
+            {
+                _filter.children = {};
             }
 
             ImGui::EndMenuBar();

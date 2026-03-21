@@ -19,6 +19,7 @@ namespace trview
         std::map<std::string, Filters::Filter> filters() const override;
         std::map<std::string, Filters::Filter> filters_for_key(const std::string& key) const override;
         void receive_message(const Message& message) override;
+        void remove(const std::string& name) override;
         void save() override;
     private:
         struct StoredFilter

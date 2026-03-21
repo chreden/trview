@@ -88,8 +88,8 @@ namespace trview
         filters.add_getters(light_getters.build());
     }
 
-    LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
-        : _clipboard(clipboard), _messaging(messaging)
+    LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _messaging(messaging), _filters(filter_store)
     {
         _tips["Direction"] = "Direction is inverted in-game. 3D view shows correct direction.";
         setup_filters();

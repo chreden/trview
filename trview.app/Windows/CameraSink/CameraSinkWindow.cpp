@@ -308,8 +308,8 @@ namespace trview
         filters.add_getters(flyby_node_getters.build());
     }
 
-    CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera, const std::weak_ptr<IMessageSystem>& messaging)
-        : _clipboard(clipboard), _camera(camera), _messaging(messaging)
+    CameraSinkWindow::CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera, const std::shared_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _camera(camera), _messaging(messaging), _filters(filter_store), _flyby_filters(filter_store), _node_filters(filter_store)
     {
         setup_filters();
         setup_flyby_filters();

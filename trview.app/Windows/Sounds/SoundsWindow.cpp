@@ -44,8 +44,8 @@ namespace trview
         filters.add_getters(sound_getters.build());
     }
 
-    SoundsWindow::SoundsWindow(const std::weak_ptr<IMessageSystem>& messaging)
-        : _messaging(messaging)
+    SoundsWindow::SoundsWindow(const std::shared_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging)
+        : _messaging(messaging), _filters(filter_store)
     {
         setup_filters();
 

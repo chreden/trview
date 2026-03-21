@@ -14,6 +14,7 @@ namespace trview
             MOCK_METHOD(void, load, (), (override));
             MOCK_METHOD((std::map<std::string, Filters::Filter>), filters, (), (const, override));
             MOCK_METHOD((std::map<std::string, Filters::Filter>), filters_for_key, (const std::string&), (const, override));
+            MOCK_METHOD(void, remove, (const std::string&), (override));
             MOCK_METHOD(void, save, (), (override));
         };
     }

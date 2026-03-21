@@ -31,7 +31,7 @@ namespace trview
             static inline const std::string sync_sound_source = "Sync";
         };
 
-        explicit SoundsWindow(const std::weak_ptr<IMessageSystem>& messaging);
+        explicit SoundsWindow(const std::shared_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~SoundsWindow() = default;
         void update(float delta) override;
         void render() override;

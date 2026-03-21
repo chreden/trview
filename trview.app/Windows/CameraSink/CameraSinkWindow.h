@@ -32,7 +32,7 @@ namespace trview
             static inline const std::string type = "Type";
         };
 
-        explicit CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera, const std::weak_ptr<IMessageSystem>& messaging);
+        explicit CameraSinkWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<ICamera>& camera, const std::shared_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~CameraSinkWindow() = default;
         void render() override;
         void set_number(int32_t number) override;

@@ -421,8 +421,8 @@ namespace trview
         filters.add_getters(sector_getters.build());
     }
 
-    RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
-        : _map_renderer(map_renderer_source()), _clipboard(clipboard), _messaging(messaging)
+    RoomsWindow::RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging)
+        : _map_renderer(map_renderer_source()), _clipboard(clipboard), _messaging(messaging), _filters(filter_store)
     {
         _token_store += _map_renderer->on_sector_selected += [&](auto sector) { _local_selected_sector = sector; };
 
