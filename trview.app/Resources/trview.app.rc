@@ -79,7 +79,6 @@ BEGIN
         MENUITEM "Sounds"                       ID_WINDOWS_SOUNDS
         MENUITEM "Diff\tCtrl+D"                 ID_WINDOWS_DIFF
         MENUITEM "Pack"                         ID_WINDOWS_PACK
-        MENUITEM "Filters"                      ID_WINDOWS_FILTERS
         MENUITEM SEPARATOR
         MENUITEM "Camera Position"              ID_WINDOWS_CAMERA_POSITION
         MENUITEM SEPARATOR

@@ -57,11 +57,6 @@ namespace trview
                     create("Diff");
                     break;
                 }
-                case ID_WINDOWS_FILTERS:
-                {
-                    create("Filters");
-                    break;
-                }
                 case ID_WINDOWS_ITEMS:
                 {
                     create("Items");

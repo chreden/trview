@@ -86,7 +86,6 @@
 #include "Windows/Pack/PackWindow.h"
 #include "UI/LevelInfo.h"
 #include "Elements/Level/LevelNameLookup.h"
-#include "Windows/Filters/FiltersWindow.h"
 
 #include <trview.common/Messages/MessageSystem.h>
 #include <trview.common/Windows/Shortcuts.h>
@@ -509,13 +508,6 @@ namespace trview
                 pack_window->initialise();
                 return pack_window;
             };
-        auto filters_window_source = [=]()
-            {
-                auto filters_window = std::make_shared<FiltersWindow>(filters, shell, dialogs, messaging);
-                messaging->add_recipient(filters_window);
-                filters_window->initialise();
-                return filters_window;
-            };
 
         auto windows = std::make_shared<Windows>(window, shortcuts);
         windows->register_window("About", about_window_source);
@@ -533,7 +525,6 @@ namespace trview
         windows->register_window("Statics", statics_window_source);
         windows->register_window("Textures", textures_window_source);
         windows->register_window("Triggers", triggers_window_source);
-        windows->register_window("Filters", filters_window_source);
 
         auto viewer_ui = std::make_shared<ViewerUI>(
             window,
