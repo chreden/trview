@@ -185,21 +185,25 @@ namespace trview
 
     void FilterStore::add(const std::string& key, const Filters::Filter& filter)
     {
-        _filters.push_back(
+        _filters[filter.type_key].push_back(
             {
                 .name = key,
-                .filename = "C:\\dev\\trview-filters\\new.json",
                 .filter = filter
             });
     }
 
     void FilterStore::load()
     {
-        // TODO: Load filters from files in the directories.
-        //       For now let's just use the appdata directory.
-        if (!_settings.filter_directory.empty())
+        if (_settings.filter_directory.empty())
         {
-            const auto files = _files->get_files(_settings.filter_directory, "\\*.json");
+            return;
+        }
+
+        for (const auto& directory : _files->get_directories(_settings.filter_directory))
+        {
+            const std::string type_key = directory.friendly_name;
+
+            const auto files = _files->get_files(directory.path, "\\*.json");
             for (const auto& file : files)
             {
                 try
@@ -211,12 +215,10 @@ namespace trview
                     }
 
                     auto json = nlohmann::json::parse(data.value().begin(), data.value().end(), nullptr, true, true, true);
-
                     StoredFilter new_filter{ .filename = file.path };
                     read_attribute(json, new_filter.name, "name");
                     read_attribute(json, new_filter.filter, "filter");
-
-                    _filters.push_back(new_filter);
+                    _filters[type_key].push_back(new_filter);
                 }
                 catch (...)
                 {
@@ -225,25 +227,18 @@ namespace trview
         }
     }
 
-    std::map<std::string, Filters::Filter> FilterStore::filters() const
-    {
-        std::map<std::string, Filters::Filter> results;
-        for (const auto& filter : _filters)
-        {
-            results[filter.name] = filter.filter;
-        }
-        return results;
-    }
-
     std::map<std::string, Filters::Filter> FilterStore::filters_for_key(const std::string& key) const
     {
-        std::map<std::string, Filters::Filter> results;
-        for (const auto& filter : _filters)
+        const auto found = _filters.find(key);
+        if (found == _filters.end())
         {
-            if (filter.filter.type_key == key)
-            {
-                results[filter.name] = filter.filter;
-            }
+            return {};
+        }
+
+        std::map<std::string, Filters::Filter> results;
+        for (const auto& filter : found->second)
+        {
+            results[filter.name] = filter.filter;
         }
         return results;
     }
@@ -256,10 +251,16 @@ namespace trview
         }
     }
 
-    void FilterStore::remove(const std::string& name)
+    void FilterStore::remove(const std::string& type_key, const std::string& name)
     {
-        const auto found = std::ranges::find_if(_filters, [&](auto&& f) { return f.name == name; });
-        if (found == _filters.end())
+        const auto filters_for_key = _filters.find(type_key);
+        if (filters_for_key == _filters.end())
+        {
+            return;
+        }
+
+        const auto found = std::ranges::find_if(filters_for_key->second, [&](auto&& f) { return f.name == name; });
+        if (found == filters_for_key->second.end())
         {
             return;
         }
@@ -267,7 +268,7 @@ namespace trview
         const auto dir = _settings.filter_directory.empty() ?
             (_files->appdata_directory() + "\\trview\\filters") : _settings.filter_directory;
         _files->delete_file(found->filename);
-        _filters.erase(found);
+        filters_for_key->second.erase(found);
     }
 
     void FilterStore::save()
@@ -276,17 +277,22 @@ namespace trview
             (_files->appdata_directory() + "\\trview\\filters") : _settings.filter_directory;
         _files->create_directory(dir);
 
-        for (const auto& filter : _filters)
+        for (const auto& type : _filters)
         {
-            try
+            const std::string type_dir = std::format("{}\\{}", dir, type.first);
+            _files->create_directory(type_dir);
+            for (const auto& filter : type.second)
             {
-                nlohmann::json json;
-                json["name"] = filter.name;
-                json["filter"] = filter.filter;
-                _files->save_file(dir + "\\" + filter.name + ".json", json.dump());
-            }
-            catch (...)
-            {
+                try
+                {
+                    nlohmann::json json;
+                    json["name"] = filter.name;
+                    json["filter"] = filter.filter;
+                    _files->save_file(type_dir + "\\" + filter.name + ".json", json.dump());
+                }
+                catch (...)
+                {
+                }
             }
         }
     }

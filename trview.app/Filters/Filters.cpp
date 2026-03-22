@@ -935,7 +935,7 @@ namespace trview
                     {
                         if (ImGui::MenuItem("Delete"))
                         {
-                            store->remove(value.first);
+                            store->remove(_filter.type_key, value.first);
                         }
                         ImGui::EndPopup();
                     }
@@ -951,6 +951,7 @@ namespace trview
             if (ImGui::MenuItem("Clear"))
             {
                 _filter.children = {};
+                _name = "";
             }
 
             ImGui::EndMenuBar();
