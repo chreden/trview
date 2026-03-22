@@ -3,6 +3,20 @@
 
 namespace trview
 {
+    namespace
+    {
+        int filter_path_letters(ImGuiInputTextCallbackData* data)
+        {
+            switch (data->EventChar)
+            {
+            case L'\\':
+            case L'/':
+                return 1;
+            }
+            return 0;
+        }
+    }
+
     IFilterable::~IFilterable()
     {
     }
@@ -500,7 +514,7 @@ namespace trview
                     ImGui::SetKeyboardFocusHere();
                 }
 
-                if (ImGui::InputText("##Filter Name", &state.name_value, ImGuiInputTextFlags_EnterReturnsTrue))
+                if (ImGui::InputText("##Filter Name", &state.name_value, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCharFilter, filter_path_letters))
                 {
                     if (const auto store = _filter_store.lock())
                     {
