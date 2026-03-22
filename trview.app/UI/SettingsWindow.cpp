@@ -79,6 +79,11 @@ namespace trview
                         ImGui::EndCombo();
                     }
 
+                    if (ImGui::Button("Show Filters Directory"))
+                    {
+                        _shell->open(to_utf16(_settings.filter_directory));
+                    }
+
                     ImGui::EndTabItem();
                 }
 
