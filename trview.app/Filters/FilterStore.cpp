@@ -265,8 +265,6 @@ namespace trview
             return;
         }
 
-        const auto dir = _settings.filter_directory.empty() ?
-            (_files->appdata_directory() + "\\trview\\filters") : _settings.filter_directory;
         _files->delete_file(found->filename);
         filters_for_key->second.erase(found);
     }
@@ -277,18 +275,20 @@ namespace trview
             (_files->appdata_directory() + "\\trview\\filters") : _settings.filter_directory;
         _files->create_directory(dir);
 
-        for (const auto& type : _filters)
+        for (auto& type : _filters)
         {
             const std::string type_dir = std::format("{}\\{}", dir, type.first);
             _files->create_directory(type_dir);
-            for (const auto& filter : type.second)
+            for (auto& filter : type.second)
             {
                 try
                 {
                     nlohmann::json json;
                     json["name"] = filter.name;
                     json["filter"] = filter.filter;
-                    _files->save_file(type_dir + "\\" + filter.name + ".json", json.dump());
+                    std::string path = type_dir + "\\" + filter.name + ".json";
+                    _files->save_file(path, json.dump());
+                    filter.filename = path;
                 }
                 catch (...)
                 {
