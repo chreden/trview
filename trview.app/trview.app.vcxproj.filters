@@ -370,12 +370,8 @@
     <ClInclude Include="Filters\FilterStore.h" Filter="Filters" />
     <ClInclude Include="Mocks\Filters\IFilterStore.h" Filters="Mocks\Filters" />
     <ClInclude Include="Mocks\Filters\IFilterable.h" Filters="Mocks\Filters" />
-    <ClInclude Include="UI\Modal.h">
-      <Filter>UI\Modal</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Modal.hpp">
-      <Filter>UI\Modal</Filter>
-    </ClInclude>
+    <ClInclude Include="UI\Modal.h" Filters="UI\Modal" />
+    <ClInclude Include="UI\Modal.hpp" Filters="UI\Modal" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
