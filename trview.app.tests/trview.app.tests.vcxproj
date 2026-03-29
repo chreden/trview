@@ -34,6 +34,7 @@
     <ClCompile Include="Elements\TypeInfoLookupTests.cpp" />
     <ClCompile Include="Filters\FiltersTests.cpp" />
     <ClCompile Include="CameraTests.cpp" />
+    <ClCompile Include="Filters\FilterStoreTests.cpp" />
     <ClCompile Include="Graphics\LevelTextureStorageTests.cpp" />
     <ClCompile Include="Graphics\MeshStorageTests.cpp" />
     <ClCompile Include="Graphics\TextureStorage.cpp" />

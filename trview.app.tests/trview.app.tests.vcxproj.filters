@@ -65,6 +65,7 @@
     <ClCompile Include="Lua\Camera\Lua_CameraTests.cpp" Filter="Lua\Camera" />
     <ClCompile Include="Sound\SoundStorageTests.cpp" Filter="Sound" />
     <ClCompile Include="Elements\FlybyTests.cpp" Filter="Elements" />
+    <ClCompile Include="Filters\FilterStoreTests.cpp" Filter="Filters" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
