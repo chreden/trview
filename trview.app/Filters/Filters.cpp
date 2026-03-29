@@ -937,22 +937,45 @@ namespace trview
             const auto values = store ? store->filters_for_key(_filter.type_key) : std::map<std::string, Filter> { };
             if (ImGui::BeginMenu("Open", !values.empty()))
             {
-                for (const auto& value : values)
+                if (ImGui::BeginTable("##filters-open-menu", 2, ImGuiTableFlags_SizingStretchProp))
                 {
-                    if (ImGui::MenuItem(value.first.c_str()))
+                    ImGui::TableSetupScrollFreeze(0, 1);
+                    for (const auto& value : values)
                     {
-                        _filter = { value.second };
-                        _name = value.first;
-                    }
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
 
-                    if (ImGui::BeginPopupContextItem())
-                    {
-                        if (ImGui::MenuItem("Delete"))
+                        bool selected = false;
+                        ImGui::SetNextItemAllowOverlap();
+
+                        ImGui::AlignTextToFramePadding();
+                        const auto pos = ImGui::GetCursorPos();
+                        ImGui::Selectable(value.first.c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns);
+
+                        const auto text_size = ImGui::GetItemRectSize();
+                        const auto style = ImGui::GetStyle();
+
+                        ImGui::TableNextColumn();
+                        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + style.ItemSpacing.y * 0.25f);
+
+                        const auto button_size = ImGui::CalcTextSize("X") + ImGui::GetStyle().FramePadding * 2;
+                        if (ImGui::Button("X", ImVec2(button_size.x, text_size.y)))
                         {
                             store->remove(_filter.type_key, value.first);
                         }
-                        ImGui::EndPopup();
+
+                        if (ImGui::IsItemHovered())
+                        {
+                            ImGui::SetTooltip("Delete this filter");
+                        }
+
+                        if (selected)
+                        {
+                            _filter = { value.second };
+                            _name = value.first;
+                        }
                     }
+                    ImGui::EndTable();
                 }
                 ImGui::EndMenu();
             }
