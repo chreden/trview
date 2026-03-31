@@ -1,4 +1,5 @@
 #include <trview.app/Filters/Filters.h>
+#include <trview.app/Mocks/Filters/IFilterable.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -12,6 +13,7 @@ namespace
         std::string text;
         std::vector<std::string> texts;
         std::optional<float> option;
+        std::vector<std::weak_ptr<IFilterable>> filterables;
 
         Object with_number(float value)
         {
@@ -40,6 +42,12 @@ namespace
         Object with_option(float value)
         {
             option = value;
+            return *this;
+        }
+
+        Object with_filterables(const std::vector<std::weak_ptr<IFilterable>>& value)
+        {
+            filterables = value;
             return *this;
         }
 
@@ -231,6 +239,36 @@ TEST(Filters, PresentFloat)
 
     ASSERT_TRUE(filters.match(Object().with_numbers({ 1, 3, 12, 15 })));
     ASSERT_FALSE(filters.match(Object().with_numbers({ })));
+}
+
+TEST(Filters, PresentFilterable)
+{
+    Filters filters;
+    filters.add_getters(Filters::GettersBuilder()
+        .with_multi_getter<Object, std::weak_ptr<IFilterable>>("value", [](auto&& o) { return o.filterables; })
+        .build());
+
+    Filters::Filter present_filterable = make_filter().key("value").compare_op(CompareOp::Exists);
+    filters.set_filters({ present_filterable });
+
+    auto filterable = mock_shared<mocks::MockFilterable>();
+    ASSERT_TRUE(filters.match(Object().with_filterables({ filterable })));
+    ASSERT_FALSE(filters.match(Object().with_filterables({ })));
+}
+
+TEST(Filters, NotPresentFilterable)
+{
+    Filters filters;
+    filters.add_getters(Filters::GettersBuilder()
+        .with_multi_getter<Object, std::weak_ptr<IFilterable>>("value", [](auto&& o) { return o.filterables; })
+        .build());
+
+    Filters::Filter present_filterable = make_filter().key("value").compare_op(CompareOp::NotExists);
+    filters.set_filters({ present_filterable });
+
+    auto filterable = mock_shared<mocks::MockFilterable>();
+    ASSERT_FALSE(filters.match(Object().with_filterables({ filterable })));
+    ASSERT_TRUE(filters.match(Object().with_filterables({ })));
 }
 
 TEST(Filters, IsString)

@@ -39,7 +39,7 @@ namespace trview
 
     void add_trigger_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
     {
-        if (filters.has_type_key("ITrigger"))
+        if (filters.has_type_key("Trigger"))
         {
             return;
         }
@@ -63,14 +63,14 @@ namespace trview
         }
 
         auto getters = Filters::GettersBuilder()
-            .with_type_key("ITrigger")
+            .with_type_key("Trigger")
             .with_getter<ITrigger, std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& trigger) { return to_string(trigger.type()); })
             .with_getter<ITrigger, int>("#", [](auto&& trigger) { return static_cast<int>(trigger.number()); })
             .with_getter<ITrigger, int>("X", [](auto&& trigger) { return static_cast<int>(trigger.position().x * trlevel::Scale_X); })
             .with_getter<ITrigger, int>("Y", [](auto&& trigger) { return static_cast<int>(trigger.position().y * trlevel::Scale_Y); })
             .with_getter<ITrigger, int>("Z", [](auto&& trigger) { return static_cast<int>(trigger.position().z * trlevel::Scale_Z); })
             .with_getter<ITrigger, int>("Room #", [](auto&& trigger) { return static_cast<int>(trigger_room(trigger)); })
-            .with_getter<ITrigger, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& trigger) { return trigger.room(); }, {}, EditMode::Read, "IRoom")
+            .with_getter<ITrigger, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& trigger) { return trigger.room(); }, {}, EditMode::Read, "Room")
             .with_getter<ITrigger, std::string>("Flags", [](auto&& trigger) { return format_binary(trigger.flags()); })
             .with_getter<ITrigger, bool>("Only once", [](auto&& trigger) { return trigger.only_once(); })
             .with_getter<ITrigger, int>("Timer", [](auto&& trigger) { return static_cast<int>(trigger.timer()); })
@@ -101,7 +101,7 @@ namespace trview
                         | std::views::transform([](const auto& i) -> std::shared_ptr<IItem> { return i.lock(); })
                         | std::views::filter([](const auto& i) { return i != nullptr; })
                         | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
-                }, {}, "ITrigger")
+                }, {}, "Trigger")
             .with_multi_getter<ITrigger, float>("Trigger triggerer #", [=](auto&& trigger)
                 {
                     const auto sector = trigger.sector().lock();
@@ -141,7 +141,7 @@ namespace trview
                             | std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>();
                     }
                     return {};
-                }, {}, "IItem");
+                }, {}, "Item");
 
         
         auto all_trigger_indices = [](TriggerCommandType type, const auto& trigger)
@@ -201,8 +201,8 @@ namespace trview
         filters.add_getters(getters.build());
     }
 
-    TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
-        : _clipboard(clipboard), _messaging(messaging)
+    TriggersWindow::TriggersWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _messaging(messaging), _filters(filter_store)
     {
         setup_filters();
 
@@ -267,6 +267,7 @@ namespace trview
     void TriggersWindow::set_number(int32_t number)
     {
         _id = "Triggers " + std::to_string(number);
+        _filters.set_name(_id);
     }
 
     void TriggersWindow::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
@@ -654,7 +655,7 @@ namespace trview
     {
         _filters.clear_all_getters();
         add_all_filters(_filters, _level);
-        _filters.set_type_key("ITrigger");
+        _filters.set_type_key("Trigger");
     }
 
     bool TriggersWindow::VirtualCommand::operator == (const VirtualCommand& other) const noexcept

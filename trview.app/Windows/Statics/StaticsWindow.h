@@ -28,7 +28,7 @@ namespace trview
             static inline const std::string static_stats = "##staticstats";
         };
 
-        explicit StaticsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
+        explicit StaticsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~StaticsWindow() = default;
         void initialise();
         void render() override;

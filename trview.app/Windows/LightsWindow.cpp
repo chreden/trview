@@ -10,7 +10,7 @@ namespace trview
 {
     void add_light_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
     {
-        if (filters.has_type_key("ILight"))
+        if (filters.has_type_key("Light"))
         {
             return;
         }
@@ -33,10 +33,10 @@ namespace trview
         }
 
         auto light_getters = Filters::GettersBuilder()
-            .with_type_key("ILight")
+            .with_type_key("Light")
             .with_getter<ILight, std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& light) { return to_string(light.type()); })
             .with_getter<ILight, int>("#", [](auto&& light) { return static_cast<int>(light.number()); })
-            .with_getter<ILight, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& light) { return light.room(); }, {}, EditMode::Read, "IRoom")
+            .with_getter<ILight, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& light) { return light.room(); }, {}, EditMode::Read, "Room")
             .with_getter<ILight, int>("Room #", [](auto&& light) { return static_cast<int>(light_room(light)); })
             .with_getter<ILight, int>("X", [](auto&& light) { return static_cast<int>(light.position().x * trlevel::Scale_X); }, has_position)
             .with_getter<ILight, int>("Y", [](auto&& light) { return static_cast<int>(light.position().y * trlevel::Scale_Y); }, has_position)
@@ -88,8 +88,8 @@ namespace trview
         filters.add_getters(light_getters.build());
     }
 
-    LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
-        : _clipboard(clipboard), _messaging(messaging)
+    LightsWindow::LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _messaging(messaging), _filters(filter_store)
     {
         _tips["Direction"] = "Direction is inverted in-game. 3D view shows correct direction.";
         setup_filters();
@@ -336,6 +336,7 @@ namespace trview
     void LightsWindow::set_number(int32_t number)
     {
         _id = "Lights " + std::to_string(number);
+        _filters.set_name(_id);
     }
 
     void LightsWindow::set_local_selected_light(const std::weak_ptr<ILight>& light)
@@ -352,7 +353,7 @@ namespace trview
     {
         _filters.clear_all_getters();
         add_light_filters(_filters, _level);
-        _filters.set_type_key("ILight");
+        _filters.set_type_key("Light");
     }
 
     void LightsWindow::receive_message(const Message& message)

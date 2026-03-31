@@ -32,7 +32,7 @@ namespace trview
             static inline const std::string auto_hide = "Auto-Hide";
         };
 
-        explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
+        explicit ItemsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~ItemsWindow() = default;
         void set_filters(std::vector<Filters::Filter> filters);
         virtual void render() override;

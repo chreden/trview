@@ -27,7 +27,7 @@ namespace trview
             static inline const std::string details_panel = "Light Details";
         };
 
-        explicit LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
+        explicit LightsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~LightsWindow() = default;
         void clear_selected_light();
         void render() override;

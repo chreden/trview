@@ -32,7 +32,7 @@ namespace trview
         /// Create a rooms window as a child of the specified window.
         /// @param device The graphics device
         /// @param renderer_source The function to call to get a renderer.
-        explicit RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging);
+        explicit RoomsWindow(const IMapRenderer::Source& map_renderer_source, const std::shared_ptr<IClipboard>& clipboard, const std::shared_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~RoomsWindow() = default;
         void clear_selected_trigger();
         void render() override;

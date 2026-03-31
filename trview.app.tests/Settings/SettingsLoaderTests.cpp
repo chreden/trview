@@ -42,7 +42,7 @@ namespace
     {
         const auto contents = to_bytes(setting);
         auto files = mock_shared<MockFiles>();
-        EXPECT_CALL(*files, appdata_directory).Times(2).WillRepeatedly(Return("appdata"));
+        EXPECT_CALL(*files, appdata_directory).Times(3).WillRepeatedly(Return("appdata"));
         EXPECT_CALL(*files, load_file("appdata\\trview\\settings.txt")).Times(1).WillRepeatedly(Return(contents));
         EXPECT_CALL(*files, load_file("appdata\\trview\\randomizer.json")).Times(1).WillRepeatedly(Return(to_bytes(randomizer_settings)));
         return register_test_module().with_files(files).build();
@@ -60,7 +60,7 @@ namespace
 TEST(SettingsLoader, FileNotFound)
 {
     auto files = mock_shared<MockFiles>();
-    EXPECT_CALL(*files, appdata_directory).Times(1).WillRepeatedly(Return("appdata"));
+    EXPECT_CALL(*files, appdata_directory).Times(2).WillRepeatedly(Return("appdata"));
     EXPECT_CALL(*files, load_file("appdata\\trview\\settings.txt")).Times(1);
     auto loader = register_test_module().with_files(files).build();
     auto settings = loader->load_user_settings();

@@ -1,7 +1,22 @@
 #include "Filters.h"
+#include "IFilterStore.h"
 
 namespace trview
 {
+    namespace
+    {
+        int filter_path_letters(ImGuiInputTextCallbackData* data)
+        {
+            switch (data->EventChar)
+            {
+            case L'\\':
+            case L'/':
+                return 1;
+            }
+            return 0;
+        }
+    }
+
     IFilterable::~IFilterable()
     {
     }
@@ -41,6 +56,11 @@ namespace trview
     {
         _type_key = key;
         return *this;
+    }
+
+    Filters::Filters(const std::weak_ptr<IFilterStore>& filter_store)
+        : _filter_store(filter_store)
+    {
     }
 
     void Filters::add_filter(const Filter& filter)
@@ -149,6 +169,10 @@ namespace trview
         {
             return is_match(static_cast<float>(*value_int), filter);
         }
+        else if (const std::weak_ptr<IFilterable>* value_filterable = std::get_if<std::weak_ptr<IFilterable>>(&value))
+        {
+            return is_match(static_cast<std::weak_ptr<IFilterable>>(*value_filterable), filter);
+        }
         return false;
     }
 
@@ -219,6 +243,15 @@ namespace trview
         case CompareOp::NotEqual:
             return value != actual_value;
         case CompareOp::Exists:
+            return true;
+        }
+        return false;
+    }
+
+    bool Filters::is_match(std::weak_ptr<IFilterable>, const Filter& filter) const
+    {
+        if (filter.compare == CompareOp::Exists)
+        {
             return true;
         }
         return false;
@@ -449,16 +482,68 @@ namespace trview
             toggle_visible();
         }
 
-        if (_show_filters && ImGui::BeginPopup(Names::Popup.c_str()))
+        if (_show_filters)
         {
-            ImGui::Text("Filters");
-            render(_filter, 0, 0, _filter, _filter.type_key);
-            ImGui::EndPopup();
+            ImGui::SetNextWindowSizeConstraints(ImVec2(200, 50), ImVec2(FLT_MAX, FLT_MAX));
+            if (ImGui::Begin(std::format("{} ({})", Names::Popup, _id).c_str(), &_show_filters, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                render_menu_bar();
+                render_filter_name_modal();
+                render_filters();
+            }
+            ImGui::End();
         }
         else
         {
             _show_filters = false;
         }
+    }
+
+    void Filters::render_filters()
+    {
+        render(_filter, 0, 0, _filter, _filter.type_key);
+    }
+
+    void Filters::render_filter_name_modal()
+    {
+        _save_modal.render(
+            [&](auto&& state)
+            {
+                if (ImGui::IsWindowAppearing())
+                {
+                    ImGui::SetKeyboardFocusHere();
+                }
+
+                if (ImGui::InputText("##Filter Name", &state.name_value, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCharFilter, filter_path_letters))
+                {
+                    if (const auto store = _filter_store.lock())
+                    {
+                        store->add(state.name_value, _filter);
+                        store->save();
+                        _name = state.name_value;
+                    }
+                    return false;
+                }
+
+                ImGui::SameLine();
+                if (ImGui::Button("Save"))
+                {
+                    if (const auto store = _filter_store.lock())
+                    {
+                        store->add(state.name_value, _filter);
+                        store->save();
+                        _name = state.name_value;
+                    }
+                    return false;
+                }
+
+                if (ImGui::IsKeyPressed(ImGuiKey_Escape))
+                {
+                    return false;
+                }
+
+                return true;
+            });
     }
 
     Filters::Action Filters::render(Filter& filter, int32_t depth, int32_t index, Filter& parent, const std::string& type_key)
@@ -831,10 +916,6 @@ namespace trview
 
     void Filters::toggle_visible()
     {
-        if (!_show_filters)
-        {
-            ImGui::OpenPopup(Names::Popup.c_str());
-        }
         _show_filters = !_show_filters;
     }
 
@@ -846,5 +927,76 @@ namespace trview
             .getters = _getters,
             .multi_getters = _multi_getters
         };
+    }
+
+    void Filters::render_menu_bar()
+    {
+        if (ImGui::BeginMenuBar())
+        {
+            const auto store = _filter_store.lock();
+            const auto values = store ? store->filters_for_key(_filter.type_key) : std::map<std::string, Filter> { };
+            if (ImGui::BeginMenu("Open", !values.empty()))
+            {
+                if (ImGui::BeginTable("##filters-open-menu", 2, ImGuiTableFlags_SizingStretchProp))
+                {
+                    ImGui::TableSetupScrollFreeze(0, 1);
+                    for (const auto& value : values)
+                    {
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+
+                        bool selected = false;
+                        ImGui::SetNextItemAllowOverlap();
+
+                        ImGui::AlignTextToFramePadding();
+                        const auto pos = ImGui::GetCursorPos();
+                        ImGui::Selectable(value.first.c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns);
+
+                        const auto text_size = ImGui::GetItemRectSize();
+                        const auto style = ImGui::GetStyle();
+
+                        ImGui::TableNextColumn();
+                        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + style.ItemSpacing.y * 0.25f);
+
+                        const auto button_size = ImGui::CalcTextSize("X") + ImGui::GetStyle().FramePadding * 2;
+                        if (ImGui::Button("X", ImVec2(button_size.x, text_size.y)))
+                        {
+                            store->remove(_filter.type_key, value.first);
+                        }
+
+                        if (ImGui::IsItemHovered())
+                        {
+                            ImGui::SetTooltip("Delete this filter");
+                        }
+
+                        if (selected)
+                        {
+                            _filter = { value.second };
+                            _name = value.first;
+                        }
+                    }
+                    ImGui::EndTable();
+                }
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::MenuItem("Save"))
+            {
+                _save_modal.show("Enter Filter Name", { .name_value = _name });
+            }
+
+            if (ImGui::MenuItem("Clear"))
+            {
+                _filter.children = {};
+                _name = "";
+            }
+
+            ImGui::EndMenuBar();
+        }
+    }
+
+    void Filters::set_name(const std::string& id)
+    {
+        _id = id;
     }
 }

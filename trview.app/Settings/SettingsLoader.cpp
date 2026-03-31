@@ -79,6 +79,7 @@ namespace trview
     UserSettings SettingsLoader::load_user_settings() const
     {
         UserSettings settings;
+        settings.filter_directory = _files->appdata_directory() + "\\trview\\filters";
 
         try
         {
@@ -133,6 +134,7 @@ namespace trview
             read_attribute(json, settings.flyby_node_columns, "flyby_node_columns");
             read_attribute(json, settings.linear_filtering, "linear_filtering");
             read_attribute(json, settings.version, "version");
+            read_attribute(json, settings.filter_directory, "filter_directory");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -218,6 +220,7 @@ namespace trview
             json["flyby_node_columns"] = settings.flyby_node_columns;
             json["linear_filtering"] = settings.linear_filtering;
             json["version"] = trview::version();
+            json["filter_directory"] = settings.filter_directory;
             _files->save_file(file_path, json.dump());
         }
         catch (...)

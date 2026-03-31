@@ -9,9 +9,12 @@
 
 #include "../Windows/RowCounter.h"
 #include "IFilterable.h"
+#include "../UI/Modal.h"
 
 namespace trview
 {
+    struct IFilterStore;
+
     enum class CompareOp
     {
         Equal,
@@ -148,6 +151,8 @@ namespace trview
         Event<> on_columns_reset;
         Event<> on_columns_saved;
 
+        Filters() = default;
+        explicit Filters(const std::weak_ptr<IFilterStore>& filter_store);
         void add_filter(const Filter& filter);
         void add_getters(const Getters& getters);
         void clear_all_getters();
@@ -160,6 +165,7 @@ namespace trview
         bool is_match(const std::string& value, const Filter& filter) const;
         bool is_match(float value, const Filter& filter) const;
         bool is_match(bool value, const Filter& filter) const;
+        bool is_match(std::weak_ptr<IFilterable> value, const Filter& filter) const;
         std::vector<std::string> keys(const std::string& type_key) const;
         bool match(const IFilterable& value) const;
         bool match(const Filter& filter, const IFilterable& value, const std::string& type_key) const;
@@ -177,6 +183,7 @@ namespace trview
         void scroll_to_item();
         bool test_and_reset_changed();
         void toggle_visible();
+        void set_name(const std::string& id);
     private:
         enum class Action
         {
@@ -191,16 +198,28 @@ namespace trview
         std::vector<std::string> options_for_key(const std::string& type_key, const std::string& key) const;
         Action render(Filter& filter, int32_t depth, int32_t index, Filter& parent, const std::string& type_key);
         Action render_leaf(Filter& filter, int32_t depth, int32_t index, const std::string& type_key);
+        void render_menu_bar();
+        void render_filter_name_modal();
+        void render_filters();
 
-        bool                     _changed{ true };
-        std::vector<std::string> _columns;
-        std::vector<std::size_t> _column_order;
-        bool                     _enabled{ true };
-        Filter                   _filter;
-        std::vector<Getters>     _getters;
-        mutable bool             _force_sort{ false };
-        mutable bool             _scroll_to_item{ false };
-        bool                     _show_filters{ false };
+        bool                        _changed{ true };
+        std::vector<std::string>    _columns;
+        std::vector<std::size_t>    _column_order;
+        bool                        _enabled{ true };
+        Filter                      _filter;
+        std::vector<Getters>        _getters;
+        mutable bool                _force_sort{ false };
+        mutable bool                _scroll_to_item{ false };
+        bool                        _show_filters{ false };
+        std::weak_ptr<IFilterStore> _filter_store;
+        std::string                 _id;
+        std::string                 _name;
+
+        struct ModalState
+        {
+            std::string name_value;
+        };
+        Modal<ModalState> _save_modal;
     };
 
     constexpr std::string to_string(CompareOp op) noexcept;

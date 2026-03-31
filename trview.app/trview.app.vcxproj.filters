@@ -120,9 +120,8 @@
     <ClCompile Include="Elements\Level\LevelNameLookup.cpp" Filter="Elements\Level" />
     <ClCompile Include="Filters\Filters.cpp" Filter="Filters" />
     <ClCompile Include="Elements\ElementFilters.cpp" Filter="Elements" />
-    <ClCompile Include="Settings\UserSettingsPatches.cpp">
-      <Filter>Settings</Filter>
-    </ClCompile>
+    <ClCompile Include="Settings\UserSettingsPatches.cpp" Filter="Settings" />
+    <ClCompile Include="Filters\FilterStore.cpp" Filter="Filters" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -366,9 +365,13 @@
     <ClInclude Include="Mocks\Windows\IWindow.h" Filter="Mocks\Windows" />
     <ClInclude Include="Filters\IFilterable.h" Filter="Filters" />
     <ClInclude Include="Elements\ElementFilters.h" Filter="Elements" />
-    <ClInclude Include="Settings\UserSettingsPatches.h">
-      <Filter>Settings</Filter>
-    </ClInclude>
+    <ClInclude Include="Settings\UserSettingsPatches.h" Filter="Settings" />
+    <ClInclude Include="Filters\IFilterStore.h" Filter="Filters" />
+    <ClInclude Include="Filters\FilterStore.h" Filter="Filters" />
+    <ClInclude Include="Mocks\Filters\IFilterStore.h" Filters="Mocks\Filters" />
+    <ClInclude Include="Mocks\Filters\IFilterable.h" Filters="Mocks\Filters" />
+    <ClInclude Include="UI\Modal.h" Filters="UI\Modal" />
+    <ClInclude Include="UI\Modal.hpp" Filters="UI\Modal" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -598,6 +601,15 @@
     </Filter>
     <Filter Include="Messages">
       <UniqueIdentifier>{a047438d-5a92-49e4-b596-108105134baa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Filters">
+      <UniqueIdentifier>{42407171-2e71-4eb4-8831-1c2f46223206}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Filters">
+      <UniqueIdentifier>{a790e61b-eddf-4acc-a368-29a916640695}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Modal">
+      <UniqueIdentifier>{29828ba3-89c1-4f39-b907-41e2b40d8341}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -34,6 +34,7 @@
 #include "Elements/Sector.h"
 #include "Elements/SoundSource/SoundSource.h"
 #include "Elements/Level.h"
+#include "Filters/FilterStore.h"
 #include "Graphics/TextureStorage.h"
 #include "Geometry/Mesh.h"
 #include "Geometry/Picking.h"
@@ -168,6 +169,9 @@ namespace trview
         auto files = std::make_shared<Files>();
         auto settings_loader = std::make_shared<SettingsLoader>(files);
         auto window = create_window(hInstance, command_show, settings_loader->load_user_settings());
+        auto filters = std::make_shared<FilterStore>(files, settings_loader->load_user_settings());
+        messaging->add_recipient(filters);
+        filters->load();
 
         auto device = std::make_shared<graphics::Device>();
         auto shortcuts = std::make_shared<Shortcuts>(window);
@@ -385,7 +389,12 @@ namespace trview
             settings_loader->load_user_settings());
         messaging->add_recipient(plugins);
 
-        auto plugins_window_source = [=]() { return std::make_shared<PluginsWindow>(plugins, shell, dialogs, messaging); };
+        auto plugins_window_source = [=]() 
+            { 
+                auto plugins_window = std::make_shared<PluginsWindow>(plugins, shell, dialogs, messaging);
+                messaging->add_recipient(plugins_window);
+                return plugins_window;
+            };
         auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
         auto fonts = std::make_shared<Fonts>(files, imgui_backend);
         auto map_renderer_source = [=]()
@@ -398,14 +407,14 @@ namespace trview
         auto clipboard = std::make_shared<Clipboard>(window);
         auto items_window_source = [=]()
             {
-                auto new_window = std::make_shared<ItemsWindow>(clipboard, messaging);
+                auto new_window = std::make_shared<ItemsWindow>(clipboard, filters, messaging);
                 messaging->add_recipient(new_window);
                 new_window->initialise();
                 return new_window;
             };
         auto rooms_window_source = [=]()
             {
-                auto new_window = std::make_shared<RoomsWindow>(map_renderer_source, clipboard, messaging);
+                auto new_window = std::make_shared<RoomsWindow>(map_renderer_source, clipboard, filters, messaging);
                 messaging->add_recipient(new_window);
                 new_window->initialise();
                 return new_window;
@@ -416,7 +425,7 @@ namespace trview
 
         auto triggers_window_source = [=]()
             {
-                auto triggers_window = std::make_shared<TriggersWindow>(clipboard, messaging);
+                auto triggers_window = std::make_shared<TriggersWindow>(clipboard, filters, messaging);
                 messaging->add_recipient(triggers_window);
                 triggers_window->initialise();
                 return triggers_window;
@@ -430,7 +439,7 @@ namespace trview
             };
         auto lights_window_source = [=]()
             {
-                auto lights_window = std::make_shared<LightsWindow>(clipboard, messaging);
+                auto lights_window = std::make_shared<LightsWindow>(clipboard, filters, messaging);
                 messaging->add_recipient(lights_window);
                 lights_window->initialise();
                 return lights_window;
@@ -440,7 +449,7 @@ namespace trview
         const auto camera = std::make_shared<Camera>(window.size());
         auto camera_sink_window_source = [=]()
             {
-                auto camera_sink_window = std::make_shared<CameraSinkWindow>(clipboard, camera, messaging);
+                auto camera_sink_window = std::make_shared<CameraSinkWindow>(clipboard, camera, filters, messaging);
                 messaging->add_recipient(camera_sink_window);
                 camera_sink_window->initialise();
                 return camera_sink_window;
@@ -456,14 +465,14 @@ namespace trview
         auto console_source = [=]() { return std::make_shared<Console>(dialogs, plugins, fonts); };
         auto statics_window_source = [=]()
             {
-                auto statics_window = std::make_shared<StaticsWindow>(clipboard, messaging);
+                auto statics_window = std::make_shared<StaticsWindow>(clipboard, filters, messaging);
                 messaging->add_recipient(statics_window);
                 statics_window->initialise();
                 return statics_window;
             };
         auto sounds_window_source = [=]()
             {
-                auto sounds_window = std::make_shared<SoundsWindow>(messaging);
+                auto sounds_window = std::make_shared<SoundsWindow>(filters, messaging);
                 messaging->add_recipient(sounds_window);
                 sounds_window->initialise();
                 return sounds_window;

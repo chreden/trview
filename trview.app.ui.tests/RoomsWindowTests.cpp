@@ -6,6 +6,7 @@
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.common/Mocks/Messages/IMessageSystem.h>
+#include <trview.app/Mocks/Filters/IFilterStore.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -21,10 +22,11 @@ namespace
             IMapRenderer::Source map_renderer_source{ [](auto&&...) { return mock_unique<MockMapRenderer>(); } };
             std::shared_ptr<IClipboard> clipboard{ mock_shared<MockClipboard>() };
             std::shared_ptr<IMessageSystem> messaging{ mock_shared<MockMessageSystem>() };
+            std::shared_ptr<IFilterStore> filter_store{ mock_shared<MockFilterStore>() };
 
             std::unique_ptr<RoomsWindow> build()
             {
-                return std::make_unique<RoomsWindow>(map_renderer_source, clipboard, messaging);
+                return std::make_unique<RoomsWindow>(map_renderer_source, clipboard, filter_store, messaging);
             }
 
             test_module& with_map_renderer_source(IMapRenderer::Source map_renderer_source)

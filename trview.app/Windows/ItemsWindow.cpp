@@ -32,7 +32,7 @@ namespace trview
 
     void add_item_filters(Filters& filters, const std::weak_ptr<ILevel>& level)
     {
-        if (filters.has_type_key("IItem"))
+        if (filters.has_type_key("Item"))
         {
             return;
         }
@@ -55,7 +55,7 @@ namespace trview
         }
 
         auto getters = Filters::GettersBuilder()
-            .with_type_key("IItem")
+            .with_type_key("Item")
             .with_getter<IItem, int>("#", [](auto&& item) { return static_cast<int>(item.number()); })
             .with_getter<IItem, std::string>("Type", { available_types.begin(), available_types.end() }, [](auto&& item) { return item.type(); })
             .with_multi_getter<IItem, std::string>("Category", { available_categories.begin(), available_categories.end() }, [](auto&& item)
@@ -75,7 +75,7 @@ namespace trview
             .with_getter<IItem, int>("Angle Degrees", [](auto&& item) { return static_cast<int>(bound_rotation(item.angle()) / 182); })
             .with_getter<IItem, int>("Type ID", [](auto&& item) { return static_cast<int>(item.type_id()); }, EditMode::Read)
             .with_getter<IItem, int>("Room #", [](auto&& item) { return static_cast<int>(item_room(item)); }, EditMode::Read)
-            .with_getter<IItem, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& item) { return item.room(); }, {}, EditMode::Read, "IRoom")
+            .with_getter<IItem, std::weak_ptr<IFilterable>>("Room", {}, [](auto&& item) { return item.room(); }, {}, EditMode::Read, "Room")
             .with_getter<IItem, bool>("Clear Body", [](auto&& item) { return item.clear_body_flag(); })
             .with_getter<IItem, bool>("Invisible", [](auto&& item) { return item.invisible_flag(); })
             .with_getter<IItem, std::string>("Flags", [](auto&& item) { return format_binary(item.activation_flags()); })
@@ -94,7 +94,7 @@ namespace trview
                     }
                     return results;
                 })
-            .with_multi_getter<IItem, std::weak_ptr<IFilterable>>("Trigger", {}, [](auto&& item) {  return item.triggers() |  std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "ITrigger")
+            .with_multi_getter<IItem, std::weak_ptr<IFilterable>>("Trigger", {}, [](auto&& item) {  return item.triggers() |  std::ranges::to<std::vector<std::weak_ptr<IFilterable>>>(); }, {}, "Trigger")
             .with_multi_getter<IItem, bool>("NG+", [](auto&& item)
                 {
                     return item.ng_plus() == std::nullopt ? std::vector<bool>{} : std::vector<bool>{ false,true };
@@ -112,8 +112,8 @@ namespace trview
         filters.add_getters(getters);
     }
 
-    ItemsWindow::ItemsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IMessageSystem>& messaging)
-        : _clipboard(clipboard), _messaging(messaging)
+    ItemsWindow::ItemsWindow(const std::shared_ptr<IClipboard>& clipboard, const std::weak_ptr<IFilterStore>& filter_store, const std::weak_ptr<IMessageSystem>& messaging)
+        : _clipboard(clipboard), _messaging(messaging), _filters(filter_store)
     {
         _tips["OCB"] = "Changes entity behaviour";
         _tips["Clear Body"] = "If true, removed when Bodybag is triggered";
@@ -418,6 +418,7 @@ namespace trview
     void ItemsWindow::set_number(int32_t number)
     {
         _id = "Items " + std::to_string(number);
+        _filters.set_name(_id);
     }
 
     void ItemsWindow::set_local_selected_item(std::weak_ptr<IItem> item)
@@ -435,7 +436,7 @@ namespace trview
     {
         _filters.clear_all_getters();
         add_all_filters(_filters, _level);
-        _filters.set_type_key("IItem");
+        _filters.set_type_key("Item");
     }
 
     void ItemsWindow::set_level_version(trlevel::LevelVersion version)
