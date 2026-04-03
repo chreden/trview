@@ -802,3 +802,28 @@ TEST(SettingsLoader, PluginsSaved)
     loader->save_user_settings(settings);
     EXPECT_THAT(output, HasSubstr("\"plugins\":{\"Default\":{\"enabled\":true}}"));
 }
+
+TEST(SettingsLoader, HeightLinesLoaded)
+{
+    auto loader = setup_setting("{\"show_route_height_labels\":false}");
+    auto settings = loader->load_user_settings();
+    ASSERT_EQ(settings.show_route_height_labels, false);
+
+    auto loader_true = setup_setting("{\"show_route_height_labels\":true}");
+    auto settings_true = loader_true->load_user_settings();
+    ASSERT_EQ(settings_true.show_route_height_labels, true);
+}
+
+TEST(SettingsLoader, HeightLinesSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.show_route_height_labels = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"show_route_height_labels\":false"));
+
+    settings.show_route_height_labels = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"show_route_height_labels\":true"));
+}

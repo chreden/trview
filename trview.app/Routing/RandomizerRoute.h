@@ -52,8 +52,9 @@ namespace trview
         std::weak_ptr<IWaypoint> waypoint(uint32_t index) const override;
         uint32_t waypoints() const override;
         void move_level(const std::string& from, const std::string& to) override;
-
         void import(const std::vector<uint8_t>& data, const RandomizerSettings& randomizer_settings);
+        void set_show_height_labels(bool show) override;
+        bool show_height_labels() const override;
     private:
         void update_waypoints();
 

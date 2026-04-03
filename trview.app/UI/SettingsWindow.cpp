@@ -236,6 +236,8 @@ namespace trview
                         messages::send_settings(_message_system, _settings);
                     }
 
+                    checkbox(Names::show_height_labels, _settings.show_route_height_labels);
+
                     ImGui::EndTabItem();
                 }
 

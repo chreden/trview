@@ -45,6 +45,8 @@ namespace trview
             MOCK_METHOD(std::weak_ptr<IWaypoint>, waypoint, (uint32_t), (const, override));
             MOCK_METHOD(uint32_t, waypoints, (), (const, override));
             MOCK_METHOD(void, move_level, (const std::string&, const std::string&));
+            MOCK_METHOD(void, set_show_height_labels, (bool), (override));
+            MOCK_METHOD(bool, show_height_labels, (), (const, override));
         };
     }
 }

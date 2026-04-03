@@ -47,6 +47,7 @@ namespace trview
             static inline const std::string reset_fov = "Reset##Fov";
             static inline const std::string statics_startup = "Open Statics Window at startup";
             static inline const std::string linear_filtering = "Linear Filtering";
+            static inline const std::string show_height_labels = "Show Height Labels by Default";
         };
 
         explicit SettingsWindow(const std::shared_ptr<IDialogs>& dialogs,
