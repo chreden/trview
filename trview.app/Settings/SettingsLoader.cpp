@@ -135,6 +135,7 @@ namespace trview
             read_attribute(json, settings.linear_filtering, "linear_filtering");
             read_attribute(json, settings.version, "version");
             read_attribute(json, settings.filter_directory, "filter_directory");
+            read_attribute(json, settings.show_route_height_labels, "show_route_height_labels");
 
             settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
@@ -221,6 +222,7 @@ namespace trview
             json["linear_filtering"] = settings.linear_filtering;
             json["version"] = trview::version();
             json["filter_directory"] = settings.filter_directory;
+            json["show_route_height_labels"] = settings.show_route_height_labels;
             _files->save_file(file_path, json.dump());
         }
         catch (...)

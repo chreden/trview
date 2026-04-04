@@ -656,10 +656,15 @@ namespace trview
                 {
                     route->set_waypoint_colour(waypoint_colour);
                 }
-                bool route_line = route->show_route_line();;
+                bool route_line = route->show_route_line();
                 if (ImGui::Checkbox("Route Line", &route_line))
                 {
                     route->set_show_route_line(route_line);
+                }
+                bool height_labels = route->show_height_labels();
+                if (ImGui::Checkbox("Height Labels", &height_labels))
+                {
+                    route->set_show_height_labels(height_labels);
                 }
                 ImGui::EndPopup();
             }

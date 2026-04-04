@@ -95,7 +95,7 @@ namespace trview
     }
 
     Route::Route(std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source, const UserSettings& settings)
-        : _selection_renderer(std::move(selection_renderer)), _waypoint_source(waypoint_source), _colour(settings.route_colour), _waypoint_colour(settings.waypoint_colour)
+        : _selection_renderer(std::move(selection_renderer)), _waypoint_source(waypoint_source), _colour(settings.route_colour), _waypoint_colour(settings.waypoint_colour), _show_height_labels(settings.show_route_height_labels)
     {
     }
 
@@ -530,6 +530,16 @@ namespace trview
         set_colour(new_waypoint_colour);
         set_waypoint_colour(new_waypoint_colour);
         _waypoints = new_waypoints;
+    }
+
+    bool Route::show_height_labels() const
+    {
+        return _show_height_labels;
+    }
+
+    void Route::set_show_height_labels(bool show)
+    {
+        _show_height_labels = show;
     }
 
     std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename)

@@ -429,21 +429,25 @@ namespace trview
                 const auto pos = waypoint->screen_position();
                 if (is_on_screen(pos, *vp))
                 {
-                    ImGui::SetNextWindowPos(vp->Pos + ImVec2(pos.x, pos.y));
-                    if (ImGui::Begin(std::format("##waypoint{}", i).c_str(), nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing))
+                    const bool need_label = !notes.empty() || (route->show_height_labels() && diff != 0);
+                    if (need_label)
                     {
-                        if (diff != 0)
+                        ImGui::SetNextWindowPos(vp->Pos + ImVec2(pos.x, pos.y));
+                        if (ImGui::Begin(std::format("##waypoint{}", i).c_str(), nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing))
                         {
-                            const std::string sign = diff <= 0 ? "+" : "-";
-                            const int clicks = static_cast<int>(round(diff / trlevel::Click));
-                            ImGui::Text(std::format("{}{} ({}{} clicks)", sign, abs(diff), sign, abs(clicks)).c_str());
+                            if (diff != 0)
+                            {
+                                const std::string sign = diff <= 0 ? "+" : "-";
+                                const int clicks = static_cast<int>(round(diff / trlevel::Click));
+                                ImGui::Text(std::format("{}{} ({}{} clicks)", sign, abs(diff), sign, abs(clicks)).c_str());
+                            }
+                            if (!notes.empty())
+                            {
+                                ImGui::Text(notes.c_str());
+                            }
                         }
-                        if (!notes.empty())
-                        {
-                            ImGui::Text(notes.c_str());
-                        }
+                        ImGui::End();
                     }
-                    ImGui::End();
                 }
             }
         }

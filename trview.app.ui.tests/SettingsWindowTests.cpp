@@ -673,6 +673,44 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Waypoint Colour/##Z")->ID), "B:255");
         });
 
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Show Height Lines Raises Event",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto messaging = mock_shared<MockMessageSystem>();
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().with_messaging(messaging).build();
+            controls.ptr->toggle_visibility();
+
+            std::optional<trview::Message> received_value;
+            EXPECT_CALL(*messaging, send_message).WillOnce(SaveArg<0>(&received_value));
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Route");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Route/Show Height Labels by Default"), true);
+            ctx->ItemUncheck("TabBar/Route/Show Height Labels by Default");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Route/Show Height Labels by Default"), false);
+            IM_CHECK_EQ(received_value.has_value(), true);
+            IM_CHECK_EQ(get_settings(*received_value).show_route_height_labels, false);
+        });
+
+    test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Show Height Lines Updates Checkbox",
+        [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& controls = ctx->GetVars<MockWrapper<SettingsWindow>>();
+            controls.ptr = register_test_module().build();
+            controls.ptr->toggle_visibility();
+            controls.ptr->receive_message(message({ .waypoint_colour = Colour(0.5f, 0.75f, 1.0f) }));
+
+            ctx->SetRef("Settings");
+            ctx->ItemClick("TabBar/Route");
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Route/Show Height Labels by Default"), true);
+            controls.ptr->receive_message(message({ .show_route_height_labels = false }));
+            ctx->Yield();
+            IM_CHECK_EQ(ctx->ItemIsChecked("TabBar/Route/Show Height Labels by Default"), false);
+        });
+
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set FOV Updates Slider",
         [](ImGuiTestContext* ctx) { render(ctx->GetVars<MockWrapper<SettingsWindow>>()); },
         [](ImGuiTestContext* ctx)

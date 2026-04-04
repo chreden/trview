@@ -447,6 +447,16 @@ namespace trview
         return _waypoints.back();
     }
 
+    void RandomizerRoute::set_show_height_labels(bool show)
+    {
+        _route->set_show_height_labels(show);
+    }
+
+    bool RandomizerRoute::show_height_labels() const
+    {
+        return _route->show_height_labels();
+    }
+
     std::shared_ptr<IRoute> import_randomizer_route(const IRandomizerRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings)
     {
         try

@@ -50,7 +50,8 @@ namespace trview
         virtual Colour waypoint_colour() const override;
         virtual std::weak_ptr<IWaypoint> waypoint(uint32_t index) const override;
         virtual uint32_t waypoints() const override;
-
+        bool show_height_labels() const override;
+        void set_show_height_labels(bool show) override;
         void import(const std::vector<uint8_t>& data);
     private:
         uint32_t next_index() const;
@@ -68,5 +69,6 @@ namespace trview
         std::weak_ptr<ILevel> _level;
         std::optional<std::string> _filename;
         bool _show_route_line{ true };
+        bool _show_height_labels{ true };
     };
 }

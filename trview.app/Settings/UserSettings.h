@@ -91,6 +91,7 @@ namespace trview
         bool linear_filtering{ false };
         std::string version;
         std::string filter_directory;
+        bool show_route_height_labels{ true };
 
         bool operator==(const UserSettings& other) const;
     };

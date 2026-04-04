@@ -531,3 +531,26 @@ TEST(Route, SetShowRouteLine)
     ASSERT_TRUE(raised);
     ASSERT_FALSE(route->show_route_line());
 }
+
+
+TEST(Route, SetShowHeightLabels)
+{
+    auto route = register_test_module().build();
+
+    ASSERT_TRUE(route->show_height_labels());
+    route->set_show_height_labels(false);
+    ASSERT_FALSE(route->show_height_labels());
+}
+
+TEST(Route, DefaultHeightLines)
+{
+    auto route = register_test_module()
+        .with_settings({ .show_route_height_labels = false })
+        .build();
+    ASSERT_FALSE(route->show_height_labels());
+
+    auto route2 = register_test_module()
+        .with_settings({ .show_route_height_labels = true })
+        .build();
+    ASSERT_TRUE(route2->show_height_labels());
+}
