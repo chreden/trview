@@ -6,6 +6,26 @@ namespace trview
     using namespace DirectX;
     using namespace DirectX::SimpleMath;
 
+    namespace
+    {
+        bool is_jump_taken(const std::unordered_map<uint32_t, std::vector<uint32_t>>& map, uint32_t source, uint32_t destination)
+        {
+            const auto source_found = map.find(source);
+            if (source_found == map.end())
+            {
+                return false;
+            }
+
+            const auto dest_found = std::ranges::find(source_found->second, destination);
+            if (dest_found == source_found->second.end())
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
     IFlyby::~IFlyby()
     {
     }
@@ -139,6 +159,7 @@ namespace trview
         std::vector<std::vector<Vector3>> paths;
         paths.push_back({});
 
+        std::unordered_map<uint32_t, std::vector<uint32_t>> jumps_taken;
         for (uint32_t n = 0; n < _camera_nodes.size() - 1; ++n)
         {
             CameraState state;
@@ -146,9 +167,14 @@ namespace trview
 
             if (_camera_nodes[n]->flags() & 0x80)
             {
-                n = _camera_nodes[n]->timer();
-                state.index = n;
-                paths.push_back({});
+                const uint32_t next = _camera_nodes[n]->timer();
+                if (!is_jump_taken(jumps_taken, n, next))
+                {
+                    jumps_taken[n].push_back(next);
+                    n = next;
+                    state.index = n;
+                    paths.push_back({});
+                }
             }
 
             for (int s = 0; s <= path_samples; ++s)
