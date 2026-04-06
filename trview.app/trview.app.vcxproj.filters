@@ -609,9 +609,6 @@
     <Filter Include="Messages">
       <UniqueIdentifier>{a047438d-5a92-49e4-b596-108105134baa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Windows\Filters">
-      <UniqueIdentifier>{42407171-2e71-4eb4-8831-1c2f46223206}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Mocks\Filters">
       <UniqueIdentifier>{a790e61b-eddf-4acc-a368-29a916640695}</UniqueIdentifier>
     </Filter>
