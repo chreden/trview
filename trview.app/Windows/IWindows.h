@@ -1,22 +1,14 @@
 #pragma once
 
+#include <functional>
 #include <memory>
-#include <trlevel/trtypes.h>
+#include <string>
+#include <vector>
 
 namespace trview
 {
-    struct IFlybyNode;
-    struct ILevel;
-    struct ILight;
-    struct IRoom;
-    struct IRoute;
-    struct ISector;
-    struct IStaticMesh;
-    struct ITrigger;
-    struct IWaypoint;
     struct IWindow;
     struct UserSettings;
-    struct IPortal;
 
     struct IWindows
     {
