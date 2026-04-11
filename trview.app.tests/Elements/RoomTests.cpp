@@ -41,12 +41,13 @@ namespace
             ISector::Source sector_source{ [](auto&&...) { return mock_shared<MockSector>(); } };
             std::shared_ptr<ILog> log{ mock_shared<MockLog>() };
             graphics::ISamplerState::Source sampler_source{ [](auto&&...) { return mock_shared<MockSamplerState>(); } };
-            IPortal::Source portal_source{ [](auto&&...) { return mock_shared<MockPortal>(); } };
+            IPortal::VisibilitySource visibility_portal_source{ [](auto&&...) { return mock_shared<MockPortal>(); } };
+            IPortal::CollisionalSource collision_portal_source{ [](auto&&...) { return mock_shared<MockPortal>(); } };
 
             std::shared_ptr<Room> build()
             {
                 auto new_room = std::make_shared<Room>(room, mesh_source, level_texture_storage, index, level, sampler_source);
-                new_room->initialise(*tr_level, room, *mesh_storage, static_mesh_source, static_mesh_position_source, sector_source, 0, portal_source, Activity(log, "Level", "Room 0"));
+                new_room->initialise(*tr_level, room, *mesh_storage, static_mesh_source, static_mesh_position_source, sector_source, 0, visibility_portal_source, collision_portal_source, Activity(log, "Level", "Room 0"));
                 return new_room;
             }
 
