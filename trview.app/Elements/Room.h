@@ -102,7 +102,8 @@ namespace trview
             const IStaticMesh::PositionSource& static_mesh_position_source,
             const ISector::Source& sector_source,
             uint32_t sector_base_index,
-            const IPortal::Source& portal_source,
+            const IPortal::VisibilitySource& visibility_portal_source,
+            const IPortal::CollisionalSource& collision_portal_source,
             const Activity& activity);
         std::vector<std::weak_ptr<IStaticMesh>> static_meshes() const override;
         void update(float delta) override;
@@ -125,7 +126,9 @@ namespace trview
         void process_collision_transparency(std::vector<Triangle>& triangles);
         void generate_all_geometry_mesh(const IMesh::Source& mesh_source);
         void add_centroid_to_pick(const IMesh& mesh, PickResult& geometry_result) const;
-        void generate_portals(const IPortal::Source& portal_source, const trlevel::tr3_room& room);
+        void generate_portals(const IPortal::VisibilitySource& visibility_portal_source, const IPortal::CollisionalSource& collisional_portal_source, const trlevel::tr3_room& room);
+        void generate_visibility_portals(const IPortal::VisibilitySource& portal_source, const trlevel::tr3_room& room);
+        void generate_collisional_portals(const IPortal::CollisionalSource& portal_source, const trlevel::tr3_room& room);
 
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;

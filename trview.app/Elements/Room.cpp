@@ -161,13 +161,13 @@ namespace trview
 
     void Room::initialise(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
         const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source,
-        const ISector::Source& sector_source, uint32_t sector_base_index, const IPortal::Source& portal_source, const Activity& activity)
+        const ISector::Source& sector_source, uint32_t sector_base_index, const IPortal::VisibilitySource& visibility_portal_source, const IPortal::CollisionalSource& collisional_portal_source, const Activity& activity)
     {
         generate_sectors(level, room, sector_source, sector_base_index);
         generate_geometry(_mesh_source, room);
         generate_adjacency();
         generate_static_meshes(_mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source, activity);
-        generate_portals(portal_source, room);
+        generate_portals(visibility_portal_source, collisional_portal_source, room);
     }
 
     RoomInfo Room::info() const
@@ -1300,13 +1300,37 @@ namespace trview
         return _portals | std::ranges::to<std::vector<std::weak_ptr<IPortal>>>();
     }
 
-    void Room::generate_portals(const IPortal::Source& portal_source, const trlevel::tr3_room& room)
+    void Room::generate_portals(const IPortal::VisibilitySource& visibility_portal_source, const IPortal::CollisionalSource& collision_portal_source, const trlevel::tr3_room& room)
+    {
+        _portals.clear();
+        generate_visibility_portals(visibility_portal_source, room);
+        generate_collisional_portals(collision_portal_source, room);
+    }
+
+    void Room::generate_visibility_portals(const IPortal::VisibilitySource& portal_source, const trlevel::tr3_room& room)
     {
         if (auto level = _level.lock())
         {
             const float offset_y = level->platform_and_version().platform == trlevel::Platform::PSX ? static_cast<float>(room.info.yTop) : 0.0f;
-            const auto offset = DirectX::SimpleMath::Vector3 { static_cast<float>(room.info.x), offset_y, static_cast<float>(room.info.z) } / trlevel::Scale;
-            _portals = room.portals | std::views::transform([&](auto&& p) { return portal_source(p, offset); }) | std::ranges::to<std::vector>();
+            const auto offset = DirectX::SimpleMath::Vector3{ static_cast<float>(room.info.x), offset_y, static_cast<float>(room.info.z) } / trlevel::Scale;
+            _portals.append_range(room.portals | std::views::transform([&](auto&& p) { return portal_source(p, offset); }) | std::ranges::to<std::vector>());
+        }
+    }
+
+    void Room::generate_collisional_portals(const IPortal::CollisionalSource& portal_source, const trlevel::tr3_room& room)
+    {
+        if (auto level = _level.lock())
+        {
+            const float offset_y = level->platform_and_version().platform == trlevel::Platform::PSX ? static_cast<float>(room.info.yTop) : 0.0f;
+            const auto offset = DirectX::SimpleMath::Vector3{ static_cast<float>(room.info.x), offset_y, static_cast<float>(room.info.z) } / trlevel::Scale;
+
+            for (const auto& sector : _sectors)
+            {
+                for (const auto& portal : sector->portals())
+                {
+                    _portals.push_back(portal_source(sector, portal));
+                }
+            }
         }
     }
 
