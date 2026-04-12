@@ -47,7 +47,7 @@ namespace trview
         bool reposition{ false };
         Anchor anchor{ Anchor::TopRight };
 
-        void check_resize(ImVec2 intended_client_size);
+        bool check_resize(ImVec2 intended_client_size);
         void record_position(ImVec2 intended_client_size);
         void record_size();
     };

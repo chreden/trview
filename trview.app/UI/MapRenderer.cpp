@@ -12,7 +12,6 @@ namespace trview
     namespace
     {
         constexpr float _DRAW_MARGIN = 30.0f;
-        constexpr float _DRAW_SCALE = 17.0f;
     }
 
     IMapRenderer::~IMapRenderer()
@@ -37,8 +36,8 @@ namespace trview
             return;
         }
 
-        const float width = static_cast<float>(_DRAW_SCALE * _columns + 1);
-        const float height = static_cast<float>(_DRAW_SCALE * _rows + 1);
+        const float width = static_cast<float>(_sector_size * _columns + _columns + 1);
+        const float height = static_cast<float>(_sector_size * _rows + _rows + 1);
 
         bool is_reset = _reset_cycles > 0;
         if (window)
@@ -52,15 +51,32 @@ namespace trview
             ImGui::SetNextWindowPos(vp->Pos + ImVec2(vp->Size.x, 0) + ImVec2(-20, 20), 
                 is_reset ? ImGuiCond_Always : ImGuiCond_Appearing, ImVec2(1, 0));
 
-            if (!is_reset)
+            if (!is_reset && !is_resizing)
             {
                 _anchor.check_resize({ width, height });
             }
 
-            if (!ImGui::Begin("Minimap", nullptr, ImGuiWindowFlags_NoResize))
+            if (!ImGui::Begin("Minimap", nullptr, ImGuiWindowFlags_None))
             {
                 ImGui::End();
                 return;
+            }
+
+            is_resizing = ImGui::IsAnyItemActive();
+            if (!_previous_client_size)
+            {
+                _previous_client_size = ImGui::GetContentRegionAvail();
+            }
+            else if (is_resizing)
+            {
+                const auto new_size = ImGui::GetContentRegionAvail();
+                if (new_size != _previous_client_size)
+                {
+                    _previous_client_size = new_size;
+                    const float new_width = static_cast<float>(new_size.x - _columns - 1) / static_cast<float>(_columns);
+                    const float new_height = static_cast<float>(new_size.y - _rows - 1) / static_cast<float>(_rows);
+                    _sector_size = std::max(16.0f, std::min(new_width, new_height));
+                }
             }
         }
 
@@ -89,10 +105,10 @@ namespace trview
         draw(list, Point(), Size(width, height), Color(0.0f, 0.0f, 0.0f));
 
         const auto settings = _settings.value();
-        std::for_each(_tiles.begin(), _tiles.end(), [&](const Tile& tile)
+        std::for_each(_tiles.begin(), _tiles.end(), [&](Tile& tile)
             {
-                const ImVec2 tile_pos = ImVec2(tile.position.x, tile.position.y);
-                const ImVec2 tile_size = ImVec2(tile.size.width, tile.size.height);
+                tile.position = get_position(*tile.sector);
+                tile.size = get_size();
 
                 Color text_color = Colour::White;
                 Color draw_color = settings.map_colours.colour_from_flags_field(tile.sector->flags());
@@ -120,7 +136,7 @@ namespace trview
 
                 // Draw climbable walls. This draws 4 separate lines - one per climbable edge. 
                 // In the future I'd like to just draw a hollow square instead.
-                const float thickness = _DRAW_SCALE / 4;
+                const float thickness = (_sector_size + 1) / 4;
 
                 if (has_flag(tile.sector->flags(), SectorFlag::Wall) && (has_flag(tile.sector->flags(), SectorFlag::Portal) || is_no_space(tile.sector->flags())))
                 {
@@ -131,9 +147,9 @@ namespace trview
                 if (has_flag(tile.sector->flags(), SectorFlag::ClimbableNorth))
                     draw(list, tile.position, Size(tile.size.width, thickness), settings.map_colours.colour(SectorFlag::ClimbableNorth));
                 if (has_flag(tile.sector->flags(), SectorFlag::ClimbableEast))
-                    draw(list, Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), settings.map_colours.colour(SectorFlag::ClimbableEast));
+                    draw(list, Point(tile.position.x + (_sector_size + 1) - thickness, tile.position.y), Size(thickness, tile.size.height), settings.map_colours.colour(SectorFlag::ClimbableEast));
                 if (has_flag(tile.sector->flags(), SectorFlag::ClimbableSouth))
-                    draw(list, Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), settings.map_colours.colour(SectorFlag::ClimbableSouth));
+                    draw(list, Point(tile.position.x, tile.position.y + (_sector_size + 1) - thickness), Size(tile.size.width, thickness), settings.map_colours.colour(SectorFlag::ClimbableSouth));
                 if (has_flag(tile.sector->flags(), SectorFlag::ClimbableWest))
                     draw(list, tile.position, Size(thickness, tile.size.height), settings.map_colours.colour(SectorFlag::ClimbableWest));
 
@@ -232,14 +248,14 @@ namespace trview
     Point MapRenderer::get_position(const ISector& sector)
     {
         return Point {
-            /* X */ _DRAW_SCALE * sector.x(),
-            /* Y */ _rows * _DRAW_SCALE - _DRAW_SCALE * (sector.z() + 1)
+            /* X */ (_sector_size + 1) * sector.x(),
+            /* Y */ _rows * (_sector_size + 1) - (_sector_size + 1) * (sector.z() + 1)
         } + Point(1,1); 
     }
 
     Size MapRenderer::get_size() const
     {
-        return Size { _DRAW_SCALE - 1, _DRAW_SCALE - 1 };
+        return Size { _sector_size, _sector_size };
     }
 
     std::shared_ptr<ISector> MapRenderer::sector_at(const Point& p) const
@@ -380,8 +396,10 @@ namespace trview
 
     Size MapRenderer::size() const
     {
-        const float width = static_cast<float>(_DRAW_SCALE * _columns + 1);
-        const float height = static_cast<float>(_DRAW_SCALE * _rows + 1);
+        // const float width = static_cast<float>(_sector_size * _columns + _columns + 1);
+        // const float height = static_cast<float>(_sector_size * _rows + _rows + 1);
+        const float width = static_cast<float>((_sector_size + 1) * _columns + 1);
+        const float height = static_cast<float>((_sector_size + 1) * _rows + 1);
         return Size(width, height);
     }
 
