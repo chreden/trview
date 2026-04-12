@@ -56,7 +56,7 @@ namespace trview
                 _anchor.check_resize({ width, height });
             }
 
-            if (!ImGui::Begin("Minimap", nullptr, ImGuiWindowFlags_None))
+            if (!ImGui::Begin("Minimap", nullptr, ImGuiWindowFlags_NoScrollbar))
             {
                 ImGui::End();
                 return;
