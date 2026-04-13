@@ -396,8 +396,6 @@ namespace trview
 
     Size MapRenderer::size() const
     {
-        // const float width = static_cast<float>(_sector_size * _columns + _columns + 1);
-        // const float height = static_cast<float>(_sector_size * _rows + _rows + 1);
         const float width = static_cast<float>((_sector_size + 1) * _columns + 1);
         const float height = static_cast<float>((_sector_size + 1) * _rows + 1);
         return Size(width, height);
