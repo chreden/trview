@@ -60,14 +60,12 @@ namespace trview
         }
     }
 
-    bool ImGuiAnchor::check_resize(ImVec2 intended_client_size)
+    void ImGuiAnchor::check_resize(ImVec2 intended_client_size)
     {
-        bool resized = false;
         if (last_padding.has_value() && last_position.has_value() && last_size.has_value() && !last_client_size.has_value())
         {
             const auto new_size = *last_padding + intended_client_size;
             ImGui::SetNextWindowSize(new_size, ImGuiCond_Always);
-            resized = true;
             if (!docked)
             {
                 ImGui::SetNextWindowPos(*last_position + ImVec2(last_size->x, 0), ImGuiCond_Always, ImVec2(1.0f, 0.0f));
@@ -80,7 +78,6 @@ namespace trview
         {
             const auto new_size = *last_padding + intended_client_size;
             ImGui::SetNextWindowSize(new_size, ImGuiCond_Always);
-            resized = true;
             if (!docked)
             {
                 ImGui::SetNextWindowPos(*last_position + ImVec2(last_padding->x + last_client_size->x, 0), ImGuiCond_Always, ImVec2(1.0f, 0.0f));
@@ -108,8 +105,6 @@ namespace trview
             }
             reposition = false;
         }
-
-        return resized;
     }
 
     void ImGuiAnchor::record_position(ImVec2 intended_client_size)
