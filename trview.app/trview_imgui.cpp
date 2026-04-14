@@ -1,4 +1,5 @@
 #include "trview_imgui.h"
+#include <trview.common/Windows/IClipboard.h>
 
 namespace trview
 {
@@ -159,5 +160,53 @@ namespace trview
     void ImGuiAnchor::record_size()
     {
         last_size = ImGui::GetWindowSize();
+    }
+
+    namespace
+    {
+        bool copy_button(const std::string& text, IClipboard& clipboard)
+        {
+            if (ImGui::Selectable(text.c_str()))
+            {
+                clipboard.write(to_utf16(text));
+                return true;
+            }
+            return false;
+        }
+    }
+
+    void read_only_colour_button(const std::string& name, const ImVec4& colour, IClipboard& clipboard)
+    {
+        const std::string popup_name = std::format("{}-picker", name);
+        const bool open_popup = ImGui::ColorButton(name.c_str(), colour, 0, ImVec2(16, 16));
+        if (open_popup)
+        {
+            ImGui::OpenPopup(popup_name.c_str());
+        }
+
+        if (ImGui::BeginPopup(popup_name.c_str()))
+        {
+            if (ImGui::Button("Copy as.."))
+            {
+                ImGui::OpenPopup("Copy");
+            }
+
+            bool close_popup = false;
+            if (ImGui::BeginPopup("Copy"))
+            {
+                close_popup =
+                    copy_button(std::format("#{:0>2X}{:0>2X}{:0>2X}", static_cast<int>(colour.x * 255.0f + 0.5f), static_cast<int>(colour.y * 255.0f + 0.5f), static_cast<int>(colour.z * 255.0f + 0.5f)), clipboard) ||
+                    copy_button(std::format("{},{},{}", static_cast<int>(colour.x * 255.0f + 0.5f), static_cast<int>(colour.y * 255.0f + 0.5f), static_cast<int>(colour.z * 255.0f + 0.5f)), clipboard) ||
+                    copy_button(std::format("{:.3f},{:.3f},{:.3f}", colour.x, colour.y, colour.z), clipboard);
+                ImGui::EndPopup();
+            }
+
+            if (close_popup)
+            {
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
     }
 }
