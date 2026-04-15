@@ -268,7 +268,7 @@ namespace trview
 
                     auto format_colour = [](const Colour& colour)
                     {
-                        return std::format("R: {}, G: {}, B: {}", static_cast<int>(colour.r * 255), static_cast<int>(colour.g * 255), static_cast<int>(colour.b * 255));
+                        return std::format("R: {}, G: {}, B: {}", static_cast<int>(colour.r * 255 + 0.5f), static_cast<int>(colour.g * 255 + 0.5f), static_cast<int>(colour.b * 255 + 0.5f));
                     };
 
                     add_stat("Type", to_string(selected_light->type()));

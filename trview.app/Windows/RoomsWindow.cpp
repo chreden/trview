@@ -831,7 +831,7 @@ namespace trview
 
             auto format_colour = [](const Colour& colour)
             {
-                return std::format("R: {}, G: {}, B: {}", static_cast<int>(colour.r * 255), static_cast<int>(colour.g * 255), static_cast<int>(colour.b * 255));
+                return std::format("R: {}, G: {}, B: {}", static_cast<int>(colour.r * 255 + 0.5f), static_cast<int>(colour.g * 255 + 0.5f), static_cast<int>(colour.b * 255 + 0.5f));
             };
 
             if (_level_version < trlevel::LevelVersion::Tomb4)
@@ -840,6 +840,8 @@ namespace trview
                 float ambient_intensity = ambient_percentage(room->ambient_intensity_1());
                 ImGui::SameLine();
                 ImGui::Text("%.2f%%", ambient_intensity * 100.0f);
+                ImGui::SameLine();
+                ImGui::Text(format_colour(Colour(ambient_intensity, ambient_intensity, ambient_intensity)).c_str());
                 ImGui::SameLine();
                 ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
                 read_only_colour_button("##ambientintensitybutton", ImVec4(ambient_intensity, ambient_intensity, ambient_intensity, 1.0f), *_clipboard);
@@ -851,6 +853,8 @@ namespace trview
                         float ambient_intensity2 = ambient_percentage(room->ambient_intensity_2());
                         ImGui::SameLine();
                         ImGui::Text("%.2f%%", ambient_intensity2 * 100.0f);
+                        ImGui::SameLine();
+                        ImGui::Text(format_colour(Colour(ambient_intensity2, ambient_intensity2, ambient_intensity2)).c_str());
                         ImGui::SameLine();
                         ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
                         read_only_colour_button("##ambientintensity2button", ImVec4(ambient_intensity2, ambient_intensity2, ambient_intensity2, 1.0f), *_clipboard);
