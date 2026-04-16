@@ -268,7 +268,7 @@ namespace trview
 
                     auto format_colour = [](const Colour& colour)
                     {
-                        return std::format("R: {}, G: {}, B: {}", static_cast<int>(colour.r * 255), static_cast<int>(colour.g * 255), static_cast<int>(colour.b * 255));
+                        return std::format("R: {}, G: {}, B: {}", static_cast<int>(colour.r * 255 + 0.5f), static_cast<int>(colour.g * 255 + 0.5f), static_cast<int>(colour.b * 255 + 0.5f));
                     };
 
                     add_stat("Type", to_string(selected_light->type()));
@@ -277,7 +277,12 @@ namespace trview
 
                     if (has_colour(*selected_light))
                     {
-                        add_stat("Colour", format_colour(selected_light->colour()), selected_light->colour());
+                        auto colour = selected_light->colour();
+                        ImGui::SetNextItemAllowOverlap();
+                        add_stat("Colour", format_colour(colour), colour);
+                        ImGui::SameLine();
+                        ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
+                        read_only_colour_button("##colourbutton", ImVec4(colour.r, colour.g, colour.b, 1.0f), *_clipboard);
                     }
 
                     if (has_position(*selected_light))

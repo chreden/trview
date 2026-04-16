@@ -51,6 +51,9 @@ namespace trview
         void record_position(ImVec2 intended_client_size);
         void record_size();
     };
+
+    struct IClipboard;
+    void read_only_colour_button(const std::string& name, const ImVec4& colour, IClipboard& clipboard);
 }
 
 #include "trview_imgui.hpp"
