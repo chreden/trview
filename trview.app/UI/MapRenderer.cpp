@@ -51,7 +51,7 @@ namespace trview
             ImGui::SetNextWindowPos(vp->Pos + ImVec2(vp->Size.x, 0) + ImVec2(-20, 20), 
                 is_reset ? ImGuiCond_Always : ImGuiCond_Appearing, ImVec2(1, 0));
 
-            if (!is_reset && !is_resizing)
+            if (!_is_resizing)
             {
                 _anchor.check_resize({ width, height });
             }
@@ -62,12 +62,12 @@ namespace trview
                 return;
             }
 
-            is_resizing = ImGui::IsAnyItemActive();
+            _is_resizing = ImGui::IsAnyItemActive();
             if (!_previous_client_size)
             {
                 _previous_client_size = ImGui::GetContentRegionAvail();
             }
-            else if (is_resizing)
+            else if (_is_resizing)
             {
                 const auto new_size = ImGui::GetContentRegionAvail();
                 if (new_size != _previous_client_size)
@@ -243,6 +243,9 @@ namespace trview
         _tiles = room->sectors() 
             | std::views::transform([&](auto&& s) { return Tile(s, get_position(*s), get_size()); })
             | std::ranges::to<std::vector>();
+
+        _is_resizing = false;
+        reset();
     }
 
     Point MapRenderer::get_position(const ISector& sector)

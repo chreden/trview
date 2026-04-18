@@ -89,7 +89,7 @@ namespace trview
 
         std::optional<ImVec2> _previous_client_size;
         float _sector_size{ 16.0f };
-        bool is_resizing{ false };
+        bool _is_resizing{ false };
 
         int _reset_cycles{ 2 };
     };
