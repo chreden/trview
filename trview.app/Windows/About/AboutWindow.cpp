@@ -14,7 +14,7 @@ namespace trview
         if (ImGui::Begin(_id.c_str(), &stay_open, ImGuiWindowFlags_None))
         {
             ImGui::TextWrapped(std::format("trview, Version {}", trview::version()).c_str());
-            ImGui::TextWrapped("Copyright (c) 2025 trview team");
+            ImGui::TextWrapped("Copyright (c) 2026 trview team");
             ImGui::TextWrapped("Licensed under the MIT license");
             ImGui::TextWrapped("Uses DirectXTK (MIT)");
             ImGui::TextWrapped("Uses zlib (zlib)");
