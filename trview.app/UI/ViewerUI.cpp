@@ -131,7 +131,7 @@ namespace trview
                 messages::send_settings(_messaging, _settings);
             };
 
-        _map_renderer = map_renderer_source();
+        _map_renderer = map_renderer_source(true);
     }
 #pragma warning(pop)
 

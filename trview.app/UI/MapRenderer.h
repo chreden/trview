@@ -37,7 +37,9 @@ namespace trview
     class MapRenderer final : public IMapRenderer, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
-        MapRenderer(const std::shared_ptr<IFonts>& fonts, const std::weak_ptr<IMessageSystem>& messaging);
+        MapRenderer(const std::shared_ptr<IFonts>& fonts,
+            const std::weak_ptr<IMessageSystem>& messaging,
+            bool load_room_from_message);
         virtual ~MapRenderer() = default;
         // Renders the map 
         void render(bool window) override;
@@ -92,5 +94,6 @@ namespace trview
         bool _is_resizing{ false };
 
         int _reset_cycles{ 2 };
+        bool _load_room_from_message{ true };
     };
 };
