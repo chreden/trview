@@ -397,9 +397,9 @@ namespace trview
             };
         auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
         auto fonts = std::make_shared<Fonts>(files, imgui_backend);
-        auto map_renderer_source = [=]()
+        auto map_renderer_source = [=](bool load_room_from_message)
             { 
-                auto renderer = std::make_shared<MapRenderer>(fonts, messaging);
+                auto renderer = std::make_shared<MapRenderer>(fonts, messaging, load_room_from_message);
                 messaging->add_recipient(renderer);
                 renderer->initialise();
                 return renderer;

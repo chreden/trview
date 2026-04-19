@@ -14,7 +14,7 @@ namespace trview
             Select
         };
 
-        using Source = std::function<std::shared_ptr<IMapRenderer>()>;
+        using Source = std::function<std::shared_ptr<IMapRenderer>(bool)>;
 
         virtual ~IMapRenderer() = 0;
 

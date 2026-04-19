@@ -19,8 +19,10 @@ namespace trview
     {
     }
 
-    MapRenderer::MapRenderer(const std::shared_ptr<IFonts>& fonts, const std::weak_ptr<IMessageSystem>& messaging)
-        : _fonts(fonts), _messaging(messaging)
+    MapRenderer::MapRenderer(const std::shared_ptr<IFonts>& fonts,
+        const std::weak_ptr<IMessageSystem>& messaging,
+        bool load_room_from_message)
+        : _fonts(fonts), _messaging(messaging), _load_room_from_message(load_room_from_message)
     {
     }
 
@@ -398,7 +400,10 @@ namespace trview
         }
         else if (auto selected_room = messages::read_select_room(message))
         {
-            load(selected_room.value().lock());
+            if (_load_room_from_message)
+            {
+                load(selected_room.value().lock());
+            }
         }
     }
 
