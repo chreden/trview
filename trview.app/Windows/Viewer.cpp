@@ -582,10 +582,6 @@ namespace trview
             {
                 _camera_input.key_down(key, control);
             }
-            else if (_ui->show_context_menu() && key == VK_ESCAPE)
-            {
-                _ui->set_show_context_menu(false);
-            }
         };
 
         setup_camera_input();

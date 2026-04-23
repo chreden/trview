@@ -20,10 +20,10 @@ TEST(Keyboard, KeyDownEventRaised)
         key_received = key;
     };
 
-    keyboard.process_message(WM_KEYDOWN, VK_SPACE, 0);
+    keyboard.process_message(WM_KEYDOWN, VK_SPACE, MAKELPARAM(0, MAKEWORD(0x39, 0)));
 
     ASSERT_EQ(1, times_called);
-    ASSERT_EQ(static_cast<int>(VK_SPACE), static_cast<int>(key_received));
+    ASSERT_EQ(static_cast<int>(0x39), static_cast<int>(key_received));
 }
 
 /// Tests that when a WM_KEYUP message is posted to the window that the keyboard is watching
@@ -41,10 +41,10 @@ TEST(Keyboard, KeyUpEventRaised)
         key_received = key;
     };
 
-    keyboard.process_message(WM_KEYUP, VK_SPACE, 0);
+    keyboard.process_message(WM_KEYUP, VK_SPACE, MAKELPARAM(0, MAKEWORD(0x39, 0)));
 
     ASSERT_EQ(1, times_called);
-    ASSERT_EQ(static_cast<int>(VK_SPACE), static_cast<int>(key_received));
+    ASSERT_EQ(static_cast<int>(0x39), static_cast<int>(key_received));
 }
 
 /// Tests that when a WM_CHAR message is posted to the window that the keyboard is watching

@@ -2,6 +2,19 @@
 
 using namespace trview;
 
+namespace
+{
+    constexpr uint16_t Scan_Q = 0x0010;
+    constexpr uint16_t Scan_W = 0x0011;
+    constexpr uint16_t Scan_E = 0x0012;
+    constexpr uint16_t Scan_O = 0x0018;
+    constexpr uint16_t Scan_A = 0x001E;
+    constexpr uint16_t Scan_S = 0x001F;
+    constexpr uint16_t Scan_D = 0x0020;
+    constexpr uint16_t Scan_F = 0x0021;
+    constexpr uint16_t Scan_X = 0x002D;
+}
+
 /// Tests that when the appropriate shortcut key is pressed the event
 /// for entering free mode is raised.
 TEST(CameraInput, EnterFreeMode)
@@ -14,7 +27,7 @@ TEST(CameraInput, EnterFreeMode)
         mode = new_mode;
     };
 
-    subject.key_down(L'F', false);
+    subject.key_down(Scan_F, false);
 
     ASSERT_TRUE(mode.has_value());
     ASSERT_EQ(ICamera::Mode::Free, mode.value());
@@ -32,7 +45,7 @@ TEST(CameraInput, EnterAxisMode)
         mode = new_mode;
     };
 
-    subject.key_down(L'X', false);
+    subject.key_down(Scan_X, false);
 
     ASSERT_TRUE(mode.has_value());
     ASSERT_EQ(ICamera::Mode::Axis, mode.value());
@@ -50,7 +63,7 @@ TEST(CameraInput, EnterOrbitMode)
         mode = new_mode;
     };
 
-    subject.key_down(L'O', false);
+    subject.key_down(Scan_O, false);
 
     ASSERT_TRUE(mode.has_value());
     ASSERT_EQ(ICamera::Mode::Orbit, mode.value());
@@ -121,28 +134,28 @@ TEST(CameraInput, Movement)
 
     ASSERT_EQ(Vector3::Zero, subject.movement());
 
-    subject.key_down(L'W', false);
+    subject.key_down(Scan_W, false);
     ASSERT_EQ(Vector3(0, 0, 1), subject.movement());
 
-    subject.key_down(L'A', false);
+    subject.key_down(Scan_A, false);
     ASSERT_EQ(Vector3(-1, 0, 1), subject.movement());
 
-    subject.key_up(L'A');
+    subject.key_up(Scan_A);
     ASSERT_EQ(Vector3(0, 0, 1), subject.movement());
 
-    subject.key_down(L'D', false);
+    subject.key_down(Scan_D, false);
     ASSERT_EQ(Vector3(1, 0, 1), subject.movement());
 
-    subject.key_up(L'W');
+    subject.key_up(Scan_W);
     ASSERT_EQ(Vector3(1, 0, 0), subject.movement());
 
-    subject.key_down(L'S', false);
+    subject.key_down(Scan_S, false);
     ASSERT_EQ(Vector3(1, 0, -1), subject.movement());
 
-    subject.key_up(L'S');
+    subject.key_up(Scan_S);
     ASSERT_EQ(Vector3(1, 0, 0), subject.movement());
 
-    subject.key_up(L'D');
+    subject.key_up(Scan_D);
     ASSERT_EQ(Vector3::Zero, subject.movement());
 }
 
@@ -159,17 +172,17 @@ TEST(CameraInput, ControlBlocks)
         modes.insert(mode);
     };
 
-    subject.key_down('F', true);
-    subject.key_down('O', true);
-    subject.key_down('X', true);
+    subject.key_down(Scan_F, true);
+    subject.key_down(Scan_O, true);
+    subject.key_down(Scan_X, true);
     ASSERT_TRUE(modes.empty());
 
-    subject.key_down('W', true);
-    subject.key_down('A', true);
+    subject.key_down(Scan_W, true);
+    subject.key_down(Scan_A, true);
     ASSERT_EQ(Vector3::Zero, subject.movement());
 
-    subject.key_down('S', true);
-    subject.key_down('D', true);
+    subject.key_down(Scan_S, true);
+    subject.key_down(Scan_D, true);
     ASSERT_EQ(Vector3::Zero, subject.movement());
 }
 
@@ -221,8 +234,8 @@ TEST(CameraInput, Reset)
 
     CameraInput subject;
 
-    subject.key_down('W', false);
-    subject.key_down('A', false);
+    subject.key_down(Scan_W, false);
+    subject.key_down(Scan_A, false);
     ASSERT_NE(Vector3::Zero, subject.movement());
 
     subject.reset();
