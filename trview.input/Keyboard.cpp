@@ -23,7 +23,7 @@ namespace trview
             return GetKeyState(VK_SHIFT) & 0x8000;
         }
 
-        std::optional<int> Keyboard::process_message(UINT message, WPARAM wParam, LPARAM)
+        std::optional<int> Keyboard::process_message(UINT message, WPARAM wParam, LPARAM lParam)
         {
             bool control_pressed = control();
             bool shift_pressed = shift();
@@ -31,7 +31,7 @@ namespace trview
             {
                 case WM_KEYDOWN:
                 {
-                    on_key_down(static_cast<uint16_t>(wParam), control_pressed, shift_pressed);
+                    on_key_down(LOBYTE(HIWORD(lParam)), control_pressed, shift_pressed);
                     break;
                 }
                 case WM_CHAR:
@@ -41,7 +41,7 @@ namespace trview
                 }
                 case WM_KEYUP:
                 {
-                    on_key_up(static_cast<uint16_t>(wParam), control_pressed, shift_pressed);
+                    on_key_up(LOBYTE(HIWORD(lParam)), control_pressed, shift_pressed);
                     break;
                 }
             }
