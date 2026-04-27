@@ -743,6 +743,12 @@ namespace trview
                         ImGui::EndTabItem();
                     }
 
+                    if (ImGui::BeginTabItem("Portals"))
+                    {
+                        render_portals_tab();
+                        ImGui::EndTabItem();
+                    }
+
                     ImGui::EndTabBar();
                 }
             }
@@ -1475,6 +1481,58 @@ namespace trview
         else if (message.type == "room_filters")
         {
             set_filters(std::static_pointer_cast<MessageData<std::vector<Filters::Filter>>>(message.data)->value);
+        }
+    }
+
+    void RoomsWindow::render_portals_tab()
+    {
+        if (ImGui::BeginTable("Portals", 6, ImGuiTableFlags_Sortable | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY))
+        {
+            ImGui::TableSetupColumn("Room");
+            ImGui::TableSetupColumn("Normal");
+            ImGui::TableSetupColumn("Vertex 0");
+            ImGui::TableSetupColumn("Vertex 1");
+            ImGui::TableSetupColumn("Vertex 2");
+            ImGui::TableSetupColumn("Vertex 3");
+            ImGui::TableSetupScrollFreeze(0, 1);
+            ImGui::TableHeadersRow();
+
+            if (const auto room = _selected_room.lock())
+            {
+                for (const auto& portal : room->portals())
+                {
+                    if (const auto portal_ptr = portal.lock())
+                    {
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+
+                        bool selected = false;
+                        if (ImGui::Selectable(std::format("{}", portal_ptr->room()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                        {
+                            messages::send_select_portal(_messaging, portal);
+                        }
+
+                        ImGui::TableNextColumn();
+                        const auto normal = portal_ptr->normal();
+                        ImGui::Text(std::format("{},{},{}", normal.x, normal.y, normal.z).c_str());
+
+                        ImGui::TableNextColumn();
+                        const auto vertices = portal_ptr->vertices() | std::views::transform([](auto&& v) { return v * trlevel::Scale; }) | std::ranges::to<std::vector>();
+                        ImGui::Text(std::format("{},{},{}", vertices[0].x, vertices[0].y, vertices[0].z).c_str());
+
+                        ImGui::TableNextColumn();
+                        ImGui::Text(std::format("{},{},{}", vertices[1].x, vertices[1].y, vertices[1].z).c_str());
+
+                        ImGui::TableNextColumn();
+                        ImGui::Text(std::format("{},{},{}", vertices[2].x, vertices[2].y, vertices[2].z).c_str());
+
+                        ImGui::TableNextColumn();
+                        ImGui::Text(std::format("{},{},{}", vertices[3].x, vertices[3].y, vertices[3].z).c_str());
+                    }
+                }
+            }
+
+            ImGui::EndTable();
         }
     }
 
