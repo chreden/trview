@@ -160,17 +160,20 @@ namespace trlevel
         log_file(activity, file, "Reading sounds");
 
         const auto sound_offsets = read_vector<uint32_t, uint32_t>(file);
-        const auto sound_data = read_vector<uint32_t, byte>(file);
-
-        for (uint32_t s = 0; s < sound_offsets.size(); ++s)
+        if (!sound_offsets.empty())
         {
-            callbacks.on_progress(std::format("Loading sound {} of {}", s, sound_offsets.size()));
-            log_file(activity, file, std::format("Loading sound {} of {}", s, sound_offsets.size()));
-            const std::size_t offset = sound_offsets[s];
-            const std::size_t size = s == sound_offsets.size() - 1 ?
-                sound_data.size() - offset - 1 :
-                sound_offsets[s + 1] - offset;
-            _sound_samples.push_back(convert_vag_to_wav({ &sound_data[offset], &sound_data[offset + size] }, sample_frequency));
+            const auto sound_data = read_vector<uint32_t, byte>(file);
+
+            for (uint32_t s = 0; s < sound_offsets.size(); ++s)
+            {
+                callbacks.on_progress(std::format("Loading sound {} of {}", s, sound_offsets.size()));
+                log_file(activity, file, std::format("Loading sound {} of {}", s, sound_offsets.size()));
+                const std::size_t offset = sound_offsets[s];
+                const std::size_t size = s == sound_offsets.size() - 1 ?
+                    sound_data.size() - offset - 1 :
+                    sound_offsets[s + 1] - offset;
+                _sound_samples.push_back(convert_vag_to_wav({ &sound_data[offset], &sound_data[offset + size] }, sample_frequency));
+            }
         }
 
         log_file(activity, file, std::format("Read {} sounds", sound_offsets.size()));
