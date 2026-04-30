@@ -476,7 +476,19 @@ namespace trview
     void DiffWindow::set_level(const std::weak_ptr<ILevel>& level)
     {
         _level = level;
-        _diff.reset();
+        if (_diff && !_load.valid())
+        {
+            const auto new_level = level.lock();
+            _load = std::async(std::launch::async, [=]() -> LoadOperation
+                {
+                    return
+                    {
+                        .level = _diff->level,
+                        .filename = _diff->filename,
+                        .diff = do_diff(new_level, _diff->level)
+                    };
+                });
+        }
     }
 
     void DiffWindow::set_number(int32_t number)
