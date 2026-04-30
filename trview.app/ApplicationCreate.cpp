@@ -499,12 +499,14 @@ namespace trview
         auto diff_window_source = [=]()
             {
                 auto diff_window = std::make_shared<DiffWindow>(dialogs, level_source, imgui_file_menu, messaging);
+                messaging->add_recipient(diff_window);
                 diff_window->initialise();
                 return diff_window;
             };
         auto pack_window_source = [=]()
             {
                 auto pack_window = std::make_shared<PackWindow>(files, dialogs, messaging);
+                messaging->add_recipient(pack_window);
                 pack_window->initialise();
                 return pack_window;
             };
