@@ -479,15 +479,22 @@ namespace trview
         if (_diff && !_load.valid())
         {
             const auto new_level = level.lock();
-            _load = std::async(std::launch::async, [=]() -> LoadOperation
-                {
-                    return
+            if (new_level)
+            {
+                _load = std::async(std::launch::async, [=]() -> LoadOperation
                     {
-                        .level = _diff->level,
-                        .filename = _diff->filename,
-                        .diff = do_diff(new_level, _diff->level)
-                    };
-                });
+                        return
+                        {
+                            .level = _diff->level,
+                            .filename = _diff->filename,
+                            .diff = do_diff(new_level, _diff->level)
+                        };
+                    });
+            }
+            else
+            {
+                _diff.reset();
+            }
         }
     }
 
