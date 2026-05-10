@@ -288,6 +288,16 @@ namespace trview
             send_message(messaging, light, "select_light");
         }
 
+        std::optional<std::weak_ptr<IPortal>> read_select_portal(const Message& message)
+        {
+            return read_message<std::weak_ptr<IPortal>>(message, "select_portal");
+        }
+
+        void send_select_portal(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IPortal>& portal)
+        {
+            send_message(messaging, portal, "select_portal");
+        }
+
         void get_selected_room(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
         {
             get_message(messaging, reply_to, "get_selected_room");

@@ -79,6 +79,7 @@ namespace trview
         void render_statics_tab();
         void set_static_meshes(const std::vector<std::weak_ptr<IStaticMesh>>& static_meshes);
         std::optional<Filters> convert_to_sector_filters() const;
+        void render_portals_tab();
         void apply_sector_filters();
 
 

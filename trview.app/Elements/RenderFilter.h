@@ -16,6 +16,9 @@ namespace trview
         Lighting = 0x100,
         SoundSources = 0x200,
         NgPlus = 0x400,
+        Portals = 0x800,
+        PortalsHorizontal = 0x1000,
+        PortalsVertical = 0x2000,
         All = 0xffffffff,
         Default = Rooms | Entities | Triggers | Water
     };

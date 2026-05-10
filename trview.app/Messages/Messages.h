@@ -12,6 +12,7 @@ namespace trview
     struct ILevel;
     struct ILight;
     struct IMessageSystem;
+    struct IPortal;
     struct IRecipient;
     struct IRoom;
     struct IRoute;
@@ -104,6 +105,9 @@ namespace trview
         void get_selected_light(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
         std::optional<std::weak_ptr<ILight>> read_select_light(const Message& message);
         void send_select_light(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ILight>& light);
+
+        std::optional<std::weak_ptr<IPortal>> read_select_portal(const Message& message);
+        void send_select_portal(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IPortal>& portal);
 
         void get_selected_room(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
         std::optional<std::weak_ptr<IRoom>> read_select_room(const Message& message);

@@ -15,6 +15,7 @@
 #include "Elements/ITrigger.h"
 #include "Elements/ITypeInfoLookup.h"
 #include "Elements/ILevelNameLookup.h"
+#include "Elements/IPortal.h"
 #include "Filters/IFilterStore.h"
 #include "Filters/IFilterable.h"
 #include "Geometry/IMesh.h"
@@ -218,6 +219,9 @@ namespace trview
 
         MockFilterStore::MockFilterStore() {};
         MockFilterStore::~MockFilterStore() {};
+
+        MockPortal::MockPortal() {};
+        MockPortal::~MockPortal() {};
 
         MockFilterable::MockFilterable() {};
         MockFilterable::~MockFilterable() {};
