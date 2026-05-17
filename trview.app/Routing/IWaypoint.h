@@ -12,6 +12,8 @@ namespace trview
     struct IRoute;
     struct IItem;
     struct ITrigger;
+    struct ICameraSink;
+    struct ILight;
 
     /// <summary>
     /// A waypoint in a route.
@@ -34,7 +36,9 @@ namespace trview
             /// <summary>
             /// The waypoint is a trigger in the world.
             /// </summary>
-            Trigger
+            Trigger,
+            Light,
+            CameraSink
         };
 
         using WaypointRandomizerSettings = std::map<std::string, std::variant<bool, float, std::string>>;
@@ -124,6 +128,10 @@ namespace trview
         virtual void set_normal(const DirectX::SimpleMath::Vector3& normal) = 0;
         virtual void set_room_number(uint32_t room) = 0;
         virtual DirectX::SimpleMath::Vector2 screen_position() const = 0;
+        virtual void set_light(const std::weak_ptr<ILight>& light) = 0;
+        virtual void set_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink) = 0;
+        virtual std::weak_ptr<ICameraSink> camera_sink() const = 0;
+        virtual std::weak_ptr<ILight> light() const = 0;
 
         Event<> on_changed;
     };

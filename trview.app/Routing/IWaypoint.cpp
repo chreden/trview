@@ -18,6 +18,16 @@ namespace trview
             return IWaypoint::Type::Entity;
         }
 
+        if (value == "Camera/Sink")
+        {
+            return IWaypoint::Type::CameraSink;
+        }
+
+        if (value == "Light")
+        {
+            return IWaypoint::Type::Light;
+        }
+
         return IWaypoint::Type::Position;
     }
 
@@ -31,6 +41,10 @@ namespace trview
                 return "Position";
             case IWaypoint::Type::Trigger:
                 return "Trigger";
+            case IWaypoint::Type::CameraSink:
+                return "Camera/Sink";
+            case IWaypoint::Type::Light:
+                return "Light";
         }
         return "Unknown";
     }

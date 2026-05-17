@@ -281,5 +281,33 @@ namespace trview
     {
         return _screen_position;
     }
+
+    void Waypoint::set_light(const std::weak_ptr<ILight>& light)
+    {
+        _light = light;
+        if (auto new_light = _light.lock())
+        {
+            set_properties(Type::Light, new_light->number(), light_room(new_light), new_light->position());
+        }
+    }
+
+    void Waypoint::set_camera_sink(const std::weak_ptr<ICameraSink>& camera_sink)
+    {
+        _camera_sink = camera_sink;
+        if (auto new_camera_sink = _camera_sink.lock())
+        {
+            set_properties(Type::CameraSink, new_camera_sink->number(), room_number(actual_room(*new_camera_sink)), new_camera_sink->position());
+        }
+    }
+
+    std::weak_ptr<ICameraSink> Waypoint::camera_sink() const
+    {
+        return _camera_sink;
+    }
+
+    std::weak_ptr<ILight> Waypoint::light() const
+    {
+        return _light;
+    }
 }
 

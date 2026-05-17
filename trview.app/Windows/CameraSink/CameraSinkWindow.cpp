@@ -532,6 +532,11 @@ namespace trview
 
                 ImGui::EndTable();
 
+                if (ImGui::Button(Names::add_to_route_button.c_str(), ImVec2(-1, 30)))
+                {
+                    messages::send_add_to_route(_messaging, selected);
+                }
+
                 ImGui::Spacing();
 
                 ImGui::Text("Trigger References");

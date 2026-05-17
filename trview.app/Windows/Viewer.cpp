@@ -16,6 +16,25 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
+    namespace
+    {
+        IWaypoint::Type to_waypoint_type(PickResult::Type type)
+        {
+            switch (type)
+            {
+            case PickResult::Type::Entity:
+                return IWaypoint::Type::Entity;
+            case PickResult::Type::Trigger:
+                return IWaypoint::Type::Trigger;
+            case PickResult::Type::Light:
+                return IWaypoint::Type::Light;
+            case PickResult::Type::CameraSink:
+                return IWaypoint::Type::CameraSink;
+            }
+            return IWaypoint::Type::Position;
+        }
+    }
+
     IViewer::~IViewer()
     {
     }
@@ -114,9 +133,9 @@ namespace trview
         _token_store += _ui->on_camera_projection_mode += [&](ProjectionMode mode) { set_camera_projection_mode(mode); };
         _token_store += _ui->on_add_waypoint += [&]()
         {
-            auto type = _context_pick.type == PickResult::Type::Entity ? IWaypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? IWaypoint::Type::Trigger : IWaypoint::Type::Position;
+            const auto type = to_waypoint_type(_context_pick.type);
             Vector3 normal = _context_pick.triangle.normal();
-            if (type == IWaypoint::Type::Entity)
+            if (type != IWaypoint::Type::Position)
             {
                 normal = Vector3::Down;
             }
@@ -156,14 +175,31 @@ namespace trview
                     }
                     break;
                 }
+                case PickResult::Type::Light:
+                {
+                    if (const auto light = _context_pick.light.lock())
+                    {
+                        _context_pick.position = light->position();
+                        index = light->number();
+                    }
+                    break;
+                }
+                case PickResult::Type::CameraSink:
+                {
+                    if (const auto camera_sink = _context_pick.camera_sink.lock())
+                    {
+                        _context_pick.position = camera_sink->position();
+                        index = camera_sink->number();
+                    }
+                    break;
+                }
             }
 
             on_waypoint_added(_context_pick.position, normal, room_from_pick(_context_pick), type, index);
         };
         _token_store += _ui->on_add_mid_waypoint += [&]()
         {
-            auto type = _context_pick.type == PickResult::Type::Entity ? IWaypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? IWaypoint::Type::Trigger : IWaypoint::Type::Position;
-
+            const auto type = to_waypoint_type(_context_pick.type);
             uint32_t index = 0;
             if (_context_pick.type == PickResult::Type::Room)
             {
@@ -187,6 +223,22 @@ namespace trview
                 {
                     _context_pick.position = trigger->position();
                     index = trigger->number();
+                }
+            }
+            else if (_context_pick.type == PickResult::Type::Light)
+            {
+                if (const auto light = _context_pick.light.lock())
+                {
+                    _context_pick.position = light->position();
+                    index = light->number();
+                }
+            }
+            else if (_context_pick.type == PickResult::Type::CameraSink)
+            {
+                if (const auto camera_sink = _context_pick.camera_sink.lock())
+                {
+                    _context_pick.position = camera_sink->position();
+                    index = camera_sink->number();
                 }
             }
 
@@ -1254,6 +1306,22 @@ namespace trview
                 if (const auto waypoint = pick.waypoint.lock())
                 {
                     return level->room(waypoint->room());
+                }
+                break;
+            }
+            case PickResult::Type::Light:
+            {
+                if (const auto light = pick.light.lock())
+                {
+                    return light->room();
+                }
+                break;
+            }
+            case PickResult::Type::CameraSink:
+            {
+                if (const auto camera_sink = pick.camera_sink.lock())
+                {
+                    return camera_sink->room();
                 }
                 break;
             }

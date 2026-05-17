@@ -227,6 +227,8 @@ namespace trview
     {
         if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), true))
         {
+            const auto selected_light = _selected_light.lock();
+
             ImGui::Text("Light Details");
             if (ImGui::BeginTable(Names::stats_listbox.c_str(), 2, 0, ImVec2(-1, 150)))
             {
@@ -234,7 +236,6 @@ namespace trview
                 ImGui::TableSetupColumn("Value");
                 ImGui::TableNextRow();
 
-                auto selected_light = _selected_light.lock();
                 if (selected_light)
                 {
                     auto add_stat = [&]<typename T>(const std::string& name, const T&& value, Colour colour = Colour::White)
@@ -311,6 +312,11 @@ namespace trview
                     add_stat_with_condition("Radius", radius, has_radius);
                 }
                 ImGui::EndTable();
+            }
+
+            if (selected_light && ImGui::Button(Names::add_to_route_button.c_str(), ImVec2(-1, 30)))
+            {
+                messages::send_add_to_route(_messaging, _selected_light);
             }
         }
         ImGui::EndChild();
