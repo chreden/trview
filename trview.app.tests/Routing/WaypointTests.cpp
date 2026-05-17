@@ -5,6 +5,8 @@
 #include <trview.app/Mocks/Elements/IItem.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
+#include <trview.app/Mocks/Elements/ICameraSink.h>
+#include <trview.app/Mocks/Elements/ILight.h>
 
 using namespace testing;
 using namespace trview;
@@ -112,4 +114,34 @@ TEST(Waypoint, SetPositionPreservesRoom)
     ASSERT_EQ(110, waypoint.room());
     waypoint.set_position(Vector3(100, 200, 300));
     ASSERT_EQ(110, waypoint.room());
+}
+
+TEST(Waypoint, Light)
+{
+    auto light = mock_shared<MockLight>();
+    auto level = mock_shared<MockLevel>();
+    ON_CALL(*level, light(23)).WillByDefault(Return(light));
+
+    auto route = mock_shared<MockRoute>();
+    ON_CALL(*route, level).WillByDefault(Return(level));
+
+    Waypoint waypoint(mock_shared<MockMesh>(), Vector3(1, 2, 3), Vector3::Down, 12, IWaypoint::Type::Light, 23, Colour::Red, Colour::Green);
+    ASSERT_EQ(waypoint.light().lock(), nullptr);
+    waypoint.set_route(route);
+    ASSERT_EQ(waypoint.light().lock(), light);
+}
+
+TEST(Waypoint, CameraSink)
+{
+    auto camera_sink = mock_shared<MockCameraSink>();
+    auto level = mock_shared<MockLevel>();
+    ON_CALL(*level, camera_sink(23)).WillByDefault(Return(camera_sink));
+
+    auto route = mock_shared<MockRoute>();
+    ON_CALL(*route, level).WillByDefault(Return(level));
+
+    Waypoint waypoint(mock_shared<MockMesh>(), Vector3(1, 2, 3), Vector3::Down, 12, IWaypoint::Type::CameraSink, 23, Colour::Red, Colour::Green);
+    ASSERT_EQ(waypoint.camera_sink().lock(), nullptr);
+    waypoint.set_route(route);
+    ASSERT_EQ(waypoint.camera_sink().lock(), camera_sink);
 }

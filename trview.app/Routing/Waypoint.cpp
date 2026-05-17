@@ -302,12 +302,41 @@ namespace trview
 
     std::weak_ptr<ICameraSink> Waypoint::camera_sink() const
     {
+        if (auto existing = _camera_sink.lock())
+        {
+            return existing;
+        }
+
+        if (type() == IWaypoint::Type::CameraSink)
+        {
+            if (auto route = _route.lock())
+            {
+                if (auto level = route->level().lock())
+                {
+                    _camera_sink = level->camera_sink(index());
+                }
+            }
+        }
         return _camera_sink;
     }
 
     std::weak_ptr<ILight> Waypoint::light() const
     {
+        if (auto existing = _light.lock())
+        {
+            return existing;
+        }
+
+        if (type() == IWaypoint::Type::Light)
+        {
+            if (auto route = _route.lock())
+            {
+                if (auto level = route->level().lock())
+                {
+                    _light = level->light(index());
+                }
+            }
+        }
         return _light;
     }
 }
-
