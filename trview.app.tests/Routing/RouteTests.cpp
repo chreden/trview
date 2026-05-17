@@ -2,6 +2,8 @@
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
 #include <trview.app/Mocks/Camera/ICamera.h>
+#include <trview.app/Mocks/Elements/ILight.h>
+#include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.tests.common/Mocks.h>
 
 using namespace trview;
@@ -553,4 +555,94 @@ TEST(Route, DefaultHeightLines)
         .with_settings({ .show_route_height_labels = true })
         .build();
     ASSERT_TRUE(route2->show_height_labels());
+}
+
+TEST(Route, SetLevelBindsItemWaypoint)
+{
+    auto route = register_test_module().build();
+    auto item = mock_shared<MockItem>();
+
+    std::weak_ptr<IItem> called;
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, set_item)
+        .Times(1)
+        .WillOnce(SaveArg<0>(&called));
+    EXPECT_CALL(*waypoint, index).Times(1).WillRepeatedly(Return(1));
+    ON_CALL(*waypoint, type).WillByDefault(Return(IWaypoint::Type::Entity));
+
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, item(1)).Times(1).WillRepeatedly(Return(item));
+
+    route->add(waypoint);
+    route->set_level(level);
+
+    ASSERT_EQ(called.lock(), item);
+}
+
+TEST(Route, SetLevelBindsTriggerWaypoint)
+{
+    auto route = register_test_module().build();
+    auto trigger = mock_shared<MockTrigger>();
+
+    std::weak_ptr<ITrigger> called;
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, set_trigger)
+        .Times(1)
+        .WillOnce(SaveArg<0>(&called));
+    EXPECT_CALL(*waypoint, index).Times(1).WillRepeatedly(Return(1));
+    ON_CALL(*waypoint, type).WillByDefault(Return(IWaypoint::Type::Trigger));
+
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, trigger(1)).Times(1).WillRepeatedly(Return(trigger));
+
+    route->add(waypoint);
+    route->set_level(level);
+
+    ASSERT_EQ(called.lock(), trigger);
+}
+
+TEST(Route, SetLevelBindsCameraSinkWaypoint)
+{
+    auto route = register_test_module().build();
+    auto camerasink = mock_shared<MockCameraSink>();
+
+    std::weak_ptr<ICameraSink> called;
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, set_camera_sink)
+        .Times(1)
+        .WillOnce(SaveArg<0>(&called));
+    EXPECT_CALL(*waypoint, index).Times(1).WillRepeatedly(Return(1));
+    ON_CALL(*waypoint, type).WillByDefault(Return(IWaypoint::Type::CameraSink));
+
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, camera_sink(1)).Times(1).WillRepeatedly(Return(camerasink));
+
+    route->add(waypoint);
+    route->set_level(level);
+
+    ASSERT_EQ(called.lock(), camerasink);
+}
+
+TEST(Route, SetLevelBindsLightWaypoint)
+{
+    auto route = register_test_module()
+        .build();
+
+    auto light = mock_shared<MockLight>();
+
+    std::weak_ptr<ILight> called;
+    auto waypoint = mock_shared<MockWaypoint>();
+    EXPECT_CALL(*waypoint, set_light)
+        .Times(1)
+        .WillOnce(SaveArg<0>(&called));
+    EXPECT_CALL(*waypoint, index).Times(1).WillRepeatedly(Return(1));
+    ON_CALL(*waypoint, type).WillByDefault(Return(IWaypoint::Type::Light));
+
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, light(1)).Times(1).WillRepeatedly(Return(light));
+
+    route->add(waypoint);
+    route->set_level(level);
+
+    ASSERT_EQ(called.lock(), light);
 }
