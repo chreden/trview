@@ -11,13 +11,14 @@ on:
 jobs:
   buildx64:
     name: Build x64
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     steps:
     - uses: actions/checkout@v4
 
     - name: setup-msbuild
       uses: microsoft/setup-msbuild@v2
       with:
+        vs-version: 18.0
         msbuild-architecture: x64
 
     - name: Build Solution (x64)
