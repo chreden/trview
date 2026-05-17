@@ -43,6 +43,10 @@ namespace trview
             MOCK_METHOD(Colour, route_colour, (), (const, override));
             MOCK_METHOD(Colour, waypoint_colour, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector2, screen_position, (), (const, override));
+            MOCK_METHOD(void, set_camera_sink, (const std::weak_ptr<ICameraSink>&), (override));
+            MOCK_METHOD(void, set_light, (const std::weak_ptr<ILight>&), (override));
+            MOCK_METHOD(std::weak_ptr<ICameraSink>, camera_sink, (), (const, override));
+            MOCK_METHOD(std::weak_ptr<ILight>, light, (), (const, override));
             /// <summary>
             /// Index used for testing ordering.
             /// </summary>
