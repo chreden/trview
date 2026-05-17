@@ -813,6 +813,20 @@ namespace trview
                     add_waypoint(item_ptr->position(), Vector3::Down, item_room(item_ptr), IWaypoint::Type::Entity, item_ptr->number());
                 }
             }
+            else if (auto light = std::get_if<std::weak_ptr<ILight>>(&add_to_route->element))
+            {
+                if (auto light_ptr = light->lock())
+                {
+                    add_waypoint(light_ptr->position(), Vector3::Down, light_room(light_ptr), IWaypoint::Type::Light, light_ptr->number());
+                }
+            }
+            else if (auto camera_sink = std::get_if<std::weak_ptr<ICameraSink>>(&add_to_route->element))
+            {
+                if (auto camera_sink_ptr = camera_sink->lock())
+                {
+                    add_waypoint(camera_sink_ptr->position(), Vector3::Down, actual_room(*camera_sink_ptr), IWaypoint::Type::Light, camera_sink_ptr->number());
+                }
+            }
         }
         else if (auto open_filename = messages::read_open_level_filename(message))
         {

@@ -28,7 +28,7 @@ namespace trview
         struct RouteMessage
         {
             // TODO: Interfaces
-            std::variant<std::weak_ptr<ITrigger>, std::weak_ptr<IItem>> element;
+            std::variant<std::weak_ptr<ITrigger>, std::weak_ptr<IItem>, std::weak_ptr<ILight>, std::weak_ptr<ICameraSink>> element;
         };
 
         namespace commands
@@ -62,6 +62,8 @@ namespace trview
         std::optional<RouteMessage> read_add_to_route(const Message& message);
         void send_add_to_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IItem>& item);
         void send_add_to_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ITrigger>& trigger);
+        void send_add_to_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ILight>& light);
+        void send_add_to_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ICameraSink>& camera_sink);
 
         std::optional<bool> read_ng_plus(const Message& message);
         void send_ng_plus(const std::weak_ptr<IMessageSystem>& messaging, bool value);

@@ -475,6 +475,30 @@ namespace trview
                     }
                     break;
                 }
+                case IWaypoint::Type::CameraSink:
+                {
+                    if (level)
+                    {
+                        waypoint->set_camera_sink(level->camera_sink(waypoint->index()));
+                    }
+                    else
+                    {
+                        waypoint->set_camera_sink({});
+                    }
+                    break;
+                }
+                case IWaypoint::Type::Light:
+                {
+                    if (level)
+                    {
+                        waypoint->set_light(level->light(waypoint->index()));
+                    }
+                    else
+                    {
+                        waypoint->set_light({});
+                    }
+                    break;
+                }
             }
         }
     }

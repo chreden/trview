@@ -138,6 +138,16 @@ namespace trview
             send_message(messaging, RouteMessage{ .element = trigger }, "add_to_route");
         }
 
+        void send_add_to_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ILight>& light)
+        {
+            send_message(messaging, RouteMessage{ .element = light }, "add_to_route");
+        }
+
+        void send_add_to_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ICameraSink>& camera_sink)
+        {
+            send_message(messaging, RouteMessage{ .element = camera_sink }, "add_to_route");
+        }
+
         std::optional<bool> read_ng_plus(const Message& message)
         {
             return read_message<bool>(message, "ng_plus");

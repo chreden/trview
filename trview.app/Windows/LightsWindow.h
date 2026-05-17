@@ -19,6 +19,7 @@ namespace trview
     public:
         struct Names
         {
+            static inline const std::string add_to_route_button = "Add to Route";
             static inline const std::string light_list_panel = "Light List";
             static inline const std::string lights_listbox = "Lights";
             static inline const std::string stats_listbox = "Stats";

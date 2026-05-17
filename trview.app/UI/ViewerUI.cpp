@@ -435,7 +435,7 @@ namespace trview
                         ImGui::SetNextWindowPos(vp->Pos + ImVec2(pos.x, pos.y));
                         if (ImGui::Begin(std::format("##waypoint{}", i).c_str(), nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing))
                         {
-                            if (diff != 0)
+                            if (route->show_height_labels() && diff != 0)
                             {
                                 const std::string sign = diff <= 0 ? "+" : "-";
                                 const int clicks = static_cast<int>(round(diff / trlevel::Click));
