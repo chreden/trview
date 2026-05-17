@@ -17,7 +17,9 @@ jobs:
 
     - name: setup-msbuild
       uses: microsoft/setup-msbuild@v2
-    
+      with:
+        msbuild-architecture: x64
+
     - name: Build Solution (x64)
       run: msbuild trview.sln /property:Configuration=Release /property:Platform=x64 /m
   
