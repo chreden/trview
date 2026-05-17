@@ -66,6 +66,36 @@ namespace
 
 void register_camera_sink_window_tests(ImGuiTestEngine* engine)
 {
+    test<CameraSinkWindowContext>(engine, "Camera/Sink Window", "Add to Route",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<CameraSinkWindowContext>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& context = ctx->GetVars<CameraSinkWindowContext>();
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
+
+            auto camera_sink = mock_shared<MockCameraSink>()->with_number(0)->with_type(ICameraSink::Type::Camera);
+            context.camera_sinks = { camera_sink };
+            context.ptr->set_camera_sinks({ camera_sink });
+            context.ptr->set_selected_camera_sink(camera_sink);
+
+            ctx->SetRef("/Camera\\/Sink 0\\/Details_CA3F050C");
+            ctx->ItemClick("Add to Route");
+
+            if (auto found = find_message(context.messages, "add_to_route"))
+            {
+                auto route_message = messages::read_add_to_route(found.value());
+                IM_CHECK_EQ(std::get_if<std::weak_ptr<ICameraSink>>(&route_message->element)->lock(), camera_sink);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
+
+            IM_CHECK_EQ(Mock::VerifyAndClearExpectations(camera_sink.get()), true);
+        });
+
     test<CameraSinkWindowContext>(engine, "Camera/Sink Window", "List Filtered When Room Set and Track Room Enabled",
         [](ImGuiTestContext* ctx) { ctx->GetVars<CameraSinkWindowContext>().render(); },
         [](ImGuiTestContext* ctx)

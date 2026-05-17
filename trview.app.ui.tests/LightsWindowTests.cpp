@@ -58,6 +58,35 @@ namespace
 
 void register_lights_window_tests(ImGuiTestEngine* engine)
 {
+    test<LightsWindowContext>(engine, "Lights Window", "Add to Route",
+        [](ImGuiTestContext* ctx) { ctx->GetVars<LightsWindowContext>().render(); },
+        [](ImGuiTestContext* ctx)
+        {
+            auto& context = ctx->GetVars<LightsWindowContext>();
+            context.messaging = mock_shared<MockMessageSystem>();
+            context.ptr = register_test_module().with_messaging(context.messaging).build();
+            ON_CALL(*context.messaging, send_message).WillByDefault([&](auto&& message) { context.messages.push_back(message); });
+
+            auto light = mock_shared<MockLight>()->with_number(0);
+            context.lights = { light };
+            context.ptr->set_lights({ light });
+            context.ptr->set_selected_light(light);
+
+            ctx->ItemClick("/**/Add to Route");
+
+            if (auto found = find_message(context.messages, "add_to_route"))
+            {
+                auto route_message = messages::read_add_to_route(found.value());
+                IM_CHECK_EQ(std::get_if<std::weak_ptr<ILight>>(&route_message->element)->lock(), light);
+            }
+            else
+            {
+                IM_ERRORF("Message not found");
+            }
+
+            IM_CHECK_EQ(Mock::VerifyAndClearExpectations(light.get()), true);
+        });
+
     test<LightsWindowContext>(engine, "Lights Window", "Fob Bulb Stats",
         [](ImGuiTestContext* ctx) { ctx->GetVars<LightsWindowContext>().render(); },
         [](ImGuiTestContext* ctx)
