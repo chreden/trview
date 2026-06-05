@@ -1754,19 +1754,8 @@ namespace trview
         const bool maximized = IsZoomed(window());
         const LONG style = static_cast<LONG>(GetWindowLongPtr(window(), GWL_STYLE));
         const bool has_border = style & WS_OVERLAPPEDWINDOW;
-        if (has_border)
-        {
-            const LONG new_style = WS_POPUP;
-            SetWindowLongPtr(window(), GWL_STYLE, new_style);
-            SetWindowPos(window(), NULL, 0, 0, window_size.right - window_size.left, window_size.bottom - window_size.top, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_FRAMECHANGED);
-        }
-        else
-        {
-            const LONG new_style = WS_OVERLAPPEDWINDOW;
-            SetWindowLongPtr(window(), GWL_STYLE, new_style);
-            SetWindowPos(window(), NULL, 0, 0, window_size.right - window_size.left, window_size.bottom - window_size.top, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_FRAMECHANGED);
-        }
-
+        SetWindowLongPtr(window(), GWL_STYLE, has_border ? WS_POPUP : WS_OVERLAPPEDWINDOW);
+        SetWindowPos(window(), NULL, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOSIZE | SWP_NOMOVE | SWP_FRAMECHANGED);
         if (maximized)
         {
             ShowWindow(window(), SW_SHOWMAXIMIZED);
