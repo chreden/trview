@@ -135,9 +135,9 @@ namespace trview
         void set_show_sound_sources(bool show);
         void set_ng_plus(bool show);
         void set_show_animation(bool show);
-
         template <typename T>
         std::shared_ptr<T> get_entity_and_sync_level(const std::weak_ptr<T>& entity);
+        void toggle_borderless();
 
         const std::shared_ptr<graphics::IDevice> _device;
         const std::shared_ptr<IShortcuts>& _shortcuts;

@@ -627,6 +627,7 @@ namespace trview
         add_shortcut(false, 'L', [&]() { toggle_show_lights(); });
         add_shortcut(true, 'H', [&]() { toggle_show_lighting(); });
         add_shortcut(false, 'K', [&]() { toggle_show_camera_sinks(); });
+        add_shortcut(false, VK_F11, [&]() { toggle_borderless(); });
 
         _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control, bool)
         {
@@ -1743,5 +1744,32 @@ namespace trview
         messages::get_selected_sound_source(_messaging, weak_from_this());
         messages::get_selected_static_mesh(_messaging, weak_from_this());
         messages::get_selected_flyby_node(_messaging, weak_from_this());
+    }
+
+    void Viewer::toggle_borderless()
+    {
+        RECT window_size;
+        GetWindowRect(window(), &window_size);
+
+        const bool maximized = IsZoomed(window());
+        const LONG style = static_cast<LONG>(GetWindowLongPtr(window(), GWL_STYLE));
+        const bool has_border = style & WS_OVERLAPPEDWINDOW;
+        if (has_border)
+        {
+            const LONG new_style = WS_POPUP;
+            SetWindowLongPtr(window(), GWL_STYLE, new_style);
+            SetWindowPos(window(), NULL, 0, 0, window_size.right - window_size.left, window_size.bottom - window_size.top, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_FRAMECHANGED);
+        }
+        else
+        {
+            const LONG new_style = WS_OVERLAPPEDWINDOW;
+            SetWindowLongPtr(window(), GWL_STYLE, new_style);
+            SetWindowPos(window(), NULL, 0, 0, window_size.right - window_size.left, window_size.bottom - window_size.top, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_FRAMECHANGED);
+        }
+
+        if (maximized)
+        {
+            ShowWindow(window(), SW_SHOWMAXIMIZED);
+        }
     }
 }

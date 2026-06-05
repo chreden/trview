@@ -19,6 +19,8 @@ F1          | Toggle settings window
 F5          | Reload current level
 F6          | Load previous level in directory
 F7          | Load next level in directory
+F9          | Open Lua Console
+F11         | Toggle Borderless
 F           | Free camera
 G           | Toggle geometry mode
 H           | Toggle room highlighting
