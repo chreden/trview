@@ -19,7 +19,7 @@ namespace trview
         : MessageHandler(window)
     {
         // TODO: Maybe move somewhere else:
-        _token_store += shortcuts->add_shortcut(false, VK_F11) += [&]() { create("Console"); };
+        _token_store += shortcuts->add_shortcut(false, VK_F9) += [&]() { create("Console"); };
         _token_store += shortcuts->add_shortcut(true, 'D') += [&]() { create("Diff"); };
         _token_store += shortcuts->add_shortcut(true, 'I') += [&]() { create("Items"); };
         _token_store += shortcuts->add_shortcut(true, 'K') += [&]() { create("CameraSink"); };
