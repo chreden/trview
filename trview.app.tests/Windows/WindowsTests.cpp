@@ -482,7 +482,7 @@ TEST(Windows, WindowNumbersAssigned)
 TEST(Windows, ShortcutsRegistered)
 {
     auto shortcuts = mock_shared<MockShortcuts>();
-    EXPECT_CALL(*shortcuts, add_shortcut(false, VK_F11)).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    EXPECT_CALL(*shortcuts, add_shortcut(false, VK_F9)).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     EXPECT_CALL(*shortcuts, add_shortcut(true, 'D')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     EXPECT_CALL(*shortcuts, add_shortcut(true, 'I')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     EXPECT_CALL(*shortcuts, add_shortcut(true, 'K')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
