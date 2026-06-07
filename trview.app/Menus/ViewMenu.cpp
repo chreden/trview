@@ -1,150 +1,93 @@
 #include "ViewMenu.h"
-#include "../Resources/resource.h"
+#include "../Messages/Messages.h"
 
 namespace trview
 {
-    namespace
+    IViewMenu::~IViewMenu()
     {
-        bool is_checked(HMENU menu, UINT id)
-        {
-            MENUITEMINFO info;
-            memset(&info, 0, sizeof(info));
-            info.cbSize = sizeof(info);
-            info.fMask = MIIM_STATE;
-            GetMenuItemInfo(menu, id, FALSE, &info);
-            return info.fState & MFS_CHECKED;
-        }
-
-        void set_checked(HMENU menu, UINT id, bool checked)
-        {
-            MENUITEMINFO info;
-            memset(&info, 0, sizeof(info));
-            info.cbSize = sizeof(info);
-            info.fMask = MIIM_STATE;
-            GetMenuItemInfo(menu, id, FALSE, &info);
-            
-            info.fState ^= (checked ? MFS_UNCHECKED : MFS_CHECKED);
-            info.fState |= (checked ? MFS_CHECKED : MFS_UNCHECKED);
-            SetMenuItemInfo(menu, id, FALSE, &info);
-        }
-
-        void set_enabled(HMENU menu, UINT id, bool enabled)
-        {
-            MENUITEMINFO info;
-            memset(&info, 0, sizeof(info));
-            info.cbSize = sizeof(info);
-            info.fMask = MIIM_STATE;
-            GetMenuItemInfo(menu, id, FALSE, &info);
-
-            info.fState ^= (enabled ? MFS_DISABLED : MFS_ENABLED);
-            info.fState |= (enabled ? MFS_ENABLED : MFS_DISABLED);
-            SetMenuItemInfo(menu, id, FALSE, &info);
-        }
     }
 
-    ViewMenu::ViewMenu(const Window& window)
-        : MessageHandler(window)
+    ViewMenu::ViewMenu(const std::weak_ptr<IMessageSystem>& messaging)
+        : _messaging(messaging)
     {
-        // Set all of the items to be initially visible.
-        HMENU menu = GetMenu(window);
-        set_checked(menu, ID_VIEW_MINIMAP, true);
-        set_checked(menu, ID_VIEW_TOOLTIP, true);
-        set_checked(menu, ID_VIEW_UI, true);
-        set_checked(menu, ID_VIEW_COMPASS, true);
-        set_checked(menu, ID_VIEW_SELECTION, true);
-        set_checked(menu, ID_VIEW_ROUTE, true);
-        set_checked(menu, ID_VIEW_TOOLS, true);
     }
 
-    std::optional<int> ViewMenu::process_message(UINT message, WPARAM wParam, LPARAM)
+    void ViewMenu::render()
     {
-        if (message != WM_COMMAND)
+        if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_V, 0U, ImGuiInputFlags_RouteGlobal))
         {
-            return {};
+            ImGuiWindow* window = ImGui::GetCurrentWindow();
+            const ImGuiID id = window->GetID("View");
+            ImGui::OpenPopup(id, ImGuiPopupFlags_None);
         }
 
-        HMENU menu = GetMenu(window());
-        UINT id = LOWORD(wParam);
-        bool enable = !is_checked(menu, id);
-
-        switch (id)
+        if (ImGui::BeginMenu("View"))
         {
-            case ID_VIEW_MINIMAP:
+            if (ImGui::MenuItem("UI", nullptr, &_show_ui))
             {
-                on_show_minimap(enable);
-                break;
-            }
-            case ID_VIEW_TOOLTIP:
-            {
-                on_show_tooltip(enable);
-                break;
-            }
-            case ID_VIEW_COMPASS:
-            {
-                on_show_compass(enable);
-                break;
-            }
-            case ID_VIEW_SELECTION:
-            {
-                on_show_selection(enable);
-                break;
-            }
-            case ID_VIEW_ROUTE:
-            {
-                on_show_route(enable);
-                break;
-            }
-            case ID_VIEW_TOOLS:
-            {
-                on_show_tools(enable);
-                break;
-            }
-            case ID_VIEW_UI:
-            {
-                // If the UI element is toggled, then enable/disable all other elements.
-                set_enabled(menu, ID_VIEW_MINIMAP, enable);
-                set_enabled(menu, ID_VIEW_TOOLTIP, enable);
-                set_enabled(menu, ID_VIEW_COMPASS, enable);
-                set_enabled(menu, ID_VIEW_SELECTION, enable);
-                set_enabled(menu, ID_VIEW_ROUTE, enable);
-                set_enabled(menu, ID_VIEW_TOOLS, enable);
-                on_show_ui(enable);
-
-                // Raise event to disable all other elements as they are sub-elements of the UI. However, do not alter
-                // their checked state in the UI so that it is preserved for when the UI main element is re-enabled.
-                if (!enable)
+                if (!_show_ui)
                 {
-                    on_show_minimap(false);
-                    on_show_tooltip(false);
-                    on_show_compass(false);
-                    on_show_selection(false);
-                    on_show_route(false);
-                    on_show_tools(false);
+                    show("minimap", false);
+                    show("tooltip", false);
+                    show("compass", false);
+                    show("selection", false);
+                    show("route", false);
+                    show("tools", false);
                 }
                 else
                 {
                     // Return the states of the settings to what they were before the main UI toggle was changed.
-                    on_show_minimap(is_checked(menu, ID_VIEW_MINIMAP));
-                    on_show_tooltip(is_checked(menu, ID_VIEW_TOOLTIP));
-                    on_show_compass(is_checked(menu, ID_VIEW_COMPASS));
-                    on_show_selection(is_checked(menu, ID_VIEW_SELECTION));
-                    on_show_route(is_checked(menu, ID_VIEW_ROUTE));
-                    on_show_tools(is_checked(menu, ID_VIEW_TOOLS));
+                    show("minimap", _show_minimap);
+                    show("tooltip", _show_tooltip);
+                    show("compass", _show_compass);
+                    show("selection", _show_selection);
+                    show("route", _show_route);
+                    show("tools", _show_tools);
                 }
-                break;
+                show("ui", _show_ui);
             }
-            case ID_VIEW_UNHIDE_ALL:
-            {
-                on_unhide_all();
-                return {};
-            }
-            default:
-            {
-                return {};
-            }
-        }
 
-        set_checked(menu, id, enable);
-        return {};
+            if (ImGui::MenuItem("Minimap", nullptr, &_show_minimap, _show_ui))
+            {
+                show("minimap", _show_minimap);
+            }
+
+            if (ImGui::MenuItem("Tooltip", nullptr, &_show_tooltip, _show_ui))
+            {
+                show("tooltip", _show_tooltip);
+            }
+
+            if (ImGui::MenuItem("Compass", nullptr, &_show_compass, _show_ui))
+            {
+                show("compass", _show_compass);
+            }
+
+            if (ImGui::MenuItem("Selection", nullptr, &_show_selection, _show_ui))
+            {
+                show("selection", _show_selection);
+            }
+
+            if (ImGui::MenuItem("Route", nullptr, &_show_route, _show_ui))
+            {
+                show("route", _show_route);
+            }
+
+            if (ImGui::MenuItem("Tools", nullptr, &_show_tools, _show_ui))
+            {
+                show("tools", _show_tools);
+            }
+
+            if (ImGui::MenuItem("Unhide All"))
+            {
+                messages::commands::send_unhide_all(_messaging);
+            }
+
+            ImGui::EndMenu();
+        }
+    }
+
+    void ViewMenu::show(const std::string& key, bool value)
+    {
+        messages::commands::send_show(_messaging, { .name = key, .value = value });
     }
 }

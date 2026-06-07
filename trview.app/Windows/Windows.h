@@ -3,25 +3,24 @@
 #include <unordered_map>
 #include <trview.common/Windows/IShortcuts.h>
 #include <trview.common/TokenStore.h>
-#include <trview.common/MessageHandler.h>
+#include "../Messages/Messages.h"
 
 #include "IWindows.h"
 #include "IWindow.h"
 
 namespace trview
 {
-    class Windows final : public IWindows, public MessageHandler
+    class Windows final : public IWindows, public IRecipient
     {
     public:
-        explicit Windows(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts);
         virtual ~Windows() = default;
         std::weak_ptr<IWindow> create(const std::string& type) override;
         void update(float elapsed) override;
-        std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void register_window(const std::string& type, const Creator& creator) override;
         void render() override;
         void setup(const UserSettings& settings) override;
         std::vector<std::weak_ptr<IWindow>> windows(const std::string& type) const override;
+        void receive_message(const Message& message) override;
     private:
         std::weak_ptr<IWindow> add_window(const std::shared_ptr<IWindow>& window);
 

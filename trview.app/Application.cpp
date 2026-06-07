@@ -11,6 +11,7 @@
 #include <trview.common/Messages/IMessageSystem.h>
 #include <trview.common/Messages/Message.h>
 #include "Messages/Messages.h"
+#include "Menus/IMainMenu.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -60,7 +61,6 @@ namespace trview
     Application::Application(const Window& application_window,
         std::unique_ptr<IUpdateChecker> update_checker,
         std::shared_ptr<ISettingsLoader> settings_loader,
-        const std::shared_ptr<IFileMenu>& file_menu,
         const std::shared_ptr<IViewer>& viewer,
         const IRoute::Source& route_source,
         std::shared_ptr<IShortcuts> shortcuts,
@@ -74,12 +74,13 @@ namespace trview
         std::shared_ptr<IFonts> fonts,
         const std::shared_ptr<IWindows>& windows,
         LoadMode load_mode,
-        const std::shared_ptr<IMessageSystem>& messaging)
+        const std::shared_ptr<IMessageSystem>& messaging,
+        const std::shared_ptr<IMainMenu>& main_menu)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
-        _file_menu(file_menu), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _viewer(viewer),
+        _update_checker(std::move(update_checker)), _settings_loader(settings_loader), _viewer(viewer),
         _route_source(route_source), _shortcuts(shortcuts), _level_source(level_source), _dialogs(dialogs), _files(files), _timer(default_time_source()),
         _imgui_backend(std::move(imgui_backend)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
-        _windows(windows), _messaging(messaging)
+        _windows(windows), _messaging(messaging), _main_menu(main_menu)
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -91,11 +92,7 @@ namespace trview
 
         set_route(_settings.randomizer_tools ? randomizer_route_source(std::nullopt) : route_source(std::nullopt));
 
-        _token_store += _file_menu->on_file_open += [=](const auto& file) { open(file, ILevel::OpenMode::Full); };
-        _token_store += _file_menu->on_reload += [=]() { reload(); };
-
         setup_shortcuts();
-        setup_view_menu();
 
         _windows->setup(_settings);
         setup_viewer(*startup_options);
@@ -157,57 +154,13 @@ namespace trview
         }
     }
 
-    std::optional<int> Application::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> Application::process_message(UINT message, WPARAM, LPARAM)
     {
         switch (message)
         {
-            case WM_COMMAND:
-            {
-                int wmId = LOWORD(wParam);
-
-                // Parse the menu selections:
-                switch (wmId)
-                {
-                    case ID_HELP_GITHUB:
-                    {
-                        ShellExecute(0, 0, L"https://github.com/chreden/trview", 0, 0, SW_SHOW);
-                        break;
-                    }
-                    case ID_HELP_DISCORD:
-                    {
-                        ShellExecute(0, 0, L"https://discord.gg/Zy7kYge", 0, 0, SW_SHOW);
-                        break;
-                    }
-                    case IDM_EXIT:
-                    {
-                        if (should_discard_changes())
-                        {
-                            on_closing();
-                            DestroyWindow(window());
-                        }
-                        break;
-                    }
-                    case ID_WINDOWS_RESET_LAYOUT:
-                    {
-                        _imgui_backend->reset_layout();
-                        break;
-                    }
-                    case ID_WINDOWS_RESET_FONTS:
-                    {
-                        load_default_fonts(*_fonts);
-                        _settings.fonts = _fonts->fonts();
-                        break;
-                    }
-                }
-                break;
-            }
             case WM_CLOSE:
             {
-                if (should_discard_changes())
-                {
-                    on_closing();
-                    DestroyWindow(window());
-                }
+                quit();
                 return 0;
             }
             case WM_DESTROY:
@@ -248,18 +201,6 @@ namespace trview
         }
 
         return (int)msg.wParam;
-    }
-        
-    void Application::setup_view_menu()
-    {
-        _token_store += _view_menu.on_show_minimap += [&](bool show) { _viewer->set_show_minimap(show); };
-        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _viewer->set_show_tooltip(show); };
-        _token_store += _view_menu.on_show_ui += [&](bool show) { _viewer->set_show_ui(show); };
-        _token_store += _view_menu.on_show_compass += [&](bool show) { _viewer->set_show_compass(show); };
-        _token_store += _view_menu.on_show_selection += [&](bool show) { _viewer->set_show_selection(show); };
-        _token_store += _view_menu.on_show_route += [&](bool show) { _viewer->set_show_route(show); };
-        _token_store += _view_menu.on_show_tools += [&](bool show) { _viewer->set_show_tools(show); };
-        _token_store += _view_menu.on_unhide_all += [&]() { messages::commands::send_unhide_all(_messaging); };
     }
 
     void Application::setup_viewer(const IStartupOptions& startup_options)
@@ -337,6 +278,8 @@ namespace trview
             return;
         }
 
+        test_reset_layout();
+
         if (!_imgui_backend->is_setup())
         {
             // Setup Dear ImGui context
@@ -368,6 +311,7 @@ namespace trview
             }
         }
 
+        test_reset_fonts();
         check_load();
 
         _timer.update();
@@ -415,6 +359,7 @@ namespace trview
         _viewer->render_ui();
         _windows->render();
         _plugins->render_ui();
+        _main_menu->render();
 
         if (font)
         {
@@ -635,7 +580,6 @@ namespace trview
 
         messages::send_open_level(_messaging, _level);
 
-        _file_menu->open_file(level->filename(), level->pack());
         _level->set_map_colours(_settings.map_colours);
         if (open_mode == ILevel::OpenMode::Full)
         {
@@ -726,7 +670,7 @@ namespace trview
 
     std::vector<std::string> Application::local_levels() const
     {
-        return _file_menu->local_levels();
+        return _local_levels;
     }
 
     std::shared_ptr<IRoute> Application::route() const
@@ -838,10 +782,6 @@ namespace trview
         {
             open(open_filename.value(), ILevel::OpenMode::Full);
         }
-        else if (auto switch_filename = messages::read_switch_level_filename(message))
-        {
-            _file_menu->switch_to(switch_filename.value());
-        }
         else if (auto route_open = messages::commands::read_route_open(message))
         {
             open_route();
@@ -893,6 +833,50 @@ namespace trview
         else if (auto route_window_opened = messages::read_route_window_opened(message))
         {
             open_recent_route();
+        }
+        else if (auto quit_message = messages::commands::read_quit(message))
+        {
+            quit();
+        }
+        else if (auto reset_layout = messages::commands::read_reset_layout(message))
+        {
+            _reset_layout = true;
+        }
+        else if (auto reset_fonts = messages::commands::read_reset_fonts(message))
+        {
+            _reset_fonts = true;
+        }
+        else if (const auto local_levels = messages::read_local_levels(message))
+        {
+            _local_levels = local_levels.value();
+        }
+    }
+
+    void Application::quit()
+    {
+        if (should_discard_changes())
+        {
+            on_closing();
+            DestroyWindow(window());
+        }
+    }
+
+    void Application::test_reset_layout()
+    {
+        if (_reset_layout)
+        {
+            _imgui_backend->reset_layout();
+            _reset_layout = false;
+        }
+    }
+
+    void Application::test_reset_fonts()
+    {
+        if (_reset_fonts)
+        {
+            load_default_fonts(*_fonts);
+            _settings.fonts = _fonts->fonts();
+            _reset_fonts = false;
         }
     }
 }

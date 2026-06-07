@@ -49,6 +49,8 @@ namespace trview
         _compass(std::move(compass)), _measure(std::move(measure)), _sector_highlight(std::move(sector_highlight)),
         _clipboard(clipboard), _camera(camera), _sampler_source(sampler_source), _messaging(messaging)
     {
+        DragAcceptFiles(window, TRUE);
+
         apply_camera_settings();
 
         _token_store += _camera->on_mode_changed += [&](auto mode)
@@ -1467,28 +1469,14 @@ namespace trview
                 _camera_input.reset_input();
                 break;
             }
-            case WM_COMMAND:
+            case WM_DROPFILES:
             {
-                switch (LOWORD(wParam))
-                {
-                    case ID_WINDOWS_CAMERA_POSITION:
-                    {
-                        _settings.camera_position_window = true;
-                        messages::send_settings(_messaging, _settings);
-                        _ui->set_show_camera_position(true);
-                        break;
-                    }
-                    case ID_WINDOWS_RESET_LAYOUT:
-                    {
-                        _settings.camera_position_window = true;
-                        messages::send_settings(_messaging, _settings);
-                        _ui->reset_layout();
-                        _ui->set_show_camera_position(true);
-                        break;
-                    }
-                }
+                wchar_t filename[MAX_PATH];
+                memset(&filename, 0, sizeof(filename));
+                DragQueryFile((HDROP)wParam, 0, filename, MAX_PATH);
+                messages::send_open_level_filename(_messaging, to_utf8(filename));
+                break;
             }
-            
         }
         return {};
     }
@@ -1731,6 +1719,43 @@ namespace trview
         else if (auto route = messages::read_route(message))
         {
             set_route(route.value().lock());
+        }
+        else if (auto show = messages::commands::read_show(message))
+        {
+            if (show->name == "minimap")
+            {
+                set_show_minimap(show->value);
+            }
+            else if (show->name == "tooltip")
+            {
+                set_show_tooltip(show->value);
+            }
+            else if (show->name == "ui")
+            {
+                set_show_ui(show->value);
+            }
+            else if (show->name == "compass")
+            {
+                set_show_compass(show->value);
+            }
+            else if (show->name == "selection")
+            {
+                set_show_selection(show->value);
+            }
+            else if (show->name == "route")
+            {
+                set_show_route(show->value);
+            }
+            else if (show->name == "tools")
+            {
+                set_show_tools(show->value);
+            }
+            else if (show->name == "camera_position")
+            {
+                _settings.camera_position_window = true;
+                messages::send_settings(_messaging, _settings);
+                _ui->set_show_camera_position(true);
+            }
         }
     }
 

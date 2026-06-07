@@ -5,6 +5,7 @@
 #include "CameraSinkWindowTests.h"
 #include "ConsoleTests.h"
 #include "ContextMenuTests.h"
+#include "FileMenuTests.h"
 #include "FiltersTests.h"
 #include "GoToTests.h"
 #include "ItemsWindowTests.h"
@@ -28,6 +29,7 @@ void register_trview_tests(ImGuiTestEngine* engine)
     register_camera_sink_window_tests(engine);
     register_console_tests(engine);
     register_context_menu_tests(engine);
+    register_file_menu_tests(engine);
     register_filters_tests(engine);
     register_go_to_tests(engine);
     register_items_window_tests(engine);
