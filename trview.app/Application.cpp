@@ -280,11 +280,7 @@ namespace trview
             return;
         }
 
-        if (_reset_layout)
-        {
-            _imgui_backend->reset_layout();
-            _reset_layout = false;
-        }
+        test_reset_layout();
 
         if (!_imgui_backend->is_setup())
         {
@@ -317,13 +313,7 @@ namespace trview
             }
         }
 
-        if (_reset_fonts)
-        {
-            load_default_fonts(*_fonts);
-            _settings.fonts = _fonts->fonts();
-            _reset_fonts = false;
-        }
-
+        test_reset_fonts();
         check_load();
 
         _timer.update();
@@ -864,6 +854,25 @@ namespace trview
         {
             on_closing();
             DestroyWindow(window());
+        }
+    }
+
+    void Application::test_reset_layout()
+    {
+        if (_reset_layout)
+        {
+            _imgui_backend->reset_layout();
+            _reset_layout = false;
+        }
+    }
+
+    void Application::test_reset_fonts()
+    {
+        if (_reset_fonts)
+        {
+            load_default_fonts(*_fonts);
+            _settings.fonts = _fonts->fonts();
+            _reset_fonts = false;
         }
     }
 }

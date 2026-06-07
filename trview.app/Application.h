@@ -111,6 +111,8 @@ namespace trview
         void check_load();
         void end_diff(const std::weak_ptr<ILevel>& level);
         void quit();
+        void test_reset_layout();
+        void test_reset_fonts();
 
         TokenStore _token_store;
 
