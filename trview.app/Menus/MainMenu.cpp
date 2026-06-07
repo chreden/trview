@@ -61,11 +61,6 @@ namespace trview
                     messages::commands::send_create_window(_messaging, "Plugins");
                 }
 
-                if (ImGui::MenuItem("Statics", "Ctrl+S"))
-                {
-                    messages::commands::send_create_window(_messaging, "Statics");
-                }
-
                 if (ImGui::MenuItem("Sounds", "Ctrl+S"))
                 {
                     messages::commands::send_create_window(_messaging, "Sounds");
@@ -76,7 +71,7 @@ namespace trview
                     messages::commands::send_create_window(_messaging, "Diff");
                 }
 
-                if (ImGui::MenuItem("Pack", "Ctrl+D"))
+                if (ImGui::MenuItem("Pack", "Ctrl+P"))
                 {
                     messages::commands::send_create_window(_messaging, "Pack");
                 }
@@ -84,6 +79,11 @@ namespace trview
                 if (ImGui::MenuItem("Console", "F9"))
                 {
                     messages::commands::send_create_window(_messaging, "Console");
+                }
+
+                if (ImGui::MenuItem("Statics"))
+                {
+                    messages::commands::send_create_window(_messaging, "Statics");
                 }
 
                 if (ImGui::MenuItem("Log"))
@@ -98,17 +98,17 @@ namespace trview
 
                 if (ImGui::MenuItem("Camera Position"))
                 {
-
+                    messages::commands::send_show(_messaging, { .name = "camera_position", .value = true });
                 }
 
                 if (ImGui::MenuItem("Reset Layout"))
                 {
-
+                    messages::commands::send_reset_layout(_messaging);
                 }
 
                 if (ImGui::MenuItem("Reset Fonts"))
                 {
-
+                    messages::commands::send_reset_fonts(_messaging);
                 }
 
                 ImGui::EndMenu();
@@ -118,12 +118,12 @@ namespace trview
             {
                 if (ImGui::MenuItem("GitHub"))
                 {
-
+                    ShellExecute(0, 0, L"https://github.com/chreden/trview", 0, 0, SW_SHOW);
                 }
 
                 if (ImGui::MenuItem("Discord"))
                 {
-
+                    ShellExecute(0, 0, L"https://discord.gg/Zy7kYge", 0, 0, SW_SHOW);
                 }
 
                 if (ImGui::MenuItem("About"))

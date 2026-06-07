@@ -1458,7 +1458,7 @@ namespace trview
         }
     }
 
-    std::optional<int> Viewer::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> Viewer::process_message(UINT message, WPARAM, LPARAM)
     {
         switch (message)
         {
@@ -1467,28 +1467,6 @@ namespace trview
                 _camera_input.reset_input();
                 break;
             }
-            case WM_COMMAND:
-            {
-                switch (LOWORD(wParam))
-                {
-                    case ID_WINDOWS_CAMERA_POSITION:
-                    {
-                        _settings.camera_position_window = true;
-                        messages::send_settings(_messaging, _settings);
-                        _ui->set_show_camera_position(true);
-                        break;
-                    }
-                    case ID_WINDOWS_RESET_LAYOUT:
-                    {
-                        _settings.camera_position_window = true;
-                        messages::send_settings(_messaging, _settings);
-                        _ui->reset_layout();
-                        _ui->set_show_camera_position(true);
-                        break;
-                    }
-                }
-            }
-            
         }
         return {};
     }
@@ -1762,6 +1740,19 @@ namespace trview
             {
                 set_show_tools(show->value);
             }
+            else if (show->name == "camera_position")
+            {
+                _settings.camera_position_window = true;
+                messages::send_settings(_messaging, _settings);
+                _ui->set_show_camera_position(true);
+            }
+        }
+        else if (auto reset_layout = messages::commands::read_reset_layout(message))
+        {
+            _settings.camera_position_window = true;
+            messages::send_settings(_messaging, _settings);
+            _ui->reset_layout();
+            _ui->set_show_camera_position(true);
         }
     }
 

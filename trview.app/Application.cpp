@@ -156,46 +156,10 @@ namespace trview
         }
     }
 
-    std::optional<int> Application::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> Application::process_message(UINT message, WPARAM, LPARAM)
     {
         switch (message)
         {
-            case WM_COMMAND:
-            {
-                int wmId = LOWORD(wParam);
-
-                // Parse the menu selections:
-                switch (wmId)
-                {
-                    case ID_HELP_GITHUB:
-                    {
-                        ShellExecute(0, 0, L"https://github.com/chreden/trview", 0, 0, SW_SHOW);
-                        break;
-                    }
-                    case ID_HELP_DISCORD:
-                    {
-                        ShellExecute(0, 0, L"https://discord.gg/Zy7kYge", 0, 0, SW_SHOW);
-                        break;
-                    }
-                    case IDM_EXIT:
-                    {
-                        quit();
-                        break;
-                    }
-                    case ID_WINDOWS_RESET_LAYOUT:
-                    {
-                        _imgui_backend->reset_layout();
-                        break;
-                    }
-                    case ID_WINDOWS_RESET_FONTS:
-                    {
-                        load_default_fonts(*_fonts);
-                        _settings.fonts = _fonts->fonts();
-                        break;
-                    }
-                }
-                break;
-            }
             case WM_CLOSE:
             {
                 quit();
@@ -316,6 +280,12 @@ namespace trview
             return;
         }
 
+        if (_reset_layout)
+        {
+            _imgui_backend->reset_layout();
+            _reset_layout = false;
+        }
+
         if (!_imgui_backend->is_setup())
         {
             // Setup Dear ImGui context
@@ -345,6 +315,13 @@ namespace trview
             {
                 _fonts->add_font(font.first, font.second);
             }
+        }
+
+        if (_reset_fonts)
+        {
+            load_default_fonts(*_fonts);
+            _settings.fonts = _fonts->fonts();
+            _reset_fonts = false;
         }
 
         check_load();
@@ -870,6 +847,14 @@ namespace trview
         else if (auto quit_message = messages::commands::read_quit(message))
         {
             quit();
+        }
+        else if (auto reset_layout = messages::commands::read_reset_layout(message))
+        {
+            _reset_layout = true;
+        }
+        else if (auto reset_fonts = messages::commands::read_reset_fonts(message))
+        {
+            _reset_fonts = true;
         }
     }
 

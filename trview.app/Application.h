@@ -138,6 +138,8 @@ namespace trview
         std::shared_ptr<IWindows> _windows;
         Timer _timer;
         std::optional<std::pair<std::string, FontSetting>> _new_font;
+        bool _reset_fonts{ false };
+        bool _reset_layout{ false };
 
         std::shared_ptr<IImGuiBackend> _imgui_backend;
         std::string _imgui_ini_filename;

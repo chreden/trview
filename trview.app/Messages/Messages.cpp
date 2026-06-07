@@ -47,6 +47,26 @@ namespace trview
                 send_message(messaging, key, "create_window");
             }
 
+            std::optional<bool> read_reset_fonts(const Message& message)
+            {
+                return read_message<bool>(message, "reset_fonts");
+            }
+
+            void send_reset_fonts(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "reset_fonts");
+            }
+
+            std::optional<bool> read_reset_layout(const Message& message)
+            {
+                return read_message<bool>(message, "reset_layout");
+            }
+
+            void send_reset_layout(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "reset_layout");
+            }
+
             std::optional<bool> read_route_open(const Message& message)
             {
                 return read_message<bool>(message, "route_open");
