@@ -1,7 +1,7 @@
 #include "Windows.h"
 #include "Settings/UserSettings.h"
-#include "../Resources/resource.h"
 #include "IWindow.h"
+#include "../Messages/Messages.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -15,8 +15,7 @@ namespace trview
     {
     }
 
-    Windows::Windows(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts)
-        : MessageHandler(window)
+    Windows::Windows(const std::shared_ptr<IShortcuts>& shortcuts)
     {
         // TODO: Maybe move somewhere else:
         _token_store += shortcuts->add_shortcut(false, VK_F9) += [&]() { create("Console"); };
@@ -29,92 +28,6 @@ namespace trview
         _token_store += shortcuts->add_shortcut(true, 'R') += [&]() { create("Route"); };
         _token_store += shortcuts->add_shortcut(true, 'S') += [&]() { create("Sounds"); };
         _token_store += shortcuts->add_shortcut(true, 'T') += [&]() { create("Triggers"); };
-    }
-
-    std::optional<int> Windows::process_message(UINT message, WPARAM wParam, LPARAM)
-    {
-        if (message == WM_COMMAND)
-        {
-            switch (LOWORD(wParam))
-            {
-                case IDM_ABOUT:
-                {
-                    create("About");
-                    break;
-                }
-                case ID_WINDOWS_CAMERA_SINK:
-                {
-                    create("CameraSink");
-                    break;
-                }
-                case ID_WINDOWS_CONSOLE:
-                {
-                    create("Console");
-                    break;
-                }
-                case ID_WINDOWS_DIFF:
-                {
-                    create("Diff");
-                    break;
-                }
-                case ID_WINDOWS_ITEMS:
-                {
-                    create("Items");
-                    break;
-                }
-                case ID_WINDOWS_LIGHTS:
-                {
-                    create("Lights");
-                    break;
-                }
-                case ID_WINDOWS_LOG:
-                {
-                    create("Log");
-                    break;
-                }
-                case ID_WINDOWS_PACK:
-                {
-                    create("Pack");
-                    break;
-                }
-                case ID_WINDOWS_PLUGINS:
-                {
-                    create("Plugins");
-                    break;
-                }
-                case ID_WINDOWS_ROOMS:
-                {
-                    create("Rooms");
-                    break;
-                }
-                case ID_WINDOWS_ROUTE:
-                {
-                    create("Route");
-                    break;
-                }
-                case ID_WINDOWS_SOUNDS:
-                {
-                    create("Sounds");
-                    break;
-                }
-                case ID_WINDOWS_STATICS:
-                {
-                    create("Statics");
-                    break;
-                }
-                case ID_WINDOWS_TEXTURES:
-                {
-                    create("Textures");
-                    break;
-                }
-                case ID_WINDOWS_TRIGGERS:
-                {
-                    create("Triggers");
-                    break;
-                }
-            }
-        }
-        return {};
     }
 
     std::weak_ptr<IWindow> Windows::create(const std::string& type)
@@ -238,5 +151,13 @@ namespace trview
             }
         }
         return 1;
+    }
+
+    void Windows::receive_message(const Message& message)
+    {
+        if (const auto window = messages::commands::read_create_window(message))
+        {
+            create(window.value());
+        }
     }
 }

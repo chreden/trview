@@ -516,7 +516,7 @@ namespace trview
                 return pack_window;
             };
 
-        auto windows = std::make_shared<Windows>(window, shortcuts);
+        auto windows = std::make_shared<Windows>(shortcuts);
         windows->register_window("About", about_window_source);
         windows->register_window("CameraSink", camera_sink_window_source);
         windows->register_window("Console", console_source);
@@ -532,6 +532,7 @@ namespace trview
         windows->register_window("Statics", statics_window_source);
         windows->register_window("Textures", textures_window_source);
         windows->register_window("Triggers", triggers_window_source);
+        messaging->add_recipient(windows);
 
         auto view_menu = std::make_shared<ViewMenu>(messaging);
         auto main_menu = std::make_shared<MainMenu>(messaging, imgui_file_menu, view_menu);

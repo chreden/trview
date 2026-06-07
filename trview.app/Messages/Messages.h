@@ -33,6 +33,9 @@ namespace trview
 
         namespace commands
         {
+            std::optional<std::string> read_create_window(const Message& message);
+            void send_create_window(const std::weak_ptr<IMessageSystem>& messaging, const std::string& key);
+
             std::optional<bool> read_route_open(const Message& message);
             void send_route_open(const std::weak_ptr<IMessageSystem>& messaging);
 
