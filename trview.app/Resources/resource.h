@@ -30,14 +30,6 @@
 #define IDR_SELECTION_SHADER            32780
 #define ID_WINDOWS_TRIGGERS             32782 
 #define ID_WINDOWS_ROUTE                32784
-#define ID_VIEW_MINIMAP                 32786
-#define ID_VIEW_TOOLTIP                 32787
-#define ID_VIEW_UI                      32788
-#define ID_VIEW_COMPASS                 32789
-#define ID_VIEW_SELECTION               32790
-#define ID_VIEW_ROUTE                   32791
-#define ID_VIEW_TOOLS                   32792
-#define ID_VIEW_UNHIDE_ALL              32799
 #define ID_WINDOWS_LIGHTS               33018
 #define ID_WINDOWS_RESET_LAYOUT         33019
 #define ID_WINDOWS_LOG                  33020

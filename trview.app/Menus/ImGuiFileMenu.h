@@ -11,12 +11,19 @@
 
 namespace trview
 {
+    struct IMessageSystem;
     class ImGuiFileMenu final : public IFileMenu, public IRecipient
     {
     public:
         using LevelNameSource = std::function<std::optional<ILevelNameLookup::Name>(const std::string&, const std::shared_ptr<trlevel::IPack>&)>;
 
-        explicit ImGuiFileMenu(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const LevelNameSource& level_name_source);
+        enum Mode
+        {
+            Main,
+            Diff
+        };
+
+        explicit ImGuiFileMenu(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const LevelNameSource& level_name_source, Mode mode, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~ImGuiFileMenu() = default;
         std::vector<std::string> local_levels() const override;
         void open_file(const std::string& filename, const std::weak_ptr<trlevel::IPack>& pack) override;
@@ -43,5 +50,8 @@ namespace trview
         std::optional<std::string> _initial_directory;
         LevelSortingMode _sorting_mode{ LevelSortingMode::Full };
         LevelNameSource _level_name_source;
+        Mode _mode{ Mode::Main };
+        bool _reload_enabled{ false };
+        std::weak_ptr<IMessageSystem> _messaging;
     };
 }

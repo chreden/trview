@@ -47,7 +47,9 @@
 #include "Graphics/SectorHighlight.h"
 #include "Lua/Scriptable/Scriptable.h"
 #include "Lua/Lua.h"
+#include "Menus/MainMenu.h"
 #include "Menus/FileMenu.h"
+#include "Menus/ViewMenu.h"
 #include "Menus/ImGuiFileMenu.h"
 #include "Menus/UpdateChecker.h"
 #include "Routing/Waypoint.h"
@@ -493,12 +495,15 @@ namespace trview
                 return std::nullopt;
             };
 
-        auto imgui_file_menu = std::make_shared<ImGuiFileMenu>(dialogs, files, level_name_source);
+        auto imgui_file_menu = std::make_shared<ImGuiFileMenu>(dialogs, files, level_name_source, ImGuiFileMenu::Main, messaging);
         messaging->add_recipient(imgui_file_menu);
+
+        auto imgui_file_diff_menu = std::make_shared<ImGuiFileMenu>(dialogs, files, level_name_source, ImGuiFileMenu::Diff, messaging);
+        messaging->add_recipient(imgui_file_diff_menu);
 
         auto diff_window_source = [=]()
             {
-                auto diff_window = std::make_shared<DiffWindow>(dialogs, level_source, imgui_file_menu, messaging);
+                auto diff_window = std::make_shared<DiffWindow>(dialogs, level_source, imgui_file_diff_menu, messaging);
                 messaging->add_recipient(diff_window);
                 diff_window->initialise();
                 return diff_window;
@@ -528,6 +533,9 @@ namespace trview
         windows->register_window("Textures", textures_window_source);
         windows->register_window("Triggers", triggers_window_source);
 
+        auto view_menu = std::make_shared<ViewMenu>(messaging);
+        auto main_menu = std::make_shared<MainMenu>(messaging, imgui_file_menu, view_menu);
+
         auto viewer_ui = std::make_shared<ViewerUI>(
             window,
             shortcuts,
@@ -538,7 +546,8 @@ namespace trview
             std::make_unique<CameraControls>(),
             std::make_unique<Toolbar>(plugins),
             messaging,
-            std::make_unique<LevelInfo>(*texture_storage, level_name_lookup));
+            std::make_unique<LevelInfo>(*texture_storage, level_name_lookup),
+            main_menu);
         messaging->add_recipient(viewer_ui);
 
         auto viewer = std::make_shared<Viewer>(

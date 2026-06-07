@@ -76,7 +76,7 @@ namespace trview
         LoadMode load_mode,
         const std::shared_ptr<IMessageSystem>& messaging)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
-        _file_menu(file_menu), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _viewer(viewer),
+        _file_menu(file_menu), _update_checker(std::move(update_checker)), _settings_loader(settings_loader), _viewer(viewer),
         _route_source(route_source), _shortcuts(shortcuts), _level_source(level_source), _dialogs(dialogs), _files(files), _timer(default_time_source()),
         _imgui_backend(std::move(imgui_backend)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
         _windows(windows), _messaging(messaging)
@@ -95,7 +95,6 @@ namespace trview
         _token_store += _file_menu->on_reload += [=]() { reload(); };
 
         setup_shortcuts();
-        setup_view_menu();
 
         _windows->setup(_settings);
         setup_viewer(*startup_options);
@@ -180,11 +179,7 @@ namespace trview
                     }
                     case IDM_EXIT:
                     {
-                        if (should_discard_changes())
-                        {
-                            on_closing();
-                            DestroyWindow(window());
-                        }
+                        quit();
                         break;
                     }
                     case ID_WINDOWS_RESET_LAYOUT:
@@ -203,11 +198,7 @@ namespace trview
             }
             case WM_CLOSE:
             {
-                if (should_discard_changes())
-                {
-                    on_closing();
-                    DestroyWindow(window());
-                }
+                quit();
                 return 0;
             }
             case WM_DESTROY:
@@ -248,18 +239,6 @@ namespace trview
         }
 
         return (int)msg.wParam;
-    }
-        
-    void Application::setup_view_menu()
-    {
-        _token_store += _view_menu.on_show_minimap += [&](bool show) { _viewer->set_show_minimap(show); };
-        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _viewer->set_show_tooltip(show); };
-        _token_store += _view_menu.on_show_ui += [&](bool show) { _viewer->set_show_ui(show); };
-        _token_store += _view_menu.on_show_compass += [&](bool show) { _viewer->set_show_compass(show); };
-        _token_store += _view_menu.on_show_selection += [&](bool show) { _viewer->set_show_selection(show); };
-        _token_store += _view_menu.on_show_route += [&](bool show) { _viewer->set_show_route(show); };
-        _token_store += _view_menu.on_show_tools += [&](bool show) { _viewer->set_show_tools(show); };
-        _token_store += _view_menu.on_unhide_all += [&]() { messages::commands::send_unhide_all(_messaging); };
     }
 
     void Application::setup_viewer(const IStartupOptions& startup_options)
@@ -887,6 +866,19 @@ namespace trview
         else if (auto route_window_opened = messages::read_route_window_opened(message))
         {
             open_recent_route();
+        }
+        else if (auto quit_message = messages::commands::read_quit(message))
+        {
+            quit();
+        }
+    }
+
+    void Application::quit()
+    {
+        if (should_discard_changes())
+        {
+            on_closing();
+            DestroyWindow(window());
         }
     }
 }

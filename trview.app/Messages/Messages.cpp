@@ -97,6 +97,16 @@ namespace trview
                 send_message(messaging, true, "new_randomizer_route");
             }
 
+            std::optional<bool> read_quit(const Message& message)
+            {
+                return read_message<bool>(message, "quit");
+            }
+
+            void send_quit(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "quit");
+            }
+
             std::optional<bool> read_unhide_all(const Message& message)
             {
                 return read_message<bool>(message, "unhide_all");
@@ -105,6 +115,16 @@ namespace trview
             void send_unhide_all(const std::weak_ptr<IMessageSystem>& messaging)
             {
                 send_message(messaging, true, "unhide_all");
+            }
+
+            std::optional<ShowCommand> read_show(const Message& message)
+            {
+                return read_message<ShowCommand>(message, "show");
+            }
+
+            void send_show(const std::weak_ptr<IMessageSystem>& messaging, const ShowCommand& command)
+            {
+                send_message(messaging, command, "show");
             }
         }
 

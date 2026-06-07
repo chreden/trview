@@ -41,57 +41,37 @@ IDI_SMALL               ICON                    "Files\\small.ico"
 // Menu
 //
 
-IDC_TRVIEW MENU
-BEGIN
-    POPUP "&File"
-    BEGIN
-        MENUITEM "Open\tCtrl+O",                ID_FILE_OPEN
-        MENUITEM "Open Recent",                 ID_FILE_OPENRECENT
-        MENUITEM "Switch &Level",               ID_FILE_SWITCHLEVEL
-        MENUITEM "&Reload\tF5",                 ID_FILE_RELOAD
-        MENUITEM "E&xit",                       IDM_EXIT
-    END
-    POPUP "View"
-    BEGIN
-        MENUITEM "UI",                          ID_VIEW_UI
-        MENUITEM "Minimap",                     ID_VIEW_MINIMAP
-        MENUITEM "Tooltip",                     ID_VIEW_TOOLTIP
-        MENUITEM "Compass",                     ID_VIEW_COMPASS
-        MENUITEM "Selection",                   ID_VIEW_SELECTION
-        MENUITEM "Route",                       ID_VIEW_ROUTE
-        MENUITEM "Tools",                       ID_VIEW_TOOLS
-        MENUITEM SEPARATOR
-        MENUITEM "Unhide All",                  ID_VIEW_UNHIDE_ALL
-    END
-    POPUP "Windows"
-    BEGIN
-        MENUITEM "&Items\tCtrl+I",              ID_WINDOWS_ITEMS
-        MENUITEM "&Triggers\tCtrl+T",           ID_WINDOWS_TRIGGERS
-        MENUITEM "Roo&ms\tCtrl+M",              ID_WINDOWS_ROOMS
-        MENUITEM "&Route\tCtrl+R",              ID_WINDOWS_ROUTE
-        MENUITEM "&Lights\tCtrl+L"              ID_WINDOWS_LIGHTS
-        MENUITEM "Camera/Sink\tCtrl+K"          ID_WINDOWS_CAMERA_SINK
-        MENUITEM "Log"                          ID_WINDOWS_LOG
-        MENUITEM "Textures"                     ID_WINDOWS_TEXTURES
-        MENUITEM "Console\tF11"                 ID_WINDOWS_CONSOLE
-        MENUITEM "Plugins\tCtrl+P"              ID_WINDOWS_PLUGINS
-        MENUITEM "Statics\tCtrl+S"              ID_WINDOWS_STATICS
-        MENUITEM "Sounds"                       ID_WINDOWS_SOUNDS
-        MENUITEM "Diff\tCtrl+D"                 ID_WINDOWS_DIFF
-        MENUITEM "Pack"                         ID_WINDOWS_PACK
-        MENUITEM SEPARATOR
-        MENUITEM "Camera Position"              ID_WINDOWS_CAMERA_POSITION
-        MENUITEM SEPARATOR
-        MENUITEM "Reset Layout"                 ID_WINDOWS_RESET_LAYOUT
-        MENUITEM "Reset Fonts"                  ID_WINDOWS_RESET_FONTS
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "&Github",                     ID_HELP_GITHUB
-        MENUITEM "&Discord",                    ID_HELP_DISCORD
-        MENUITEM "&About ...",                  IDM_ABOUT
-    END
-END
+// IDC_TRVIEW MENU
+// BEGIN
+//     POPUP "Windows"
+//     BEGIN
+//         MENUITEM "&Items\tCtrl+I",              ID_WINDOWS_ITEMS
+//         MENUITEM "&Triggers\tCtrl+T",           ID_WINDOWS_TRIGGERS
+//         MENUITEM "Roo&ms\tCtrl+M",              ID_WINDOWS_ROOMS
+//         MENUITEM "&Route\tCtrl+R",              ID_WINDOWS_ROUTE
+//         MENUITEM "&Lights\tCtrl+L"              ID_WINDOWS_LIGHTS
+//         MENUITEM "Camera/Sink\tCtrl+K"          ID_WINDOWS_CAMERA_SINK
+//         MENUITEM "Log"                          ID_WINDOWS_LOG
+//         MENUITEM "Textures"                     ID_WINDOWS_TEXTURES
+//         MENUITEM "Console\tF11"                 ID_WINDOWS_CONSOLE
+//         MENUITEM "Plugins\tCtrl+P"              ID_WINDOWS_PLUGINS
+//         MENUITEM "Statics\tCtrl+S"              ID_WINDOWS_STATICS
+//         MENUITEM "Sounds"                       ID_WINDOWS_SOUNDS
+//         MENUITEM "Diff\tCtrl+D"                 ID_WINDOWS_DIFF
+//         MENUITEM "Pack"                         ID_WINDOWS_PACK
+//         MENUITEM SEPARATOR
+//         MENUITEM "Camera Position"              ID_WINDOWS_CAMERA_POSITION
+//         MENUITEM SEPARATOR
+//         MENUITEM "Reset Layout"                 ID_WINDOWS_RESET_LAYOUT
+//         MENUITEM "Reset Fonts"                  ID_WINDOWS_RESET_FONTS
+//     END
+//     POPUP "&Help"
+//     BEGIN
+//         MENUITEM "&Github",                     ID_HELP_GITHUB
+//         MENUITEM "&Discord",                    ID_HELP_DISCORD
+//         MENUITEM "&About ...",                  IDM_ABOUT
+//     END
+// END
 
 
 /////////////////////////////////////////////////////////////////////////////

@@ -9,6 +9,7 @@
 #include <ranges>
 #include <trview.common/Messages/Message.h>
 #include "../Messages/Messages.h"
+#include "../Menus/IMainMenu.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -39,10 +40,11 @@ namespace trview
         std::unique_ptr<ICameraControls> camera_controls,
         std::unique_ptr<IToolbar> toolbar,
         const std::weak_ptr<IMessageSystem>& messaging,
-        std::unique_ptr<ILevelInfo> level_info)
+        std::unique_ptr<ILevelInfo> level_info,
+        const std::shared_ptr<IMainMenu>& main_menu)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _camera_controls(std::move(camera_controls)),
         _view_options(std::move(view_options)), _settings_window(settings_window), _context_menu(std::move(context_menu)), _toolbar(std::move(toolbar)),
-        _messaging(messaging), _level_info(std::move(level_info))
+        _messaging(messaging), _level_info(std::move(level_info)), _main_menu(main_menu)
     {
         _token_store += shortcuts->add_shortcut(true, 'F') += [&]()
         {
@@ -177,6 +179,7 @@ namespace trview
             return;
         }
 
+        _main_menu->render();
         _map_renderer->render(true);
         _view_options->render();
         _room_navigator->render();

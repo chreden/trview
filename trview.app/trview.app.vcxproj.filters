@@ -122,6 +122,7 @@
     <ClCompile Include="Elements\ElementFilters.cpp" Filter="Elements" />
     <ClCompile Include="Settings\UserSettingsPatches.cpp" Filter="Settings" />
     <ClCompile Include="Filters\FilterStore.cpp" Filter="Filters" />
+    <ClCompile Include="Menus\MainMenu.cpp" Filter="Menus" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -372,6 +373,10 @@
     <ClInclude Include="Mocks\Filters\IFilterable.h" Filters="Mocks\Filters" />
     <ClInclude Include="UI\Modal.h" Filters="UI\Modal" />
     <ClInclude Include="UI\Modal.hpp" Filters="UI\Modal" />
+    <ClInclude Include="Menus\IMainMenu.h" Filter="Menus" />
+    <ClInclude Include="Menus\MainMenu.h" Filter="Menus" />
+    <ClInclude Include="Menus\IViewMenu.h" Filter="Menus" />
+    <ClInclude Include="Mocks\Menus\IMainMenu.h" Filter="Mocks\Menus" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

@@ -18,6 +18,8 @@
 
 namespace trview
 {
+    struct IMainMenu;
+
     class ViewerUI final : public IViewerUI, public IRecipient
     {
     public:
@@ -30,7 +32,8 @@ namespace trview
             std::unique_ptr<ICameraControls> camera_controls,
             std::unique_ptr<IToolbar> toolbar,
             const std::weak_ptr<IMessageSystem>& messaging,
-            std::unique_ptr<ILevelInfo> level_info);
+            std::unique_ptr<ILevelInfo> level_info,
+            const std::shared_ptr<IMainMenu>& main_menu);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual bool is_input_active() const override;
@@ -102,5 +105,6 @@ namespace trview
         std::weak_ptr<IRoute> _route;
         std::weak_ptr<ILevel> _level;
         std::weak_ptr<IMessageSystem> _messaging;
+        std::shared_ptr<IMainMenu> _main_menu;
     };
 }

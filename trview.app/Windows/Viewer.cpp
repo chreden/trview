@@ -1732,6 +1732,37 @@ namespace trview
         {
             set_route(route.value().lock());
         }
+        else if (auto show = messages::commands::read_show(message))
+        {
+            if (show->name == "minimap")
+            {
+                set_show_minimap(show->value);
+            }
+            else if (show->name == "tooltip")
+            {
+                set_show_tooltip(show->value);
+            }
+            else if (show->name == "ui")
+            {
+                set_show_ui(show->value);
+            }
+            else if (show->name == "compass")
+            {
+                set_show_compass(show->value);
+            }
+            else if (show->name == "selection")
+            {
+                set_show_selection(show->value);
+            }
+            else if (show->name == "route")
+            {
+                set_show_route(show->value);
+            }
+            else if (show->name == "tools")
+            {
+                set_show_tools(show->value);
+            }
+        }
     }
 
     void Viewer::initialise()

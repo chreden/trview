@@ -9,7 +9,6 @@
 #include "Elements/ITypeInfoLookup.h"
 #include <trview.app/Menus/IFileMenu.h>
 #include <trview.app/Menus/IUpdateChecker.h>
-#include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Routing/IRoute.h>
 #include "Routing/IRandomizerRoute.h"
 #include <trview.app/Settings/ISettingsLoader.h>
@@ -22,6 +21,7 @@
 #include "UI/Fonts/IFonts.h"
 #include <trview.common/Messages/IRecipient.h>
 #include <trview.common/Messages/IMessageSystem.h>
+#include <trview.common/MessageHandler.h>
 
 struct ImFont;
 
@@ -90,7 +90,6 @@ namespace trview
         void receive_message(const Message& message) override;
     private:
         // Window setup functions.
-        void setup_view_menu();
         void setup_viewer(const IStartupOptions& startup_options);
         void setup_shortcuts();
         // Entity manipulation
@@ -111,6 +110,7 @@ namespace trview
         void save_window_placement();
         void check_load();
         void end_diff(const std::weak_ptr<ILevel>& level);
+        void quit();
 
         TokenStore _token_store;
 
@@ -119,7 +119,6 @@ namespace trview
         UserSettings _settings;
         std::shared_ptr<IFileMenu> _file_menu;
         std::unique_ptr<IUpdateChecker> _update_checker;
-        ViewMenu _view_menu;
         std::shared_ptr<IShortcuts> _shortcuts;
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IFiles> _files;
