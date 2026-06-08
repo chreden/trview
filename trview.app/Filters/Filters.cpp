@@ -485,7 +485,7 @@ namespace trview
         if (_show_filters)
         {
             ImGui::SetNextWindowSizeConstraints(ImVec2(200, 50), ImVec2(FLT_MAX, FLT_MAX));
-            if (ImGui::Begin(std::format("{} ({})", Names::Popup, _id).c_str(), &_show_filters, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize))
+            if (ImGui::Begin(std::format("{} ({})", Names::Popup, _id).c_str(), &_show_filters, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking))
             {
                 render_menu_bar();
                 render_filter_name_modal();
