@@ -373,6 +373,9 @@ namespace trview
         }
         ImGui::End();
         ImGui::PopStyleVar();
+        _filters.render_window();
+        _flyby_filters.render_window();
+        _node_filters.render_window();
         return stay_open;
     }
 

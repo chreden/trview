@@ -481,7 +481,10 @@ namespace trview
         {
             toggle_visible();
         }
+    }
 
+    void Filters::render_window()
+    {
         if (_show_filters)
         {
             ImGui::SetNextWindowSizeConstraints(ImVec2(200, 50), ImVec2(FLT_MAX, FLT_MAX));
