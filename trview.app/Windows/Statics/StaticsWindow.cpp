@@ -94,6 +94,7 @@ namespace trview
         }
         ImGui::End();
         ImGui::PopStyleVar();
+        _filters.render_window();
         return stay_open;
     }
 

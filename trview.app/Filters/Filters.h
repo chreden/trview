@@ -170,6 +170,7 @@ namespace trview
         bool match(const IFilterable& value) const;
         bool match(const Filter& filter, const IFilterable& value, const std::string& type_key) const;
         void render();
+        void render_window();
         void render_settings();
         void render_table(const std::ranges::forward_range auto& items,
             std::ranges::forward_range auto& all_items,
