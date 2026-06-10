@@ -451,33 +451,22 @@ TEST(Application, ResetFonts)
     EXPECT_CALL(*fonts, add_font(std::string("Console"), 
         testing::AllOf(testing::Field(&FontSetting::name, testing::Eq("Consolas")),
                        testing::Field(&FontSetting::filename, testing::Eq("consola.ttf")),
-                       testing::Field(&FontSetting::size, testing::Eq(12)))));
+                       testing::Field(&FontSetting::size, testing::Eq(12))))).Times(2);
     EXPECT_CALL(*fonts, add_font(std::string("Default"),
         testing::AllOf(testing::Field(&FontSetting::name, testing::Eq("Arial")),
             testing::Field(&FontSetting::filename, testing::Eq("arial.ttf")),
-            testing::Field(&FontSetting::size, testing::Eq(12)))));
+            testing::Field(&FontSetting::size, testing::Eq(12))))).Times(2);
     EXPECT_CALL(*fonts, add_font(std::string("Minimap"),
         testing::AllOf(testing::Field(&FontSetting::name, testing::Eq("Consolas")),
             testing::Field(&FontSetting::filename, testing::Eq("consola.ttf")),
-            testing::Field(&FontSetting::size, testing::Eq(9)))));
+            testing::Field(&FontSetting::size, testing::Eq(9))))).Times(2);
 
     auto application = register_test_module()
         .with_fonts(fonts)
         .build();
 
-    application->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_RESET_FONTS, 0), 0);
-}
-
-TEST(Application, ResetLayout)
-{
-    auto imgui_backend = mock_shared<MockImGuiBackend>();
-    EXPECT_CALL(*imgui_backend, reset_layout);
-
-    auto application = register_test_module()
-        .with_imgui_backend(imgui_backend)
-        .build();
-
-    application->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_RESET_LAYOUT, 0), 0);
+    application->receive_message(trview::Message{ .type = "reset_fonts", .data = std::make_shared<MessageData<bool>>(true) });
+    application->render();
 }
 
 TEST(Application, LevelLoadedOnReload)

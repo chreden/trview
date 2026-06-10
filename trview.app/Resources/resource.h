@@ -31,14 +31,12 @@
 #define ID_WINDOWS_TRIGGERS             32782 
 #define ID_WINDOWS_ROUTE                32784
 #define ID_WINDOWS_LIGHTS               33018
-#define ID_WINDOWS_RESET_LAYOUT         33019
 #define ID_WINDOWS_LOG                  33020
 #define ID_FILE_RELOAD                  33021
 #define ID_WINDOWS_TEXTURES             33022
 #define ID_WINDOWS_CAMERA_SINK          33023
 #define ID_WINDOWS_CONSOLE              33024
 #define ID_WINDOWS_PLUGINS              33025
-#define ID_WINDOWS_RESET_FONTS          33026
 #define ID_WINDOWS_STATICS              33027
 #define ID_WINDOWS_SOUNDS               33028
 #define ID_WINDOWS_CAMERA_POSITION      33029
