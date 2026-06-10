@@ -6,6 +6,7 @@
 #include <trview.app/Mocks/Elements/ILevelNameLookup.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.tests.common/Mocks.h>
+#include <trview.common/Messages/Message.h>
 
 using namespace testing;
 using namespace trview;
@@ -64,27 +65,9 @@ void register_level_info_tests(ImGuiTestEngine* engine)
 
             auto& context = ctx->GetVars<LevelInfoContext>();
             context.ptr = register_test_module().with_level_name_lookup(lookup).build();
-            context.ptr->set_level(level);
+            context.ptr->receive_message(trview::Message{ .type = "open_level", .data = std::make_shared<MessageData<std::weak_ptr<ILevel>>>(level) });
 
             ctx->Yield();
             IM_CHECK_EQ(RenderedText(ctx, ctx->ItemInfo("LevelInfo")->ID), "test (Test)");
-        });
-
-    test<LevelInfoContext>(engine, "Level Info", "On Toggle Settings Raised",
-        [](ImGuiTestContext* ctx) { render(ctx->GetVars<LevelInfoContext>()); },
-        [](ImGuiTestContext* ctx)
-        {
-            auto& context = ctx->GetVars<LevelInfoContext>();
-            context.ptr = register_test_module().build();
-            context.ptr->set_level(mock_shared<MockLevel>());
-
-            bool raised = false;
-            auto token = context.ptr->on_toggle_settings += [&]()
-            {
-                raised = true;
-            };
-
-            ctx->ItemClick("LevelInfo/Settings");
-            IM_CHECK_EQ(raised, true);
         });
 }

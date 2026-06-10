@@ -535,7 +535,10 @@ namespace trview
         messaging->add_recipient(windows);
 
         auto view_menu = std::make_shared<ViewMenu>(messaging);
-        auto main_menu = std::make_shared<MainMenu>(messaging, imgui_file_menu, view_menu);
+        auto level_info = std::make_shared<LevelInfo>(*texture_storage, level_name_lookup);
+        messaging->add_recipient(level_info);
+
+        auto main_menu = std::make_shared<MainMenu>(messaging, imgui_file_menu, view_menu, level_info);
 
         auto viewer_ui = std::make_shared<ViewerUI>(
             window,
@@ -547,7 +550,6 @@ namespace trview
             std::make_unique<CameraControls>(),
             std::make_unique<Toolbar>(plugins),
             messaging,
-            std::make_unique<LevelInfo>(*texture_storage, level_name_lookup),
             main_menu);
         messaging->add_recipient(viewer_ui);
 

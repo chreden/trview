@@ -2,6 +2,7 @@
 #include "IFileMenu.h"
 #include "IViewMenu.h"
 #include "../Messages/Messages.h"
+#include "../UI/ILevelInfo.h"
 
 namespace trview
 {
@@ -9,8 +10,9 @@ namespace trview
     {
     }
 
-    MainMenu::MainMenu(const std::weak_ptr<IMessageSystem>& messaging, const std::shared_ptr<IFileMenu>& file_menu, const std::shared_ptr<IViewMenu>& view_menu)
-        : _messaging(messaging), _file_menu(file_menu), _view_menu(view_menu)
+    MainMenu::MainMenu(const std::weak_ptr<IMessageSystem>& messaging, const std::shared_ptr<IFileMenu>& file_menu, const std::shared_ptr<IViewMenu>& view_menu,
+        const std::shared_ptr<ILevelInfo>& level_info)
+        : _messaging(messaging), _file_menu(file_menu), _view_menu(view_menu), _level_info(level_info)
     {
         // TODO: Move all to messaging?
         _token_store += _file_menu->on_reload += []() {};
@@ -114,6 +116,11 @@ namespace trview
                 ImGui::EndMenu();
             }
 
+            if (ImGui::MenuItem("Settings"))
+            {
+                messages::commands::send_toggle_settings(_messaging);
+            }
+
             if (ImGui::BeginMenu("Help"))
             {
                 if (ImGui::MenuItem("GitHub"))
@@ -134,6 +141,7 @@ namespace trview
                 ImGui::EndMenu();
             }
 
+            _level_info->render();
             ImGui::EndMainMenuBar();
         }
     }

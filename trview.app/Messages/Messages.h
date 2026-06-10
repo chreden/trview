@@ -74,6 +74,9 @@ namespace trview
 
             std::optional<ShowCommand> read_show(const Message& message);
             void send_show(const std::weak_ptr<IMessageSystem>& messaging, const ShowCommand& command);
+
+            std::optional<bool> read_toggle_settings(const Message& message);
+            void send_toggle_settings(const std::weak_ptr<IMessageSystem>& messaging);
         }
 
         void get_settings(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);

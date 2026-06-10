@@ -156,6 +156,16 @@ namespace trview
             {
                 send_message(messaging, command, "show");
             }
+
+            std::optional<bool> read_toggle_settings(const Message& message)
+            {
+                return read_message<bool>(message, "toggle_settings");
+            }
+
+            void send_toggle_settings(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "toggle_settings");
+            }
         }
 
         void get_settings(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
