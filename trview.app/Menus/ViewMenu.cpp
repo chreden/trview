@@ -14,6 +14,13 @@ namespace trview
 
     void ViewMenu::render()
     {
+        if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_V, 0U, ImGuiInputFlags_RouteGlobal))
+        {
+            ImGuiWindow* window = ImGui::GetCurrentWindow();
+            const ImGuiID id = window->GetID("View");
+            ImGui::OpenPopup(id, ImGuiPopupFlags_None);
+        }
+
         if (ImGui::BeginMenu("View"))
         {
             if (ImGui::MenuItem("UI", nullptr, &_show_ui))

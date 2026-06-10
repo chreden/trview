@@ -36,6 +36,13 @@ namespace trview
 
     void ImGuiFileMenu::render()
     {
+        if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_F, 0U, ImGuiInputFlags_RouteGlobal))
+        {
+            ImGuiWindow* window = ImGui::GetCurrentWindow();
+            const ImGuiID id = window->GetID("File");
+            ImGui::OpenPopup(id, ImGuiPopupFlags_None);
+        }
+
         if (ImGui::BeginMenu("File"))
         {
             if (ImGui::MenuItem("Open"))

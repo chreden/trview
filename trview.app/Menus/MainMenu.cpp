@@ -26,6 +26,13 @@ namespace trview
             _file_menu->render();
             _view_menu->render();
 
+            if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_W, 0U, ImGuiInputFlags_RouteGlobal))
+            {
+                ImGuiWindow* window = ImGui::GetCurrentWindow();
+                const ImGuiID id = window->GetID("Windows");
+                ImGui::OpenPopup(id, ImGuiPopupFlags_None);
+            }
+
             if (ImGui::BeginMenu("Windows"))
             {
                 if (ImGui::MenuItem("Items", "Ctrl+I"))
@@ -116,9 +123,16 @@ namespace trview
                 ImGui::EndMenu();
             }
 
-            if (ImGui::MenuItem("Settings"))
+            if (ImGui::MenuItem("Settings") || ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_S, 0U, ImGuiInputFlags_RouteGlobal))
             {
                 messages::commands::send_toggle_settings(_messaging);
+            }
+
+            if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_H, 0U, ImGuiInputFlags_RouteGlobal))
+            {
+                ImGuiWindow* window = ImGui::GetCurrentWindow();
+                const ImGuiID id = window->GetID("Help");
+                ImGui::OpenPopup(id, ImGuiPopupFlags_None);
             }
 
             if (ImGui::BeginMenu("Help"))
