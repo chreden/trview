@@ -78,6 +78,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Lua\Vector3.cpp" />
     <ClCompile Include="Menus\FileMenu.cpp" />
     <ClCompile Include="Menus\ImGuiFileMenu.cpp" />
+    <ClCompile Include="Menus\MainMenu.cpp" />
     <ClCompile Include="Messages\Messages.cpp" />
     <ClCompile Include="Mocks\Mocks.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
@@ -116,7 +117,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Camera\Lua_Camera.h" />
     <ClInclude Include="Lua\Scriptable\IScriptable.h" />
     <ClInclude Include="Lua\Scriptable\Scriptable.h" />
+    <ClInclude Include="Menus\IMainMenu.h" />
     <ClInclude Include="Menus\ImGuiFileMenu.h" />
+    <ClInclude Include="Menus\IViewMenu.h" />
+    <ClInclude Include="Menus\MainMenu.h" />
     <ClInclude Include="Messages\Messages.h" />
     <ClInclude Include="Menus\LevelSortingMode.h" />
     <ClInclude Include="Menus\LevelSortingMode.hpp" />
@@ -129,6 +133,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Filters\IFilterStore.h" />
     <ClInclude Include="Mocks\Geometry\IModelStorage.h" />
     <ClInclude Include="Mocks\Lua\IScriptable.h" />
+    <ClInclude Include="Mocks\Menus\IMainMenu.h" />
     <ClInclude Include="Mocks\Sound\ISound.h" />
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" />
     <ClInclude Include="Mocks\UI\IFonts.h" />

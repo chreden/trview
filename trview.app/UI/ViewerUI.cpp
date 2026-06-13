@@ -9,6 +9,7 @@
 #include <ranges>
 #include <trview.common/Messages/Message.h>
 #include "../Messages/Messages.h"
+#include "../Menus/IMainMenu.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -39,10 +40,10 @@ namespace trview
         std::unique_ptr<ICameraControls> camera_controls,
         std::unique_ptr<IToolbar> toolbar,
         const std::weak_ptr<IMessageSystem>& messaging,
-        std::unique_ptr<ILevelInfo> level_info)
+        const std::shared_ptr<IMainMenu>& main_menu)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _camera_controls(std::move(camera_controls)),
         _view_options(std::move(view_options)), _settings_window(settings_window), _context_menu(std::move(context_menu)), _toolbar(std::move(toolbar)),
-        _messaging(messaging), _level_info(std::move(level_info))
+        _messaging(messaging), _main_menu(main_menu)
     {
         _token_store += shortcuts->add_shortcut(true, 'F') += [&]()
         {
@@ -117,8 +118,6 @@ namespace trview
         _context_menu->set_remove_enabled(false);
         _context_menu->set_hide_enabled(false);
 
-        _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
-
         _settings_window->on_font += on_font;
         _settings_window->on_linear_filtering += on_linear_filtering;
 
@@ -177,6 +176,7 @@ namespace trview
             return;
         }
 
+        _main_menu->render();
         _map_renderer->render(true);
         _view_options->render();
         _room_navigator->render();
@@ -185,7 +185,6 @@ namespace trview
         _settings_window->render();
         _context_menu->render();
         _go_to->render();
-        _level_info->render();
         _toolbar->render();
         _tooltip->render();
 
@@ -259,17 +258,12 @@ namespace trview
         _map_renderer->load({});
         if (auto new_level = _level.lock())
         {
-            _level_info->set_level(new_level);
             _view_options->set_ng_plus_enabled(
                 std::ranges::any_of(new_level->items(), [](auto&& i)
                     {
                         const auto item = i.lock();
                         return item && item->ng_plus() != std::nullopt;
                     }));
-        }
-        else
-        {
-            _level_info->set_level({});
         }
     }
 
@@ -519,6 +513,10 @@ namespace trview
         else if (auto selected_room = messages::read_select_room(message))
         {
             set_selected_room(selected_room.value().lock());
+        }
+        else if (auto toggle = messages::commands::read_toggle_settings(message))
+        {
+            _settings_window->toggle_visibility();
         }
     }
 }

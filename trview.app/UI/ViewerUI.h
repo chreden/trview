@@ -6,7 +6,6 @@
 #include <trview.app/UI/IContextMenu.h>
 #include <trview.app/UI/GoTo.h>
 #include <trview.app/UI/IViewerUI.h>
-#include <trview.app/UI/ILevelInfo.h>
 #include <trview.app/UI/RoomNavigator.h>
 #include <trview.app/UI/ISettingsWindow.h>
 #include <trview.app/UI/Tooltip.h>
@@ -18,6 +17,8 @@
 
 namespace trview
 {
+    struct IMainMenu;
+
     class ViewerUI final : public IViewerUI, public IRecipient
     {
     public:
@@ -30,7 +31,7 @@ namespace trview
             std::unique_ptr<ICameraControls> camera_controls,
             std::unique_ptr<IToolbar> toolbar,
             const std::weak_ptr<IMessageSystem>& messaging,
-            std::unique_ptr<ILevelInfo> level_info);
+            const std::shared_ptr<IMainMenu>& main_menu);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual bool is_input_active() const override;
@@ -87,7 +88,6 @@ namespace trview
         std::unique_ptr<RoomNavigator> _room_navigator;
         std::unique_ptr<IViewOptions> _view_options;
         std::unique_ptr<IToolbar> _toolbar;
-        std::unique_ptr<ILevelInfo> _level_info;
         std::shared_ptr<ISettingsWindow> _settings_window;
         std::unique_ptr<ICameraControls> _camera_controls;
         std::unique_ptr<CameraPosition> _camera_position;
@@ -102,5 +102,6 @@ namespace trview
         std::weak_ptr<IRoute> _route;
         std::weak_ptr<ILevel> _level;
         std::weak_ptr<IMessageSystem> _messaging;
+        std::shared_ptr<IMainMenu> _main_menu;
     };
 }

@@ -76,7 +76,7 @@ namespace trview
         LoadMode load_mode,
         const std::shared_ptr<IMessageSystem>& messaging)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
-        _file_menu(file_menu), _update_checker(std::move(update_checker)), _view_menu(window()), _settings_loader(settings_loader), _viewer(viewer),
+        _file_menu(file_menu), _update_checker(std::move(update_checker)), _settings_loader(settings_loader), _viewer(viewer),
         _route_source(route_source), _shortcuts(shortcuts), _level_source(level_source), _dialogs(dialogs), _files(files), _timer(default_time_source()),
         _imgui_backend(std::move(imgui_backend)), _plugins(plugins), _randomizer_route_source(randomizer_route_source), _fonts(fonts), _load_mode(load_mode),
         _windows(windows), _messaging(messaging)
@@ -95,7 +95,6 @@ namespace trview
         _token_store += _file_menu->on_reload += [=]() { reload(); };
 
         setup_shortcuts();
-        setup_view_menu();
 
         _windows->setup(_settings);
         setup_viewer(*startup_options);
@@ -157,57 +156,13 @@ namespace trview
         }
     }
 
-    std::optional<int> Application::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> Application::process_message(UINT message, WPARAM, LPARAM)
     {
         switch (message)
         {
-            case WM_COMMAND:
-            {
-                int wmId = LOWORD(wParam);
-
-                // Parse the menu selections:
-                switch (wmId)
-                {
-                    case ID_HELP_GITHUB:
-                    {
-                        ShellExecute(0, 0, L"https://github.com/chreden/trview", 0, 0, SW_SHOW);
-                        break;
-                    }
-                    case ID_HELP_DISCORD:
-                    {
-                        ShellExecute(0, 0, L"https://discord.gg/Zy7kYge", 0, 0, SW_SHOW);
-                        break;
-                    }
-                    case IDM_EXIT:
-                    {
-                        if (should_discard_changes())
-                        {
-                            on_closing();
-                            DestroyWindow(window());
-                        }
-                        break;
-                    }
-                    case ID_WINDOWS_RESET_LAYOUT:
-                    {
-                        _imgui_backend->reset_layout();
-                        break;
-                    }
-                    case ID_WINDOWS_RESET_FONTS:
-                    {
-                        load_default_fonts(*_fonts);
-                        _settings.fonts = _fonts->fonts();
-                        break;
-                    }
-                }
-                break;
-            }
             case WM_CLOSE:
             {
-                if (should_discard_changes())
-                {
-                    on_closing();
-                    DestroyWindow(window());
-                }
+                quit();
                 return 0;
             }
             case WM_DESTROY:
@@ -248,18 +203,6 @@ namespace trview
         }
 
         return (int)msg.wParam;
-    }
-        
-    void Application::setup_view_menu()
-    {
-        _token_store += _view_menu.on_show_minimap += [&](bool show) { _viewer->set_show_minimap(show); };
-        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _viewer->set_show_tooltip(show); };
-        _token_store += _view_menu.on_show_ui += [&](bool show) { _viewer->set_show_ui(show); };
-        _token_store += _view_menu.on_show_compass += [&](bool show) { _viewer->set_show_compass(show); };
-        _token_store += _view_menu.on_show_selection += [&](bool show) { _viewer->set_show_selection(show); };
-        _token_store += _view_menu.on_show_route += [&](bool show) { _viewer->set_show_route(show); };
-        _token_store += _view_menu.on_show_tools += [&](bool show) { _viewer->set_show_tools(show); };
-        _token_store += _view_menu.on_unhide_all += [&]() { messages::commands::send_unhide_all(_messaging); };
     }
 
     void Application::setup_viewer(const IStartupOptions& startup_options)
@@ -337,6 +280,8 @@ namespace trview
             return;
         }
 
+        test_reset_layout();
+
         if (!_imgui_backend->is_setup())
         {
             // Setup Dear ImGui context
@@ -368,6 +313,7 @@ namespace trview
             }
         }
 
+        test_reset_fonts();
         check_load();
 
         _timer.update();
@@ -887,6 +833,46 @@ namespace trview
         else if (auto route_window_opened = messages::read_route_window_opened(message))
         {
             open_recent_route();
+        }
+        else if (auto quit_message = messages::commands::read_quit(message))
+        {
+            quit();
+        }
+        else if (auto reset_layout = messages::commands::read_reset_layout(message))
+        {
+            _reset_layout = true;
+        }
+        else if (auto reset_fonts = messages::commands::read_reset_fonts(message))
+        {
+            _reset_fonts = true;
+        }
+    }
+
+    void Application::quit()
+    {
+        if (should_discard_changes())
+        {
+            on_closing();
+            DestroyWindow(window());
+        }
+    }
+
+    void Application::test_reset_layout()
+    {
+        if (_reset_layout)
+        {
+            _imgui_backend->reset_layout();
+            _reset_layout = false;
+        }
+    }
+
+    void Application::test_reset_fonts()
+    {
+        if (_reset_fonts)
+        {
+            load_default_fonts(*_fonts);
+            _settings.fonts = _fonts->fonts();
+            _reset_fonts = false;
         }
     }
 }

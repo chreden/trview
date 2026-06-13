@@ -2,11 +2,12 @@
 #include <trview.common/Strings.h>
 #include "../Messages/Messages.h"
 #include "../Settings/UserSettings.h"
+#include "../Elements/ILevel.h"
 
 namespace trview
 {
-    ImGuiFileMenu::ImGuiFileMenu(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const LevelNameSource& level_name_source)
-        : _dialogs(dialogs), _files(files), _level_name_source(level_name_source)
+    ImGuiFileMenu::ImGuiFileMenu(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const LevelNameSource& level_name_source, Mode mode, const std::weak_ptr<IMessageSystem>& messaging)
+        : _dialogs(dialogs), _files(files), _level_name_source(level_name_source), _mode(mode), _messaging(messaging)
     {
     }
 
@@ -30,10 +31,18 @@ namespace trview
                 | std::ranges::to<std::vector>();
         }
         sort_level_switcher();
+        _reload_enabled = true;
     }
 
     void ImGuiFileMenu::render()
     {
+        if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_F, 0U, ImGuiInputFlags_RouteGlobal))
+        {
+            ImGuiWindow* window = ImGui::GetCurrentWindow();
+            const ImGuiID id = window->GetID("File");
+            ImGui::OpenPopup(id, ImGuiPopupFlags_None);
+        }
+
         if (ImGui::BeginMenu("File"))
         {
             if (ImGui::MenuItem("Open"))
@@ -70,6 +79,20 @@ namespace trview
                 }
                 ImGui::EndMenu();
             }
+
+            if (_mode == Mode::Main)
+            {
+                if (ImGui::MenuItem("Reload", "F5", nullptr, _reload_enabled))
+                {
+                    on_reload();
+                }
+
+                if (ImGui::MenuItem("Exit"))
+                {
+                    messages::commands::send_quit(_messaging);
+                }
+            }
+
             ImGui::EndMenu();
         }
     }
@@ -119,7 +142,14 @@ namespace trview
         if (auto settings = messages::read_settings(message))
         {
             set_sorting_mode(settings->level_sorting_mode);
-            set_recent_files(settings->recent_diff_files);
+            set_recent_files(_mode == Mode::Main ? settings->recent_files : settings->recent_diff_files);
+        }
+        else if (auto level = messages::read_open_level(message))
+        {
+            if (auto level_ptr = level->lock())
+            {
+                open_file(level_ptr->filename(), level_ptr->pack());
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 #include "LevelInfo.h"
 #include <trview.app/Graphics/ITextureStorage.h>
 #include "../Elements/ILevel.h"
+#include "../Messages/Messages.h"
 
 namespace trview
 {
@@ -32,26 +33,14 @@ namespace trview
 
     void LevelInfo::render()
     {
-        const auto viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x + viewport->Size.x * 0.5f, viewport->Pos.y), 0, ImVec2(0.5f, 0.0f));
-
-        if (ImGui::Begin("LevelInfo", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            const float previous = ImGui::GetCursorPosY();
-            const float text_size = ImGui::CalcTextSize(_name.c_str()).y;
-            ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.5f - text_size * 0.5f);
-            ImGui::Image(get_version_image(_version).view().Get(), ImVec2(text_size, text_size));
-            ImGui::SameLine();
-            ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.5f - text_size * 0.5f);
-            ImGui::Text(_name.c_str());
-            ImGui::SameLine();
-            ImGui::SetCursorPosY(previous);
-            if (ImGui::Button("Settings"))
-            {
-                on_toggle_settings();
-            }
-        }
-        ImGui::End();
+        const ImVec2 full_text_size = ImGui::CalcTextSize(_name.c_str());
+        const float text_size = full_text_size.y;
+        ImGui::SetCursorPosX(ImGui::GetWindowWidth() * 0.5f - full_text_size.x * 0.5f - text_size);
+        const float previous = ImGui::GetCursorPosY();
+        ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.5f - text_size * 0.5f);
+        ImGui::Image(get_version_image(_version).view().Get(), ImVec2(text_size, text_size));
+        ImGui::SetCursorPosY(previous);
+        ImGui::Text(_name.c_str());
     }
 
     void LevelInfo::set_level(const std::weak_ptr<ILevel>& level)
@@ -83,5 +72,13 @@ namespace trview
             return graphics::Texture();
         }
         return found->second;
+    }
+
+    void LevelInfo::receive_message(const Message& message)
+    {
+        if (auto level = messages::read_open_level(message))
+        {
+            set_level(level.value());
+        }
     }
 }

@@ -12,6 +12,7 @@
 #include <trview.app/Mocks/Tools/IToolbar.h>
 #include <trview.common/Mocks/Messages/IMessageSystem.h>
 #include <trview.app/Mocks/UI/ILevelInfo.h>
+#include <trview.app/Mocks/Menus/IMainMenu.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -34,12 +35,12 @@ namespace
             std::unique_ptr<ICameraControls> camera_controls{ mock_unique<MockCameraControls>() };
             std::unique_ptr<IToolbar> toolbar{ mock_unique<MockToolbar>() };
             std::shared_ptr<IMessageSystem> messaging{ mock_shared<MockMessageSystem>() };
-            std::unique_ptr<ILevelInfo> level_info{ mock_unique<MockLevelInfo>() };
+            std::shared_ptr<IMainMenu> main_menu{ mock_shared<MockMainMenu>() };
 
             std::unique_ptr<ViewerUI> build()
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-                return std::make_unique<ViewerUI>(window, shortcuts, map_renderer_source, std::move(settings_window), std::move(view_options), std::move(context_menu), std::move(camera_controls), std::move(toolbar), messaging, std::move(level_info));
+                return std::make_unique<ViewerUI>(window, shortcuts, map_renderer_source, std::move(settings_window), std::move(view_options), std::move(context_menu), std::move(camera_controls), std::move(toolbar), messaging, main_menu);
             }
 
             test_module& with_settings_window(std::unique_ptr<ISettingsWindow> window)

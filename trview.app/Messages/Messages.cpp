@@ -37,6 +37,36 @@ namespace trview
 
         namespace commands
         {
+            std::optional<std::string> read_create_window(const Message& message)
+            {
+                return read_message<std::string>(message, "create_window");
+            }
+
+            void send_create_window(const std::weak_ptr<IMessageSystem>& messaging, const std::string& key)
+            {
+                send_message(messaging, key, "create_window");
+            }
+
+            std::optional<bool> read_reset_fonts(const Message& message)
+            {
+                return read_message<bool>(message, "reset_fonts");
+            }
+
+            void send_reset_fonts(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "reset_fonts");
+            }
+
+            std::optional<bool> read_reset_layout(const Message& message)
+            {
+                return read_message<bool>(message, "reset_layout");
+            }
+
+            void send_reset_layout(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "reset_layout");
+            }
+
             std::optional<bool> read_route_open(const Message& message)
             {
                 return read_message<bool>(message, "route_open");
@@ -97,6 +127,16 @@ namespace trview
                 send_message(messaging, true, "new_randomizer_route");
             }
 
+            std::optional<bool> read_quit(const Message& message)
+            {
+                return read_message<bool>(message, "quit");
+            }
+
+            void send_quit(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "quit");
+            }
+
             std::optional<bool> read_unhide_all(const Message& message)
             {
                 return read_message<bool>(message, "unhide_all");
@@ -105,6 +145,26 @@ namespace trview
             void send_unhide_all(const std::weak_ptr<IMessageSystem>& messaging)
             {
                 send_message(messaging, true, "unhide_all");
+            }
+
+            std::optional<ShowCommand> read_show(const Message& message)
+            {
+                return read_message<ShowCommand>(message, "show");
+            }
+
+            void send_show(const std::weak_ptr<IMessageSystem>& messaging, const ShowCommand& command)
+            {
+                send_message(messaging, command, "show");
+            }
+
+            std::optional<bool> read_toggle_settings(const Message& message)
+            {
+                return read_message<bool>(message, "toggle_settings");
+            }
+
+            void send_toggle_settings(const std::weak_ptr<IMessageSystem>& messaging)
+            {
+                send_message(messaging, true, "toggle_settings");
             }
         }
 

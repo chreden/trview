@@ -47,7 +47,9 @@
 #include "Graphics/SectorHighlight.h"
 #include "Lua/Scriptable/Scriptable.h"
 #include "Lua/Lua.h"
+#include "Menus/MainMenu.h"
 #include "Menus/FileMenu.h"
+#include "Menus/ViewMenu.h"
 #include "Menus/ImGuiFileMenu.h"
 #include "Menus/UpdateChecker.h"
 #include "Routing/Waypoint.h"
@@ -493,12 +495,15 @@ namespace trview
                 return std::nullopt;
             };
 
-        auto imgui_file_menu = std::make_shared<ImGuiFileMenu>(dialogs, files, level_name_source);
+        auto imgui_file_menu = std::make_shared<ImGuiFileMenu>(dialogs, files, level_name_source, ImGuiFileMenu::Main, messaging);
         messaging->add_recipient(imgui_file_menu);
+
+        auto imgui_file_diff_menu = std::make_shared<ImGuiFileMenu>(dialogs, files, level_name_source, ImGuiFileMenu::Diff, messaging);
+        messaging->add_recipient(imgui_file_diff_menu);
 
         auto diff_window_source = [=]()
             {
-                auto diff_window = std::make_shared<DiffWindow>(dialogs, level_source, imgui_file_menu, messaging);
+                auto diff_window = std::make_shared<DiffWindow>(dialogs, level_source, imgui_file_diff_menu, messaging);
                 messaging->add_recipient(diff_window);
                 diff_window->initialise();
                 return diff_window;
@@ -511,7 +516,7 @@ namespace trview
                 return pack_window;
             };
 
-        auto windows = std::make_shared<Windows>(window, shortcuts);
+        auto windows = std::make_shared<Windows>(shortcuts);
         windows->register_window("About", about_window_source);
         windows->register_window("CameraSink", camera_sink_window_source);
         windows->register_window("Console", console_source);
@@ -527,6 +532,13 @@ namespace trview
         windows->register_window("Statics", statics_window_source);
         windows->register_window("Textures", textures_window_source);
         windows->register_window("Triggers", triggers_window_source);
+        messaging->add_recipient(windows);
+
+        auto view_menu = std::make_shared<ViewMenu>(messaging);
+        auto level_info = std::make_shared<LevelInfo>(*texture_storage, level_name_lookup);
+        messaging->add_recipient(level_info);
+
+        auto main_menu = std::make_shared<MainMenu>(messaging, imgui_file_menu, view_menu, level_info);
 
         auto viewer_ui = std::make_shared<ViewerUI>(
             window,
@@ -538,7 +550,7 @@ namespace trview
             std::make_unique<CameraControls>(),
             std::make_unique<Toolbar>(plugins),
             messaging,
-            std::make_unique<LevelInfo>(*texture_storage, level_name_lookup));
+            main_menu);
         messaging->add_recipient(viewer_ui);
 
         auto viewer = std::make_shared<Viewer>(
