@@ -192,10 +192,10 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             auto& context = ctx->GetVars<ViewOptionsContext>();
             context.ptr = register_test_module().build();
             ctx->SetRef("View Options");
-            IM_CHECK_EQ((ctx->ItemInfo("flags/Flip")->InFlags & ImGuiItemFlags_Disabled) != 0, true);
+            IM_CHECK_EQ((ctx->ItemInfo("flags/Flip").ItemFlags & ImGuiItemFlags_Disabled) != 0, true);
             context.ptr->set_flip_enabled(true);
             ctx->Yield();
-            IM_CHECK_EQ((ctx->ItemInfo("flags/Flip")->InFlags & ImGuiItemFlags_Disabled) != 0, false);
+            IM_CHECK_EQ((ctx->ItemInfo("flags/Flip").ItemFlags & ImGuiItemFlags_Disabled) != 0, false);
         });
 
     test<ViewOptionsContext>(engine, "View Options", "Flip Checkbox Hidden with Alternate Groups",

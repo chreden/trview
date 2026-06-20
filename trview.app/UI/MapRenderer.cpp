@@ -101,7 +101,8 @@ namespace trview
         }
         tooltip();
 
-        ImGui::PushFont(_fonts->font("Minimap"));
+        const auto font = _fonts->font("Minimap");
+        ImGui::PushFont(font, font->LegacySize);
 
         // Background rectangle.
         draw(list, Point(), Size(width, height), Color(0.0f, 0.0f, 0.0f));

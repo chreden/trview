@@ -159,7 +159,7 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ctx->ItemExists("/**/##2"), true);
             IM_CHECK_EQ(ctx->ItemExists("/**/##3"), true);
 
-            ctx->SetRef(ctx->ItemInfo("/**/##0")->Window->ParentWindow);
+            ctx->SetRef(ctx->ItemInfo("/**/##0").Window->ParentWindow);
             ctx->ComboClick("##commandfilter/Flipmaps");
             ctx->Yield();
 
@@ -241,7 +241,7 @@ void register_triggers_window_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ctx->ItemExists("/**/##0"), true);
             IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
 
-            ctx->SetRef(ctx->ItemInfo("/**/##0")->Window->ParentWindow);
+            ctx->SetRef(ctx->ItemInfo("/**/##0").Window->ParentWindow);
             ctx->ComboClick("##commandfilter/Camera");
             ctx->Yield();
 

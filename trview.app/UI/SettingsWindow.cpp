@@ -281,9 +281,9 @@ namespace trview
                 ImGui::Text("Linear Filtering");
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
-                ImGui::Image(_point_texture.view().Get(), ImVec2(512, 512));
+                ImGui::Image(ImTextureID(_point_texture.view().Get()), ImVec2(512, 512));
                 ImGui::TableNextColumn();
-                ImGui::Image(_linear_texture.view().Get(), ImVec2(512, 512));
+                ImGui::Image(ImTextureID(_linear_texture.view().Get()), ImVec2(512, 512));
                 ImGui::EndTable();
             }
             ImGui::EndPopup();

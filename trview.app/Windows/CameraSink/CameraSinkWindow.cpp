@@ -812,7 +812,7 @@ namespace trview
                         pos + ImVec2(current_node_x, 30),
                         pos + ImVec2(current_node_x, 40)
                     };
-                    list->AddPolyline(points, 4, ImColor(0.0f, 1.0f, 0.0f), ImDrawFlags_None, 4.0f);
+                    list->AddPolyline(points, 4, ImColor(0.0f, 1.0f, 0.0f), 4.0f, ImDrawFlags_None);
                 }
                 else if (static_cast<int32_t>(i) == (_state.index + 1))
                 {
@@ -822,7 +822,7 @@ namespace trview
                         pos + ImVec2(next_node_x, 20),
                         pos + ImVec2(next_node_x, 40)
                     };
-                    list->AddPolyline(points, 4, ImColor(1.0f, 1.0f, 0.0f), ImDrawFlags_None, 4.0f);
+                    list->AddPolyline(points, 4, ImColor(1.0f, 1.0f, 0.0f), 4.0f, ImDrawFlags_None);
                 }
                 else
                 {
@@ -831,7 +831,7 @@ namespace trview
                         pos + ImVec2(x, 0),
                         pos + ImVec2(x, 10),
                     };
-                    list->AddPolyline(points, 2, ImColor(0.0f, 0.0f, 1.0f), ImDrawFlags_None, 4.0f);
+                    list->AddPolyline(points, 2, ImColor(0.0f, 0.0f, 1.0f), 4.0f, ImDrawFlags_None);
                 }
             }
         }

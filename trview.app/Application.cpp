@@ -393,8 +393,8 @@ namespace trview
         _imgui_backend->new_frame();
         ImGui::NewFrame();
 
-        ImGui::PushFont(_fonts->font("Default"));
-
+        const auto font = _fonts->font("Default");
+        ImGui::PushFont(font, font->LegacySize);
 
         if (_load.valid())
         {

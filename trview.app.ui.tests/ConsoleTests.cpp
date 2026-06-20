@@ -46,7 +46,7 @@ void register_console_tests(ImGuiTestEngine* engine)
             context.ptr = std::make_shared<Console>(mock_shared<MockDialogs>(), plugins, mock_shared<MockFonts>());
 
             ctx->Yield();
-            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("/Console 0/TabBar/Default/##Log")->ID).c_str(), "Hello");
+            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("/Console 0/TabBar/Default/##Log").ID).c_str(), "Hello");
 
             ctx->ItemClick("/Console 0/##menubar/Edit");
             ctx->ItemClick("/##Menu_00/Clear");
@@ -88,7 +88,7 @@ void register_console_tests(ImGuiTestEngine* engine)
             ctx->KeyPress(ImGuiKey_Enter);
             ctx->Yield();
 
-            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("/Console 0/TabBar/Default/##input")->ID).c_str(), "");
+            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("/Console 0/TabBar/Default/##input").ID).c_str(), "");
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(plugin.get()), true);
         });
 

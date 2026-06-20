@@ -132,7 +132,7 @@ void register_room_navigator_controls_tests(ImGuiTestEngine* engine)
             navigator.set_max_rooms(10);
 
             ctx->SetRef("Room Navigator");
-            auto id = ctx->ItemInfo("of 9##roomnumber")->ID;
+            auto id = ctx->ItemInfo("of 9##roomnumber").ID;
             IM_CHECK_EQ(ItemText(ctx, id), "0");
 
             navigator.set_selected_room(1);

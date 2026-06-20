@@ -18,6 +18,9 @@
     <ClInclude Include="misc\cpp\imgui_stdlib.h">
       <Filter>misc\cpp</Filter>
     </ClInclude>
+    <ClInclude Include="backends\imgui_impl_null.h">
+      <Filter>backends</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui.cpp" />
@@ -34,6 +37,9 @@
     </ClCompile>
     <ClCompile Include="misc\cpp\imgui_stdlib.cpp">
       <Filter>misc\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\imgui_impl_null.cpp">
+      <Filter>backends</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

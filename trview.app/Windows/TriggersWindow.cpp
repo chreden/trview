@@ -489,7 +489,7 @@ namespace trview
                 ImGui::EndTable();
             }
 
-            if (!_local_selected_trigger_trigger_triggerers.empty() && ImGui::BeginChild("Trigger triggerer", ImVec2(), ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY))
+            if (!_local_selected_trigger_trigger_triggerers.empty() && ImGui::BeginChild("Trigger triggerer", ImVec2(), ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY))
             {
                 for (const auto& item : _local_selected_trigger_trigger_triggerers)
                 {

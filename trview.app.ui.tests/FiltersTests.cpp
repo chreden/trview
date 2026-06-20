@@ -108,7 +108,7 @@ void register_filters_tests(ImGuiTestEngine* engine)
                 .build());
 
             ctx->ItemClick("/**/Filters##FiltersButton");
-            ctx->SetRef(ctx->ItemInfo("/**/+")->Window);
+            ctx->SetRef(ctx->ItemInfo("/**/+").Window);
             ctx->ItemClick("+");
 
             ctx->ComboClick("##filter-key-0/value");

@@ -250,7 +250,7 @@ namespace trview
 
     void ItemsWindow::render_item_details()
     {
-        if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), ImGuiChildFlags_Border))
+        if (ImGui::BeginChild(Names::details_panel.c_str(), ImVec2(), ImGuiChildFlags_Borders))
         {
             ImGui::Text("Item Details");
             if (ImGui::BeginTable(Names::item_stats.c_str(), 2, ImGuiTableFlags_SizingFixedFit, ImVec2(-1, 150)))
@@ -329,7 +329,7 @@ namespace trview
                 const bool is_trigger_triggerer = item->type() == "Trigger triggerer";
                 if (is_trigger_triggerer)
                 {
-                    if (ImGui::BeginChild("Trigger triggerer", ImVec2(), ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY))
+                    if (ImGui::BeginChild("Trigger triggerer", ImVec2(), ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY))
                     {
                         ImGui::TextWrapped("This item is a trigger triggerer for a trigger. The trigger will be disabled until this item is activated.");
                         if (const auto room = item->room().lock())

@@ -34,9 +34,9 @@ void register_camera_position_tests(ImGuiTestEngine* engine)
             camera_position.set_position(Vector3(1, 2, 3));
             ctx->Yield();
 
-            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/X")->ID).c_str(), "1024.000");
-            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/Y")->ID).c_str(), "2048.000");
-            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/Z")->ID).c_str(), "3072.000");
+            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/X").ID).c_str(), "1024.000");
+            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/Y").ID).c_str(), "2048.000");
+            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/Z").ID).c_str(), "3072.000");
         });
 
     test<CameraPosition>(engine, "Camera Position", "Position Event Raised",
@@ -60,9 +60,9 @@ void register_camera_position_tests(ImGuiTestEngine* engine)
 
             IM_CHECK_EQ(times_called, 3);
             // The position is scaled by diving by 1024.
-            IM_CHECK_FLOAT_EQ_EPS(new_position.x, 1.0f);
-            IM_CHECK_FLOAT_EQ_EPS(new_position.y, 2.0f);
-            IM_CHECK_FLOAT_EQ_EPS(new_position.z, 3.0f);
+            IM_CHECK_FLOAT_EQ(new_position.x, 1.0f);
+            IM_CHECK_FLOAT_EQ(new_position.y, 2.0f);
+            IM_CHECK_FLOAT_EQ(new_position.z, 3.0f);
         });
 
     test<CameraPosition>(engine, "Camera Position", "Rotation Correctly Converted",
@@ -81,8 +81,8 @@ void register_camera_position_tests(ImGuiTestEngine* engine)
             ctx->ItemInputValue("Camera Position/Yaw", "90");
 
             IM_CHECK_EQ(value.has_value(), true);
-            IM_CHECK_FLOAT_EQ_EPS(std::get<0>(value.value()), 1.570796326f);
-            IM_CHECK_FLOAT_EQ_EPS(std::get<1>(value.value()), 2.0f);
+            IM_CHECK_FLOAT_EQ(std::get<0>(value.value()), 1.570796326f);
+            IM_CHECK_FLOAT_EQ(std::get<1>(value.value()), 2.0f);
         });
 
     test<CameraPosition>(engine, "Camera Position", "Rotation Event Raised",
@@ -106,8 +106,8 @@ void register_camera_position_tests(ImGuiTestEngine* engine)
             ctx->ItemInputValue("Camera Position/Pitch", "180");
 
             IM_CHECK_EQ(times_called, 2);
-            IM_CHECK_FLOAT_EQ_EPS(new_yaw, 1.5707964f);
-            IM_CHECK_FLOAT_EQ_EPS(new_pitch, 3.1415927f);
+            IM_CHECK_FLOAT_EQ(new_yaw, 1.5707964f);
+            IM_CHECK_FLOAT_EQ(new_pitch, 3.1415927f);
         });
 
     test<CameraPosition>(engine, "Camera Position", "Rotation Show Radians",
@@ -122,8 +122,8 @@ void register_camera_position_tests(ImGuiTestEngine* engine)
             camera_position.set_rotation(pi, pi * 0.5f);
             ctx->Yield();
 
-            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/Yaw")->ID).c_str(), "3.1416");
-            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/Pitch")->ID).c_str(), "1.5708");
+            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/Yaw").ID).c_str(), "3.1416");
+            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/Pitch").ID).c_str(), "1.5708");
         });
 
     test<CameraPosition>(engine, "Camera Position", "Rotation Updated",
@@ -156,7 +156,7 @@ void register_camera_position_tests(ImGuiTestEngine* engine)
             ctx->ItemInputValue("Camera Position/Pitch", "0");
 
             IM_CHECK_EQ(value.has_value(), true);
-            IM_CHECK_FLOAT_EQ_EPS(std::get<0>(value.value()), 4.71238898f);
-            IM_CHECK_FLOAT_EQ_EPS(std::get<1>(value.value()), 0);
+            IM_CHECK_FLOAT_EQ(std::get<0>(value.value()), 4.71238898f);
+            IM_CHECK_FLOAT_EQ(std::get<1>(value.value()), 0);
         });
 }

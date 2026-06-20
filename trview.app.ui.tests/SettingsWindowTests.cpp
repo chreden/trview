@@ -588,7 +588,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             ctx->SetRef("Settings");
             ctx->ItemClick("TabBar/Camera");
 
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Camera/Acceleration Rate")->ID), "0.500");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Camera/Acceleration Rate").ID), "0.500");
         });
 
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Acceleration Updates Checkbox",
@@ -651,9 +651,9 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             ctx->SetRef("Settings");
             ctx->ItemClick("TabBar/Route");
 
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Route Colour/##X")->ID), "R:128");
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Route Colour/##Y")->ID), "G:191");
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Route Colour/##Z")->ID), "B:255");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Route Colour/##X").ID), "R:128");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Route Colour/##Y").ID), "G:191");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Route Colour/##Z").ID), "B:255");
         });
 
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Default Waypoint Colour Updates Colours",
@@ -668,9 +668,9 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             ctx->SetRef("Settings");
             ctx->ItemClick("TabBar/Route");
 
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Waypoint Colour/##X")->ID), "R:128");
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Waypoint Colour/##Y")->ID), "G:191");
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Waypoint Colour/##Z")->ID), "B:255");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Waypoint Colour/##X").ID), "R:128");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Waypoint Colour/##Y").ID), "G:191");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Route/Default Waypoint Colour/##Z").ID), "B:255");
         });
 
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Clicking Show Height Lines Raises Event",
@@ -723,7 +723,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             ctx->SetRef("Settings");
             ctx->ItemClick("TabBar/Camera");
 
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Camera/Camera FOV")->ID), "0.500");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Camera/Camera FOV").ID), "0.500");
         });
 
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Go To Lara Updates Checkbox",
@@ -801,20 +801,20 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             ctx->SetRef("Settings");
             ctx->ItemClick("TabBar/Minimap");
 
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##X")->ID), "R:  0");
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##Y")->ID), "G:179");
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##Z")->ID), "B:179");
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##W")->ID), "A:255");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##X").ID), "R:  0");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##Y").ID), "G:179");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##Z").ID), "B:179");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##W").ID), "A:255");
 
             MapColours colours;
             colours.set_colour(MapColours::Special::Default, Colour(0.25f, 0.5f, 0.75f, 1.0f));
             controls.ptr->receive_message(message({ .map_colours = colours }));
             ctx->Yield();
 
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##X")->ID), "R:128");
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##Y")->ID), "G:191");
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##Z")->ID), "B:255");
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##W")->ID), "A: 64");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##X").ID), "R:128");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##Y").ID), "G:191");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##Z").ID), "B:255");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Minimap/Default/##W").ID), "A: 64");
         });
 
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Max Recent Files Updates Numeric Up Down",
@@ -829,7 +829,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             ctx->SetRef("Settings");
             ctx->ItemClick("TabBar/General");
 
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/General/Recent Files")->ID), "5");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/General/Recent Files").ID), "5");
         });
 
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Movement Speed Updates Slider",
@@ -844,7 +844,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             ctx->SetRef("Settings");
             ctx->ItemClick("TabBar/Camera");
 
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Camera/Movement Speed")->ID), "0.500");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Camera/Movement Speed").ID), "0.500");
         });
 
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Orbit Updates Checkbox",
@@ -923,7 +923,7 @@ void register_settings_window_tests(ImGuiTestEngine* engine)
             ctx->SetRef("Settings");
             ctx->ItemClick("TabBar/Camera");
 
-            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Camera/Sensitivity")->ID), "0.500");
+            IM_CHECK_EQ(ItemText(ctx, ctx->ItemInfo("TabBar/Camera/Sensitivity").ID), "0.500");
         });
 
     test<MockWrapper<SettingsWindow>>(engine, "Settings Window", "Set Statics Window on Startup Updates Checkbox",

@@ -83,10 +83,11 @@ The ImGui library allows plugins to render UI elements.
 | Name |
 | ---- |
 | None |
-| DontClosePopups |
+| NoAutoClosePopups |
 | SpanAllColumns |
 | AllowDoubleClick |
 | Disabled |
+| AllowOverlap |
 | NoHoldingActiveID |
 | SelectOnNav |
 | SelectOnClick |

@@ -447,7 +447,11 @@ namespace trview
 
             // Track current order in case a column is removed - have to restore the order
             // manually otherwise it resets.
-            _column_order = { std::from_range, ImGui::GetCurrentTable()->DisplayOrderToIndex };
+            const ImGuiTable* current_table = ImGui::GetCurrentTable();
+            if (current_table)
+            {
+                _column_order = { std::from_range, current_table->DisplayOrderToIndex };
+            }
 
             ImGui::EndTable();
             counter.render();

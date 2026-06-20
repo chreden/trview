@@ -80,7 +80,7 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ctx->ItemExists("/**/Bit 7"), true);
 
             auto props = ctx->ItemInfo("/**/Bit 7");
-            ctx->SetRef(props->Window);
+            ctx->SetRef(props.Window);
 
             IM_CHECK_EQ(ctx->ItemExists("Quicksand \\/ 7"), false);
 
@@ -90,7 +90,7 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
             ctx->Yield();
 
             IM_CHECK_EQ(ctx->ItemExists("/**/Bit 7"), false);
-            ctx->SetRef(props->Window);
+            ctx->SetRef(props.Window);
             IM_CHECK_EQ(ctx->ItemExists("Quicksand \\/ 7"), false);
         });
 
@@ -140,7 +140,7 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
 
             ctx->ItemClick("/**/Filters##FiltersButton");
-            ctx->SetRef(ctx->ItemInfo("/**/+")->Window);
+            ctx->SetRef(ctx->ItemInfo("/**/+").Window);
             ctx->ItemClick("+");
 
             ctx->ComboClick("##filter-key-0/Floordata Type");

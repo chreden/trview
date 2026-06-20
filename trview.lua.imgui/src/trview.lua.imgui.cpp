@@ -385,10 +385,11 @@ namespace trview
             set_enum(L, "SelectableFlags", -1, 
                 {
                     { "None", ImGuiSelectableFlags_None },
-                    { "DontClosePopups", ImGuiSelectableFlags_DontClosePopups },
+                    { "NoAutoClosePopups", ImGuiSelectableFlags_NoAutoClosePopups },
                     { "SpanAllColumns", ImGuiSelectableFlags_SpanAllColumns },
                     { "AllowDoubleClick", ImGuiSelectableFlags_AllowDoubleClick },
                     { "Disabled", ImGuiSelectableFlags_Disabled },
+                    { "AllowOverlap", ImGuiSelectableFlags_AllowOverlap },
                     { "NoHoldingActiveID", ImGuiSelectableFlags_NoHoldingActiveID },
                     { "SelectOnNav", ImGuiSelectableFlags_SelectOnNav },
                     { "SelectOnClick", ImGuiSelectableFlags_SelectOnClick },

@@ -58,12 +58,12 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             context.menu->set_mid_waypoint_enabled(true);
 
             ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
-            IM_CHECK_EQ((ctx->ItemInfo("/**/Add Mid Waypoint")->InFlags & ImGuiItemFlags_Disabled) != 0, false);
+            IM_CHECK_EQ((ctx->ItemInfo("/**/Add Mid Waypoint").ItemFlags & ImGuiItemFlags_Disabled) != 0, false);
 
             context.menu->set_mid_waypoint_enabled(false);
             ctx->Yield();
 
-            IM_CHECK_EQ((ctx->ItemInfo("/**/Add Mid Waypoint")->InFlags & ImGuiItemFlags_Disabled) != 0, true);
+            IM_CHECK_EQ((ctx->ItemInfo("/**/Add Mid Waypoint").ItemFlags & ImGuiItemFlags_Disabled) != 0, true);
         });
 
     test<ContextMenuContext>(engine, "Context Menu", "Add Mid Waypoint Not Raised When Disabled",
@@ -174,12 +174,12 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             context.menu->set_hide_enabled(true);
 
             ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
-            IM_CHECK_EQ((ctx->ItemInfo("/**/Hide")->InFlags & ImGuiItemFlags_Disabled) != 0, false);
+            IM_CHECK_EQ((ctx->ItemInfo("/**/Hide").ItemFlags & ImGuiItemFlags_Disabled) != 0, false);
 
             context.menu->set_hide_enabled(false);
             ctx->Yield();
 
-            IM_CHECK_EQ((ctx->ItemInfo("/**/Hide")->InFlags & ImGuiItemFlags_Disabled) != 0, true);
+            IM_CHECK_EQ((ctx->ItemInfo("/**/Hide").ItemFlags & ImGuiItemFlags_Disabled) != 0, true);
         });
 
     test<ContextMenuContext>(engine, "Context Menu", "Hide Not Raised When Disabled",
@@ -248,12 +248,12 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             context.menu->set_remove_enabled(true);
 
             ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
-            IM_CHECK_EQ((ctx->ItemInfo("/**/Remove Waypoint")->InFlags& ImGuiItemFlags_Disabled) != 0, false);
+            IM_CHECK_EQ((ctx->ItemInfo("/**/Remove Waypoint").ItemFlags & ImGuiItemFlags_Disabled) != 0, false);
 
             context.menu->set_remove_enabled(false);
             ctx->Yield();
 
-            IM_CHECK_EQ((ctx->ItemInfo("/**/Remove Waypoint")->InFlags& ImGuiItemFlags_Disabled) != 0, true);
+            IM_CHECK_EQ((ctx->ItemInfo("/**/Remove Waypoint").ItemFlags & ImGuiItemFlags_Disabled) != 0, true);
         });
 
     test<ContextMenuContext>(engine, "Context Menu", "Remove Waypoint Not Raised When Disabled",
@@ -330,11 +330,11 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             context.menu->set_tile_filter_enabled(true);
 
             ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
-            IM_CHECK_EQ((ctx->ItemInfo("/**/Filter")->InFlags & ImGuiItemFlags_Disabled) != 0, false);
+            IM_CHECK_EQ((ctx->ItemInfo("/**/Filter").ItemFlags & ImGuiItemFlags_Disabled) != 0, false);
 
             context.menu->set_tile_filter_enabled(false);
             ctx->Yield();
 
-            IM_CHECK_EQ((ctx->ItemInfo("/**/Filter")->InFlags & ImGuiItemFlags_Disabled) != 0, true);
+            IM_CHECK_EQ((ctx->ItemInfo("/**/Filter").ItemFlags & ImGuiItemFlags_Disabled) != 0, true);
         });
 }

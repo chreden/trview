@@ -98,7 +98,7 @@ void register_textures_window_tests(ImGuiTestEngine* engine)
 
             ctx->Yield();
 
-            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("/**/Tile")->ID).c_str(), "0");
+            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("/**/Tile").ID).c_str(), "0");
         });
 
     test<TexturesWindowContext>(engine, "Textures Window", "Opaque Tile Used",

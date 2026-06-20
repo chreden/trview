@@ -75,15 +75,17 @@ namespace trview
         ImGuiIO& io = ImGui::GetIO();
 
         bool revert = true;
-        if (new_font && new_font->Glyphs.Size > 0)
+        // TODO: Reinstate?
+        if (new_font)
         {
-            unsigned char* pixels;
-            int width, height;
-            io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
-            if (width > 0 && height > 0)
-            {
-                revert = false;
-            }
+            // unsigned char* pixels;
+            // int width, height;
+            // io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
+            // if (width > 0 && height > 0)
+            // {
+            //     revert = false;
+            // }
+            revert = false;
         }
 
         if (revert)

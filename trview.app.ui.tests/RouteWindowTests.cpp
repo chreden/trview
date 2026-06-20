@@ -232,7 +232,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             context.route = route;
 
             ctx->Yield();
-            ctx->SetRef(ctx->WindowInfo("Route###Route/Waypoint Details")->Window);
+            ctx->SetRef(ctx->WindowInfo("Route###Route/Waypoint Details").Window);
             ctx->ComboClick("Test 1/Two");
 
             IM_CHECK_NE(new_settings.find("test1"), new_settings.end());
@@ -515,7 +515,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             context.ptr->receive_message(trview::Message{ .type = "settings", .data = std::make_shared<MessageData<UserSettings>>(UserSettings {.randomizer_tools = true, .randomizer = settings}) });
 
             ctx->Yield();
-            ctx->SetRef(ctx->WindowInfo("Route###Route/Waypoint Details")->Window);
+            ctx->SetRef(ctx->WindowInfo("Route###Route/Waypoint Details").Window);
             IM_CHECK_EQ(ctx->ItemExists("Randomizer Flags/Test 1"), true);
             IM_CHECK_EQ(ctx->ItemExists("Test 2"), true);
             IM_CHECK_EQ(ctx->ItemExists("Test 3"), true);
@@ -757,7 +757,7 @@ void register_route_window_tests(ImGuiTestEngine* engine)
             context.room = room;
             ctx->Yield();
 
-            IM_CHECK_STR_EQ(RenderedText(ctx, ctx->ItemInfo("/**/Room Position")->ParentID).c_str(), "30720, 51200, 25600");
+            IM_CHECK_STR_EQ(RenderedText(ctx, ctx->ItemInfo("/**/Room Position").ParentID).c_str(), "30720, 51200, 25600");
 
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(room.get()), true);
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(route.get()), true);
