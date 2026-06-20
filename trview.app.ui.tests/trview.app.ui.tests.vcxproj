@@ -167,6 +167,7 @@
     <ClCompile Include="RouteWindowTests.cpp" />
     <ClCompile Include="SettingsWindowTests.cpp" />
     <ClCompile Include="StaticsWindowTests.cpp" />
+    <ClCompile Include="TestHelpers.cpp" />
     <ClCompile Include="TexturesWindowTests.cpp" />
     <ClCompile Include="TriggersWindowTests.cpp" />
     <ClCompile Include="trview.app.ui.tests.cpp" />

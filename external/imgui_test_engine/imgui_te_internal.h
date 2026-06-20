@@ -10,6 +10,9 @@
 #include "imgui_te_utils.h"         // ImMovingAverage
 #include "imgui_capture_tool.h"     // ImGuiCaptureTool  // FIXME
 
+#include <vector>
+#include <string>
+
 //-------------------------------------------------------------------------
 // FORWARD DECLARATIONS
 //-------------------------------------------------------------------------
@@ -137,6 +140,13 @@ struct ImGuiTestInput
     }
 };
 
+// trview modification:
+struct TRViewImGuiText
+{
+    ImGuiID ID{ 0 };
+    std::string text;
+};
+
 struct ImGuiTestInputs
 {
     ImVec2                      MousePosValue;                  // Own non-rounded copy of MousePos in order facilitate simulating mouse movement very slow speed and high-framerate
@@ -234,6 +244,9 @@ struct ImGuiTestEngine
     int                         ToolSlowDownMs = 100;
     ImGuiTestRunSpeed           BackupConfigRunSpeed = ImGuiTestRunSpeed_Fast;
     bool                        BackupConfigNoThrottle = false;
+
+    std::vector<TRViewImGuiText>   Texts;
+    std::vector<TRViewImGuiText>   RenderedTexts;
 
     // Functions
     ImGuiTestEngine();

@@ -165,6 +165,8 @@ void ImGui::TextEx(const char* text, const char* text_end, ImGuiTextFlags flags)
         return;
     ImGuiContext& g = *GImGui;
 
+    IMGUI_TRVIEW_TEST_ENGINE_RENDERED_TEXT(window->IDStack.back(), text);
+
     // Accept null ranges
     if (text == text_end)
         text = text_end = "";
@@ -2000,6 +2002,7 @@ bool ImGui::BeginCombo(const char* label, const char* preview_value, ImGuiComboF
     {
         if (g.LogEnabled)
             LogSetNextTextDecoration("{", "}");
+        IMGUI_TRVIEW_TEST_ENGINE_ITEM_TEXT(id, preview_value);
         RenderTextClipped(bb.Min + style.FramePadding, ImVec2(value_x2, bb.Max.y), preview_value, NULL, NULL);
     }
     if (label_size.x > 0)
@@ -2797,6 +2800,8 @@ bool ImGui::DragScalar(const char* label, ImGuiDataType data_type, void* p_data,
         LogSetNextTextDecoration("{", "}");
     RenderTextClipped(frame_bb.Min, frame_bb.Max, value_buf, value_buf_end, NULL, ImVec2(0.5f, 0.5f));
 
+    IMGUI_TRVIEW_TEST_ENGINE_ITEM_TEXT(id, value_buf);
+
     if (label_size.x > 0.0f)
         RenderText(ImVec2(frame_bb.Max.x + style.ItemInnerSpacing.x, frame_bb.Min.y + style.FramePadding.y), label, label_end, false);
 
@@ -3393,6 +3398,7 @@ bool ImGui::SliderScalar(const char* label, ImGuiDataType data_type, void* p_dat
     const char* value_buf_end = value_buf + DataTypeFormatString(value_buf, IM_COUNTOF(value_buf), data_type, p_data, format);
     if (g.LogEnabled)
         LogSetNextTextDecoration("{", "}");
+    IMGUI_TRVIEW_TEST_ENGINE_ITEM_TEXT(id, value_buf);
     RenderTextClipped(frame_bb.Min, frame_bb.Max, value_buf, value_buf_end, NULL, ImVec2(0.5f, 0.5f));
 
     if (label_size.x > 0.0f)
@@ -4726,6 +4732,8 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
 
     const ImRect frame_bb(window->DC.CursorPos, window->DC.CursorPos + frame_size);
     const ImRect total_bb(frame_bb.Min, frame_bb.Min + total_size);
+
+    IMGUI_TRVIEW_TEST_ENGINE_ITEM_TEXT(id, buf);
 
     ImGuiWindow* draw_window = window;
     ImVec2 inner_size = frame_size;
