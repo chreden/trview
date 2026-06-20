@@ -2,6 +2,9 @@
 // (ui)
 // If you run tests in an interactive or visible application, you may want to call ImGuiTestEngine_ShowTestEngineWindows()
 
+// This file is governed by the "Dear ImGui Test Engine License".
+// Details of the license are provided in the LICENSE.txt file in the same directory.
+
 // Provide access to:
 // - "Dear ImGui Test Engine" main interface
 // - "Dear ImGui Capture Tool"
@@ -18,4 +21,5 @@
 struct ImGuiTestEngine;
 
 // Functions
-IMGUI_API void    ImGuiTestEngine_ShowTestEngineWindows(ImGuiTestEngine* engine, bool* p_open);
+IMGUI_API void  ImGuiTestEngine_ShowTestEngineWindows(ImGuiTestEngine* engine, bool* p_open);
+IMGUI_API void  ImGuiTestEngine_OpenSourceFile(ImGuiTestEngine* engine, const char* source_filename, int source_line_no);

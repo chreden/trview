@@ -136,8 +136,8 @@ void register_camera_position_tests(ImGuiTestEngine* engine)
 
             ctx->Yield();
 
-            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/Yaw")->ID).c_str(), "180.0000");
-            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/Pitch")->ID).c_str(), "90.0000");
+            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/Yaw").ID).c_str(), "180.0000");
+            IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("Camera Position/Pitch").ID).c_str(), "90.0000");
         });
 
     test<CameraPosition>(engine, "Camera Position", "Yaw Removes Negatives",

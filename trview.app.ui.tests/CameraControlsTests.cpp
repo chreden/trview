@@ -121,7 +121,7 @@ void register_camera_controls_tests(ImGuiTestEngine* engine)
             auto& controls = ctx->GetVars<CameraControls>();
             ctx->SetRef("Camera Controls");
 
-            auto id = ctx->ItemInfo("##Mode")->ID;
+            auto id = ctx->ItemInfo("##Mode").ID;
             IM_CHECK_EQ(ItemText(ctx, id), "Orbit");
             controls.set_mode(ICamera::Mode::Axis);
             ctx->Yield();
@@ -135,7 +135,7 @@ void register_camera_controls_tests(ImGuiTestEngine* engine)
             auto& controls = ctx->GetVars<CameraControls>();
             ctx->SetRef("Camera Controls");
             
-            auto id = ctx->ItemInfo("##Projection")->ID;
+            auto id = ctx->ItemInfo("##Projection").ID;
             IM_CHECK_EQ(ItemText(ctx, id), "Perspective");
             controls.set_projection_mode(ProjectionMode::Orthographic);
             ctx->Yield();

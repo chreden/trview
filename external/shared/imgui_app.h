@@ -7,7 +7,7 @@
 // To use graphics backends, define one of the following in your project:
 //   #define IMGUI_APP_WIN32_DX11
 //   #define IMGUI_APP_SDL2_GL2
-//   #define IMGUI_APP_SDL2_GL3
+//   #define IMGUI_APP_SDL3_GL3
 //   #define IMGUI_APP_GLFW_GL3
 //-----------------------------------------------------------------------------
 // IMPORTANT: BACKENDS IMPLEMENTATIONS ARE AUTOMATICALLY LINKED IN imgui_app.cpp
@@ -35,6 +35,7 @@ struct ImGuiApp
     void    (*InitBackends)(ImGuiApp* app) = nullptr;
     bool    (*NewFrame)(ImGuiApp* app) = nullptr;
     void    (*Render)(ImGuiApp* app) = nullptr;
+    void    (*Present)(ImGuiApp* app) = nullptr;
     void    (*ShutdownCloseWindow)(ImGuiApp* app) = nullptr;
     void    (*ShutdownBackends)(ImGuiApp* app) = nullptr;
     void    (*Destroy)(ImGuiApp* app) = nullptr;
@@ -58,16 +59,23 @@ ImGuiApp* ImGuiApp_ImplWin32DX11_Create();
 #endif
 
 #ifdef IMGUI_APP_SDL2_GL2
-ImGuiApp* ImGuiApp_ImplSdlGL2_Create();
+ImGuiApp* ImGuiApp_ImplSDL2GL2_Create();
 #ifndef ImGuiApp_ImplDefault_Create
-#define ImGuiApp_ImplDefault_Create ImGuiApp_ImplSdlGL2_Create
+#define ImGuiApp_ImplDefault_Create ImGuiApp_ImplSDL2GL2_Create
 #endif
 #endif
 
 #ifdef IMGUI_APP_SDL2_GL3
-ImGuiApp* ImGuiApp_ImplSdlGL3_Create();
+ImGuiApp* ImGuiApp_ImplSDL2GL3_Create();
 #ifndef ImGuiApp_ImplDefault_Create
-#define ImGuiApp_ImplDefault_Create ImGuiApp_ImplSdlGL3_Create
+#define ImGuiApp_ImplDefault_Create ImGuiApp_ImplSDL2GL3_Create
+#endif
+#endif
+
+#ifdef IMGUI_APP_SDL3_GL3
+ImGuiApp* ImGuiApp_ImplSDL3GL3_Create();
+#ifndef ImGuiApp_ImplDefault_Create
+#define ImGuiApp_ImplDefault_Create ImGuiApp_ImplSDL3GL3_Create
 #endif
 #endif
 
@@ -90,6 +98,11 @@ ImGuiApp* ImGuiApp_ImplNull_Create();
 
 #if IMGUI_APP_IMPLEMENTATION
 
+// Always link with NULL backend
+#if IMGUI_VERSION_NUM >= 19246
+#include "imgui_impl_null.cpp"
+#endif
+
 #if defined(IMGUI_APP_WIN32_DX11)
 #include "imgui_impl_win32.cpp"
 #include "imgui_impl_dx11.cpp"
@@ -100,12 +113,20 @@ ImGuiApp* ImGuiApp_ImplNull_Create();
 #include "imgui_impl_opengl2.cpp"
 #endif
 
-#if defined(IMGUI_APP_SDL2_GL3) || defined(IMGUI_APP_GLFW_GL3)
+#if defined(IMGUI_APP_SDL2_GL3) || defined(IMGUI_APP_SDL3_GL3) || defined(IMGUI_APP_GLFW_GL3)
 #include "imgui_impl_opengl3.cpp"
 #endif
 
 #if defined(IMGUI_APP_SDL2_GL2) || defined(IMGUI_APP_SDL2_GL3)
 #include "imgui_impl_sdl2.cpp"
+#ifdef Status // X11 headers are leaking this.
+#endif
+#endif
+
+#if defined(IMGUI_APP_SDL3_GL3)
+#include "imgui_impl_sdl3.cpp"
+#ifdef Status // X11 headers are leaking this.
+#endif
 #endif
 
 #if defined(IMGUI_APP_GLFW_GL3)

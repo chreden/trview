@@ -2,6 +2,9 @@
 // (result exporters)
 // Read https://github.com/ocornut/imgui_test_engine/wiki/Exporting-Results
 
+// This file is governed by the "Dear ImGui Test Engine License".
+// Details of the license are provided in the LICENSE.txt file in the same directory.
+
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
@@ -9,6 +12,16 @@
 #include "imgui_te_engine.h"
 #include "imgui_te_internal.h"
 #include "thirdparty/Str/Str.h"
+
+// Warnings
+#if defined(__clang__)
+#if __has_warning("-Wunknown-warning-option")
+#pragma clang diagnostic ignored "-Wunknown-warning-option"         // warning: unknown warning group 'xxx'                      // not all warnings are known by all Clang versions and they tend to be rename-happy.. so ignoring warnings triggers new warnings on some configuration. Great!
+#endif
+#pragma clang diagnostic ignored "-Wsign-conversion"                // warning: implicit conversion changes signedness
+#elif defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wsign-conversion"                  // warning: conversion to 'xxxx' from 'xxxx' may change the sign of the result
+#endif
 
 //-------------------------------------------------------------------------
 // [SECTION] FORWARD DECLARATIONS
@@ -27,11 +40,10 @@ static void ImGuiTestEngine_ExportJUnitXml(ImGuiTestEngine* engine, const char* 
 
 void ImGuiTestEngine_PrintResultSummary(ImGuiTestEngine* engine)
 {
-    int count_tested = 0;
-    int count_success = 0;
-    ImGuiTestEngine_GetResult(engine, count_tested, count_success);
+    ImGuiTestEngineResultSummary summary;
+    ImGuiTestEngine_GetResultSummary(engine, &summary);
 
-    if (count_success < count_tested)
+    if (summary.CountSuccess < summary.CountTested)
     {
         printf("\nFailing tests:\n");
         for (ImGuiTest* test : engine->TestsAll)
@@ -39,9 +51,12 @@ void ImGuiTestEngine_PrintResultSummary(ImGuiTestEngine* engine)
                 printf("- %s\n", test->Name);
     }
 
-    ImOsConsoleSetTextColor(ImOsConsoleStream_StandardOutput, (count_success == count_tested) ? ImOsConsoleTextColor_BrightGreen : ImOsConsoleTextColor_BrightRed);
-    printf("\nTests Result: %s\n", (count_success == count_tested) ? "OK" : "Errors");
-    printf("(%d/%d tests passed)\n", count_success, count_tested);
+    bool success = (summary.CountSuccess == summary.CountTested);
+    ImOsConsoleSetTextColor(ImOsConsoleStream_StandardOutput, success ? ImOsConsoleTextColor_BrightGreen : ImOsConsoleTextColor_BrightRed);
+    printf("\nTests Result: %s\n", success ? "OK" : "Errors");
+    printf("(%d/%d tests passed)\n", summary.CountSuccess, summary.CountTested);
+    if (summary.CountInQueue > 0)
+        printf("(%d queued tests remaining)\n", summary.CountInQueue);
     ImOsConsoleSetTextColor(ImOsConsoleStream_StandardOutput, ImOsConsoleTextColor_White);
 }
 
@@ -122,7 +137,7 @@ void ImGuiTestEngine_ExportEx(ImGuiTestEngine* engine, ImGuiTestEngineExportForm
 {
     if (format == ImGuiTestEngineExportFormat_None)
         return;
-    IM_ASSERT(filename != NULL);
+    IM_ASSERT(filename != nullptr);
 
     if (format == ImGuiTestEngineExportFormat_JUnitXml)
         ImGuiTestEngine_ExportJUnitXml(engine, filename);
@@ -132,11 +147,11 @@ void ImGuiTestEngine_ExportEx(ImGuiTestEngine* engine, ImGuiTestEngineExportForm
 
 void ImGuiTestEngine_ExportJUnitXml(ImGuiTestEngine* engine, const char* output_file)
 {
-    IM_ASSERT(engine != NULL);
-    IM_ASSERT(output_file != NULL);
+    IM_ASSERT(engine != nullptr);
+    IM_ASSERT(output_file != nullptr);
 
     FILE* fp = fopen(output_file, "w+b");
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         fprintf(stderr, "Writing '%s' failed.\n", output_file);
         return;
@@ -145,7 +160,7 @@ void ImGuiTestEngine_ExportJUnitXml(ImGuiTestEngine* engine, const char* output_
     // Per-testsuite test statistics.
     struct
     {
-        const char* Name     = NULL;
+        const char* Name     = nullptr;
         int         Tests    = 0;
         int         Failures = 0;
         int         Disabled = 0;
