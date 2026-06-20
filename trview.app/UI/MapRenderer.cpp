@@ -202,6 +202,7 @@ namespace trview
             });
         ImGui::PopFont();
         ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(width, height));
+        ImGui::Dummy(ImVec2());
 
         clicking();
 
