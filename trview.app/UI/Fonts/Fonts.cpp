@@ -53,8 +53,8 @@ namespace trview
     {
     }
 
-    Fonts::Fonts(const std::shared_ptr<IFiles>& files, const std::shared_ptr<IImGuiBackend>& imgui_backend)
-        : _files(files), _imgui_backend(imgui_backend)
+    Fonts::Fonts(const std::shared_ptr<IFiles>& files)
+        : _files(files)
     {
     }
 
@@ -66,42 +66,30 @@ namespace trview
         return available_fonts;
     }
 
-    ImFont* Fonts::add_font(const std::string& name, const FontSetting& setting)
+    std::optional<IFonts::Font> Fonts::add_font(const std::string& name, const FontSetting& setting)
     {
         auto new_font = add_font(setting);
-        _imgui_backend->rebuild_fonts();
-
-        ImGuiIO& io = ImGui::GetIO();
-
-        bool revert = true;
-        // TODO: Reinstate?
-        if (new_font)
+        if (!new_font)
         {
-            // unsigned char* pixels;
-            // int width, height;
-            // io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
-            // if (width > 0 && height > 0)
-            // {
-            //     revert = false;
-            // }
-            revert = false;
-        }
-
-        if (revert)
-        {
+            ImGuiIO& io = ImGui::GetIO();
             io.Fonts->Clear();
             rebuild_fonts();
-            return nullptr;
+            return std::nullopt;
         }
 
-        _fonts[name] = { .setting = setting, .font = new_font };
-        return new_font;
+        IFonts::Font font = { .setting = setting, .font = new_font };
+        _fonts[name] = font;
+        return font;
     }
 
-    ImFont* Fonts::font(const std::string& name) const
+    std::optional<IFonts::Font> Fonts::font(const std::string& name) const
     {
         const auto found = _fonts.find(name);
-        return found == _fonts.end() ? nullptr : found->second.font;
+        if (found == _fonts.end())
+        {
+            return std::nullopt;
+        }
+        return found->second;
     }
 
     std::unordered_map<std::string, FontSetting> Fonts::fonts() const
@@ -117,7 +105,7 @@ namespace trview
             setting.filename :
             std::format("{}\\{}", _files->fonts_directory(), setting.filename);
         ImGuiIO& io = ImGui::GetIO();
-        return io.Fonts->AddFontFromFileTTF(font_path.c_str(), static_cast<float>(setting.size));
+        return io.Fonts->AddFontFromFileTTF(font_path.c_str());
     }
 
     void Fonts::rebuild_fonts()

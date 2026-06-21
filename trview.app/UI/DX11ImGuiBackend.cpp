@@ -36,9 +36,6 @@ namespace trview
 
     void DX11ImGuiBackend::rebuild_fonts()
     {
-        // TODO: Reinstate
-        // auto& io = ImGui::GetIO();
-        // io.Fonts->Build();
         ImGui_ImplDX11_InvalidateDeviceObjects();
     }
 

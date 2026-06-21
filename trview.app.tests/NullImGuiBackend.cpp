@@ -2,6 +2,8 @@
 #include <external/imgui/imgui.h>
 #include <external/imgui/imgui_internal.h>
 
+#include <external/imgui/backends/imgui_impl_null.h>
+
 namespace trview
 {
     namespace tests
@@ -10,6 +12,7 @@ namespace trview
         {
             auto context = ImGui::GetCurrentContext();
             context->IO.DisplaySize = ImVec2(1920, 1080);
+            ImGui_ImplNull_Init();
             _active = true;
         }
 
@@ -20,11 +23,7 @@ namespace trview
 
         void NullImGuiBackend::new_frame()
         {
-            auto context = ImGui::GetCurrentContext();
-
-            unsigned char* data = 0;
-            int32_t width, height, bpp;
-            context->IO.Fonts->GetTexDataAsRGBA32(&data, &width, &height, &bpp);
+            ImGui_ImplNull_NewFrame();
         }
 
         void NullImGuiBackend::rebuild_fonts()
@@ -33,6 +32,7 @@ namespace trview
 
         void NullImGuiBackend::render()
         {
+            ImGui_ImplNullRender_RenderDrawData(ImGui::GetDrawData());
         }
 
         void NullImGuiBackend::reset_layout()
@@ -41,6 +41,7 @@ namespace trview
 
         void NullImGuiBackend::shutdown()
         {
+            ImGui_ImplNull_Shutdown();
             _active = false;
         }
 

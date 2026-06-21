@@ -395,8 +395,7 @@ namespace trview
                 messaging->add_recipient(plugins_window);
                 return plugins_window;
             };
-        auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
-        auto fonts = std::make_shared<Fonts>(files, imgui_backend);
+        auto fonts = std::make_shared<Fonts>(files);
         auto map_renderer_source = [=](bool load_room_from_message)
             { 
                 auto renderer = std::make_shared<MapRenderer>(fonts, messaging, load_room_from_message);
@@ -563,6 +562,7 @@ namespace trview
         auto file_menu = std::make_shared<FileMenu>(window, shortcuts, dialogs, files, level_name_source, messaging);
         messaging->add_recipient(file_menu);
 
+        auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
         auto application = std::make_shared<Application>(
             window,
             std::make_unique<UpdateChecker>(window),
