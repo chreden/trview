@@ -562,7 +562,6 @@ namespace trview
         auto file_menu = std::make_shared<FileMenu>(window, shortcuts, dialogs, files, level_name_source, messaging);
         messaging->add_recipient(file_menu);
 
-        auto imgui_backend = std::make_shared<DX11ImGuiBackend>(window, device, files);
         auto application = std::make_shared<Application>(
             window,
             std::make_unique<UpdateChecker>(window),
@@ -575,7 +574,7 @@ namespace trview
             std::make_shared<StartupOptions>(command_line),
             dialogs,
             files,
-            imgui_backend,
+            std::make_shared<DX11ImGuiBackend>(window, device, files),
             plugins,
             randomizer_route_source,
             fonts,

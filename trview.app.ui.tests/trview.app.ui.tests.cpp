@@ -9,6 +9,7 @@
 #include <format>
 
 #include "trview_tests.h"
+#include <imgui_te_exporters.h>
 
 void ImGuiTrviewTestEngineHook_ItemText(ImGuiContext* ctx, ImGuiID id, const char* buf)
 {
@@ -44,8 +45,16 @@ void ImGuiTrviewTestEngineHook_RenderedText(ImGuiContext* ctx, ImGuiID id, const
     }
 }
 
-int main()
+int main(int argc, wchar_t** argv)
 {
+    enum class Mode
+    {
+        Console,
+        Window
+    };
+
+    const Mode mode = argc == 1 ? Mode::Window : Mode::Console;
+
     // Quit if no debugger so it stops running in test discovery.
     if (!ImOsIsDebuggerPresent())
     {
@@ -53,7 +62,7 @@ int main()
     }
 
     // Setup application backend
-    ImGuiApp* app = ImGuiApp_ImplDefault_Create();
+    ImGuiApp* app = mode == Mode::Console ? ImGuiApp_ImplNull_Create() : ImGuiApp_ImplDefault_Create();
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -82,21 +91,22 @@ int main()
     // Setup test engine
     ImGuiTestEngine* engine = ImGuiTestEngine_CreateContext();
     ImGuiTestEngineIO& test_io = ImGuiTestEngine_GetIO(engine);
-    test_io.ConfigVerboseLevel = ImGuiTestVerboseLevel_Info;
+    test_io.ConfigVerboseLevel = ImGuiTestVerboseLevel_Debug;
     test_io.ConfigVerboseLevelOnError = ImGuiTestVerboseLevel_Debug;
-    test_io.ConfigRunSpeed = ImGuiTestRunSpeed_Cinematic; // Default to slowest mode in this demo
+    test_io.ConfigRunSpeed = ImGuiTestRunSpeed_Fast;
     test_io.ScreenCaptureFunc = ImGuiApp_ScreenCaptureFunc;
     test_io.ScreenCaptureUserData = (void*)app;
-
-    // Optional: save test output in junit-compatible XML format.
-    //test_io.ExportResultsFile = "./results.xml";
-    // test_io.ExportResultsFormat = ImGuiTestEngineExportFormat_JUnitXml;
 
     // Start test engine
     ImGuiTestEngine_Start(engine, ImGui::GetCurrentContext());
     ImGuiTestEngine_InstallDefaultCrashHandler();
 
     register_trview_tests(engine);
+
+    if (mode == Mode::Console)
+    {
+        ImGuiTestEngine_QueueTests(engine, ImGuiTestGroup_Tests, nullptr);
+    }
 
     // Main loop
     bool aborted = false;
@@ -106,15 +116,20 @@ int main()
             aborted = true;
         if (app->Quit)
             aborted = true;
+        if (mode == Mode::Console && engine->TestsQueue.empty())
+            aborted = true;
 
         if (aborted && ImGuiTestEngine_TryAbortEngine(engine))
             break;
 
         ImGui::NewFrame();
 
-        // Show windows
-        ImGui::ShowDemoWindow();
-        ImGuiTestEngine_ShowTestEngineWindows(engine, NULL);
+        if (mode == Mode::Window)
+        {
+            // Show windows
+            ImGui::ShowDemoWindow();
+            ImGuiTestEngine_ShowTestEngineWindows(engine, NULL);
+        }
 
         // Render and swap
         app->Vsync = test_io.IsRequestingMaxAppSpeed ? false : true;
@@ -126,6 +141,10 @@ int main()
         ImGuiTestEngine_PostSwap(engine);
     }
 
+    ImGuiTestEngineResultSummary summary;
+    ImGuiTestEngine_GetResultSummary(engine, &summary);
+    ImGuiTestEngine_PrintResultSummary(engine);
+
     // Shutdown
     ImGuiTestEngine_Stop(engine);
     app->ShutdownBackends(app);
@@ -136,5 +155,6 @@ int main()
     ImGuiTestEngine_DestroyContext(engine);
 
     app->Destroy(app);
-    return 0;
+
+    return summary.CountSuccess == summary.CountTested ? 0 : 1;
 }
