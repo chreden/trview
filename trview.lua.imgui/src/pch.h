@@ -10,8 +10,6 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 
-#define IMGUI_DISABLE_OBSOLETE_FUNCTIONS
-
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 
