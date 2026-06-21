@@ -56,7 +56,7 @@ int main(int argc, wchar_t** argv)
     const Mode mode = argc == 1 ? Mode::Window : Mode::Console;
 
     // Quit if no debugger so it stops running in test discovery.
-    if (!ImOsIsDebuggerPresent())
+    if (mode == Mode::Window && !ImOsIsDebuggerPresent())
     {
         return 0;
     }
