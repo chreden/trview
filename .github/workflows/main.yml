@@ -29,7 +29,7 @@ jobs:
         $any_errors = $false
         foreach ($file in Get-ChildItem x64\Release\*.tests.exe)
         {
-          if ($file.EndsWith('trview.app.ui.tests.exe'))
+          if ($file.Name.EndsWith('trview.app.ui.tests.exe'))
           {
             . $file ci;
           }
@@ -37,7 +37,7 @@ jobs:
           {
             . $file
           }
-          
+
           if (!$?)
           {
             $any_errors = $true;
