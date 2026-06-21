@@ -48,8 +48,8 @@ void register_console_tests(ImGuiTestEngine* engine)
             ctx->Yield();
             IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("/Console 0/TabBar/Default/##Log").ID).c_str(), "Hello");
 
-            ctx->ItemClick("/Console 0/##menubar/Edit");
-            ctx->ItemClick("/##Menu_00/Clear");
+            ctx->ItemClick("/Console 0/##MenuBar/Edit");
+            ctx->ItemClick("//Menu_00/Clear");
 
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(plugin.get()), true);
         });
@@ -85,7 +85,9 @@ void register_console_tests(ImGuiTestEngine* engine)
 
             ctx->ItemInputValue("/Console 0/TabBar/Default/##input", "Test command");
             ctx->KeyPress(ImGuiKey_UpArrow);
+            ctx->Yield();
             ctx->KeyPress(ImGuiKey_Enter);
+            ctx->Yield();
             ctx->Yield();
 
             IM_CHECK_STR_EQ(ItemText(ctx, ctx->ItemInfo("/Console 0/TabBar/Default/##input").ID).c_str(), "");
@@ -105,8 +107,8 @@ void register_console_tests(ImGuiTestEngine* engine)
             ON_CALL(*dialogs, open_file).WillByDefault(testing::Return(IDialogs::FileResult{ .filename = "test.lua" }));
             context.ptr = std::make_shared<Console>(dialogs, plugins, mock_shared<MockFonts>());
 
-            ctx->ItemClick("/Console 0/##menubar/File");
-            ctx->ItemClick("/##Menu_00/Open");
+            ctx->ItemClick("/Console 0/##MenuBar/File");
+            ctx->ItemClick("//Menu_00/Open");
 
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(plugin.get()), true);
         });
@@ -124,12 +126,12 @@ void register_console_tests(ImGuiTestEngine* engine)
             ON_CALL(*dialogs, open_file).WillByDefault(testing::Return(IDialogs::FileResult{ .filename = "test.lua" }));
             context.ptr = std::make_shared<Console>(dialogs, plugins, mock_shared<MockFonts>());
 
-            ctx->ItemClick("/Console 0/##menubar/File");
-            ctx->ItemClick("/##Menu_00/Open");
+            ctx->ItemClick("/Console 0/##MenuBar/File");
+            ctx->ItemClick("//Menu_00/Open");
 
-            ctx->ItemClick("/Console 0/##menubar/File");
-            ctx->ItemClick("/##Menu_00/Open Recent");
-            ctx->ItemClick("/##Menu_01/test.lua");
+            ctx->ItemClick("/Console 0/##MenuBar/File");
+            ctx->ItemClick("//Menu_00/Open Recent");
+            ctx->ItemClick("//Menu_01/test.lua");
 
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(plugin.get()), true);
         });

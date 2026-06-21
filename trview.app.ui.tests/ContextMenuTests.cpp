@@ -136,7 +136,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
             auto token = context.menu->on_copy += [&raised](auto type) { raised = type; };
 
             ctx->ItemOpen("/**/Copy");
-            ctx->ItemClick("/##Menu_00/Room\\/Object Number");
+            ctx->ItemClick("//Menu_00/Room\\/Object Number");
 
             IM_CHECK_EQ(raised.has_value(), true);
             IM_CHECK_EQ(raised.value(), trview::IContextMenu::CopyType::Number);
@@ -313,7 +313,7 @@ void register_context_menu_tests(ImGuiTestEngine* engine)
 
             ctx->MouseClickOnVoid(ImGuiMouseButton_Right);
             ctx->ItemOpen("/**/Trigger References");
-            ctx->ItemClick("/##Menu_00/Trigger 100");
+            ctx->ItemClick("//Menu_00/Trigger 100");
 
             ASSERT_TRUE(raised);
             ASSERT_FALSE(context.menu->visible());

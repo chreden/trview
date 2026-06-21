@@ -80,7 +80,7 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_camera_sinks({ camera_sink });
             context.ptr->set_selected_camera_sink(camera_sink);
 
-            ctx->SetRef("/Camera\\/Sink 0\\/Details_CA3F050C");
+            ctx->SetRef("/Camera\\/Sink 0\\/Details_D72204C0");
             ctx->ItemClick("Add to Route");
 
             if (auto found = find_message(context.messages, "add_to_route"))
@@ -209,7 +209,7 @@ void register_camera_sink_window_tests(ImGuiTestEngine* engine)
             context.ptr->set_camera_sinks({ camera_sink });
             context.ptr->set_selected_camera_sink(camera_sink);
 
-            ctx->SetRef("/Camera\\/Sink 0\\/Details_CA3F050C");
+            ctx->SetRef("/Camera\\/Sink 0\\/Details_D72204C0");
             ctx->ComboClick("Type/Sink##type");
 
             IM_CHECK_EQ(Mock::VerifyAndClearExpectations(camera_sink.get()), true);

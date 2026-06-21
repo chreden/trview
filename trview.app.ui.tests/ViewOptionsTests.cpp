@@ -270,7 +270,7 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             ctx->SetRef("View Options");
             ctx->ItemClick("flags/Flip", ImGuiMouseButton_Right);
             ctx->ItemOpen("/**/Filter");
-            ctx->ItemClick("/**/##Menu_00/New Window");
+            ctx->ItemClick("/**//Menu_00/New Window");
 
             IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(windows.get()));
             IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(window.get()));
@@ -350,7 +350,7 @@ void register_view_options_tests(ImGuiTestEngine* engine)
             ctx->SetRef("View Options");
             ctx->ItemClick("3##3_flip", ImGuiMouseButton_Right);
             ctx->ItemOpen("/**/Filter");
-            ctx->ItemClick("/**/##Menu_00/New Window");
+            ctx->ItemClick("/**//Menu_00/New Window");
 
             IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(windows.get()));
             IM_CHECK_EQ(true, testing::Mock::VerifyAndClearExpectations(window.get()));

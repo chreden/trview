@@ -99,7 +99,7 @@ namespace
 void register_filters_tests(ImGuiTestEngine* engine)
 {
     test<Filters>(engine, "Filters", "Add Filters Using UI",
-        [](ImGuiTestContext* ctx) { if (ImGui::Begin("Filters Host")) { ctx->GetVars<Filters>().render(); ImGui::End(); } },
+        [](ImGuiTestContext* ctx) { if (ImGui::Begin("Filters Host")) { ctx->GetVars<Filters>().render(); ctx->GetVars<Filters>().render_window(); ImGui::End(); } },
         [](ImGuiTestContext* ctx)
         {
             auto& window = ctx->GetVars<Filters>();
@@ -108,18 +108,20 @@ void register_filters_tests(ImGuiTestEngine* engine)
                 .build());
 
             ctx->ItemClick("/**/Filters##FiltersButton");
-            ctx->SetRef(ctx->ItemInfo("/**/+").Window);
-            ctx->ItemClick("+");
+            ctx->Yield();
 
-            ctx->ComboClick("##filter-key-0/value");
-            ctx->ComboClick("##filter-compare-op-0/less than");
-            ctx->ItemInputValue("##filter-value-0", "10");
+            ctx->SetRef(ctx->ItemInfo("/**/+##0-0").Window);
+            ctx->ItemClick("+##0-0");
 
-            ctx->ItemClick("+");
-            ctx->ComboClick("##filter-op-0/Or");
-            ctx->ComboClick("##filter-key-1/value");
-            ctx->ComboClick("##filter-compare-op-1/greater than");
-            ctx->ItemInputValue("##filter-value-1", "15");
+            ctx->ComboClick("##filter-key-1-0/value");
+            ctx->ComboClick("##filter-compare-op-1-0/less than");
+            ctx->ItemInputValue("##filter-value-1-0", "10");
+
+            ctx->ItemClick("+##0-0");
+            ctx->ComboClick("##filter-op-0-0-0/Or");
+            ctx->ComboClick("##filter-key-1-1/value");
+            ctx->ComboClick("##filter-compare-op-1-1/greater than");
+            ctx->ItemInputValue("##filter-value-1-1", "15");
 
             IM_CHECK_EQ(window.match(Object().with_number(12)), false);
             IM_CHECK_EQ(window.match(Object().with_number(9)), true);
@@ -127,13 +129,16 @@ void register_filters_tests(ImGuiTestEngine* engine)
         });
 
     test<Filters>(engine, "Filters", "Button Toggles Visibility",
-        [](ImGuiTestContext* ctx) { if (ImGui::Begin("Filters Host")) { ctx->GetVars<Filters>().render(); ImGui::End(); } },
+        [](ImGuiTestContext* ctx) { if (ImGui::Begin("Filters Host")) { ctx->GetVars<Filters>().render(); ctx->GetVars<Filters>().render_window(); ImGui::End(); } },
         [](ImGuiTestContext* ctx)
         {
             auto& window = ctx->GetVars<Filters>();
-            IM_CHECK_EQ(ctx->ItemExists("/**/+"), false);
+            window.add_getters(Filters::GettersBuilder()
+                  .with_getter<Object, float>("value", [](auto&& o) { return o.number; })
+                  .build());
+            IM_CHECK_EQ(ctx->ItemExists("/**/+##0-0"), false);
             ctx->ItemClick("/**/Filters##FiltersButton");
-            IM_CHECK_EQ(ctx->ItemExists("/**/+"), true);
+            IM_CHECK_EQ(ctx->ItemExists("/**/+##0-0"), true);
         });
 
     test<Filters>(engine, "Filters", "Checkbox Disables Filters",
