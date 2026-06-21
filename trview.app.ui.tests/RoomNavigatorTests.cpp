@@ -93,8 +93,8 @@ void register_room_navigator_controls_tests(ImGuiTestEngine* engine)
                 raised = room;
             };
 
-            navigator.set_selected_room(5);
             navigator.set_max_rooms(10);
+            navigator.set_selected_room(5);
 
             ctx->SetRef("Room Navigator");
             ctx->ItemClick("of 9##roomnumber/-");
@@ -103,7 +103,7 @@ void register_room_navigator_controls_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(raised.value(), 4);
         });
 
-    test<RoomNavigator>(engine, "Room Navigator", "Room Selected Event Raised On Minus",
+    test<RoomNavigator>(engine, "Room Navigator", "Room Selected Event Raised On Plus",
         [](ImGuiTestContext* ctx) { ctx->GetVars<RoomNavigator>().render(); },
         [](ImGuiTestContext* ctx)
         {

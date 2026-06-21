@@ -4,6 +4,7 @@
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.common/Mocks/Messages/IMessageSystem.h>
 #include <trview.app/Mocks/Filters/IFilterStore.h>
@@ -117,7 +118,6 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
         {
             auto& context = ctx->GetVars<RoomsWindowContext>();
             context.ptr = register_test_module().build();
-            context.ptr->set_floordata({ 0x000, 0x8005 });
 
             auto normal_room = mock_shared<MockRoom>()->with_number(0);
             auto death_room = mock_shared<MockRoom>()->with_number(1);
@@ -131,8 +131,12 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
             ON_CALL(*normal_room, sectors).WillByDefault(Return(std::vector<std::shared_ptr<ISector>>{ normal_sector }));
             ON_CALL(*death_room, sectors).WillByDefault(Return(std::vector<std::shared_ptr<ISector>>{ death_sector }));
 
-            context.ptr->set_level_version(trlevel::LevelVersion::Tomb1);
-            context.ptr->set_rooms({ normal_room, death_room });
+            auto level = mock_shared<MockLevel>();
+            const std::vector<std::weak_ptr<IRoom>> rooms = context.rooms | std::views::transform([](auto&& r) -> std::weak_ptr<IRoom> { return r; }) | std::ranges::to<std::vector>();
+            ON_CALL(*level, rooms).WillByDefault(Return(rooms));
+            ON_CALL(*level, floor_data).WillByDefault(Return(std::vector<uint16_t>{ 0x000, 0x8005 }));
+
+            context.ptr->receive_message(trview::Message{ .type = "open_level", .data = std::make_shared<MessageData<std::weak_ptr<ILevel>>>(level) });
             context.ptr->set_current_room(normal_room);
 
             ctx->Yield();
@@ -140,12 +144,12 @@ void register_rooms_window_tests(ImGuiTestEngine* engine)
             IM_CHECK_EQ(ctx->ItemExists("/**/##1"), true);
 
             ctx->ItemClick("/**/Filters##FiltersButton");
-            ctx->SetRef(ctx->ItemInfo("/**/+").Window);
-            ctx->ItemClick("+");
+            ctx->SetRef(ctx->ItemInfo("/**/+##0-0").Window);
+            ctx->ItemClick("+##0-0");
 
-            ctx->ComboClick("##filter-key-0/Floordata Type");
-            ctx->ComboClick("##filter-compare-op-0/is");
-            ctx->ComboClick("##filter-value-0/Death");
+            ctx->ComboClick("##filter-key-1-0/Floordata Type");
+            ctx->ComboClick("##filter-compare-op-1-0/is");
+            ctx->ComboClick("##filter-value-1-0/Death");
 
             ctx->Yield();
 
