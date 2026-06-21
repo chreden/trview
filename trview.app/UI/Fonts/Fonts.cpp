@@ -32,7 +32,6 @@ namespace trview
 
                     wchar_t* value_string = reinterpret_cast<wchar_t*>(&data_value[0]);
                     if (value_string &&
-                        std::wstring(value_string).ends_with(L".ttf") &&
                         std::wstring(&value[0]).ends_with(L" (TrueType)"))
                     {
                         const auto name = to_utf8(&value[0]);
