@@ -2,6 +2,9 @@
 // (coroutine interface + optional implementation)
 // Read https://github.com/ocornut/imgui_test_engine/wiki/Setting-Up
 
+// This file is governed by the "Dear ImGui Test Engine License".
+// Details of the license are provided in the LICENSE.txt file in the same directory.
+
 #pragma once
 
 #ifndef IMGUI_VERSION
@@ -18,7 +21,7 @@
 // The coroutine code itself should call CoroutineYieldFunc() whenever it wants to yield control back to the main thread.
 //------------------------------------------------------------------------
 
-// An arbitrary handle used internally to represent coroutines (NULL indicates no handle)
+// An arbitrary handle used internally to represent coroutines (nullptr indicates no handle)
 typedef void* ImGuiTestCoroutineHandle;
 
 // A coroutine main function

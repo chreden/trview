@@ -1,35 +1,27 @@
 // dear imgui test engine
 // (helpers/utilities. do NOT use this as a general purpose library)
 
+// This file is governed by the "Dear ImGui Test Engine License".
+// Details of the license are provided in the LICENSE.txt file in the same directory.
+
 #pragma once
 
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
 
-#include <cmath>   // fabsf
+#include <math.h>   // fabsf
 #include <stdint.h> // uint64_t
-#include <cstdio>  // FILE*
+#include <stdio.h>  // FILE*
 #include "imgui.h"  // ImGuiID, ImGuiKey
 class Str;          // Str<> from thirdparty/Str/Str.h
-
-//-----------------------------------------------------------------------------
-// Function Pointers
-//-----------------------------------------------------------------------------
-
-#if IMGUI_TEST_ENGINE_ENABLE_STD_FUNCTION
-#include <functional>
-#define ImFuncPtr(FUNC_TYPE)        std::function<FUNC_TYPE>
-#else
-#define ImFuncPtr(FUNC_TYPE)        FUNC_TYPE*
-#endif
 
 //-----------------------------------------------------------------------------
 // Hashing Helpers
 //-----------------------------------------------------------------------------
 
-ImGuiID     ImHashDecoratedPath(const char* str, const char* str_end = NULL, ImGuiID seed = 0);
-const char* ImFindNextDecoratedPartInPath(const char* str, const char* str_end = NULL);
+ImGuiID     ImHashDecoratedPath(const char* str, const char* str_end = nullptr, ImGuiID seed = 0);
+const char* ImFindNextDecoratedPartInPath(const char* str, const char* str_end = nullptr);
 
 //-----------------------------------------------------------------------------
 // File/Directory Helpers
@@ -37,7 +29,7 @@ const char* ImFindNextDecoratedPartInPath(const char* str, const char* str_end =
 
 bool        ImFileExist(const char* filename);
 bool        ImFileDelete(const char* filename);
-bool        ImFileCreateDirectoryChain(const char* path, const char* path_end = NULL);
+bool        ImFileCreateDirectoryChain(const char* path, const char* path_end = nullptr);
 bool        ImFileFindInParents(const char* sub_path, int max_parent_count, Str* output);
 bool        ImFileLoadSourceBlurb(const char* filename, int line_no_start, int line_no_end, ImGuiTextBuffer* out_buf);
 
@@ -46,8 +38,8 @@ bool        ImFileLoadSourceBlurb(const char* filename, int line_no_start, int l
 //-----------------------------------------------------------------------------
 
 // Those are strictly string manipulation functions
-const char* ImPathFindFilename(const char* path, const char* path_end = NULL);      // Return value always between path and path_end
-const char* ImPathFindExtension(const char* path, const char* path_end = NULL);     // Return value always between path and path_end
+const char* ImPathFindFilename(const char* path, const char* path_end = nullptr);      // Return value always between path and path_end
+const char* ImPathFindExtension(const char* path, const char* path_end = nullptr);     // Return value always between path and path_end
 void        ImPathFixSeparatorsForCurrentOS(char* buf);
 
 //-----------------------------------------------------------------------------
@@ -58,6 +50,7 @@ void        ImStrReplace(Str* s, const char* find, const char* repl);
 const char* ImStrchrRangeWithEscaping(const char* str, const char* str_end, char find_c);
 void        ImStrXmlEscape(Str* s);
 int         ImStrBase64Encode(const unsigned char* src, char* dst, int length);
+void        ImStrTrimTrailingZeroesFromFloat(char* buf, char* buf_end);
 
 //-----------------------------------------------------------------------------
 // Parsing Helpers
@@ -71,7 +64,7 @@ bool        ImParseFindIniSection(const char* ini_config, const char* header, Im
 //-----------------------------------------------------------------------------
 
 uint64_t    ImTimeGetInMicroseconds();
-void        ImTimestampToISO8601(uint64_t timestamp, Str* out_date);
+void        ImTimestampToISO8601(uint64_t timestamp_us, Str* out_date);
 
 //-----------------------------------------------------------------------------
 // Threading Helpers
@@ -135,7 +128,12 @@ void        ImOsConsoleSetTextColor(ImOsConsoleStream stream, ImOsConsoleTextCol
 struct ImGuiTable;
 ImGuiID     TableGetHeaderID(ImGuiTable* table, const char* column, int instance_no = 0);
 ImGuiID     TableGetHeaderID(ImGuiTable* table, int column_n, int instance_no = 0);
+void        TableDiscardInstance(ImGuiID table_id);
+void        TableDiscardSettings(ImGuiID table_id);
 void        TableDiscardInstanceAndSettings(ImGuiID table_id);
+
+// Settings
+void        SaveIniSettingsToVector(ImVector<char>* out);
 
 // DrawData functions
 void        DrawDataVerifyMatchingBufferCount(ImDrawData* draw_data);
@@ -173,7 +171,7 @@ struct ImGuiCsvParser
     int             Rows = 0;                       // Number of rows in CSV file.
 
     // Internal fields
-    char*           _Data = NULL;                   // CSV file data.
+    char*           _Data = nullptr;                   // CSV file data.
     ImVector<char*> _Index;                         // CSV table: _Index[row * _Columns + col].
 
     // Functions
@@ -203,9 +201,9 @@ ImGuiID             TableGetInstanceID(ImGuiTable* table, int instance_no = 0);
 #endif
 
 // Str support for InputText()
-IMGUI_API bool      InputText(const char* label, Str* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
-IMGUI_API bool      InputTextWithHint(const char* label, const char* hint, Str* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
-IMGUI_API bool      InputTextMultiline(const char* label, Str* str, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
+IMGUI_API bool      InputText(const char* label, Str* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* user_data = nullptr);
+IMGUI_API bool      InputTextWithHint(const char* label, const char* hint, Str* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* user_data = nullptr);
+IMGUI_API bool      InputTextMultiline(const char* label, Str* str, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* user_data = nullptr);
 
 // Splitter
 IMGUI_API bool      Splitter(const char* id, float* value_1, float* value_2, int axis, int anchor = 0, float min_size_0 = -1.0f, float min_size_1 = -1.0f);
@@ -216,6 +214,10 @@ IMGUI_API ImFont*   FindFontByPrefix(const char* name);
 // Legacy version support
 #if IMGUI_VERSION_NUM < 18924
 IMGUI_API const char* TabBarGetTabName(ImGuiTabBar* tab_bar, ImGuiTabItem* tab);
+#endif
+
+#if IMGUI_VERSION_NUM < 19256 && !defined(IM_COUNTOF)
+#define IM_COUNTOF  IM_ARRAYSIZE
 #endif
 
 }

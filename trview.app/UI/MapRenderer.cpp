@@ -101,7 +101,11 @@ namespace trview
         }
         tooltip();
 
-        ImGui::PushFont(_fonts->font("Minimap"));
+        const auto font = _fonts->font("Minimap");
+        if (font)
+        {
+            ImGui::PushFont(font->font, static_cast<float>(font->setting.size));
+        }
 
         // Background rectangle.
         draw(list, Point(), Size(width, height), Color(0.0f, 0.0f, 0.0f));
@@ -199,8 +203,12 @@ namespace trview
                     draw(list, tile.position + Point(tile.size.width - 1.0f, 1.0f), { 1.0f, tile.size.height - 2.0f }, Colour::Yellow);
                 }
             });
-        ImGui::PopFont();
+        if (font)
+        {
+            ImGui::PopFont();
+        }
         ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(width, height));
+        ImGui::Dummy(ImVec2());
 
         clicking();
 

@@ -93,6 +93,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="backends\imgui_impl_dx11.h" />
+    <ClInclude Include="backends\imgui_impl_null.h" />
     <ClInclude Include="backends\imgui_impl_win32.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="imconfig.h" />
@@ -106,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="backends\imgui_impl_null.cpp" />
     <ClCompile Include="backends\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imgui_demo.cpp" />

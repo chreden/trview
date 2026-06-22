@@ -3,6 +3,9 @@
 // Browse and visualize samples recorded by ctx->PerfCapture() calls.
 // User access via 'Test Engine UI -> Tools -> Perf Tool'
 
+// This file is governed by the "Dear ImGui Test Engine License".
+// Details of the license are provided in the LICENSE.txt file in the same directory.
+
 #pragma once
 
 #include "imgui.h"
@@ -23,21 +26,24 @@ struct ImGuiCsvParser;
 // As a result our solution also doesn't make many allocations.
 struct IMGUI_API ImGuiPerfToolEntry
 {
+    // Raw CSV data
     ImU64                       Timestamp = 0;                  // Title of a particular batch of perftool entries.
-    const char*                 Category = NULL;                // Name of category perf test is in.
-    const char*                 TestName = NULL;                // Name of perf test.
+    const char*                 Category = nullptr;             // Name of category the test is in.
+    const char*                 TestName = nullptr;             // Name of test.
     double                      DtDeltaMs = 0.0;                // Result of perf test.
+    int                         PerfStressAmount = 0;           //
+    const char*                 GitBranchName = nullptr;        // e.g. "master"
+    const char*                 BuildType = nullptr;            // e.g. "Debug"
+    const char*                 Cpu = nullptr;                  // e.g. "X64"
+    const char*                 OS = nullptr;                   // e.g. "Windows"
+    const char*                 Compiler = nullptr;             // e.g. "MSVC"
+    const char*                 Date = nullptr;                 // e.g. "2026-01-01". Date of this entry or min date of combined entries.
+
+    // Runtime data
     double                      DtDeltaMsMin = +FLT_MAX;        // May be used by perftool.
     double                      DtDeltaMsMax = -FLT_MAX;        // May be used by perftool.
     int                         NumSamples = 1;                 // Number aggregated samples.
-    int                         PerfStressAmount = 0;           //
-    const char*                 GitBranchName = NULL;           // Build information.
-    const char*                 BuildType = NULL;               //
-    const char*                 Cpu = NULL;                     //
-    const char*                 OS = NULL;                      //
-    const char*                 Compiler = NULL;                //
-    const char*                 Date = NULL;                    // Date of this entry or min date of combined entries.
-    //const char*               DateMax = NULL;                 // Max date of combined entries, or NULL.
+    //const char*               DateMax = nullptr;              // Max date of combined entries, or nullptr.
     double                      VsBaseline = 0.0;               // Percent difference vs baseline.
     int                         LabelIndex = 0;                 // Index of TestName in ImGuiPerfTool::_LabelsVisible.
 
@@ -64,10 +70,16 @@ enum ImGuiPerfToolDisplayType : int
     ImGuiPerfToolDisplayType_CombineByBuildInfo,                // Entries with same build information will be averaged.
 };
 
+enum ImGuiPerfToolReportType : int
+{
+    ImGuiPerfToolReportType_Details,                            // Show tests and batches as rows, details in columns.
+    ImGuiPerfToolReportType_Batches,                            // Show test as rows, batches in columns.
+};
+
 //
 struct IMGUI_API ImGuiPerfTool
 {
-    ImVector<ImGuiPerfToolEntry> _SrcData;                       // Raw entries from CSV file (with string pointer into CSV data).
+    ImVector<ImGuiPerfToolEntry>_SrcData;                       // Raw entries from CSV file (with string pointer into CSV data).
     ImVector<const char*>       _Labels;
     ImVector<const char*>       _LabelsVisible;                 // ImPlot requires a pointer of all labels beforehand. Always contains a dummy "" entry at the end!
     ImVector<ImGuiPerfToolBatch> _Batches;
@@ -75,9 +87,12 @@ struct IMGUI_API ImGuiPerfTool
     int                         _NumVisibleBuilds = 0;          // Cached number of visible builds.
     int                         _NumUniqueBuilds = 0;           // Cached number of unique builds.
     ImGuiPerfToolDisplayType    _DisplayType = ImGuiPerfToolDisplayType_CombineByBuildInfo;
+    ImGuiPerfToolReportType     _ReportType = ImGuiPerfToolReportType_Details;
     int                         _BaselineBatchIndex = 0;        // Index of baseline build.
+    int                         _BaselineTestIndex = -1;        // Index of baseline test.
     ImU64                       _BaselineTimestamp = 0;
     ImU64                       _BaselineBuildId = 0;
+    char                        _BaselineTestName[128] = {};
     char                        _Filter[128];                   // Context menu filtering substring.
     char                        _FilterDateFrom[11] = {};
     char                        _FilterDateTo[11] = {};
@@ -91,7 +106,7 @@ struct IMGUI_API ImGuiPerfTool
     int                         _AlignSamples = 0;
     bool                        _InfoTableSortDirty = false;
     ImVector<ImU64>             _InfoTableSort;                 // _InfoTableSort[_LabelsVisible.Size * _Batches.Size]. Contains sorted batch indices for each label.
-    const ImGuiTableSortSpecs*  _InfoTableSortSpecs = NULL;     // Current table sort specs.
+    const ImGuiTableSortSpecs*  _InfoTableSortSpecs = nullptr;  // Current table sort specs.
     ImGuiStorage                _TempSet;                       // Used as a set
     int                         _TableHoveredTest = -1;         // Index within _VisibleLabelPointers array.
     int                         _TableHoveredBatch = -1;
@@ -100,20 +115,20 @@ struct IMGUI_API ImGuiPerfTool
     bool                        _PlotHoverTestLabel = false;
     bool                        _ReportGenerating = false;
     ImGuiStorage                _Visibility;
-    ImGuiCsvParser*             _CsvParser = NULL;              // We keep this around and point to its fields
+    ImGuiCsvParser*             _CsvParser = nullptr;           // We keep this around and point to its fields
 
     ImGuiPerfTool();
     ~ImGuiPerfTool();
 
     void        Clear();
-    bool        LoadCSV(const char* filename = NULL);
+    bool        LoadCSV(const char* filename = nullptr);
     void        AddEntry(ImGuiPerfToolEntry* entry);
 
     void        ShowPerfToolWindow(ImGuiTestEngine* engine, bool* p_open);
     void        ViewOnly(const char* perf_name);
     void        ViewOnly(const char** perf_names);
-    ImGuiPerfToolEntry* GetEntryByBatchIdx(int idx, const char* perf_name = NULL);
-    bool        SaveHtmlReport(const char* file_name, const char* image_file = NULL);
+    ImGuiPerfToolEntry* GetEntryByBatchIdx(int idx, const char* perf_name = nullptr);
+    bool        SaveHtmlReport(const char* file_name, const char* image_file = nullptr);
     inline bool Empty()         { return _SrcData.empty(); }
 
     void        _Rebuild();
@@ -123,9 +138,10 @@ struct IMGUI_API ImGuiPerfTool
     void        _CalculateLegendAlignment();
     void        _ShowEntriesPlot();
     void        _ShowEntriesTable();
-    void        _SetBaseline(int batch_index);
+    void        _ShowEntriesTableBatches();
+    void        _SetBaseline(int batch_index, int test_index = -1);
     void        _AddSettingsHandler();
-    void        _UnpackSortedKey(ImU64 key, int* batch_index, int* entry_index, int* monotonic_index = NULL);
+    void        _UnpackSortedKey(ImU64 key, int* batch_index, int* entry_index, int* monotonic_index = nullptr);
 };
 
-IMGUI_API void    ImGuiTestEngine_PerfToolAppendToCSV(ImGuiPerfTool* perf_log, ImGuiPerfToolEntry* entry, const char* filename = NULL);
+IMGUI_API void    ImGuiTestEngine_PerfToolAppendToCSV(ImGuiPerfToolEntry* entry, const char* filename = nullptr);

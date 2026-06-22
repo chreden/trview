@@ -2,6 +2,9 @@
 // (ui)
 // If you run tests in an interactive or visible application, you may want to call ImGuiTestEngine_ShowTestEngineWindows()
 
+// This file is governed by the "Dear ImGui Test Engine License".
+// Details of the license are provided in the LICENSE.txt file in the same directory.
+
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
@@ -22,14 +25,14 @@
 // - DrawTestLog() [internal]
 // - GetVerboseLevelName() [internal]
 // - ShowTestGroup() [internal]
-// - ImGuiTestEngine_ShowTestWindows()
+// - ImGuiTestEngine_ShowTestEngineWindows()
 //-------------------------------------------------------------------------
 
 // Look for " filename:number " in the string and add menu option to open source.
 static bool ParseLineAndDrawFileOpenItemForSourceFile(ImGuiTestEngine* e, ImGuiTest* test, const char* line_start, const char* line_end)
 {
     const char* separator = ImStrchrRange(line_start, line_end, ':');
-    if (separator == NULL)
+    if (separator == nullptr)
         return false;
 
     const char* path_end = separator;
@@ -52,8 +55,7 @@ static bool ParseLineAndDrawFileOpenItemForSourceFile(ImGuiTestEngine* e, ImGuiT
         const char* src_name = ImPathFindFilename(src_path);
         buf.setf("%.*s%.*s", (int)(src_name - src_path), src_path, (int)(path_end - path_begin), path_begin);
 
-        ImGuiTestEngineIO& e_io = ImGuiTestEngine_GetIO(e);
-        e_io.SrcFileOpenFunc(buf.c_str(), line_no, e_io.SrcFileOpenUserData);
+        ImGuiTestEngine_OpenSourceFile(e, buf.c_str(), line_no);
     }
 
     return true;
@@ -65,8 +67,8 @@ static bool ParseLineAndDrawFileOpenItemForImageFile(ImGuiTestEngine* e, ImGuiTe
     IM_UNUSED(e);
     IM_UNUSED(test);
 
-    const char* extension = ImStristr(line_start, line_end, file_ext, NULL);
-    if (extension == NULL)
+    const char* extension = ImStristr(line_start, line_end, file_ext, nullptr);
+    if (extension == nullptr)
         return false;
 
     const char* path_end = extension + strlen(file_ext);
@@ -118,6 +120,8 @@ static float GetDpiScale()
 {
 #ifdef IMGUI_HAS_VIEWPORT
     return ImGui::GetWindowViewport()->DpiScale;
+#elif IMGUI_VERSION_NUM >= 19197
+    return ImGui::GetStyle()._MainScale;
 #else
     return 1.0f;
 #endif
@@ -138,7 +142,7 @@ static void DrawTestLog(ImGuiTestEngine* e, ImGuiTest* test)
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6.0f, 2.0f) * dpi_scale);
     ImGuiListClipper clipper;
     ImGuiTestVerboseLevel max_log_level = test_output->Status == ImGuiTestStatus_Error ? e->IO.ConfigVerboseLevelOnError : e->IO.ConfigVerboseLevel;
-    int line_count = log->ExtractLinesForVerboseLevels(ImGuiTestVerboseLevel_Silent, max_log_level, NULL);
+    int line_count = log->ExtractLinesForVerboseLevels(ImGuiTestVerboseLevel_Silent, max_log_level, nullptr);
     int current_index_clipped = -1;
     int current_index_abs = 0;
     clipper.Begin(line_count);
@@ -147,7 +151,7 @@ static void DrawTestLog(ImGuiTestEngine* e, ImGuiTest* test)
         for (int line_no = clipper.DisplayStart; line_no < clipper.DisplayEnd; line_no++)
         {
             // Advance index_by_log_level to find log entry indicated by line_no.
-            ImGuiTestLogLineInfo* line_info = NULL;
+            ImGuiTestLogLineInfo* line_info = nullptr;
             while (current_index_clipped < line_no)
             {
                 line_info = &log->LineInfo[current_index_abs];
@@ -158,7 +162,7 @@ static void DrawTestLog(ImGuiTestEngine* e, ImGuiTest* test)
 
             const char* line_start = text + line_info->LineOffset;
             const char* line_end = strchr(line_start, '\n');
-            if (line_end == NULL)
+            if (line_end == nullptr)
                 line_end = text_end;
 
             switch (line_info->Level)
@@ -177,19 +181,43 @@ static void DrawTestLog(ImGuiTestEngine* e, ImGuiTest* test)
                 ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32_WHITE);
                 break;
             }
+#if IMGUI_VERSION_NUM >= 19072
+            ImGui::DebugTextUnformattedWithLocateItem(line_start, line_end);
+#else
             ImGui::TextUnformatted(line_start, line_end);
+#endif
             ImGui::PopStyleColor();
 
             ImGui::PushID(line_no);
-            if (ImGui::BeginPopupContextItem("Context", 1))
+            if (ImGui::BeginPopupContextItem("Context"))
             {
                 if (!ParseLineAndDrawFileOpenItem(e, test, line_start, line_end))
-                    ImGui::MenuItem("No options", NULL, false, false);
+                    ImGui::MenuItem("No options", nullptr, false, false);
                 ImGui::EndPopup();
             }
             ImGui::PopID();
         }
     }
+
+    // Helper
+    if (test->Output.Status == ImGuiTestStatus_Error)
+    {
+        if (ImGui::TextLink("How to investigate a failing test?"))
+            ImGui::OpenPopup("Help");
+        if (ImGui::BeginPopup("Help"))
+        {
+            ImGui::BulletText("%s", "Click '[X] KeepGui' (io.ConfigKeepGuiFunc)    to view and interact with failing state.");
+            ImGui::BulletText("%s", "Click '[X] Break'   (io.ConfigBreakOnError)   to break in debugger.");
+            ImGui::BulletText("%s", "Click '[X] Capture' (io.ConfigCaptureOnError) to capture image of failing state to disk.");
+            ImGui::BulletText("%s", "Log: Right-click on a filename to see open options.");
+            ImGui::BulletText("%s", "Log: Hover hex identifiers to locate items on the screen.");
+            ImGui::BulletText("%s", "Log: Increase Verbose Level (top row of this window) to get a more detailed log.");
+            ImGui::BulletText("%s", "Log: Use 'Tools->Debug Log->Configure Outputs..' to send IMGUI_DEBUG_LOG() output here.");
+            ImGui::BulletText("%s", "Call IM_SUSPEND_TESTFUNC() from TestFunc to view and interact with state at any given point.");
+            ImGui::EndPopup();
+        }
+    }
+
     ImGui::PopStyleVar();
 }
 
@@ -222,7 +250,7 @@ static bool ShowTestGroupFilterTest(ImGuiTestEngine* e, ImGuiTestGroup group, co
 
 static void GetFailingTestsAsString(ImGuiTestEngine* e, ImGuiTestGroup group, char separator, Str* out_string)
 {
-    IM_ASSERT(out_string != NULL);
+    IM_ASSERT(out_string != nullptr);
     bool first = true;
     for (int i = 0; i < e->TestsAll.Size; i++)
     {
@@ -244,7 +272,7 @@ static void GetFailingTestsAsString(ImGuiTestEngine* e, ImGuiTestGroup group, ch
 static void TestStatusButton(const char* id, const ImVec4& color, bool running, int display_counter)
 {
     ImGuiContext& g = *GImGui;
-    ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
+    ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop | ImGuiItemFlags_NoNav, true);
     ImGui::ColorButton(id, color, ImGuiColorEditFlags_NoTooltip);
     ImGui::PopItemFlag();
     if (running)
@@ -255,7 +283,7 @@ static void TestStatusButton(const char* id, const ImVec4& color, bool running, 
         float t = (float)(ImGui::GetTime() * 20.0f);
         ImVec2 off(ImCos(t) * radius, ImSin(t) * radius);
         ImGui::GetWindowDrawList()->AddLine(center - off, center + off, ImGui::GetColorU32(ImGuiCol_Text), 1.5f);
-        //ImGui::RenderText(r.Min + style.FramePadding + ImVec2(0, 0), &"|\0/\0-\0\\"[(((ImGui::GetFrameCount() / 5) & 3) << 1)], NULL);
+        //ImGui::RenderText(r.Min + style.FramePadding + ImVec2(0, 0), &"|\0/\0-\0\\"[(((ImGui::GetFrameCount() / 5) & 3) << 1)], nullptr);
     }
     else if (display_counter >= 0)
     {
@@ -265,7 +293,7 @@ static void TestStatusButton(const char* id, const ImVec4& color, bool running, 
     }
 }
 
-static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
+static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter, bool run)
 {
     ImGuiStyle& style = ImGui::GetStyle();
     ImGuiIO& io = ImGui::GetIO();
@@ -277,13 +305,16 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetFrameHeight() + style.ItemInnerSpacing.x);
 
     //ImGui::Text("TESTS (%d)", engine->TestsAll.Size);
-#if IMGUI_VERSION_NUM >= 18837
-    bool run = ImGui::Button("Run") || ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_R);
-#else
-    bool = ImGui::Button("Run");
-#endif
+#if IMGUI_VERSION_NUM >= 19066
+    ImGui::SetNextItemShortcut(ImGuiMod_Ctrl | ImGuiKey_R, ImGuiInputFlags_Tooltip | ImGuiInputFlags_RouteFromRootWindow);
+    run |= ImGui::Button("Run");
+#elif IMGUI_VERSION_NUM >= 18837
+    run |= ImGui::Button("Run") || ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_R);
 #if IMGUI_VERSION_NUM > 18963
     ImGui::SetItemTooltip("Ctrl+R");
+#endif
+#else
+    run |= ImGui::Button("Run");
 #endif
     if (run)
     {
@@ -292,7 +323,7 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
             ImGuiTest* test = e->TestsAll[n];
             if (!ShowTestGroupFilterTest(e, group, filter->c_str(), test))
                 continue;
-            ImGuiTestEngine_QueueTest(e, test, ImGuiTestRunFlags_None);
+            ImGuiTestEngine_QueueTest(e, test, ImGuiTestRunFlags_RunFromGui);
         }
     }
     ImGui::SameLine();
@@ -320,7 +351,7 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
 
     ImGui::SameLine();
     const char* perflog_label = "Perf Tool";
-    float filter_width = ImGui::GetWindowContentRegionMax().x - ImGui::GetCursorPos().x;
+    float filter_width = ImGui::GetContentRegionAvail().x;
     float perf_stress_factor_width = (30 * dpi_scale);
     if (group == ImGuiTestGroup_Perfs)
     {
@@ -329,6 +360,9 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
     }
     filter_width -= ImGui::CalcTextSize("(?)").x + style.ItemSpacing.x;
     ImGui::SetNextItemWidth(ImMax(20.0f, filter_width));
+#if IMGUI_VERSION_NUM >= 19066
+    ImGui::SetNextItemShortcut(ImGuiMod_Ctrl | ImGuiKey_F, ImGuiInputFlags_Tooltip | ImGuiInputFlags_RouteFromRootWindow);
+#endif
     ImGui::InputText("##filter", filter);
     ImGui::SameLine();
     ImGui::TextDisabled("(?)");
@@ -354,6 +388,19 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
     int tests_completed = 0;
     int tests_succeeded = 0;
     int tests_failed = 0;
+    ImVector<ImGuiTest*> tests_to_remove;
+
+    // Set table child window to use _NavFlattened. WIP/Undocumented. (#8280)
+#if IMGUI_VERSION_NUM >= 19183
+    {
+        ImGuiContext& g = *GImGui;
+        if (!(g.NextWindowData.HasFlags & ImGuiNextWindowDataFlags_HasChildFlags))
+            g.NextWindowData.ChildFlags = 0;
+        g.NextWindowData.ChildFlags |= ImGuiChildFlags_NavFlattened;
+        g.NextWindowData.HasFlags |= ImGuiNextWindowDataFlags_HasChildFlags;
+    }
+#endif
+
     if (ImGui::BeginTable("Tests", 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_SizingFixedFit))
     {
         ImGui::TableSetupScrollFreeze(0, 1);
@@ -372,7 +419,7 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
                 continue;
 
             ImGuiTestOutput* test_output = &test->Output;
-            ImGuiTestContext* test_context = (e->TestContext && e->TestContext->Test == test) ? e->TestContext : NULL; // Running context, if any
+            ImGuiTestContext* test_context = (e->TestContext && e->TestContext->Test == test) ? e->TestContext : nullptr; // Running context, if any
 
             ImGui::TableNextRow();
             ImGui::PushID(test_n);
@@ -429,13 +476,13 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
             }
 
             ImGui::TableNextColumn();
-            if (ImGui::Selectable(test->Category, test == e->UiSelectedTest, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+            if (ImGui::Selectable(test->Category, test == e->UiSelectedTest, ImGuiSelectableFlags_SpanAllColumns | (ImGuiSelectableFlags)ImGuiSelectableFlags_SelectOnNav))
                 select_test = true;
 
             // Double-click to run test, CTRL+Double-click to run GUI function
             const bool is_running_gui_func = (test_context && (test_context->RunFlags & ImGuiTestRunFlags_GuiFuncOnly));
-            const bool has_gui_func = (test->GuiFunc != NULL);
-            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+            const bool has_gui_func = (test->GuiFunc != nullptr);
+            if ((ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) || (ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGuiKey_Enter))) // FIXME: How to properly handle that with selectable
             {
                 if (ImGui::GetIO().KeyCtrl)
                     queue_gui_func_toggle = true;
@@ -465,16 +512,16 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
 
                 ImGui::Separator();
 
-                const bool open_source_available = (test->SourceFile != NULL) && (e->IO.SrcFileOpenFunc != NULL);
+                const bool open_source_available = (test->SourceFile != nullptr) && (e->IO.SrcFileOpenFunc != nullptr);
 
                 Str128 buf;
-                if (test->SourceFile != NULL) // This is normally set by IM_REGISTER_TEST() but custom registration may omit it.
+                if (test->SourceFile != nullptr) // This is normally set by IM_REGISTER_TEST() but custom registration may omit it.
                     buf.setf("Open source (%s:%d)", ImPathFindFilename(test->SourceFile), test->SourceLine);
                 else
                     buf.set("Open source");
-                if (ImGui::MenuItem(buf.c_str(), NULL, false, open_source_available))
-                    e->IO.SrcFileOpenFunc(test->SourceFile, test->SourceLine, e->IO.SrcFileOpenUserData);
-                if (ImGui::MenuItem("View source...", NULL, false, test->SourceFile != NULL))
+                if (ImGui::MenuItem(buf.c_str(), nullptr, false, open_source_available))
+                    ImGuiTestEngine_OpenSourceFile(e, test->SourceFile, test->SourceLine);
+                if (ImGui::MenuItem("View source...", nullptr, false, test->SourceFile != nullptr))
                     view_source = true;
 
                 if (group == ImGuiTestGroup_Perfs && ImGui::MenuItem("View perflog"))
@@ -484,7 +531,7 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
                 }
 
                 ImGui::Separator();
-                if (ImGui::MenuItem("Copy name", NULL, false))
+                if (ImGui::MenuItem("Copy name", nullptr, false))
                     ImGui::SetClipboardText(test->Name);
 
                 if (test_output->Status == ImGuiTestStatus_Error)
@@ -501,8 +548,8 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
                     for (int level_n = ImGuiTestVerboseLevel_Error; level_n < ImGuiTestVerboseLevel_COUNT; level_n++)
                     {
                         ImGuiTestVerboseLevel level = (ImGuiTestVerboseLevel)level_n;
-                        int count = test_log->ExtractLinesForVerboseLevels((ImGuiTestVerboseLevel)0, level, NULL);
-                        if (ImGui::MenuItem(Str64f("%s (%d lines)", ImGuiTestEngine_GetVerboseLevelName(level), count).c_str(), NULL, false, count > 0))
+                        int count = test_log->ExtractLinesForVerboseLevels((ImGuiTestVerboseLevel)0, level, nullptr);
+                        if (ImGui::MenuItem(Str64f("%s (%d lines)", ImGuiTestEngine_GetVerboseLevelName(level), count).c_str(), nullptr, false, count > 0))
                         {
                             ImGuiTextBuffer buffer;
                             test_log->ExtractLinesForVerboseLevels((ImGuiTestVerboseLevel)0, level, &buffer);
@@ -512,8 +559,13 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
                     ImGui::EndMenu();
                 }
 
-                if (ImGui::MenuItem("Clear log", NULL, false, !test_log->IsEmpty()))
+                if (ImGui::MenuItem("Clear log", nullptr, false, !test_log->IsEmpty()))
                     test_log->Clear();
+
+                // [DEBUG] Simple way to exercise ImGuiTestEngine_UnregisterTest()
+                //ImGui::Separator();
+                //if (ImGui::MenuItem("Remove test"))
+                //    tests_to_remove.push_back(test);
 
                 ImGui::EndPopup();
             }
@@ -530,20 +582,19 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
                     source_blurb.append(file_data, file_data + file_size);
                 else
                     source_blurb.append("<Error loading sources>");
-                goto_line = (test->SourceLine + test->SourceLineEnd) / 2;
+                goto_line = test->SourceLine;
                 ImGui::OpenPopup("Source");
             }
             if (ImGui::BeginPopup("Source"))
             {
-                // FIXME: Local vs screen pos too messy :(
-                const ImVec2 start_pos = ImGui::GetCursorStartPos();
+                const ImVec2 start_pos = ImGui::GetCursorScreenPos();
                 const float line_height = ImGui::GetTextLineHeight();
                 if (goto_line != -1)
-                    ImGui::SetScrollFromPosY(start_pos.y + (goto_line - 1) * line_height, 0.5f);
+                    ImGui::SetScrollY(ImMax((goto_line - 5) * line_height, 0.0f));
                 goto_line = -1;
 
-                ImRect r(0.0f, test->SourceLine * line_height, ImGui::GetWindowWidth(), (test->SourceLine + 1) * line_height); // SourceLineEnd is too flaky
-                ImGui::GetWindowDrawList()->AddRectFilled(ImGui::GetWindowPos() + start_pos + r.Min, ImGui::GetWindowPos() + start_pos + r.Max, IM_COL32(80, 80, 150, 150));
+                ImRect r(0.0f, (test->SourceLine - 1) * line_height, ImGui::GetWindowWidth(), (test->SourceLineEnd - 1) * line_height);
+                ImGui::GetWindowDrawList()->AddRectFilled(start_pos + r.Min, start_pos + r.Max, IM_COL32(80, 80, 150, 100));
 
                 ImGui::TextUnformatted(source_blurb.c_str(), source_blurb.end());
                 ImGui::EndPopup();
@@ -561,8 +612,13 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
                 ImGuiTestEngine_AbortCurrentTest(e);
             else if (queue_gui_func_toggle && !e->IO.IsRunningTests)
                 ImGuiTestEngine_QueueTest(e, test, ImGuiTestRunFlags_RunFromGui | ImGuiTestRunFlags_GuiFuncOnly);
-            if (queue_test && !e->IO.IsRunningTests)
-                ImGuiTestEngine_QueueTest(e, test, ImGuiTestRunFlags_RunFromGui);
+            if (queue_test)
+            {
+                if (e->IO.IsRunningTests)
+                    ImGuiTestEngine_AbortCurrentTest(e);
+                else
+                    ImGuiTestEngine_QueueTest(e, test, ImGuiTestRunFlags_RunFromGui);
+            }
 
             ImGui::PopID();
         }
@@ -570,6 +626,10 @@ static void ShowTestGroup(ImGuiTestEngine* e, ImGuiTestGroup group, Str* filter)
         ImGui::PopStyleVar(2);
         ImGui::EndTable();
     }
+
+    // Process removal
+    for (ImGuiTest* test : tests_to_remove)
+        ImGuiTestEngine_UnregisterTest(e, test);
 
     // Display test status recap (colors match per-test run button colors defined above)
     {
@@ -602,7 +662,7 @@ static void ImGuiTestEngine_ShowLogAndTools(ImGuiTestEngine* engine)
     {
         ImGuiTest* selected_test = engine->UiSelectedTest;
 
-        if (selected_test != NULL)
+        if (selected_test != nullptr)
             ImGui::Text("Log for '%s' '%s'", selected_test->Category, selected_test->Name);
         else
             ImGui::Text("N/A");
@@ -631,14 +691,21 @@ static void ImGuiTestEngine_ShowLogAndTools(ImGuiTestEngine* engine)
     {
         ImGuiIO& io = ImGui::GetIO();
         ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-        ImGui::Text("TestEngine: HookItems: %d, HookPushId: %d, InfoTasks: %d", g.TestEngineHookItems, g.DebugHookIdInfo != 0, engine->InfoTasks.Size);
+        ImGui::Text("TestEngine: HookItems: %d, HookPushId: %d, InfoTasks: %d, MaxAppSpeed: %d", g.TestEngineHookItems,
+#if IMGUI_VERSION_NUM < 19229
+            g.DebugHookIdInfo != 0,
+#else
+            g.DebugHookIdInfoId != 0,
+#endif
+            engine->InfoTasks.Size,
+            engine->IO.IsRequestingMaxAppSpeed);
         ImGui::Separator();
 
         if (ImGui::Button("Reboot UI context"))
             engine->ToolDebugRebootUiContext = true;
 
         const ImGuiInputTextCallback filter_callback = [](ImGuiInputTextCallbackData* data) { return (data->EventChar == ',' || data->EventChar == ';') ? 1 : 0; };
-        ImGui::InputText("Branch/Annotation", engine->IO.GitBranchName, IM_ARRAYSIZE(engine->IO.GitBranchName), ImGuiInputTextFlags_CallbackCharFilter, filter_callback, NULL);
+        ImGui::InputText("Branch/Annotation", engine->IO.GitBranchName, IM_COUNTOF(engine->IO.GitBranchName), ImGuiInputTextFlags_CallbackCharFilter, filter_callback, nullptr);
         ImGui::SetItemTooltip("This will be stored in the CSV file for performance tools.");
 
         ImGui::Separator();
@@ -662,32 +729,75 @@ static void ImGuiTestEngine_ShowLogAndTools(ImGuiTestEngine* engine)
             ImGui::SameLine(); ImGui::SetNextItemWidth(70 * dpi_scale);
             ImGui::SliderInt("##ms", &engine->ToolSlowDownMs, 0, 400, "%d ms");
 
-            // FIXME-TESTS: Need to be visualizing the samples/spikes.
-            double dt_1 = 1.0 / ImGui::GetIO().Framerate;
-            double fps_now = 1.0 / dt_1;
-            double dt_100 = engine->PerfDeltaTime100.GetAverage();
-            double dt_500 = engine->PerfDeltaTime500.GetAverage();
+            if (!engine->PreSwapCalled)
+                ImGui::TextColored(ImVec4(1,0,0,1), "ImGuiTestEngine_PreSwap() not called by application!");
+            if (!engine->PostSwapCalled)
+                ImGui::TextColored(ImVec4(1,0,0,1), "ImGuiTestEngine_PostSwapCalled() not called by application!");
 
-            //if (engine->PerfRefDeltaTime <= 0.0 && engine->PerfRefDeltaTime.IsFull())
-            //    engine->PerfRefDeltaTime = dt_2000;
+            const ImVec2 plot_size(0.0f, ImGui::GetFrameHeight() * 3);
 
-            ImGui::Checkbox("Unthrolled", &engine->IO.ConfigNoThrottle);
-            ImGui::SameLine();
-            if (ImGui::Button("Pick ref dt"))
-                engine->PerfRefDeltaTime = dt_500;
+            {
+                ImGuiTestEnginePerfRecord* r = &engine->PerfDtApp;
+                ImMovingAverage<double>* ma = &r->Average500;
+                double dt_1 = r->RawValueMs;
+                double avg_100 = r->Average100.GetAverage();
+                double avg_500 = r->Average500.GetAverage();
+                double fps_now = 1000.0 / dt_1;
 
-            double dt_ref = engine->PerfRefDeltaTime;
-            ImGui::Text("[ref dt]    %6.3f ms", engine->PerfRefDeltaTime * 1000);
-            ImGui::Text("[last 001] %6.3f ms (%.1f FPS) ++ %6.3f ms", dt_1 * 1000.0, 1.0 / dt_1, (dt_1 - dt_ref) * 1000);
-            ImGui::Text("[last 100] %6.3f ms (%.1f FPS) ++ %6.3f ms ~ converging in %.1f secs", dt_100 * 1000.0, 1.0 / dt_100, (dt_1 - dt_ref) * 1000, 100.0 / fps_now);
-            ImGui::Text("[last 500] %6.3f ms (%.1f FPS) ++ %6.3f ms ~ converging in %.1f secs", dt_500 * 1000.0, 1.0 / dt_500, (dt_1 - dt_ref) * 1000, 500.0 / fps_now);
+                ImGui::Checkbox("Unthrolled", &engine->IO.ConfigNoThrottle);
 
-            //ImGui::PlotLines("Last 100", &engine->PerfDeltaTime100.Samples.Data, engine->PerfDeltaTime100.Samples.Size, engine->PerfDeltaTime100.Idx, NULL, 0.0f, dt_1000 * 1.10f, ImVec2(0.0f, ImGui::GetFontSize()));
-            ImVec2 plot_size(0.0f, ImGui::GetFrameHeight() * 3);
-            ImMovingAverage<double>* ma = &engine->PerfDeltaTime500;
-            ImGui::PlotLines("Last 500",
-                [](void* data, int n) { ImMovingAverage<double>* ma = (ImMovingAverage<double>*)data; return (float)(ma->Samples[n] * 1000); },
-                ma, ma->Samples.Size, 0 * ma->Idx, NULL, 0.0f, (float)(ImMax(dt_100, dt_500) * 1000.0 * 1.2f), plot_size);
+                ImGui::SeparatorText("io.DeltaTime");
+                ImGui::Text("[current] %6.3f ms (%.1f FPS)", dt_1, 1000.0 / dt_1);
+                ImGui::Text("[avg 100] %6.3f ms (%.1f FPS) ~ converging in %.1f secs", avg_100, 1000.0 / avg_100, 100.0 / fps_now);
+                ImGui::Text("[avg 500] %6.3f ms (%.1f FPS) ~ converging in %.1f secs", avg_500, 1000.0 / avg_500, 500.0 / fps_now);
+                ImGui::PlotLines("Last 500##0",
+                    [](void* data, int n) { ImMovingAverage<double>* ma = (ImMovingAverage<double>*)data; return (float)ma->Samples[n]; },
+                    ma, ma->Samples.Size, 0 * ma->Idx, nullptr, 0.0f, (float)(ImMax(avg_100, avg_500) * 1.2f), plot_size);
+            }
+            {
+                ImGuiTestEnginePerfRecord* r = &engine->PerfDtPreNewFrameToPreRender;
+                ImMovingAverage<double>* ma = &r->Average500;
+                double avg_100 = r->Average100.GetAverage();
+                double avg_500 = r->Average500.GetAverage();
+                ImGui::SeparatorText("PreNewFrame -> PreRender");
+                ImGui::Text("[current] %6.3f ms, [avg 100] %6.3f ms, [avg 500] %6.3f ms", r->RawValueMs, avg_100, avg_500);
+                ImGui::PlotLines("Last 500##1",
+                    [](void* data, int n) { ImMovingAverage<double>* ma = (ImMovingAverage<double>*)data; return (float)ma->Samples[n]; },
+                    ma, ma->Samples.Size, 0 * ma->Idx, nullptr, 0.0f, (float)(ImMax(avg_100, avg_500) * 1.2f), plot_size);
+            }
+            {
+                ImGuiTestEnginePerfRecord* r = &engine->PerfDtPreRenderToPreSwap;
+                ImMovingAverage<double>* ma = &r->Average500;
+                double avg_100 = r->Average100.GetAverage();
+                double avg_500 = r->Average500.GetAverage();
+                ImGui::SeparatorText("PreRender -> PreSwap");
+                ImGui::Text("[current] %6.3f ms, [avg 100] %6.3f ms, [avg 500] %6.3f ms", r->RawValueMs, avg_100, avg_500);
+                ImGui::PlotLines("Last 500##2",
+                    [](void* data, int n) { ImMovingAverage<double>* ma = (ImMovingAverage<double>*)data; return (float)ma->Samples[n]; },
+                    ma, ma->Samples.Size, 0 * ma->Idx, nullptr, 0.0f, (float)(ImMax(avg_100, avg_500) * 1.2f), plot_size);
+            }
+            {
+                ImGuiTestEnginePerfRecord* r = &engine->PerfDtPreNewFrameToPreSwap;
+                ImMovingAverage<double>* ma = &r->Average500;
+                double avg_100 = r->Average100.GetAverage();
+                double avg_500 = r->Average500.GetAverage();
+                ImGui::SeparatorText("PreNewFrame -> PreRender -> PreSwap");
+                ImGui::Text("[current] %6.3f ms, [avg 100] %6.3f ms, [avg 500] %6.3f ms", r->RawValueMs, avg_100, avg_500);
+                ImGui::PlotLines("Last 500##3",
+                    [](void* data, int n) { ImMovingAverage<double>* ma = (ImMovingAverage<double>*)data; return (float)ma->Samples[n]; },
+                    ma, ma->Samples.Size, 0 * ma->Idx, nullptr, 0.0f, (float)(ImMax(avg_100, avg_500) * 1.2f), plot_size);
+            }
+            {
+                ImGuiTestEnginePerfRecord* r = &engine->PerfDtPreSwapToPostSwap;
+                ImMovingAverage<double>* ma = &r->Average500;
+                double avg_100 = r->Average100.GetAverage();
+                double avg_500 = r->Average500.GetAverage();
+                ImGui::SeparatorText("PreSwap -> PostSwap");
+                ImGui::Text("[current] %6.3f ms, [avg 100] %6.3f ms, [avg 500] %6.3f ms", r->RawValueMs, avg_100, avg_500);
+                ImGui::PlotLines("Last 500##4",
+                    [](void* data, int n) { ImMovingAverage<double>* ma = (ImMovingAverage<double>*)data; return (float)ma->Samples[n]; },
+                    ma, ma->Samples.Size, 0 * ma->Idx, nullptr, 0.0f, (float)(ImMax(avg_100, avg_500) * 1.2f), plot_size);
+            }
 
             ImGui::TreePop();
         }
@@ -718,8 +828,18 @@ static void ImGuiTestEngine_ShowTestTool(ImGuiTestEngine* engine, bool* p_open)
         return;
     }
 
+    bool run = false;
     if (ImGui::BeginMenuBar())
     {
+        if (ImGui::BeginMenu("Tests"))
+        {
+            // FIXME: This idiom showcases an issue with menus vs shortcuts. Would be nice if e.g. we could activate a shortcut?
+            run = ImGui::MenuItem("Run Visible", "Ctrl+R");
+            ImGui::MenuItem("Filter", "Ctrl+F");
+            if (p_open != NULL && ImGui::MenuItem("Close"))
+                *p_open = false;
+            ImGui::EndMenu();
+        }
         if (ImGui::BeginMenu("Tools"))
         {
             ImGuiContext& g = *GImGui;
@@ -735,46 +855,63 @@ static void ImGuiTestEngine_ShowTestTool(ImGuiTestEngine* engine, bool* p_open)
         ImGui::EndMenuBar();
     }
 
-    ImGui::SetNextItemWidth(90 * dpi_scale);
-    if (ImGui::BeginCombo("##RunSpeed", ImGuiTestEngine_GetRunSpeedName(engine->IO.ConfigRunSpeed), ImGuiComboFlags_None))
+    // Run Speed
     {
-        for (ImGuiTestRunSpeed level = (ImGuiTestRunSpeed)0; level < ImGuiTestRunSpeed_COUNT; level = (ImGuiTestRunSpeed)(level + 1))
-            if (ImGui::Selectable(ImGuiTestEngine_GetRunSpeedName(level), engine->IO.ConfigRunSpeed == level))
-                engine->IO.ConfigRunSpeed = level;
-        ImGui::EndCombo();
+        ImGui::SetNextItemWidth(90 * dpi_scale);
+        if (ImGui::BeginCombo("##RunSpeed", ImGuiTestEngine_GetRunSpeedName(engine->IO.ConfigRunSpeed), ImGuiComboFlags_None))
+        {
+            for (ImGuiTestRunSpeed level = (ImGuiTestRunSpeed)0; level < ImGuiTestRunSpeed_COUNT; level = (ImGuiTestRunSpeed)(level + 1))
+                if (ImGui::Selectable(ImGuiTestEngine_GetRunSpeedName(level), engine->IO.ConfigRunSpeed == level))
+                    engine->IO.ConfigRunSpeed = level;
+            ImGui::EndCombo();
+        }
+        ImGui::SetItemTooltip(
+            "Running speed\n"
+            "- Fast: Run tests as fast as possible (no delay/vsync, teleport mouse, etc.).\n"
+            "- Normal: Run tests at human watchable speed (for debugging).\n"
+            "- Cinematic: Run tests with pauses between actions (for e.g. tutorials)."
+        );
     }
-    ImGui::SetItemTooltip(
-        "Running speed\n"
-        "- Fast: Run tests as fast as possible (no delay/vsync, teleport mouse, etc.).\n"
-        "- Normal: Run tests at human watchable speed (for debugging).\n"
-        "- Cinematic: Run tests with pauses between actions (for e.g. tutorials)."
-    );
     ImGui::SameLine();
-    //ImGui::Checkbox("Fast", &engine->IO.ConfigRunFast);
-    //ImGui::SameLine();
-    ImGui::Checkbox("Stop", &engine->IO.ConfigStopOnError);
-    ImGui::SetItemTooltip("Stop running tests when hitting an error.");
-    ImGui::SameLine();
-    ImGui::Checkbox("DbgBrk", &engine->IO.ConfigBreakOnError);
-    ImGui::SetItemTooltip("Break in debugger when hitting an error.");
-    ImGui::SameLine();
-    ImGui::Checkbox("KeepGUI", &engine->IO.ConfigKeepGuiFunc);
-    ImGui::SetItemTooltip("Keep GUI function running after a test fails, or when a single queued test is finished.\nHold ESC to abort a running GUI function.");
-    ImGui::SameLine();
-    ImGui::Checkbox("Refocus", &engine->IO.ConfigRestoreFocusAfterTests);
-    ImGui::SetItemTooltip("Restore focus back after running tests.");
+
+    // Verbose Level
+    {
+        ImGuiStyle& style = ImGui::GetStyle();
+        ImGui::SetNextItemWidth(ImGui::CalcTextSize(ImGuiTestEngine_GetVerboseLevelName(ImGuiTestVerboseLevel_Warning)).x + style.FramePadding.x * 4.0f + ImGui::GetFontSize());
+        if (ImGui::BeginCombo("##Verbose", ImGuiTestEngine_GetVerboseLevelName(engine->IO.ConfigVerboseLevel), ImGuiComboFlags_None))
+        {
+            for (ImGuiTestVerboseLevel level = (ImGuiTestVerboseLevel)0; level < ImGuiTestVerboseLevel_COUNT; level = (ImGuiTestVerboseLevel)(level + 1))
+                if (ImGui::Selectable(ImGuiTestEngine_GetVerboseLevelName(level), engine->IO.ConfigVerboseLevel == level))
+                    engine->IO.ConfigVerboseLevel = engine->IO.ConfigVerboseLevelOnError = level;
+            ImGui::EndCombo();
+        }
+        ImGui::SetItemTooltip("Verbose level.");
+    }
     ImGui::SameLine();
     ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
     ImGui::SameLine();
-    ImGui::SetNextItemWidth(70 * dpi_scale);
-    if (ImGui::BeginCombo("##Verbose", ImGuiTestEngine_GetVerboseLevelName(engine->IO.ConfigVerboseLevel), ImGuiComboFlags_None))
-    {
-        for (ImGuiTestVerboseLevel level = (ImGuiTestVerboseLevel)0; level < ImGuiTestVerboseLevel_COUNT; level = (ImGuiTestVerboseLevel)(level + 1))
-            if (ImGui::Selectable(ImGuiTestEngine_GetVerboseLevelName(level), engine->IO.ConfigVerboseLevel == level))
-                engine->IO.ConfigVerboseLevel = engine->IO.ConfigVerboseLevelOnError = level;
-        ImGui::EndCombo();
-    }
-    ImGui::SetItemTooltip("Verbose level.");
+
+    // (Would be good if we exposed horizontal layout mode..)
+    ImGui::Checkbox("Stop", &engine->IO.ConfigStopOnError);
+    ImGui::SetItemTooltip("When hitting an error:\n- Stop running other tests.");
+    ImGui::SameLine();
+    ImGui::Checkbox("Break", &engine->IO.ConfigBreakOnError);
+    ImGui::SetItemTooltip("When hitting an error:\n- Break in debugger.");
+    ImGui::SameLine();
+    ImGui::Checkbox("Capture", &engine->IO.ConfigCaptureOnError);
+    ImGui::SetItemTooltip("When hitting an error:\n- Capture screen to PNG. Right-click filename in Test Log to open.");
+    ImGui::SameLine();
+    ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+    ImGui::SameLine();
+
+    ImGui::Checkbox("KeepGui", &engine->IO.ConfigKeepGuiFunc);
+    ImGui::SetItemTooltip("After running single test or hitting an error:\n- Keep GUI function visible and interactive.\n- Hold ESC to abort a running GUI function.");
+    ImGui::SameLine();
+    bool keep_focus = !engine->IO.ConfigRestoreFocusAfterTests;
+    if (ImGui::Checkbox("KeepFocus", &keep_focus))
+        engine->IO.ConfigRestoreFocusAfterTests = !keep_focus;
+    ImGui::SetItemTooltip("After running tests:\n- Keep GUI current focus, instead of restoring focus to this window.");
+
     //ImGui::PopStyleVar();
     ImGui::Separator();
 
@@ -788,20 +925,20 @@ static void ImGuiTestEngine_ShowTestTool(ImGuiTestEngine* engine, bool* p_open)
     ImGui::BeginChild("List", ImVec2(0, list_height), false, ImGuiWindowFlags_NoScrollbar);
     if (ImGui::BeginTabBar("##Tests", ImGuiTabBarFlags_NoTooltip))  // Add _NoPushId flag in TabBar?
     {
-        if (ImGui::BeginTabItem("TESTS", NULL, ImGuiTabItemFlags_NoPushId))
+        if (ImGui::BeginTabItem("TESTS", nullptr, ImGuiTabItemFlags_NoPushId))
         {
-            ShowTestGroup(engine, ImGuiTestGroup_Tests, engine->UiFilterTests);
+            ShowTestGroup(engine, ImGuiTestGroup_Tests, engine->UiFilterTests, run);
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("PERFS", NULL, ImGuiTabItemFlags_NoPushId))
+        if (ImGui::BeginTabItem("PERFS", nullptr, ImGuiTabItemFlags_NoPushId))
         {
-            ShowTestGroup(engine, ImGuiTestGroup_Perfs, engine->UiFilterPerfs);
+            ShowTestGroup(engine, ImGuiTestGroup_Perfs, engine->UiFilterPerfs, run);
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
     }
     ImGui::EndChild();
-    engine->UiSelectAndScrollToTest = NULL;
+    engine->UiSelectAndScrollToTest = nullptr;
 
     // LOG & TOOLS
     ImGui::BeginChild("Log", ImVec2(0, log_height));
@@ -813,6 +950,9 @@ static void ImGuiTestEngine_ShowTestTool(ImGuiTestEngine* engine, bool* p_open)
 
 void    ImGuiTestEngine_ShowTestEngineWindows(ImGuiTestEngine* e, bool* p_open)
 {
+    if (e->TestsSourceLinesDirty)
+        ImGuiTestEngine_UpdateTestsSourceLines(e);
+
     // Test Tool
     ImGuiTestEngine_ShowTestTool(e, p_open);
 
@@ -839,4 +979,18 @@ void    ImGuiTestEngine_ShowTestEngineWindows(ImGuiTestEngine* e, bool* p_open)
         ImGui::ShowMetricsWindow(&e->UiMetricsOpen);
     if (e->UiDebugLogOpen)
         ImGui::ShowDebugLogWindow(&e->UiDebugLogOpen);
+}
+
+void    ImGuiTestEngine_OpenSourceFile(ImGuiTestEngine* e, const char* source_filename, int source_line_no)
+{
+    ImGuiTestEngineIO& e_io = ImGuiTestEngine_GetIO(e);
+    if (e_io.SrcFileOpenFunc == nullptr)
+        ImOsOpenInShell(source_filename); // This is never used by imgui_test_suite but we provide it as a second layer of convenience for test engine users.
+    else
+        e_io.SrcFileOpenFunc(source_filename, source_line_no, e_io.SrcFileOpenUserData);
+
+    // Debugger output which may be double-clicked
+    // Print after opener so it appears in a neat place below e.g. DLL loading.
+    if (ImGui::GetIO().ConfigDebugIsDebuggerPresent)
+        ImOsOutputDebugString(Str256f("%s(%d): opening from user action.\n", source_filename, source_line_no).c_str());
 }

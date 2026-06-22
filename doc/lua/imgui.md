@@ -59,7 +59,6 @@ The ImGui library allows plugins to render UI elements.
 | NoBringToFrontOnFocus |
 | AlwaysVerticalScrollbar |
 | AlwaysHorizontalScrollbar |
-| AlwaysUseWindowPadding |
 | NoNavInputs |
 | NoNavFocus |
 | UnsavedDocument |
@@ -84,11 +83,11 @@ The ImGui library allows plugins to render UI elements.
 | Name |
 | ---- |
 | None |
-| DontClosePopups |
+| NoAutoClosePopups |
 | SpanAllColumns |
 | AllowDoubleClick |
 | Disabled |
-| AllowItemOverlap |
+| AllowOverlap |
 | NoHoldingActiveID |
 | SelectOnNav |
 | SelectOnClick |
@@ -205,11 +204,8 @@ The ImGui library allows plugins to render UI elements.
 | PressedOnRelease |
 | PressedOnDoubleClick |
 | PressedOnDragDropHold |
-| Repeat |
 | FlattenChildren |
-| DontClosePopups |
 | AlignTextBaseLine |
-| NoKeyModifiers |
 | NoHoldingActiveId |
 | NoNavFocus |
 | NoHoveredOnFocus |

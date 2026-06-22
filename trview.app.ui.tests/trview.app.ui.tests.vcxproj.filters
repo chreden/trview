@@ -52,6 +52,7 @@
     <ClCompile Include="RouteWindowTests.cpp" Filter="Source Files" />
     <ClCompile Include="..\external\imgui\misc\freetype\imgui_freetype.cpp" Filter="imgui" />
     <ClCompile Include="StaticsWindowTests.cpp" Filter="Source Files" />
+    <ClCompile Include="TestHelpers.cpp" Filter="Source Files" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\external\shared\imgui_app.h" Filter="imgui\shared" />

@@ -67,7 +67,7 @@ void register_level_info_tests(ImGuiTestEngine* engine)
             context.ptr->set_level(level);
 
             ctx->Yield();
-            IM_CHECK_EQ(RenderedText(ctx, ctx->ItemInfo("LevelInfo")->ID), "test (Test)");
+            IM_CHECK_EQ(RenderedText(ctx, ctx->ItemInfo("LevelInfo").ID), "test (Test)");
         });
 
     test<LevelInfoContext>(engine, "Level Info", "On Toggle Settings Raised",

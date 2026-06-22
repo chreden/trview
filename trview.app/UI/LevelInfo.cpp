@@ -40,7 +40,7 @@ namespace trview
             const float previous = ImGui::GetCursorPosY();
             const float text_size = ImGui::CalcTextSize(_name.c_str()).y;
             ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.5f - text_size * 0.5f);
-            ImGui::Image(get_version_image(_version).view().Get(), ImVec2(text_size, text_size));
+            ImGui::Image(ImTextureID(get_version_image(_version).view().Get()), ImVec2(text_size, text_size));
             ImGui::SameLine();
             ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.5f - text_size * 0.5f);
             ImGui::Text(_name.c_str());

@@ -37,7 +37,6 @@
 #include <wrl/client.h>
 #include <d3d11.h>
 
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include <external/imgui/imgui.h>
 #include <external/imgui/imgui_internal.h>
 #include <external/imgui/misc/cpp/imgui_stdlib.h>

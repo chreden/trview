@@ -62,7 +62,7 @@ namespace trview
         const auto font = _fonts->font("Console");
         if (font)
         {
-            ImGui::PushFont(font);
+            ImGui::PushFont(font->font, static_cast<float>(font->setting.size));
         }
         ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(520, 400));
         if (ImGui::Begin(_id.c_str(), &stay_open, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoNavInputs))

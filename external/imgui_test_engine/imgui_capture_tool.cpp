@@ -2,6 +2,9 @@
 // (screen/video capture tool)
 // This is usable as a standalone applet or controlled by the test engine.
 
+// This file is governed by the "Dear ImGui Test Engine License".
+// Details of the license are provided in the LICENSE.txt file in the same directory.
+
 // Two mode of operation:
 // - Interactive: call ImGuiCaptureToolUI::ShowCaptureToolWindow()
 // - Programmatic: generally via ImGuiTestContext::CaptureXXX functions
@@ -30,9 +33,20 @@ Index of this file:
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "imgui_te_engine.h"
 #include "imgui_capture_tool.h"
 #include "imgui_te_utils.h"         // ImPathFindFilename, ImPathFindExtension, ImPathFixSeparatorsForCurrentOS, ImFileCreateDirectoryChain, ImOsOpenInShell
 #include "thirdparty/Str/Str.h"
+
+// Warnings
+#if defined(__clang__)
+#if __has_warning("-Wunknown-warning-option")
+#pragma clang diagnostic ignored "-Wunknown-warning-option"         // warning: unknown warning group 'xxx'                      // not all warnings are known by all Clang versions and they tend to be rename-happy.. so ignoring warnings triggers new warnings on some configuration. Great!
+#endif
+#pragma clang diagnostic ignored "-Wsign-conversion"                // warning: implicit conversion changes signedness
+#elif defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wsign-conversion"                  // warning: conversion to 'xxxx' from 'xxxx' may change the sign of the result
+#endif
 
 //-----------------------------------------------------------------------------
 // [SECTION] Link stb_image_write.h
@@ -50,7 +64,10 @@ Index of this file:
 #pragma warning (push)
 #pragma warning (disable: 4456)                             // declaration of 'xx' hides previous local declaration
 #pragma warning (disable: 4457)                             // declaration of 'xx' hides function parameter
-#else
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"// warning: 'sprintf' has been explicitly marked deprecated here
+#elif defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 #endif
@@ -76,7 +93,9 @@ using namespace IMGUI_STB_NAMESPACE;
 
 #ifdef _MSC_VER
 #pragma warning (pop)
-#else
+#elif defined(__clang__)
+#pragma clang diagnostic pop
+#elif defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif
 
@@ -91,7 +110,7 @@ void ImGuiCaptureImageBuf::Clear()
 {
     if (Data)
         IM_FREE(Data);
-    Data = NULL;
+    Data = nullptr;
 }
 
 void ImGuiCaptureImageBuf::CreateEmpty(int w, int h)
@@ -106,7 +125,7 @@ void ImGuiCaptureImageBuf::CreateEmpty(int w, int h)
 bool ImGuiCaptureImageBuf::SaveFile(const char* filename)
 {
 #if IMGUI_TEST_ENGINE_ENABLE_CAPTURE
-    IM_ASSERT(Data != NULL);
+    IM_ASSERT(Data != nullptr);
     ImFileCreateDirectoryChain(filename, ImPathFindFilename(filename));
     int ret = stbi_write_png(filename, Width, Height, 4, Data, Width * 4);
     return ret != 0;
@@ -139,7 +158,9 @@ static void HideOtherWindows(const ImGuiCaptureArgs* args)
     {
         if (window->Flags & ImGuiWindowFlags_ChildWindow)
             continue;
-        if ((window->Flags & (ImGuiWindowFlags_Popup | ImGuiWindowFlags_Tooltip)) != 0 && (args->InFlags & ImGuiCaptureFlags_IncludeTooltipsAndPopups) != 0)
+        if (window->Flags & ImGuiWindowFlags_Tooltip)
+            continue;
+        if ((window->Flags & ImGuiWindowFlags_Popup) && (args->InFlags & ImGuiCaptureFlags_IncludePopups) != 0)
             continue;
         if (args->InCaptureWindows.contains(window))
             continue;
@@ -148,7 +169,7 @@ static void HideOtherWindows(const ImGuiCaptureArgs* args)
         bool should_hide_window = true;
         for (ImGuiWindow* capture_window : args->InCaptureWindows)
         {
-            if (capture_window->DockNode != NULL && capture_window->DockNode->HostWindow->RootWindow == window)
+            if (capture_window->DockNode != nullptr && capture_window->DockNode->HostWindow->RootWindow == window)
             {
                 should_hide_window = false;
                 break;
@@ -174,7 +195,7 @@ static ImRect GetMainViewportRect()
 void ImGuiCaptureContext::PreNewFrame()
 {
     const ImGuiCaptureArgs* args = _CaptureArgs;
-    if (args == NULL)
+    if (args == nullptr)
         return;
 
     ImGuiContext& g = *GImGui;
@@ -195,6 +216,7 @@ void ImGuiCaptureContext::PreRender()
     if (IsCapturing())
     {
         const ImGuiCaptureArgs* args = _CaptureArgs;
+        IM_ASSERT(args != NULL);
         g.IO.MouseDrawCursor = !(args->InFlags & ImGuiCaptureFlags_HideMouseCursor);
     }
 }
@@ -226,8 +248,8 @@ void ImGuiCaptureContext::ClearState()
     _FrameNo = _ChunkNo = 0;
     _VideoLastFrameTime = 0;
     _MouseRelativeToWindowPos = ImVec2(-FLT_MAX, -FLT_MAX);
-    _HoveredWindow = NULL;
-    _CaptureArgs = NULL;
+    _HoveredWindow = nullptr;
+    _CaptureArgs = nullptr;
 }
 
 // Returns true when capture is in progress.
@@ -238,14 +260,14 @@ ImGuiCaptureStatus ImGuiCaptureContext::CaptureUpdate(ImGuiCaptureArgs* args)
     ImGuiIO& io = g.IO;
 
     // Sanity checks
-    IM_ASSERT(args != NULL);
-    IM_ASSERT(ScreenCaptureFunc != NULL);
-    IM_ASSERT(args->InOutputImageBuf != NULL || args->InOutputFile[0]);
+    IM_ASSERT(args != nullptr);
+    IM_ASSERT(ScreenCaptureFunc != nullptr);
+    IM_ASSERT(args->InOutputImageBuf != nullptr || args->InOutputFile[0]);
     IM_ASSERT(args->InRecordFPSTarget != 0);
     if (_VideoRecording)
     {
         IM_ASSERT(args->InOutputFile[0] && "Output filename must be specified when recording videos.");
-        IM_ASSERT(args->InOutputImageBuf == NULL && "Output buffer cannot be specified when recording videos.");
+        IM_ASSERT(args->InOutputImageBuf == nullptr && "Output buffer cannot be specified when recording videos.");
         IM_ASSERT((args->InFlags & ImGuiCaptureFlags_StitchAll) == 0 && "Image stitching is not supported when recording videos.");
         if (!ImFileExist(VideoCaptureEncoderPath))
         {
@@ -330,9 +352,9 @@ ImGuiCaptureStatus ImGuiCaptureContext::CaptureUpdate(ImGuiCaptureArgs* args)
                 for (ImGuiWindow* window : g.Windows)
                 {
                     // Child windows will be included by their parents.
-                    if (window->ParentWindow != NULL)
+                    if (window->ParentWindow != nullptr)
                         continue;
-                    if ((window->Flags & ImGuiWindowFlags_Popup || window->Flags & ImGuiWindowFlags_Tooltip) && !(args->InFlags & ImGuiCaptureFlags_IncludeTooltipsAndPopups))
+                    if ((window->Flags & ImGuiWindowFlags_Popup) && !(args->InFlags & ImGuiCaptureFlags_IncludePopups))
                         continue;
                     args->InCaptureWindows.push_back(window);
                 }
@@ -365,19 +387,19 @@ ImGuiCaptureStatus ImGuiCaptureContext::CaptureUpdate(ImGuiCaptureArgs* args)
             // FIXME-CAPTURE: Window width change may affect vertical content size if window contains text that wraps. To accurately position mouse cursor for capture we avoid horizontal resize.
             // Instead window width should be set manually before capture, as it is simple to do and most of the time we already have a window of desired width.
             //full_size.x = ImMax(window->SizeFull.x, window->ContentSize.x + (window->WindowPadding.x + window->WindowBorderSize) * 2);
-            full_size.y = ImMax(window->SizeFull.y, window->ContentSize.y + (window->WindowPadding.y + window->WindowBorderSize) * 2 + window->TitleBarHeight() + window->MenuBarHeight());
+            full_size.y = ImMax(window->SizeFull.y, window->ContentSize.y + (window->WindowPadding.y + window->WindowBorderSize) * 2 + window->DecoOuterSizeY1);
             ImGui::SetWindowSize(window, full_size);
             _HoveredWindow = g.HoveredWindow;
         }
         else
         {
             _MouseRelativeToWindowPos = ImVec2(-FLT_MAX, -FLT_MAX);
-            _HoveredWindow = NULL;
+            _HoveredWindow = nullptr;
         }
     }
     else
     {
-        IM_ASSERT(args == _CaptureArgs); // Capture args can not change mid-capture.
+        IM_ASSERT(!_CaptureArgs || args == _CaptureArgs); // Capture may be cancelled, but args can not otherwise change mid-capture.
     }
 
     //-----------------------------------------------------------------
@@ -512,13 +534,13 @@ ImGuiCaptureStatus ImGuiCaptureContext::CaptureUpdate(ImGuiCaptureArgs* args)
 
             if (is_recording_video && (args->InFlags & ImGuiCaptureFlags_NoSave) == 0)
             {
-                // _VideoEncoderPipe is NULL when recording just started. Initialize recording state.
-                if (_VideoEncoderPipe == NULL)
+                // _VideoEncoderPipe is nullptr when recording just started. Initialize recording state.
+                if (_VideoEncoderPipe == nullptr)
                 {
                     // First video frame, initialize now that dimensions are known.
                     const unsigned int width = (unsigned int)capture_rect.GetWidth();
                     const unsigned int height = (unsigned int)capture_rect.GetHeight();
-                    IM_ASSERT(VideoCaptureEncoderPath != NULL && VideoCaptureEncoderPath[0]);
+                    IM_ASSERT(VideoCaptureEncoderPath != nullptr && VideoCaptureEncoderPath[0]);
                     Str256f encoder_exe(VideoCaptureEncoderPath), cmd("");
                     ImPathFixSeparatorsForCurrentOS(encoder_exe.c_str());
                     ImFileCreateDirectoryChain(args->InOutputFile, ImPathFindFilename(args->InOutputFile));
@@ -528,12 +550,12 @@ ImGuiCaptureStatus ImGuiCaptureContext::CaptureUpdate(ImGuiCaptureArgs* args)
                     const char* extension = (char*)ImPathFindExtension(args->InOutputFile);
                     if (strcmp(extension, ".gif") == 0)
                     {
-                        IM_ASSERT(GifCaptureEncoderParams != NULL && GifCaptureEncoderParams[0]);
+                        IM_ASSERT(GifCaptureEncoderParams != nullptr && GifCaptureEncoderParams[0]);
                         cmd.appendf("\"%s\" %s", encoder_exe.c_str(), GifCaptureEncoderParams);
                     }
                     else
                     {
-                        IM_ASSERT(VideoCaptureEncoderParams != NULL && VideoCaptureEncoderParams[0]);
+                        IM_ASSERT(VideoCaptureEncoderParams != nullptr && VideoCaptureEncoderParams[0]);
                         cmd.appendf("\"%s\" %s", encoder_exe.c_str(), VideoCaptureEncoderParams);
                     }
 #if _WIN32
@@ -545,7 +567,7 @@ ImGuiCaptureStatus ImGuiCaptureContext::CaptureUpdate(ImGuiCaptureArgs* args)
                     ImStrReplace(&cmd, "$OUTPUT", args->InOutputFile);
                     fprintf(stdout, "# %s\n", cmd.c_str());
                     _VideoEncoderPipe = ImOsPOpen(cmd.c_str(), "w");
-                    IM_ASSERT(_VideoEncoderPipe != NULL);
+                    IM_ASSERT(_VideoEncoderPipe != nullptr);
                 }
 
                 // Save new video frame
@@ -560,13 +582,13 @@ ImGuiCaptureStatus ImGuiCaptureContext::CaptureUpdate(ImGuiCaptureArgs* args)
         {
             output->RemoveAlpha();
 
-            if (_VideoEncoderPipe != NULL)
+            if (_VideoEncoderPipe != nullptr)
             {
-                // At this point _Recording is false, but we know we were recording because _VideoEncoderPipe is not NULL. Finalize video here.
+                // At this point _Recording is false, but we know we were recording because _VideoEncoderPipe is not nullptr. Finalize video here.
                 ImOsPClose(_VideoEncoderPipe);
-                _VideoEncoderPipe = NULL;
+                _VideoEncoderPipe = nullptr;
             }
-            else if (args->InOutputImageBuf == NULL)
+            else if (args->InOutputImageBuf == nullptr)
             {
                 // Save single frame.
                 if ((args->InFlags & ImGuiCaptureFlags_NoSave) == 0)
@@ -591,9 +613,9 @@ ImGuiCaptureStatus ImGuiCaptureContext::CaptureUpdate(ImGuiCaptureArgs* args)
 
 void ImGuiCaptureContext::BeginVideoCapture(ImGuiCaptureArgs* args)
 {
-    IM_ASSERT(args != NULL);
+    IM_ASSERT(args != nullptr);
     IM_ASSERT(_VideoRecording == false);
-    IM_ASSERT(_VideoEncoderPipe == NULL);
+    IM_ASSERT(_VideoEncoderPipe == nullptr);
     IM_ASSERT(args->InRecordFPSTarget >= 1 && args->InRecordFPSTarget <= 100);
 
     ImFileCreateDirectoryChain(args->InOutputFile, ImPathFindFilename(args->InOutputFile));
@@ -603,10 +625,11 @@ void ImGuiCaptureContext::BeginVideoCapture(ImGuiCaptureArgs* args)
 
 void ImGuiCaptureContext::EndVideoCapture()
 {
-    IM_ASSERT(_CaptureArgs != NULL);
+    IM_ASSERT(_CaptureArgs != nullptr);
     IM_ASSERT(_VideoRecording == true);
 
     _VideoRecording = false;
+    _CaptureArgs = nullptr;
 }
 
 bool ImGuiCaptureContext::IsCapturingVideo()
@@ -616,7 +639,7 @@ bool ImGuiCaptureContext::IsCapturingVideo()
 
 bool ImGuiCaptureContext::IsCapturing()
 {
-    return _CaptureArgs != NULL;
+    return _CaptureArgs != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -626,7 +649,7 @@ bool ImGuiCaptureContext::IsCapturing()
 ImGuiCaptureToolUI::ImGuiCaptureToolUI()
 {
     // Filename template for where screenshots will be saved. May contain directories or variation of %d format.
-    ImStrncpy(_OutputFileTemplate, "output/captures/imgui_capture_%04d.png", IM_ARRAYSIZE(_OutputFileTemplate));
+    ImStrncpy(_OutputFileTemplate, "output/captures/imgui_capture_%04d.png", IM_COUNTOF(_OutputFileTemplate));
 }
 
 // Interactively pick a single window
@@ -645,7 +668,7 @@ void ImGuiCaptureToolUI::_CaptureWindowPicker(ImGuiCaptureArgs* args)
     if (_StateIsPickingWindow)
     {
         // Picking a window
-        ImGuiWindow* capture_window = g.HoveredWindow ? g.HoveredWindow->RootWindow : NULL;
+        ImGuiWindow* capture_window = g.HoveredWindow ? g.HoveredWindow->RootWindow : nullptr;
         ImDrawList* fg_draw_list = ImGui::GetForegroundDrawList();
         ImGui::SetActiveID(picking_id, g.CurrentWindow);    // Steal active ID so our click won't interact with something else.
         ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -664,7 +687,11 @@ void ImGuiCaptureToolUI::_CaptureWindowPicker(ImGuiCaptureArgs* args)
             r.Expand(args->InPadding);
             r.ClipWith(ImRect(ImVec2(0, 0), io.DisplaySize));
             r.Expand(1.0f);
+#if IMGUI_VERSION_NUM < 19276
             fg_draw_list->AddRect(r.Min, r.Max, IM_COL32_WHITE, 0.0f, 0, 2.0f);
+#else
+            fg_draw_list->AddRect(r.Min, r.Max, IM_COL32_WHITE, 0.0f, 2.0f);
+#endif
             ImGui::RenderRectFilledWithHole(fg_draw_list, viewport_rect, r, col_dim_overlay, 0.0f);
         }
         else
@@ -704,8 +731,8 @@ void ImGuiCaptureToolUI::_CaptureWindowsSelector(ImGuiCaptureContext* context, I
             continue;
         if (window->Flags & ImGuiWindowFlags_ChildWindow)
             continue;
-        const bool is_popup = (window->Flags & ImGuiWindowFlags_Popup) || (window->Flags & ImGuiWindowFlags_Tooltip);
-        if ((args->InFlags & ImGuiCaptureFlags_IncludeTooltipsAndPopups) && is_popup)
+        const bool is_popup = (window->Flags & ImGuiWindowFlags_Popup) != 0;
+        if ((args->InFlags & ImGuiCaptureFlags_IncludePopups) && is_popup)
         {
             capture_rect.Add(window->Rect());
             args->InCaptureWindows.push_back(window);
@@ -732,11 +759,10 @@ void ImGuiCaptureToolUI::_CaptureWindowsSelector(ImGuiCaptureContext* context, I
         if (!allow_capture)
             ImGui::BeginDisabled();
         bool do_capture = ImGui::Button(label, button_sz);
-        do_capture |= io.KeyAlt && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_C));
+        do_capture |= io.KeyAlt && ImGui::IsKeyPressed(ImGuiKey_C);
         if (!allow_capture)
             ImGui::EndDisabled();
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Alternatively press Alt+C to capture selection.");
+        ImGui::SetItemTooltip("Alternatively press Alt+C to capture selection.");
         if (do_capture && _InitializeOutputFile())
             _StateIsCapturing = true;
     }
@@ -759,7 +785,7 @@ void ImGuiCaptureToolUI::_CaptureWindowsSelector(ImGuiCaptureContext* context, I
             if (ImGui::Button(label, button_sz) && _InitializeOutputFile())
             {
                 // File template will most likely end with .png, but we need a different extension for videos.
-                IM_ASSERT(VideoCaptureExtension != NULL && VideoCaptureExtension[0]);
+                IM_ASSERT(VideoCaptureExtension != nullptr && VideoCaptureExtension[0]);
                 char* ext = (char*)ImPathFindExtension(args->InOutputFile);
                 ImStrncpy(ext, VideoCaptureExtension, (size_t)(ext - args->InOutputFile));
                 _StateIsCapturing = true;
@@ -788,8 +814,8 @@ void ImGuiCaptureToolUI::_CaptureWindowsSelector(ImGuiCaptureContext* context, I
     ImGui::Text("Windows:");
     if (ImGui::BeginTable("split", 2))
     {
-        ImGui::TableSetupColumn(NULL, ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn(NULL, ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthStretch);
         for (ImGuiWindow* window : g.Windows)
         {
             if (!window->WasActive)
@@ -854,7 +880,7 @@ void ImGuiCaptureToolUI::ShowCaptureToolWindow(ImGuiCaptureContext* context, boo
         if (status != ImGuiCaptureStatus_InProgress)
         {
             if (status == ImGuiCaptureStatus_Done)
-                ImStrncpy(OutputLastFilename, args->InOutputFile, IM_ARRAYSIZE(OutputLastFilename));
+                ImStrncpy(OutputLastFilename, args->InOutputFile, IM_COUNTOF(OutputLastFilename));
             _StateIsCapturing = false;
             _FileCounter++;
         }
@@ -866,7 +892,7 @@ void ImGuiCaptureToolUI::ShowCaptureToolWindow(ImGuiCaptureContext* context, boo
         ImGui::End();
         return;
     }
-    if (context->ScreenCaptureFunc == NULL)
+    if (context->ScreenCaptureFunc == nullptr)
     {
         ImGui::TextColored(ImVec4(1, 0, 0, 1), "Backend is missing ScreenCaptureFunc!");
         ImGui::End();
@@ -889,8 +915,8 @@ void ImGuiCaptureToolUI::ShowCaptureToolWindow(ImGuiCaptureContext* context, boo
                 ImOsOpenInShell(OutputLastFilename);
             if (!has_last_file_name)
                 ImGui::EndDisabled();
-            if (has_last_file_name && ImGui::IsItemHovered())
-                ImGui::SetTooltip("Open %s", OutputLastFilename);
+            if (has_last_file_name)
+                ImGui::SetItemTooltip("Open %s", OutputLastFilename);
             ImGui::SameLine(0.0f, style.ItemInnerSpacing.x);
         }
 
@@ -908,27 +934,24 @@ void ImGuiCaptureToolUI::ShowCaptureToolWindow(ImGuiCaptureContext* context, boo
                 ImPathFixSeparatorsForCurrentOS(output_dir);
                 ImOsOpenInShell(output_dir);
             }
-            if (ImGui::IsItemHovered())
-                ImGui::SetTooltip("Open %s/", output_dir);
+            ImGui::SetItemTooltip("Open %s/", output_dir);
         }
 
         const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;
         const float BUTTON_WIDTH = (float)(int)-(TEXT_BASE_WIDTH * 26);
 
         ImGui::PushItemWidth(BUTTON_WIDTH);
-        ImGui::InputText("Output template", _OutputFileTemplate, IM_ARRAYSIZE(_OutputFileTemplate));
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Output template should contain one %%d (or variation of it) format variable. "
-                              "Multiple captures will be saved with an increasing number to avoid overwriting same file.");
+        ImGui::InputText("Output template", _OutputFileTemplate, IM_COUNTOF(_OutputFileTemplate));
+        ImGui::SetItemTooltip(
+            "Output template should contain one %%d (or variation of it) format variable. "
+            "Multiple captures will be saved with an increasing number to avoid overwriting same file.");
 
         _ShowEncoderConfigFields(context);
 
         ImGui::DragFloat("Padding", &_CaptureArgs.InPadding, 0.1f, 0, 32, "%.0f");
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Extra padding around captured area.");
+        ImGui::SetItemTooltip("Extra padding around captured area.");
         ImGui::DragInt("Video FPS", &_CaptureArgs.InRecordFPSTarget, 0.1f, 10, 100, "%d fps");
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Target FPS for video captures.");
+        ImGui::SetItemTooltip("Target FPS for video captures.");
 
         if (ImGui::Button("Snap Windows To Grid", ImVec2(BUTTON_WIDTH, 0)))
             _SnapWindowsToGrid(SnapGridSize);
@@ -945,13 +968,12 @@ void ImGuiCaptureToolUI::ShowCaptureToolWindow(ImGuiCaptureContext* context, boo
         ImGui::BeginDisabled(!content_stitching_available);
         ImGui::CheckboxFlags("Stitch full contents height", &_CaptureArgs.InFlags, ImGuiCaptureFlags_StitchAll);
         ImGui::EndDisabled();
-        if (!content_stitching_available && ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
-            ImGui::SetTooltip("Content stitching is not possible when using viewports.");
+        if (!content_stitching_available)
+            ImGui::SetItemTooltip("Content stitching is not possible when using viewports.");
 
         ImGui::CheckboxFlags("Include other windows", &_CaptureArgs.InFlags, ImGuiCaptureFlags_IncludeOtherWindows);
-        ImGui::CheckboxFlags("Include tooltips & popups", &_CaptureArgs.InFlags, ImGuiCaptureFlags_IncludeTooltipsAndPopups);
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Capture area will be expanded to include visible tooltips.");
+        ImGui::CheckboxFlags("Include popups", &_CaptureArgs.InFlags, ImGuiCaptureFlags_IncludePopups);
+        ImGui::SetItemTooltip("Capture area will be expanded to include visible tooltips.");
 
         ImGui::PopItemWidth();
         ImGui::TreePop();
@@ -998,7 +1020,7 @@ void ImGuiCaptureToolUI::_SnapWindowsToGrid(float cell_size)
 bool ImGuiCaptureToolUI::_InitializeOutputFile()
 {
     // Create output folder and decide of output filename
-    ImFormatString(_CaptureArgs.InOutputFile, IM_ARRAYSIZE(_CaptureArgs.InOutputFile), _OutputFileTemplate,
+    ImFormatString(_CaptureArgs.InOutputFile, IM_COUNTOF(_CaptureArgs.InOutputFile), _OutputFileTemplate,
                    _FileCounter + 1);
     ImPathFixSeparatorsForCurrentOS(_CaptureArgs.InOutputFile);
     if (!ImFileCreateDirectoryChain(_CaptureArgs.InOutputFile, ImPathFindFilename(_CaptureArgs.InOutputFile)))
@@ -1024,17 +1046,16 @@ bool ImGuiCaptureToolUI::_ShowEncoderConfigFields(ImGuiCaptureContext* context)
         const bool encoder_exe_missing = !ImFileExist(context->VideoCaptureEncoderPath);
         if (encoder_exe_missing)
             ImGui::ItemErrorFrame(IM_COL32(255, 0, 0, 255));
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Absolute or relative path to video encoder executable (e.g. \"path/to/ffmpeg.exe\"). Required for video recording.%s", encoder_exe_missing ? "\nFile does not exist!" : "");
+        ImGui::SetItemTooltip("Absolute or relative path to video encoder executable (e.g. \"path/to/ffmpeg.exe\"). Required for video recording.%s", encoder_exe_missing ? "\nFile does not exist!" : "");
     }
 
     struct CmdLineParamsInfo
     {
-        const char* Title = NULL;
-        char*       Params = NULL;
+        const char* Title = nullptr;
+        char*       Params = nullptr;
         int         ParamsSize = 0;
-        const char* DefaultCmdLineParams = NULL;
-        const char* VideoFileExt = NULL;
+        const char* DefaultCmdLineParams = nullptr;
+        const char* VideoFileExt = nullptr;
         CmdLineParamsInfo(const char* title, char* params, int params_size, const char* default_cmd, const char* ext) { Title = title; Params = params; ParamsSize = params_size; DefaultCmdLineParams = default_cmd; VideoFileExt = ext; }
     };
     CmdLineParamsInfo params_info[] =
@@ -1046,7 +1067,7 @@ bool ImGuiCaptureToolUI::_ShowEncoderConfigFields(ImGuiCaptureContext* context)
     {
         if (info.ParamsSize == 0)
             continue;   // Can not be edited.
-        IM_ASSERT(info.Params != NULL);
+        IM_ASSERT(info.Params != nullptr);
         ImGui::PushID(&info);
         float small_button_width = ImGui::CalcTextSize("..").x + ImGui::GetStyle().FramePadding.x * 2.0f;
         ImGui::PushItemWidth(BUTTON_WIDTH - small_button_width);
@@ -1063,14 +1084,14 @@ bool ImGuiCaptureToolUI::_ShowEncoderConfigFields(ImGuiCaptureContext* context)
             ImGui::Text("Reset to default params for FFMPEG and %s file format:", info.VideoFileExt);
             ImGui::Indent();
             float wrap_width = ImGui::GetContentRegionAvail().x - g.Style.FramePadding.x * 2;
-            ImVec2 text_size = ImGui::CalcTextSize(info.DefaultCmdLineParams, NULL, false, wrap_width);
+            ImVec2 text_size = ImGui::CalcTextSize(info.DefaultCmdLineParams, nullptr, false, wrap_width);
             if (ImGui::Selectable("###Reset", false, 0, text_size + g.Style.FramePadding * 2))
             {
                 ImStrncpy(info.Params, info.DefaultCmdLineParams, info.ParamsSize);
                 ImGui::CloseCurrentPopup();
             }
             ImDrawList* draw_list = ImGui::GetWindowDrawList();
-            draw_list->AddText(NULL, 0, g.LastItemData.Rect.GetTL() + g.Style.FramePadding, ImGui::GetColorU32(ImGuiCol_Text), info.DefaultCmdLineParams, NULL, wrap_width);
+            draw_list->AddText(nullptr, 0, g.LastItemData.Rect.GetTL() + g.Style.FramePadding, ImGui::GetColorU32(ImGuiCol_Text), info.DefaultCmdLineParams, nullptr, wrap_width);
             ImGui::Unindent();
 
             ImGui::Separator();
@@ -1092,7 +1113,7 @@ bool ImGuiCaptureToolUI::_ShowEncoderConfigFields(ImGuiCaptureContext* context)
 
     if (VideoCaptureExtensionSize)
     {
-        IM_ASSERT(VideoCaptureExtension != NULL);
+        IM_ASSERT(VideoCaptureExtension != nullptr);
         ImGui::PushItemWidth(BUTTON_WIDTH);
         if (ImGui::BeginCombo("Video format (default)", VideoCaptureExtension))
         {
@@ -1105,8 +1126,7 @@ bool ImGuiCaptureToolUI::_ShowEncoderConfigFields(ImGuiCaptureContext* context)
                 }
             ImGui::EndCombo();
         }
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("File extension for captured video file.");
+        ImGui::SetItemTooltip("File extension for captured video file.");
     }
     return modified;
 }

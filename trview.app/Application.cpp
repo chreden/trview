@@ -393,8 +393,11 @@ namespace trview
         _imgui_backend->new_frame();
         ImGui::NewFrame();
 
-        ImGui::PushFont(_fonts->font("Default"));
-
+        const auto font = _fonts->font("Default");
+        if (font)
+        {
+            ImGui::PushFont(font->font, static_cast<float>(font->setting.size));
+        }
 
         if (_load.valid())
         {
@@ -413,7 +416,10 @@ namespace trview
         _windows->render();
         _plugins->render_ui();
 
-        ImGui::PopFont();
+        if (font)
+        {
+            ImGui::PopFont();
+        }
         ImGui::Render();
         _imgui_backend->render();
 

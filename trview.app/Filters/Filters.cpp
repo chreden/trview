@@ -566,7 +566,7 @@ namespace trview
 
             const std::string suffix = std::format("{}-{}", depth, index);
 
-            if (ImGui::BeginChild((std::string("FilterGroup##") + suffix).c_str(), ImVec2(), ImGuiChildFlags_Border | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY))
+            if (ImGui::BeginChild((std::string("FilterGroup##") + suffix).c_str(), ImVec2(), ImGuiChildFlags_Borders | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY))
             {
                 int32_t child_index = 0;
                 for (auto& child : filter.children)

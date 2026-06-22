@@ -27,9 +27,17 @@ jobs:
     - name: Test Solution (x64)
       run: |
         $any_errors = $false
-        foreach ($file in Get-ChildItem x64\Release\*.tests.exe -Exclude trview.app.ui.tests.exe)
+        foreach ($file in Get-ChildItem x64\Release\*.tests.exe)
         {
-          . $file;
+          if ($file.Name.EndsWith('trview.app.ui.tests.exe'))
+          {
+            . $file ci;
+          }
+          else
+          {
+            . $file
+          }
+
           if (!$?)
           {
             $any_errors = $true;

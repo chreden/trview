@@ -124,7 +124,7 @@ namespace trview
                             }
                             first_item = false;
 
-                            if (ImGui::Selectable(item_id.c_str(), false, ImGuiSelectableFlags_DontClosePopups | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
+                            if (ImGui::Selectable(item_id.c_str(), false, ImGuiSelectableFlags_NoAutoClosePopups | static_cast<int>(ImGuiSelectableFlags_SelectOnNav)))
                             {
                                 on_selected(item);
                             }
