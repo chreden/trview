@@ -9,7 +9,7 @@ namespace trview
 {
     namespace
     {
-        const uint16_t Texture_Mask = 0x3fff;
+        const uint16_t Texture_Mask = 0x7fff;
 
         void add_rect(std::vector<Triangle>& triangles, const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& normal)
         {
@@ -589,7 +589,7 @@ namespace trview
     {
         for (const auto& rect : rectangles)
         {
-            const uint16_t texture = rect.texture & 0x7fff;
+            const uint16_t texture = rect.texture & Texture_Mask;
             const bool double_sided = platform_and_version.platform == trlevel::Platform::Saturn ? false : rect.texture & 0x8000;
 
             std::array<Vector3, 4> verts;
@@ -632,7 +632,7 @@ namespace trview
     {
         for (const auto& tri : triangles)
         {
-            const uint16_t texture = tri.texture & 0x7fff;
+            const uint16_t texture = tri.texture & Texture_Mask;
             const bool double_sided = platform_and_version.platform == trlevel::Platform::Saturn ? false : tri.texture & 0x8000;
 
             std::array<Vector3, 3> verts;
