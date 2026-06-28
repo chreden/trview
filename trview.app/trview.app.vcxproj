@@ -71,6 +71,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Lua\Elements\Sector\Lua_Sector.cpp" />
     <ClCompile Include="Lua\Elements\StaticMesh\Lua_StaticMesh.cpp" />
     <ClCompile Include="Lua\Elements\Trigger\Lua_Trigger.cpp" />
+    <ClCompile Include="Lua\Lua_Plugin.cpp" />
     <ClCompile Include="Lua\Route\Lua_Route.cpp" />
     <ClCompile Include="Lua\Route\Lua_Waypoint.cpp" />
     <ClCompile Include="Lua\Scriptable\Scriptable.cpp" />
@@ -114,6 +115,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Geometry\Model\Model.h" />
     <ClInclude Include="Geometry\Model\ModelStorage.h" />
     <ClInclude Include="Lua\Camera\Lua_Camera.h" />
+    <ClInclude Include="Lua\Lua_Plugin.h" />
     <ClInclude Include="Lua\Scriptable\IScriptable.h" />
     <ClInclude Include="Lua\Scriptable\Scriptable.h" />
     <ClInclude Include="Menus\ImGuiFileMenu.h" />

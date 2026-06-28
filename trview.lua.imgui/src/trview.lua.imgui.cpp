@@ -124,6 +124,13 @@ namespace trview
                 return 0;
             }
 
+            int text_wrapped(lua_State* L)
+            {
+                auto text = get_string(L, 1, "text");
+                ImGui::TextWrapped(text.c_str());
+                return 0;
+            }
+
             int begin_table(lua_State* L)
             {
                 const auto id = get_string(L, 1, "id");
@@ -296,6 +303,8 @@ namespace trview
             lua_setfield(L, -2, "Text");
             lua_pushcfunction(L, text_colored);
             lua_setfield(L, -2, "TextColored");
+            lua_pushcfunction(L, text_wrapped);
+            lua_setfield(L, -2, "TextWrapped");
             // Table
             lua_pushcfunction(L, begin_table);
             lua_setfield(L, -2, "BeginTable");

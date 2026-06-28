@@ -1,3 +1,4 @@
+local show_window = false
 local pid = 0
 local base_pointer = 140696139255372
 local game = nil
@@ -23,6 +24,8 @@ function select_game(new_game)
 end
 
 function render_ui()
+    if not show_window then return end
+
     if (ImGui.Begin( { name = "NG+ Scanner" })) then
     
         if (ImGui.BeginCombo({ label = "Game", preview_value = selected_game })) then
@@ -93,6 +96,9 @@ function render_ui()
 end
 
 function render_toolbar()
+    if (ImGui.Button({ label = "NG+ Scanner" })) then
+        show_window = not show_window
+    end
 end
 
 print("NG+ Scanner loaded")

@@ -122,6 +122,9 @@
     <ClCompile Include="Elements\ElementFilters.cpp" Filter="Elements" />
     <ClCompile Include="Settings\UserSettingsPatches.cpp" Filter="Settings" />
     <ClCompile Include="Filters\FilterStore.cpp" Filter="Filters" />
+    <ClCompile Include="Lua\Lua_Plugin.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -372,6 +375,9 @@
     <ClInclude Include="Mocks\Filters\IFilterable.h" Filters="Mocks\Filters" />
     <ClInclude Include="UI\Modal.h" Filters="UI\Modal" />
     <ClInclude Include="UI\Modal.hpp" Filters="UI\Modal" />
+    <ClInclude Include="Lua\Lua_Plugin.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

@@ -1,0 +1,5 @@
+{
+    "name": "Level Load Test",
+    "author": "chreden",
+    "description": "Loads levels using trview and tests that they are loaded correctly"
+}
