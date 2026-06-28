@@ -9,7 +9,10 @@ namespace trview
 {
     namespace
     {
-        const uint16_t Texture_Mask = 0x3fff;
+        constexpr uint16_t texture_mask(const trlevel::PlatformAndVersion& platform_and_version) noexcept
+        {
+            return platform_and_version.version == trlevel::LevelVersion::Tomb5 ? 0x3fff : 0x7fff;
+        }
 
         void add_rect(std::vector<Triangle>& triangles, const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& normal)
         {
@@ -397,7 +400,7 @@ namespace trview
                 colors[i] = input_vertices[rect.vertices[i]].colour;
             }
 
-            uint16_t texture = rect.texture & Texture_Mask;
+            uint16_t texture = rect.texture & texture_mask(version);
             if (needs_rect_texture_abs(version))
             {
                 texture = static_cast<uint16_t>(std::abs(static_cast<int16_t>(rect.texture)));
@@ -513,7 +516,7 @@ namespace trview
                 colors[i] = input_vertices[tri.vertices[i]].colour;
             }
 
-            uint16_t texture = tri.texture & Texture_Mask;
+            uint16_t texture = tri.texture & texture_mask(version);
 
             if (needs_tri_texture_mask(version))
             {
@@ -589,7 +592,7 @@ namespace trview
     {
         for (const auto& rect : rectangles)
         {
-            const uint16_t texture = rect.texture & 0x7fff;
+            const uint16_t texture = rect.texture & texture_mask(platform_and_version);
             const bool double_sided = platform_and_version.platform == trlevel::Platform::Saturn ? false : rect.texture & 0x8000;
 
             std::array<Vector3, 4> verts;
@@ -632,7 +635,7 @@ namespace trview
     {
         for (const auto& tri : triangles)
         {
-            const uint16_t texture = tri.texture & 0x7fff;
+            const uint16_t texture = tri.texture & texture_mask(platform_and_version);
             const bool double_sided = platform_and_version.platform == trlevel::Platform::Saturn ? false : tri.texture & 0x8000;
 
             std::array<Vector3, 3> verts;
