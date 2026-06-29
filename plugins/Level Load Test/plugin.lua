@@ -21,7 +21,7 @@ function load_level_tests()
     for _, path in pairs(script_paths) do
         dofile(path)
         local name, info = get_test_info()
-        table.insert(scripts, { name = name, info = info, path = path, pass = nil, in_progress = false })
+        table.insert(scripts, { name = name, info = info, path = path, pass = nil, in_progress = false, text = "" })
     end
 end
 
@@ -32,7 +32,9 @@ function render_ui()
     
     for _, script in pairs(scripts) do
         if script.in_progress then
-            script.pass = run_test(levels_directory)
+            local pass, text = run_test(levels_directory)
+            script.pass = pass
+            script.text = text
             script.in_progress = script.pass == nil
         end
     end
@@ -75,7 +77,7 @@ function render_ui()
                 ImGui.TableNextColumn()
                 ImGui.Text({ text = tostring(script.pass)} )
                 ImGui.TableNextColumn()
-                ImGui.Text({ text = script.path })
+                ImGui.Text({ text = script.text })
             end
 
             ImGui.EndTable()
