@@ -68,6 +68,7 @@ void register_level_info_tests(ImGuiTestEngine* engine)
             context.ptr->receive_message(trview::Message{ .type = "open_level", .data = std::make_shared<MessageData<std::weak_ptr<ILevel>>>(level) });
 
             ctx->Yield();
-            IM_CHECK_EQ(RenderedText(ctx, ctx->ItemInfo("LevelInfo").ID), "test (Test)");
+
+            IM_CHECK_EQ(RenderedText(ctx, ImGui::GetCurrentWindow()->ID), "test (Test)");
         });
 }
