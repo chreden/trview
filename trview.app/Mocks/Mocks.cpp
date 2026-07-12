@@ -28,6 +28,7 @@
 #include "Graphics/ITextureStorage.h"
 #include "Lua/IScriptable.h"
 #include "Menus/IFileMenu.h"
+#include "Menus/IMainMenu.h"
 #include "Menus/IUpdateChecker.h"
 #include "Routing/IRoute.h"
 #include "Routing/IWaypoint.h"
@@ -221,5 +222,8 @@ namespace trview
 
         MockFilterable::MockFilterable() {};
         MockFilterable::~MockFilterable() {};
+
+        MockMainMenu::MockMainMenu() {}
+        MockMainMenu::~MockMainMenu() {}
     }
 }

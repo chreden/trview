@@ -17,7 +17,8 @@ namespace trview
 
     void MessageSystem::send_message(const Message& message)
     {
-        for (const auto& recipient : _recipients)
+        const auto recipients = _recipients;
+        for (const auto& recipient : recipients)
         {
             if (auto recipient_ptr = recipient.lock())
             {
