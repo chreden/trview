@@ -155,6 +155,18 @@ namespace trlevel
             return std::nullopt;
         }
 
+        std::optional<PlatformAndVersion> check_for_tr1_psx_version_32_demo(std::basic_ispanstream<uint8_t>& file)
+        {
+            // TR1 PSX 1996 Demo has textiles first. But object list version is 32.
+            file.seekg(sizeof(tr_textile4) * 15 + sizeof(tr_clut) * 1024);
+            const uint32_t potential_version = read<uint32_t>(file);
+            if (potential_version == 32)
+            {
+                return PlatformAndVersion{ .platform = Platform::PSX, .version = LevelVersion::Tomb1, .raw_version = 32, .extra = { "handydemo" } };
+            }
+            return std::nullopt;
+        }
+
         std::optional<PlatformAndVersion> check_for_tr1_may_1996(std::basic_ispanstream<uint8_t>& file)
         {
             // TR1 PSX May 1996 has textiles first.
@@ -244,6 +256,7 @@ namespace trlevel
                 check_for_tr2_version_42,
                 check_for_tr2_psx_version_38,
                 check_for_tr1_psx_version_27,
+                check_for_tr1_psx_version_32_demo,
                 check_for_tr1_may_1996,
                 check_for_tr1_psx_without_sound,
                 check_for_tr1_psx,

@@ -154,6 +154,7 @@
             { "id": 151, "name": "Explosion" },
             { "id": 153, "name": "Splash" },
             { "id": 155, "name": "Bubbles" },
+            { "id": 157, "name": "Bubbles" },
             { "id": 158, "name": "Blood" },
             { "id": 160, "name": "Smoke" },
             { "id": 161, "name": "Centaur", "categories": [ "Entity" ]},
