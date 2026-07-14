@@ -101,6 +101,10 @@ namespace trview
         template <typename T>
         bool is_matching_level(const std::shared_ptr<T>& element, const ILevel* const level)
         {
+            if (!element)
+            {
+                return false;
+            }
             const auto level_ptr = element->level().lock();
             return level_ptr && level_ptr.get() == level;
         }
@@ -358,8 +362,9 @@ namespace trview
     void Level::set_selected_room(const std::weak_ptr<IRoom>& room)
     { 
         const auto room_ptr = room.lock();
-        if (_selected_room.lock() == room_ptr ||
-            !is_matching_level(room_ptr, this))
+        if (room_ptr &&
+            (_selected_room.lock() == room_ptr ||
+            !is_matching_level(room_ptr, this)))
         {
             return;
         }

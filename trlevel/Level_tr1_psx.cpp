@@ -343,8 +343,8 @@ namespace trlevel
         callbacks.on_progress("Reading textiles");
         log_file(activity, file, "Reading textiles");
 
-        _num_textiles = 13;
-        _textile4 = read_vector<tr_textile4>(file, 13);
+        _num_textiles = is_tr1_version_32_demo(_platform_and_version) ? 15 : 13;
+        _textile4 = read_vector<tr_textile4>(file, _num_textiles);
         _clut = read_vector<tr_clut>(file, 1024);
         log_file(activity, file, std::format("Read {} textile4s and {} clut", _textile4.size(), _clut.size()));
     }

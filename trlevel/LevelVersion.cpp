@@ -100,6 +100,11 @@ namespace trlevel
         return version.raw_version == 27;
     }
 
+    bool is_tr1_version_32_demo(PlatformAndVersion version)
+    {
+        return version.raw_version == 32 && version.extra.contains("handydemo");
+    }
+
     bool is_tr2_version_38(PlatformAndVersion version)
     {
         return version.raw_version == 38;

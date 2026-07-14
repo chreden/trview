@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace trlevel
 {
@@ -33,6 +34,7 @@ namespace trlevel
         bool         is_pack{ false };
         bool         is_tr2_saturn{ false };
         int32_t      raw_version{ 0 };
+        std::unordered_set<std::string> extra;
     };
 
     inline bool operator==(const PlatformAndVersion & l, const PlatformAndVersion & r)
@@ -52,6 +54,7 @@ namespace trlevel
     bool is_tr1_pc_may_1996(PlatformAndVersion version);
     bool is_tr1_version_26(PlatformAndVersion version);
     bool is_tr1_version_27(PlatformAndVersion version);
+    bool is_tr1_version_32_demo(PlatformAndVersion version);
     bool is_tr2_version_38(PlatformAndVersion version);
     bool is_tr2_version_42(PlatformAndVersion version);
     bool is_tr2_version_44(PlatformAndVersion version);
