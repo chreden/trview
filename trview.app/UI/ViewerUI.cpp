@@ -456,7 +456,7 @@ namespace trview
     void ViewerUI::render_scriptable_notes()
     {
         const auto level = _level.lock();
-        if (!level)
+        if (!level || !toggle(IViewer::Options::notes))
         {
             return;
         }
