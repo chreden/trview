@@ -478,7 +478,7 @@ namespace trview
                 if (is_on_screen(pos, *vp))
                 {
                     ImGui::SetNextWindowPos(vp->Pos + ImVec2(pos.x, pos.y));
-                    if (ImGui::Begin(std::format("##scriptable{}", i).c_str(), nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing))
+                    if (ImGui::Begin(std::format("##scriptable{}", i++).c_str(), nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing))
                     {
                         ImGui::Text(notes.c_str());
                     }
