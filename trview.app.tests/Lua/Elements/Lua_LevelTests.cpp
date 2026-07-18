@@ -5,6 +5,7 @@
 #include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.app/Mocks/Elements/ILight.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.app/Mocks/Lua/IScriptable.h>
 #include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
@@ -14,6 +15,21 @@ using namespace trview;
 using namespace trview::tests;
 using namespace trview::mocks;
 using namespace testing;
+
+TEST(Lua_Level, AddScriptable)
+{
+    auto scriptable = mock_shared<MockScriptable>();
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, add_scriptable).Times(1);
+
+    LuaState L;
+    lua::create_level(L, level);
+    lua_setglobal(L, "l");
+    lua::create_scriptable(L, scriptable);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "l:add_scriptable(s)"));
+}
 
 TEST(Lua_Level, AlternateMode)
 {
@@ -172,6 +188,21 @@ TEST(Lua_Level, Lights)
     ASSERT_EQ(0, luaL_dostring(L, "return l.lights[2].number"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(200, lua_tonumber(L, -1));
+}
+
+TEST(Lua_Level, RemoveScriptable)
+{
+    auto scriptable = mock_shared<MockScriptable>();
+    auto level = mock_shared<MockLevel>();
+    EXPECT_CALL(*level, remove_scriptable).Times(1);
+
+    LuaState L;
+    lua::create_level(L, level);
+    lua_setglobal(L, "l");
+    lua::create_scriptable(L, scriptable);
+    lua_setglobal(L, "s");
+
+    ASSERT_EQ(0, luaL_dostring(L, "l:remove_scriptable(s)"));
 }
 
 TEST(Lua_Level, Rooms)
