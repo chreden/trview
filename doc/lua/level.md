@@ -25,3 +25,4 @@ The Level library provides information about the currently loaded Level in trvie
 | Name | Returns | Parameters | Description |
 | ---- | ------- | ---------- | ----------- |
 | add_scriptable | | [Scriptable](scriptable.md) | Add a scriptable to the level. Level does not own the scriptable. |
+| remove_scriptable | | [Scriptable](scriptable.md) | Remove a scriptable from the level. |

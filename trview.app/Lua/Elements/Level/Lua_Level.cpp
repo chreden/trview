@@ -25,6 +25,14 @@ namespace trview
                 return 0;
             }
 
+            int level_removescriptable(lua_State* L)
+            {
+                auto level = lua::get_self<ILevel>(L);
+                auto scriptable = lua::get_self<IScriptable>(L, -1);
+                level->remove_scriptable(scriptable);
+                return 0;
+            }
+
             int level_index(lua_State* L)
             {
                 auto level = lua::get_self<ILevel>(L);
@@ -85,6 +93,11 @@ namespace trview
                 else if (key == "lights")
                 {
                     return push_list_p(L, level->lights(), create_light);
+                }
+                else if (key == "remove_scriptable")
+                {
+                    lua_pushcfunction(L, level_removescriptable);
+                    return 1;
                 }
                 else if (key == "rooms")
                 {

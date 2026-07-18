@@ -411,6 +411,12 @@ namespace trview
         return _platform_and_version;
     }
 
+    void Level::remove_scriptable(const std::weak_ptr<IScriptable>& scriptable)
+    {
+        const auto to_remove = scriptable.lock();
+        std::erase_if(_scriptables, [&](auto&& p) { return p.lock() == to_remove; });
+    }
+
     void Level::render(const ICamera& camera, bool render_selection)
     {
         using namespace DirectX;

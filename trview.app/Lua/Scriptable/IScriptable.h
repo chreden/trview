@@ -37,6 +37,7 @@ namespace trview
 
     namespace lua
     {
+        int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable);
         void scriptable_register(lua_State* L, const IScriptable::Source& source);
         std::shared_ptr<IScriptable> to_scriptable(lua_State* L, int index);
     }

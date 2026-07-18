@@ -17,6 +17,7 @@
 #include <trview.app/Mocks/Elements/ISoundSource.h>
 #include <trview.app/Mocks/Camera/ICamera.h>
 #include <trview.app/Mocks/Sound/ISoundStorage.h>
+#include <trview.app/Mocks/Lua/IScriptable.h>
 #include <trview.graphics/mocks/D3D/ID3D11DeviceContext.h>
 #include <trview.graphics/mocks/IShader.h>
 #include <trview.common/Algorithms.h>
@@ -1048,4 +1049,27 @@ TEST(Level, UnhideAllMessage)
         .build();
 
     level->receive_message(trview::Message{ .type = "unhide_all", .data = std::make_shared<MessageData<bool>>(true) });
+}
+
+TEST(Level, AddScriptable)
+{
+    auto scriptable = mock_shared<MockScriptable>();
+    auto level = register_test_module().build();
+    level->add_scriptable(scriptable);
+    const auto scriptables = level->scriptables();
+    ASSERT_EQ(scriptables.size(), 1);
+    ASSERT_EQ(scriptables[0].lock(), scriptable);
+}
+
+TEST(Level, RemoveScriptable)
+{
+    auto scriptable = mock_shared<MockScriptable>();
+    auto level = register_test_module().build();
+    level->add_scriptable(scriptable);
+    const auto scriptables = level->scriptables();
+    ASSERT_EQ(scriptables.size(), 1);
+    ASSERT_EQ(scriptables[0].lock(), scriptable);
+    level->remove_scriptable(scriptable);
+    const auto scriptables2 = level->scriptables();
+    ASSERT_EQ(scriptables2.size(), 0);
 }

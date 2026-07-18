@@ -34,4 +34,6 @@ namespace trview
         DirectX::SimpleMath::Vector3 _screen_position;
         graphics::Texture _texture;
     };
+
+    int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable);
 }

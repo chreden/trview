@@ -66,15 +66,15 @@ namespace trview
                 return 0;
             }
 
-            int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable)
-            {
-                return create(L, scriptable, scriptable_index, scriptable_newindex);
-            }
-
             int scriptable_new(lua_State* L)
             {
-                return create_scriptable(L, scriptable_source(L));
+                return lua::create_scriptable(L, scriptable_source(L));
             }
+        }
+
+        int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable)
+        {
+            return create(L, scriptable, scriptable_index, scriptable_newindex);
         }
 
         void scriptable_register(lua_State* L, const IScriptable::Source& source)
