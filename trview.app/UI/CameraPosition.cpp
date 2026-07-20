@@ -98,9 +98,7 @@ namespace trview
             return;
         }
 
-        ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos +
-            ImVec2{ 0, ImGui::GetMainViewport()->Size.y } +
-            _in_window_offset.value());
+        ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos + ImVec2{ 0, ImGui::GetMainViewport()->Size.y } - _in_window_offset.value(), 0, ImVec2(0, 1));
         _reposition = false;
         _in_window_offset.reset();
     }
@@ -115,14 +113,13 @@ namespace trview
         }
         else
         {
-            const auto pos = window->Pos - viewport->Pos;
-            _in_window_offset = ImVec2{ pos.x, pos.y - viewport->Size.y };
+            _in_window_offset = (viewport->Pos + ImVec2{ 0, viewport->Size.y }) - (window->Pos + ImVec2{ 0, window->Size.y });
         }
     }
 
     void CameraPosition::reset()
     {
-        _in_window_offset = { {  4, -148 } };
+        _in_window_offset = { {  -5, 5 } };
         _reposition = true;
     }
 }

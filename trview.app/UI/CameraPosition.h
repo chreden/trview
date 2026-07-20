@@ -61,6 +61,6 @@ namespace trview
         bool _display_degrees{ true };
         bool _visible{ true };
         bool _reposition{ true };
-        std::optional<ImVec2> _in_window_offset{ {  4, -148 } };
+        std::optional<ImVec2> _in_window_offset{ {  -5, 5 } };
     };
 }
