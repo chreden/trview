@@ -26,8 +26,11 @@ namespace trview
         explicit Lua(
             const IRoute::Source& route_source,
             const IRandomizerRoute::Source& randomizer_route_source,
-            const IWaypoint::Source& waypoint_source, const IScriptable::Source& scriptable_source,
-            const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files);
+            const IWaypoint::Source& waypoint_source,
+            const IScriptable::Source& scriptable_source,
+            const std::shared_ptr<IDialogs>& dialogs,
+            const std::shared_ptr<IFiles>& files,
+            const IMesh::Source& mesh_source);
         ~Lua();
         void do_file(const std::string& file) override;
         void execute(const std::string& command) override;
@@ -41,6 +44,7 @@ namespace trview
         IRandomizerRoute::Source _randomizer_route_source;
         IScriptable::Source _scriptable_source;
         IWaypoint::Source _waypoint_source;
+        IMesh::Source _mesh_source;
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IFiles> _files;
         std::string _directory;
@@ -73,6 +77,15 @@ namespace trview
         int create(lua_State* L, const std::shared_ptr<T>& self, lua_CFunction index, lua_CFunction new_index);
 
         template <typename T>
+        void create_userdata(lua_State* L, const T& value);
+
+        template <typename T>
+        void cleanup_userdata(lua_State* L, int index);
+
+        template <typename T>
+        T& get_userdata(lua_State* L, int index);
+
+        template <typename T>
         std::shared_ptr<T> get_self(lua_State* L, int index = 1);
 
         template <typename T>
@@ -89,6 +102,10 @@ namespace trview
         /// <returns>Stack change.</returns>
         template <typename T>
         int gc(lua_State* L);
+
+        void assign_metatable(lua_State* L, int ref_index);
+        int store_metatable(lua_State* L, const std::unordered_map<std::string, lua_CFunction>& map);
+        void create_metatable(lua_State* L, const std::unordered_map<std::string, lua_CFunction>& map);
     }
 }
 
