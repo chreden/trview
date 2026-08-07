@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\trview.lua.imgui.h" />
+    <ClInclude Include="inc\trview.lua.h" />
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\trview.lua.imgui.input.h" />
+    <ClInclude Include="inc\tables.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -23,15 +23,15 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="src\trview.lua.imgui.cpp" />
-    <ClCompile Include="src\trview.lua.imgui.input.cpp" />
+    <ClCompile Include="src\tables.cpp" />
+    <ClCompile Include="src\trview.lua.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{cdbc4705-e8e2-4c5c-a1a6-ea66fe4b699b}</ProjectGuid>
-    <RootNamespace>trviewluaimgui</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{625C279F-FF28-4F69-F00C-BC574664077B}</ProjectGuid>
+    <RootNamespace>trviewlua</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

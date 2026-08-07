@@ -31,7 +31,8 @@ TEST(Lua_trview, Camera)
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         [](auto&&...) { return mock_shared<MockScriptable>(); },
         mock_shared<MockDialogs>(),
-        mock_shared<MockFiles>());
+        mock_shared<MockFiles>(),
+        [](auto&&...) { return mock_shared<MockMesh>(); });
 
     ASSERT_EQ(0, luaL_dostring(L, "return trview.camera"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
@@ -52,7 +53,8 @@ TEST(Lua_trview, Level)
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         [](auto&&...) { return mock_shared<MockScriptable>(); },
         mock_shared<MockDialogs>(),
-        mock_shared<MockFiles>());
+        mock_shared<MockFiles>(),
+        [](auto&&...) { return mock_shared<MockMesh>(); });
 
     ASSERT_EQ(0, luaL_dostring(L, "return trview.level"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
@@ -76,7 +78,8 @@ TEST(Lua_trview, RecentFiles)
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         [](auto&&...) { return mock_shared<MockScriptable>(); },
         mock_shared<MockDialogs>(),
-        mock_shared<MockFiles>());
+        mock_shared<MockFiles>(),
+        [](auto&&...) { return mock_shared<MockMesh>(); });
 
     ASSERT_EQ(0, luaL_dostring(L, "return trview.recent_files"));
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
@@ -100,7 +103,8 @@ TEST(Lua_trview, SetLevel)
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         [](auto&&...) { return mock_shared<MockScriptable>(); },
         mock_shared<MockDialogs>(),
-        mock_shared<MockFiles>());
+        mock_shared<MockFiles>(),
+        [](auto&&...) { return mock_shared<MockMesh>(); });
 
     auto level = mock_shared<MockLevel>();
     lua::create_level(L, level);
@@ -122,7 +126,8 @@ TEST(Lua_trview, Route)
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         [](auto&&...) { return mock_shared<MockScriptable>(); },
         mock_shared<MockDialogs>(),
-        mock_shared<MockFiles>());
+        mock_shared<MockFiles>(),
+        [](auto&&...) { return mock_shared<MockMesh>(); });
 
     ASSERT_EQ(0, luaL_dostring(L, "return trview.route"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
@@ -140,7 +145,8 @@ TEST(Lua_trview, SetRoute)
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
         [](auto&&...) { return mock_shared<MockScriptable>(); },
         mock_shared<MockDialogs>(),
-        mock_shared<MockFiles>());
+        mock_shared<MockFiles>(),
+        [](auto&&...) { return mock_shared<MockMesh>(); });
 
     ASSERT_EQ(0, luaL_dostring(L, "trview.route = Route.new()"));
 }

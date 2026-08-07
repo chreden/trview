@@ -1,4 +1,4 @@
-# Color
+# Colour
 
 # Non-Instance Functions
 

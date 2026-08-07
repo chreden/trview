@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "tables.h"
+#include "../inc/tables.h"
 
 namespace trview
 {
@@ -105,7 +105,7 @@ namespace trview
             return value;
         }
 
-        void set_enum(lua_State* L, const std::string& name, int index, const std::vector<EnumValue>& values)
+        void set_enum(lua_State* L, const std::string& name, int index, const std::vector<EnumValue2>& values)
         {
             if (index < 0)
             {

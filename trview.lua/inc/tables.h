@@ -19,13 +19,13 @@ namespace trview
         std::optional<std::string> get_optional_string(lua_State* L, int index, const std::string& name);
         std::string get_string(lua_State* L, int index, const std::string& name);
 
-        struct EnumValue
+        struct EnumValue2
         {
             std::string name;
             int value;
         };
 
-        void set_enum(lua_State* L, const std::string& name, int index, const std::vector<EnumValue>& values);
+        void set_enum(lua_State* L, const std::string& name, int index, const std::vector<EnumValue2>& values);
         void set_integer(lua_State* L, int index, const std::string& name, int value);
     }
 }
