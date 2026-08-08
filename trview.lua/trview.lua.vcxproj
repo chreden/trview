@@ -26,6 +26,9 @@
     <ClCompile Include="src\tables.cpp" />
     <ClCompile Include="src\trview.lua.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="inc\tables.inl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

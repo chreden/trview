@@ -4,6 +4,8 @@
 #include "../Colour.h"
 #include <trview.lua/inc/tables.h>
 
+using namespace DirectX::SimpleMath;
+
 namespace trview
 {
     namespace lua
@@ -112,9 +114,35 @@ namespace trview
 
             int triangle_constructor(lua_State* L)
             {
-                const Triangle::AnimationMode animation_mode =
-                    static_cast<Triangle::AnimationMode>(get_optional_integer(L, 2, "animation_mode").value_or(static_cast<int>(Triangle::AnimationMode::None)));
-                return create_triangle(L, Triangle{ .animation_mode = animation_mode });
+                const Triangle::AnimationMode animation_mode = get_optional_enum<Triangle::AnimationMode>(L, 2, "animation_mode").value_or(Triangle::AnimationMode::None);
+                const Triangle::CollisionMode collision_mode = get_optional_enum<Triangle::CollisionMode>(L, 2, "collision_mode").value_or(Triangle::CollisionMode::Disabled);
+                const uint32_t current_frame = static_cast<uint32_t>(get_optional_integer(L, 2, "current_frame").value_or(0));
+                const float current_time = get_optional_float(L, 2, "current_time").value_or(0.0f);
+                const float frame_time = get_optional_float(L, 2, "frame_time").value_or(0.0f);
+                const std::vector<Vector3> normals = get_list<Vector3>(L, 2, "normals");
+                const Triangle::SideMode side_mode = get_optional_enum<Triangle::SideMode>(L, 2, "side_mode").value_or(Triangle::SideMode::Single);
+                const Triangle::TextureMode texture_mode = get_optional_enum<Triangle::TextureMode>(L, 2, "texture_mode").value_or(Triangle::TextureMode::Untextured);
+                const Triangle::TransparencyMode transparency_mode = get_optional_enum<Triangle::TransparencyMode>(L, 2, "transparency_mode").value_or(Triangle::TransparencyMode::None);
+                const std::vector<DirectX::SimpleMath::Vector3> vertices = get_list<DirectX::SimpleMath::Vector3>(L, 2, "vertices");
+
+                // TODO: Length check on normals and vertices
+
+                return create_triangle(L,
+                    Triangle
+                    {
+                        .animation_mode = animation_mode,
+                        .collision_mode = collision_mode,
+                        // colours
+                        .current_frame = current_frame,
+                        .current_time = current_time,
+                        // frames
+                        .frame_time = frame_time,
+                        .normals = { normals[0], normals[1], normals[2] },
+                        .side_mode = side_mode,
+                        .texture_mode = texture_mode,
+                        .transparency_mode = transparency_mode,
+                        .vertices = { vertices[0], vertices[1], vertices[2] }
+                    });
             }
 
             int triangle_class_index(lua_State* L)

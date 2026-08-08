@@ -19,6 +19,12 @@ namespace trview
         std::optional<std::string> get_optional_string(lua_State* L, int index, const std::string& name);
         std::string get_string(lua_State* L, int index, const std::string& name);
 
+        template <typename T>
+        std::vector<T> get_list(lua_State* L, int index, const std::string& name);
+
+        template <typename T>
+        std::optional<T> get_optional_enum(lua_State* L, int index, const std::string& name);
+
         struct EnumValue2
         {
             std::string name;
@@ -29,3 +35,5 @@ namespace trview
         void set_integer(lua_State* L, int index, const std::string& name, int value);
     }
 }
+
+#include "tables.inl"

@@ -19,4 +19,7 @@
     <ClCompile Include="src\trview.lua.cpp" Filter="src" />
     <ClCompile Include="src\tables.cpp" Filter="src" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="inc\tables.inl" Filter="inc" />
+  </ItemGroup>
 </Project>
