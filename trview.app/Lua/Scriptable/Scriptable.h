@@ -17,6 +17,7 @@ namespace trview
         void render(const ICamera& camera) override;
         DirectX::SimpleMath::Vector3 screen_position() const override;
         void set_data(int ref) override;
+        void set_mesh(const std::weak_ptr<IMesh>& mesh) override;
         void set_notes(const std::string& notes) override;
         void set_on_click(int ref) override;
         void set_on_tooltip(int ref) override;

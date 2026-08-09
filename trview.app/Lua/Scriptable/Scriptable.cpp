@@ -46,6 +46,10 @@ namespace trview
                 {
                     scriptable->set_data(luaL_ref(L, LUA_REGISTRYINDEX));
                 }
+                else if (key == "mesh")
+                {
+                    scriptable->set_mesh(get_userdata<std::shared_ptr<IMesh>>(L, 3));
+                }
                 else if (key == "notes")
                 {
                     scriptable->set_notes(lua_tostring(L, -1));
@@ -134,6 +138,11 @@ namespace trview
     void Scriptable::set_data(int ref)
     {
         _data = ref;
+    }
+
+    void Scriptable::set_mesh(const std::weak_ptr<IMesh>& mesh)
+    {
+        _mesh = mesh.lock();
     }
 
     void Scriptable::set_on_click(int ref)

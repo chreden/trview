@@ -20,6 +20,7 @@ namespace trview
             MOCK_METHOD(void, render, (const ICamera&), (override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, screen_position, (), (const, override));
             MOCK_METHOD(void, set_data, (int), (override));
+            MOCK_METHOD(void, set_mesh, (const std::weak_ptr<IMesh>&), (override));
             MOCK_METHOD(void, set_notes, (const std::string&), (override));
             MOCK_METHOD(void, set_on_click, (int), (override));
             MOCK_METHOD(void, set_position, (const DirectX::SimpleMath::Vector3&), (override));
