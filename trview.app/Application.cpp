@@ -352,6 +352,8 @@ namespace trview
             io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
             io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
             io.ConfigWindowsMoveFromTitleBarOnly = true;
+            io.ConfigDpiScaleFonts = true;
+            io.ConfigDpiScaleViewports = true;
 
             _imgui_ini_filename = _files->appdata_directory() + "\\trview\\imgui.ini";
             io.IniFilename = _imgui_ini_filename.c_str();
