@@ -15,6 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: fbactions/setup-winsdk@v2
+      with:
+        winsdk-build-version: 19041
+
     - name: setup-msbuild
       uses: microsoft/setup-msbuild@v2
       with:

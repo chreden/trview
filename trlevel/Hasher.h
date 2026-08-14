@@ -11,8 +11,10 @@ namespace trlevel
         virtual ~Hasher();
         std::string hash(const std::vector<uint8_t>& data) const;
     private:
-        BCRYPT_HASH_HANDLE _hash{ nullptr };
-        std::vector<uint8_t> hash_object;
-        std::vector<uint8_t> hash_buffer;
+        void create_hash() const;
+
+        mutable BCRYPT_HASH_HANDLE _hash{ nullptr };
+        mutable std::vector<uint8_t> hash_object;
+        mutable std::vector<uint8_t> hash_buffer;
     };
 }
