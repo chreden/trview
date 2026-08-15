@@ -116,6 +116,7 @@ namespace trview
             {
                 const Triangle::AnimationMode animation_mode = get_optional_enum<Triangle::AnimationMode>(L, 2, "animation_mode").value_or(Triangle::AnimationMode::None);
                 const Triangle::CollisionMode collision_mode = get_optional_enum<Triangle::CollisionMode>(L, 2, "collision_mode").value_or(Triangle::CollisionMode::Disabled);
+                const std::vector<Colour> colours = get_list<Colour>(L, 2, "colours");
                 const uint32_t current_frame = static_cast<uint32_t>(get_optional_integer(L, 2, "current_frame").value_or(0));
                 const float current_time = get_optional_float(L, 2, "current_time").value_or(0.0f);
                 const float frame_time = get_optional_float(L, 2, "frame_time").value_or(0.0f);
@@ -132,7 +133,7 @@ namespace trview
                     {
                         .animation_mode = animation_mode,
                         .collision_mode = collision_mode,
-                        // colours
+                        .colours = { static_cast<Color>(colours[0]), static_cast<Color>(colours[1]), static_cast<Color>(colours[2]) },
                         .current_frame = current_frame,
                         .current_time = current_time,
                         // frames
