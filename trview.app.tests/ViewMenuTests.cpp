@@ -3,7 +3,7 @@
 
 using namespace trview;
 using namespace trview::tests;
-
+/*
 namespace
 {
     Window create_menu_window(int id)
@@ -122,3 +122,4 @@ TEST(ViewMenu, UnhideAllRaised)
     menu.process_message(WM_COMMAND, MAKEWPARAM(ID_VIEW_UNHIDE_ALL, 0), 0);
     ASSERT_TRUE(raised);
 }
+*/

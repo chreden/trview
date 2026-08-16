@@ -1,19 +1,15 @@
 #include "UpdateChecker.h"
 #include <trview.common/Strings.h>
+#include <trview.app/Messages/Messages.h>
 
 namespace trview
 {
-    namespace
-    {
-        const DWORD id_update_available = 30000;
-    }
-
     IUpdateChecker::~IUpdateChecker()
     {
     }
 
-    UpdateChecker::UpdateChecker(const Window& window)
-        : MessageHandler(window)
+    UpdateChecker::UpdateChecker(const std::weak_ptr<IMessageSystem>& messaging)
+        : _messaging(messaging)
     {
         TCHAR filename[MAX_PATH];
         GetModuleFileName(NULL, filename, MAX_PATH);
@@ -45,7 +41,7 @@ namespace trview
         }
 
         _thread = std::thread(
-            [](Window window, const std::string& version)
+            [](std::weak_ptr<IMessageSystem> messaging, const std::string& version)
         {
             HINTERNET internet = WinHttpOpen(L"trview", WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY, nullptr, nullptr, 0);
             if (!internet)
@@ -99,24 +95,13 @@ namespace trview
 
                 if (tag != version)
                 {
-                    HMENU menu = GetMenu(window);
-                    AppendMenu(menu, MF_STRING, id_update_available, L"Update Available!");
-                    DrawMenuBar(window);
+                    messages::commands::send_update_available(messaging);
                 }
             }
             catch (...)
             {
             }
 
-        }, window(), _current_version);
-    }
-
-    std::optional<int> UpdateChecker::process_message(UINT message, WPARAM wParam, LPARAM)
-    {
-        if (message == WM_COMMAND && LOWORD(wParam) == id_update_available)
-        {
-            ShellExecute(0, 0, L"https://github.com/chreden/trview/releases/latest", 0, 0, SW_SHOW);
-        }
-        return {};
+        }, _messaging, _current_version);
     }
 }

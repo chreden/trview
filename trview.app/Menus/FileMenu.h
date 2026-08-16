@@ -1,31 +1,31 @@
 #pragma once
 
-#include <trview.common/TokenStore.h>
-#include <trview.common/MessageHandler.h>
-#include <trview.common/IFiles.h>
-#include <trview.common/Messages/IMessageSystem.h>
 #include "IFileMenu.h"
 #include "../Elements/Level/ILevelNameLookup.h"
 
+#include <trview.common/Windows/IDialogs.h>
+#include <trview.common/IFiles.h>
+#include <trview.common/Messages/IRecipient.h>
+
+#include <optional>
+
 namespace trview
 {
-    class FileMenu final : public IFileMenu, public MessageHandler, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    struct IMessageSystem;
+    class FileMenu final : public IFileMenu, public IRecipient
     {
     public:
-        static const inline std::string default_file_pattern{ "\\*.TR2*,\\*.TR4*,\\*.TRC*,\\*.PHD,\\*.PSX,\\*.OBJ,\\*.TOM,\\*.SAT" };
-
         using LevelNameSource = std::function<std::optional<ILevelNameLookup::Name>(const std::string&, const std::shared_ptr<trlevel::IPack>&)>;
 
-        explicit FileMenu(
-            const Window& window,
-            const std::shared_ptr<IShortcuts>& shortcuts,
-            const std::shared_ptr<IDialogs>& dialogs,
-            const std::shared_ptr<IFiles>& files,
-            const LevelNameSource& level_name_source,
-            const std::weak_ptr<IMessageSystem>& messaging);
+        enum Mode
+        {
+            Main,
+            Diff
+        };
+
+        explicit FileMenu(const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const LevelNameSource& level_name_source, Mode mode, const std::weak_ptr<IMessageSystem>& messaging);
         virtual ~FileMenu() = default;
         std::vector<std::string> local_levels() const override;
-        std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         void open_file(const std::string& filename, const std::weak_ptr<trlevel::IPack>& pack) override;
         void render() override;
         void set_recent_files(const std::list<std::string>& files);
@@ -33,11 +33,11 @@ namespace trview
         void switch_to(const std::string& filename) override;
         void receive_message(const Message& message) override;
     private:
-        void choose_file();
-        void next_directory_file();
-        void previous_directory_file();
+        static const inline std::string default_file_pattern{ "\\*.TR2*,\\*.TR4*,\\*.TRC*,\\*.PHD,\\*.PSX,\\*.OBJ,\\*.TOM,\\*.SAT" };
         void sort_level_switcher();
-        void update_level_switcher();
+        void open();
+        void previous_directory_file();
+        void next_directory_file();
 
         struct File
         {
@@ -46,16 +46,16 @@ namespace trview
             std::optional<ILevelNameLookup::Name> level_name;
         };
 
-        TokenStore _token_store;
-        std::weak_ptr<IMessageSystem> _messaging;
         std::shared_ptr<IDialogs> _dialogs;
-        HMENU             _directory_listing_menu;
-        std::vector<std::string> _recent_files;
-        std::vector<File> _file_switcher_list;
-        std::string _opened_file;
         std::shared_ptr<IFiles> _files;
+        std::vector<File> _file_switcher;
+        std::vector<std::string> _recent_files;
         std::optional<std::string> _initial_directory;
+        LevelSortingMode _sorting_mode{ LevelSortingMode::Full };
         LevelNameSource _level_name_source;
-        LevelSortingMode _sorting_mode{ LevelSortingMode::FilenameOnly };
+        Mode _mode{ Mode::Main };
+        bool _reload_enabled{ false };
+        std::weak_ptr<IMessageSystem> _messaging;
+        std::string _opened_file;
     };
 }

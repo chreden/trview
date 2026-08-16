@@ -9,7 +9,6 @@
 #include "Elements/ITypeInfoLookup.h"
 #include <trview.app/Menus/IFileMenu.h>
 #include <trview.app/Menus/IUpdateChecker.h>
-#include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Routing/IRoute.h>
 #include "Routing/IRandomizerRoute.h"
 #include <trview.app/Settings/ISettingsLoader.h>
@@ -22,12 +21,14 @@
 #include "UI/Fonts/IFonts.h"
 #include <trview.common/Messages/IRecipient.h>
 #include <trview.common/Messages/IMessageSystem.h>
+#include <trview.common/MessageHandler.h>
 
 struct ImFont;
 
 namespace trview
 {
     struct IWindows;
+    struct IMainMenu;
 
     struct IApplication
     {
@@ -57,7 +58,6 @@ namespace trview
             const Window& application_window,
             std::unique_ptr<IUpdateChecker> update_checker,
             std::shared_ptr<ISettingsLoader> settings_loader,
-            const std::shared_ptr<IFileMenu>& file_menu,
             const std::shared_ptr<IViewer>& viewer,
             const IRoute::Source& route_source,
             std::shared_ptr<IShortcuts> shortcuts,
@@ -71,7 +71,8 @@ namespace trview
             std::shared_ptr<IFonts> fonts,
             const std::shared_ptr<IWindows>& windows,
             LoadMode load_mode,
-            const std::shared_ptr<IMessageSystem>& messaging);
+            const std::shared_ptr<IMessageSystem>& messaging,
+            const std::shared_ptr<IMainMenu>& main_menu);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -90,7 +91,6 @@ namespace trview
         void receive_message(const Message& message) override;
     private:
         // Window setup functions.
-        void setup_view_menu();
         void setup_viewer(const IStartupOptions& startup_options);
         void setup_shortcuts();
         // Entity manipulation
@@ -111,15 +111,16 @@ namespace trview
         void save_window_placement();
         void check_load();
         void end_diff(const std::weak_ptr<ILevel>& level);
+        void quit();
+        void test_reset_layout();
+        void test_reset_fonts();
 
         TokenStore _token_store;
 
         // Window message related components.
         std::shared_ptr<ISettingsLoader> _settings_loader;
         UserSettings _settings;
-        std::shared_ptr<IFileMenu> _file_menu;
         std::unique_ptr<IUpdateChecker> _update_checker;
-        ViewMenu _view_menu;
         std::shared_ptr<IShortcuts> _shortcuts;
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IFiles> _files;
@@ -139,6 +140,8 @@ namespace trview
         std::shared_ptr<IWindows> _windows;
         Timer _timer;
         std::optional<std::pair<std::string, FontSetting>> _new_font;
+        bool _reset_fonts{ false };
+        bool _reset_layout{ false };
 
         std::shared_ptr<IImGuiBackend> _imgui_backend;
         std::string _imgui_ini_filename;
@@ -163,6 +166,8 @@ namespace trview
         std::optional<std::string> _route_directory;
 
         std::shared_ptr<IMessageSystem> _messaging;
+        std::shared_ptr<IMainMenu> _main_menu;
+        std::vector<std::string> _local_levels;
     };
 
     std::shared_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);

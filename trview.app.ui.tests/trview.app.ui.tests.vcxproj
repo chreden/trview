@@ -93,6 +93,7 @@
     <ClInclude Include="CameraSinkWindowTests.h" />
     <ClInclude Include="ConsoleTests.h" />
     <ClInclude Include="ContextMenuTests.h" />
+    <ClInclude Include="FileMenuTests.h" />
     <ClInclude Include="FiltersTests.h" />
     <ClInclude Include="GoToTests.h" />
     <ClInclude Include="ItemsWindowTests.h" />
@@ -151,6 +152,7 @@
     <ClCompile Include="CameraSinkWindowTests.cpp" />
     <ClCompile Include="ConsoleTests.cpp" />
     <ClCompile Include="ContextMenuTests.cpp" />
+    <ClCompile Include="FileMenuTests.cpp" />
     <ClCompile Include="FiltersTests.cpp" />
     <ClCompile Include="GoToTests.cpp" />
     <ClCompile Include="ItemsWindowTests.cpp" />

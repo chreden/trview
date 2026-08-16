@@ -1,7 +1,5 @@
 #include <trview.app/Windows/Windows.h>
-#include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.app/Mocks/Windows/IWindow.h>
-#include <trview.app/Resources/resource.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -12,30 +10,13 @@ using testing::Return;
 
 namespace
 {
-    Event<> shortcut_handler;
-
     auto register_test_module()
     {
         struct test_module
         {
-            Window window{ create_test_window(L"WindowsTests") };
-            std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
-            bool need_default{ true };
-
             std::unique_ptr<trview::Windows> build()
             {
-                if (need_default)
-                {
-                    EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-                }
-                return std::make_unique<trview::Windows>(window, shortcuts);
-            }
-
-            test_module& with_shortcuts(const std::shared_ptr<MockShortcuts>& shortcuts)
-            {
-                this->shortcuts = shortcuts;
-                need_default = false;
-                return *this;
+                return std::make_unique<trview::Windows>();
             }
         };
         return test_module{};
@@ -163,7 +144,7 @@ TEST(Windows, AboutCreatedOnCommand)
         };
 
     windows->register_window("About", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(IDM_ABOUT, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("About") });
     ASSERT_EQ(called, true);
 }
 
@@ -180,7 +161,7 @@ TEST(Windows, CameraSinkCreatedOnCommand)
         };
 
     windows->register_window("CameraSink", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_CAMERA_SINK, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("CameraSink") });
     ASSERT_EQ(called, true);
 }
 
@@ -197,7 +178,7 @@ TEST(Windows, ConsoleCreatedOnCommand)
         };
 
     windows->register_window("Console", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_CONSOLE, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("Console") });
     ASSERT_EQ(called, true);
 }
 
@@ -214,7 +195,7 @@ TEST(Windows, DiffCreatedOnCommand)
         };
 
     windows->register_window("Diff", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_DIFF, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("Diff") });
     ASSERT_EQ(called, true);
 }
 
@@ -231,7 +212,7 @@ TEST(Windows, ItemsCreatedOnCommand)
         };
 
     windows->register_window("Items", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_ITEMS, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("Items") });
     ASSERT_EQ(called, true);
 }
 
@@ -248,7 +229,7 @@ TEST(Windows, LightsCreatedOnCommand)
         };
 
     windows->register_window("Lights", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_LIGHTS, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("Lights") });
     ASSERT_EQ(called, true);
 }
 
@@ -265,7 +246,7 @@ TEST(Windows, LogCreatedOnCommand)
         };
 
     windows->register_window("Log", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_LOG, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("Log") });
     ASSERT_EQ(called, true);
 }
 
@@ -282,7 +263,7 @@ TEST(Windows, PackCreatedOnCommand)
         };
 
     windows->register_window("Pack", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_PACK, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("Pack") });
     ASSERT_EQ(called, true);
 }
 
@@ -299,7 +280,7 @@ TEST(Windows, PluginsCreatedOnCommand)
         };
 
     windows->register_window("Plugins", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_PLUGINS, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("Plugins") });
     ASSERT_EQ(called, true);
 }
 
@@ -316,7 +297,7 @@ TEST(Windows, RoomsCreatedOnCommand)
         };
 
     windows->register_window("Rooms", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_ROOMS, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("Rooms") });
     ASSERT_EQ(called, true);
 }
 
@@ -333,7 +314,7 @@ TEST(Windows, RouteCreatedOnCommand)
         };
 
     windows->register_window("Route", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_ROUTE, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("Route") });
     ASSERT_EQ(called, true);
 }
 
@@ -350,7 +331,7 @@ TEST(Windows, SoundsCreatedOnCommand)
         };
 
     windows->register_window("Sounds", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_SOUNDS, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("Sounds") });
     ASSERT_EQ(called, true);
 }
 
@@ -367,7 +348,7 @@ TEST(Windows, StaticsCreatedOnCommand)
         };
 
     windows->register_window("Statics", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_STATICS, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("Statics") });
     ASSERT_EQ(called, true);
 }
 
@@ -384,7 +365,7 @@ TEST(Windows, TexturesCreatedOnCommand)
         };
 
     windows->register_window("Textures", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_TEXTURES, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("Textures") });
     ASSERT_EQ(called, true);
 }
 
@@ -401,7 +382,7 @@ TEST(Windows, TriggersCreatedOnCommand)
         };
 
     windows->register_window("Triggers", creator);
-    windows->process_message(WM_COMMAND, MAKEWPARAM(ID_WINDOWS_TRIGGERS, 0), 0);
+    windows->receive_message({ .type = "create_window", .data = std::make_shared<MessageData<std::string>>("Triggers") });
     ASSERT_EQ(called, true);
 }
 
@@ -477,20 +458,4 @@ TEST(Windows, WindowNumbersAssigned)
     windows->create("Triggers");
 
     ASSERT_EQ(called_count, 2);
-}
-
-TEST(Windows, ShortcutsRegistered)
-{
-    auto shortcuts = mock_shared<MockShortcuts>();
-    EXPECT_CALL(*shortcuts, add_shortcut(false, VK_F9)).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-    EXPECT_CALL(*shortcuts, add_shortcut(true, 'D')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-    EXPECT_CALL(*shortcuts, add_shortcut(true, 'I')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-    EXPECT_CALL(*shortcuts, add_shortcut(true, 'K')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-    EXPECT_CALL(*shortcuts, add_shortcut(true, 'L')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-    EXPECT_CALL(*shortcuts, add_shortcut(true, 'M')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-    EXPECT_CALL(*shortcuts, add_shortcut(true, 'P')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-    EXPECT_CALL(*shortcuts, add_shortcut(true, 'R')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-    EXPECT_CALL(*shortcuts, add_shortcut(true, 'S')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-    EXPECT_CALL(*shortcuts, add_shortcut(true, 'T')).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
-    register_test_module().with_shortcuts(shortcuts).build();
 }

@@ -2,10 +2,9 @@
 
 namespace trview
 {
-    struct ILevel;
-    struct ILevelInfo
+    struct IViewMenu
     {
-        virtual ~ILevelInfo() = 0;
+        virtual ~IViewMenu() = 0;
         virtual void render() = 0;
     };
 }

@@ -33,6 +33,15 @@ namespace trview
 
         namespace commands
         {
+            std::optional<std::string> read_create_window(const Message& message);
+            void send_create_window(const std::weak_ptr<IMessageSystem>& messaging, const std::string& key);
+
+            std::optional<bool> read_reset_fonts(const Message& message);
+            void send_reset_fonts(const std::weak_ptr<IMessageSystem>& messaging);
+
+            std::optional<bool> read_reset_layout(const Message& message);
+            void send_reset_layout(const std::weak_ptr<IMessageSystem>& messaging);
+
             std::optional<bool> read_route_open(const Message& message);
             void send_route_open(const std::weak_ptr<IMessageSystem>& messaging);
 
@@ -51,8 +60,26 @@ namespace trview
             std::optional<bool> read_new_randomizer_route(const Message& message);
             void send_new_randomizer_route(const std::weak_ptr<IMessageSystem>& messaging);
 
+            std::optional<bool> read_quit(const Message& message);
+            void send_quit(const std::weak_ptr<IMessageSystem>& messaging);
+
             std::optional<bool> read_unhide_all(const Message& message);
             void send_unhide_all(const std::weak_ptr<IMessageSystem>& messaging);
+
+            std::optional<bool> read_update_available(const Message& message);
+            void send_update_available(const std::weak_ptr<IMessageSystem>& messaging);
+
+            struct ShowCommand
+            {
+                std::string name;
+                bool value;
+            };
+
+            std::optional<ShowCommand> read_show(const Message& message);
+            void send_show(const std::weak_ptr<IMessageSystem>& messaging, const ShowCommand& command);
+
+            std::optional<bool> read_toggle_settings(const Message& message);
+            void send_toggle_settings(const std::weak_ptr<IMessageSystem>& messaging);
         }
 
         void get_settings(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to);
@@ -64,6 +91,9 @@ namespace trview
         void send_add_to_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ITrigger>& trigger);
         void send_add_to_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ILight>& light);
         void send_add_to_route(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<ICameraSink>& camera_sink);
+
+        std::optional<std::vector<std::string>> read_local_levels(const Message& message);
+        void send_local_levels(const std::weak_ptr<IMessageSystem>& messaging, const std::vector<std::string>& levels);
 
         std::optional<bool> read_ng_plus(const Message& message);
         void send_ng_plus(const std::weak_ptr<IMessageSystem>& messaging, bool value);

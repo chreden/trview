@@ -159,6 +159,12 @@ namespace
                     sampler_source, messaging);
             }
 
+            test_module& with_window(const Window& window)
+            {
+                this->window = window;
+                return *this;
+            }
+
             test_module& with_camera(const std::shared_ptr<MockCamera>& camera)
             {
                 this->camera = camera;
@@ -1123,4 +1129,13 @@ TEST(Viewer, SetShowSoundSources)
 
     viewer->open(level, ILevel::OpenMode::Full);
     ui.on_toggle_changed(IViewer::Options::sound_sources, true);
+}
+
+// Tests that the class enables drag and drop
+TEST(Viewer, EnableDragDrop)
+{
+    Window window = create_test_window(L"TRViewViewerTests");
+    auto menu = register_test_module().with_window(window).build();
+    LONG_PTR style = GetWindowLongPtr(window, GWL_EXSTYLE);
+    ASSERT_EQ(WS_EX_ACCEPTFILES, style & WS_EX_ACCEPTFILES);
 }

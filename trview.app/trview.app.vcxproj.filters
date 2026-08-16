@@ -65,7 +65,6 @@
     <ClCompile Include="ApplicationCreate.cpp" />
     <ClCompile Include="Elements\Room.cpp" Filter="Elements\Room" />
     <ClCompile Include="Elements\Level.cpp" Filter="Elements\Level" />
-    <ClCompile Include="Menus\FileMenu.cpp" Filter="Menus" />
     <ClCompile Include="Windows\Log\LogWindow.cpp" Filter="Windows\Log" />
     <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
     <ClCompile Include="Elements\CameraSink\CameraSink.cpp" Filter="Elements\CameraSink" />
@@ -110,7 +109,7 @@
     <ClCompile Include="Windows\AutoHider.cpp" Filter="Windows" />
     <ClCompile Include="Windows\About\AboutWindow.cpp" Filter="Windows\About" />
     <ClCompile Include="Windows\Diff\DiffWindow.cpp" Filter="Windows\Diff" />
-    <ClCompile Include="Menus\ImGuiFileMenu.cpp" Filter="Menus" />
+    <ClCompile Include="Menus\FileMenu.cpp" Filter="Menus" />
     <ClCompile Include="Windows\Pack\PackWindow.cpp" Filter="Windows\Pack" />
     <ClCompile Include="Geometry\Model\Model.cpp" Filter="Geometry\Model" />
     <ClCompile Include="Geometry\Model\ModelStorage.cpp" Filter="Geometry\Model" />
@@ -122,6 +121,7 @@
     <ClCompile Include="Elements\ElementFilters.cpp" Filter="Elements" />
     <ClCompile Include="Settings\UserSettingsPatches.cpp" Filter="Settings" />
     <ClCompile Include="Filters\FilterStore.cpp" Filter="Filters" />
+    <ClCompile Include="Menus\MainMenu.cpp" Filter="Menus" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -256,7 +256,6 @@
     <ClInclude Include="Elements\RoomInfo.h" Filter="Elements\Room" />
     <ClInclude Include="Elements\ILevel.h" Filter="Elements\Level" />
     <ClInclude Include="Elements\Level.h" Filter="Elements\Level" />
-    <ClInclude Include="Menus\FileMenu.h" Filter="Menus" />
     <ClInclude Include="Menus\IFileMenu.h" Filter="Menus" />
     <ClInclude Include="Mocks\Menus\IFileMenu.h" Filter="Mocks\Menus" />
     <ClInclude Include="Windows\Log\LogWindow.h" Filter="Windows\Log" />
@@ -339,7 +338,7 @@
     <ClInclude Include="Windows\AutoHider.h" Filter="Windows" />
     <ClInclude Include="Windows\About\AboutWindow.h" Filter="Windows\About" />
     <ClInclude Include="Windows\Diff\DiffWindow.h" Filter="Windows\Diff" />
-    <ClInclude Include="Menus\ImGuiFileMenu.h" Filter="Menus" />
+    <ClInclude Include="Menus\FileMenu.h" Filter="Menus" />
     <ClInclude Include="Settings\PluginSetting.h" Filter="Settings" />
     <ClInclude Include="Windows\Pack\PackWindow.h" Filter="Windows\Pack" />
     <ClInclude Include="Geometry\Model\IModel.h" Filter="Geometry\Model" />
@@ -372,6 +371,10 @@
     <ClInclude Include="Mocks\Filters\IFilterable.h" Filters="Mocks\Filters" />
     <ClInclude Include="UI\Modal.h" Filters="UI\Modal" />
     <ClInclude Include="UI\Modal.hpp" Filters="UI\Modal" />
+    <ClInclude Include="Menus\IMainMenu.h" Filter="Menus" />
+    <ClInclude Include="Menus\MainMenu.h" Filter="Menus" />
+    <ClInclude Include="Menus\IViewMenu.h" Filter="Menus" />
+    <ClInclude Include="Mocks\Menus\IMainMenu.h" Filter="Mocks\Menus" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

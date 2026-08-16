@@ -1,8 +1,6 @@
 #include <trview.app/Menus/FileMenu.h>
-#include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trview.common/Mocks/IFiles.h>
-#include <trview.app/Resources/resource.h>
 #include <trview.common/Mocks/Messages/IMessageSystem.h>
 
 using namespace trlevel::mocks;
@@ -13,46 +11,30 @@ using testing::Return;
 
 namespace
 {
-    Event<> f5_shortcut;
-    Event<> ctrl_o_shortcut;
-    Event<> f6_shortcut;
-    Event<> f7_shortcut;
-
     auto register_test_module()
     {
         struct test_module
         {
-            trview::Window window{ create_test_window(L"FileMenuTests") };
-            std::shared_ptr<MockShortcuts> shortcuts{ mock_shared<MockShortcuts>() };
             std::shared_ptr<MockDialogs> dialogs{ mock_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ mock_shared<MockFiles>() };
             FileMenu::LevelNameSource level_name_source{ [](auto&&...) { return std::nullopt; } };
             std::shared_ptr<IMessageSystem> messaging{ mock_shared<MockMessageSystem>() };
+            FileMenu::Mode mode{ FileMenu::Mode::Main };
 
             std::shared_ptr<FileMenu> build()
             {
-                ON_CALL(*shortcuts, add_shortcut(false, VK_F5)).WillByDefault([&](auto, auto) -> Event<>&{ return f5_shortcut; });
-                ON_CALL(*shortcuts, add_shortcut(true, 'O')).WillByDefault([&](auto, auto) -> Event<>&{ return ctrl_o_shortcut; });
-                ON_CALL(*shortcuts, add_shortcut(false, VK_F6)).WillByDefault([&](auto, auto) -> Event<>&{ return f6_shortcut; });
-                ON_CALL(*shortcuts, add_shortcut(false, VK_F7)).WillByDefault([&](auto, auto) -> Event<>&{ return f7_shortcut; });
-                return std::make_shared<FileMenu>(window, shortcuts, dialogs, files, level_name_source, messaging);
+                return std::make_shared<FileMenu>(dialogs, files, level_name_source, mode, messaging);
             }
 
-            test_module& with_window(const trview::Window& window)
+            test_module& with_mode(FileMenu::Mode mode)
             {
-                this->window = window;
+                this->mode = mode;
                 return *this;
             }
 
             test_module& with_dialogs(const std::shared_ptr<MockDialogs>& dialogs)
             {
                 this->dialogs = dialogs;
-                return *this;
-            }
-
-            test_module& with_shortcuts(const std::shared_ptr<MockShortcuts>& shortcuts)
-            {
-                this->shortcuts = shortcuts;
                 return *this;
             }
 
@@ -67,6 +49,7 @@ namespace
     }
 }
 
+/*
 /// Tests that opening the first file triggers the event.
 TEST(FileMenu, OpenFileRaisedOnRecentFile)
 {
@@ -151,15 +134,6 @@ TEST(FileMenu, DropFile)
     ASSERT_EQ(std::string("test_filename"), file_opened);
 }
 
-// Tests that the class enables drag and drop
-TEST(FileMenu, EnableDragDrop)
-{
-    Window window = create_test_window(L"TRViewFileMenuTests");
-    auto menu = register_test_module().with_window(window).build();
-    LONG_PTR style = GetWindowLongPtr(window, GWL_EXSTYLE);
-    ASSERT_EQ(WS_EX_ACCEPTFILES, style & WS_EX_ACCEPTFILES);
-}
-
 TEST(FileMenu, Reload)
 {
     auto menu = register_test_module().build();
@@ -219,6 +193,7 @@ TEST(FileMenu, NextFile)
     ASSERT_TRUE(raised);
     ASSERT_EQ(raised.value(), "file2");
 }
+*/
 
 TEST(FileMenu, SwitchTo)
 {

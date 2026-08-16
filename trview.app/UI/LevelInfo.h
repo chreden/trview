@@ -13,6 +13,7 @@
 #include "../Elements/Level/ILevelNameLookup.h"
 #include "../Graphics/ITextureStorage.h"
 #include "ILevelInfo.h"
+#include <trview.common/Messages/IRecipient.h>
 
 namespace trview
 {
@@ -20,7 +21,7 @@ namespace trview
 
     /// The level info display shows the name of the current level as well
     /// as the game that the level was built for.
-    class LevelInfo final : public ILevelInfo
+    class LevelInfo final : public ILevelInfo, public IRecipient
     {
     public:
         /// Creates an instance of the LevelInfo class. 
@@ -28,10 +29,10 @@ namespace trview
         explicit LevelInfo(const ITextureStorage& texture_storage, const std::shared_ptr<ILevelNameLookup>& level_name_lookup);
         virtual ~LevelInfo() = default;
         void render() override;
-        /// Sets the name of the level.
-        /// @param name The level name.
-        void set_level(const std::weak_ptr<ILevel>& level) override;
+        void receive_message(const Message& message) override;
     private:
+        void set_level(const std::weak_ptr<ILevel>& level);
+
         graphics::Texture get_version_image(trlevel::LevelVersion version) const;
         std::unordered_map<trlevel::LevelVersion, graphics::Texture> _version_textures;
         std::string _name{ "No Level" };
