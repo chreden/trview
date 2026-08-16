@@ -16,6 +16,7 @@ namespace trview
         DirectX::SimpleMath::Vector3 position() const override;
         void render(const ICamera& camera) override;
         DirectX::SimpleMath::Vector3 screen_position() const override;
+        void set_colour(const Colour& colour) override;
         void set_data(int ref) override;
         void set_mesh(const std::weak_ptr<IMesh>& mesh) override;
         void set_notes(const std::string& notes) override;
@@ -34,6 +35,7 @@ namespace trview
         std::string _notes;
         DirectX::SimpleMath::Vector3 _screen_position;
         graphics::Texture _texture;
+        Colour _colour{ Colour::White };
     };
 
     int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable);

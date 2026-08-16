@@ -24,6 +24,7 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
         virtual void render(const ICamera& camera) = 0;
         virtual DirectX::SimpleMath::Vector3 screen_position() const = 0;
+        virtual void set_colour(const Colour& colour) = 0;
         virtual void set_data(int ref) = 0;
         virtual void set_mesh(const std::weak_ptr<IMesh>& mesh) = 0;
         virtual void set_notes(const std::string& notes) = 0;

@@ -45,7 +45,8 @@ namespace trview
                 }
                 else if (key == "frames")
                 {
-
+                    lua_pushnil(L);
+                    return 1;
                 }
                 else if (key == "frame_time")
                 {
@@ -126,7 +127,7 @@ namespace trview
                 const Triangle::TransparencyMode transparency_mode = get_optional_enum<Triangle::TransparencyMode>(L, 2, "transparency_mode").value_or(Triangle::TransparencyMode::None);
                 const std::vector<DirectX::SimpleMath::Vector3> vertices = get_list<DirectX::SimpleMath::Vector3>(L, 2, "vertices");
 
-                // TODO: Length check on normals and vertices
+                // TODO: Length check on vectors
 
                 return create_triangle(L,
                     Triangle
