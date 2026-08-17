@@ -123,9 +123,8 @@
     <ClCompile Include="Settings\UserSettingsPatches.cpp" Filter="Settings" />
     <ClCompile Include="Filters\FilterStore.cpp" Filter="Filters" />
     <ClCompile Include="Lua\Mesh\Lua_Mesh.cpp" Filter="Lua\Mesh" />
-    <ClCompile Include="Lua\Triangle\Lua_Triangle.cpp">
-      <Filter>Lua\Triangle</Filter>
-    </ClCompile>
+    <ClCompile Include="Lua\Triangle\Lua_Triangle.cpp" Filter="Lua\Triangle" />
+    <ClCompile Include="Lua\Vector2.cpp" Filter="Lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -377,9 +376,8 @@
     <ClInclude Include="UI\Modal.h" Filter="UI\Modal" />
     <ClInclude Include="UI\Modal.hpp" Filter="UI\Modal" />
     <ClInclude Include="Lua\Mesh\Lua_Mesh.h" Filter="Lua\Mesh" />
-    <ClInclude Include="Lua\Triangle\Lua_Triangle.h">
-      <Filter>Lua\Triangle</Filter>
-    </ClInclude>
+    <ClInclude Include="Lua\Triangle\Lua_Triangle.h" Filter="Lua\Triangle\" />
+    <ClInclude Include="Lua\Vector2.h" Filter="Lua" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

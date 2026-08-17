@@ -9,6 +9,7 @@
 #include "../Route/Lua_Route.h"
 #include "../Route/Lua_Waypoint.h"
 #include "../Colour.h"
+#include "../Vector2.h"
 #include "../Vector3.h"
 #include "../Scriptable/IScriptable.h"
 #include "../Mesh/Lua_Mesh.h"
@@ -166,6 +167,7 @@ namespace trview
             route_register(L, route_source, randomizer_route_source, dialogs, files);
             waypoint_register(L, waypoint_source);
             colour_register(L);
+            vector2_register(L);
             vector3_register(L);
             scriptable_register(L, scriptable_source);
             camera_register(L);

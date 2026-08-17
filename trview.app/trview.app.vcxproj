@@ -77,6 +77,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Lua\Scriptable\Scriptable.cpp" />
     <ClCompile Include="Lua\Triangle\Lua_Triangle.cpp" />
     <ClCompile Include="Lua\trview\trview.cpp" />
+    <ClCompile Include="Lua\Vector2.cpp" />
     <ClCompile Include="Lua\Vector3.cpp" />
     <ClCompile Include="Menus\FileMenu.cpp" />
     <ClCompile Include="Menus\ImGuiFileMenu.cpp" />
@@ -120,6 +121,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Scriptable\IScriptable.h" />
     <ClInclude Include="Lua\Scriptable\Scriptable.h" />
     <ClInclude Include="Lua\Triangle\Lua_Triangle.h" />
+    <ClInclude Include="Lua\Vector2.h" />
     <ClInclude Include="Menus\ImGuiFileMenu.h" />
     <ClInclude Include="Messages\Messages.h" />
     <ClInclude Include="Menus\LevelSortingMode.h" />
