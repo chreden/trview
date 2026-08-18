@@ -30,6 +30,7 @@ namespace trview
         virtual void set_notes(const std::string& notes) = 0;
         virtual void set_on_click(int ref) = 0;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
+        virtual void set_transform(const DirectX::SimpleMath::Matrix& transform) = 0;
         virtual void set_on_tooltip(int ref) = 0;
         virtual void set_screen_position(const DirectX::SimpleMath::Vector3& position) = 0;
         virtual std::string tooltip() const = 0;

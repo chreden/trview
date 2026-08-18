@@ -70,6 +70,10 @@ namespace trview
                 {
                     scriptable->set_position(to_vector3(L, -1) / trlevel::Scale);
                 }
+                else if (key == "transform")
+                {
+                    scriptable->set_transform(get_userdata<Matrix>(L, -1));
+                }
 
                 return 0;
             }
@@ -176,7 +180,7 @@ namespace trview
 
     void Scriptable::render(const ICamera& camera)
     {
-        auto world = Matrix::CreateScale(0.25f) * Matrix::CreateTranslation(position());
+        auto world = Matrix::CreateScale(0.25f) * _transform * Matrix::CreateTranslation(position());
         auto wvp = world * camera.view_projection();
         auto light_direction = Vector3::TransformNormal(camera.position() - position(), world.Invert());
         light_direction.Normalize();
@@ -211,6 +215,11 @@ namespace trview
     void Scriptable::set_screen_position(const DirectX::SimpleMath::Vector3& position)
     {
         _screen_position = position;
+    }
+
+    void Scriptable::set_transform(const DirectX::SimpleMath::Matrix& transform)
+    {
+        _transform = transform;
     }
 
     std::string Scriptable::tooltip() const

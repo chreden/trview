@@ -24,6 +24,7 @@ namespace trview
         void set_on_tooltip(int ref) override;
         void set_position(const DirectX::SimpleMath::Vector3& position) override;
         void set_screen_position(const DirectX::SimpleMath::Vector3& position) override;
+        void set_transform(const DirectX::SimpleMath::Matrix& transform) override;
         std::string tooltip() const override;
     private:
         lua_State* _state;
@@ -36,6 +37,7 @@ namespace trview
         DirectX::SimpleMath::Vector3 _screen_position;
         graphics::Texture _texture;
         Colour _colour{ Colour::White };
+        DirectX::SimpleMath::Matrix _transform{ DirectX::SimpleMath::Matrix::Identity };
     };
 
     int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable);
