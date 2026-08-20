@@ -56,27 +56,20 @@ namespace trview
                 return 0;
             }
 
-            int vector3_index(lua_State* L)
+            int vector3_length(lua_State* L)
             {
                 const auto& self = get_userdata<Vector3>(L, 1);
-                const std::string key = lua_tostring(L, 2);
-                if (key == "x")
-                {
-                    lua_pushnumber(L, self.x);
-                    return 1;
-                }
-                else if (key == "y")
-                {
-                    lua_pushnumber(L, self.y);
-                    return 1;
-                }
-                else if (key == "z")
-                {
-                    lua_pushnumber(L, self.z);
-                    return 1;
-                }
-                return 0;
+                lua_pushnumber(L, self.Length());
+                return 1;
             }
+
+            const std::unordered_map<std::string, lua_CFunction> Functions
+            {
+                { "x", prop_getter<Vector3, &Vector3::x> },
+                { "y", prop_getter<Vector3, &Vector3::y> },
+                { "z", prop_getter<Vector3, &Vector3::z> },
+                { "length", vector3_length }
+            };
         }
 
         int create_vector3(lua_State* L, const Vector3& value)
@@ -117,7 +110,7 @@ namespace trview
         {
             vector3_metatable = store_metatable(L,
                 {
-                    { "__index", vector3_index },
+                    { "__index", default_index<Functions> },
                     { "__gc", default_gc<Vector3> }
                 });
 

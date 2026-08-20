@@ -131,5 +131,25 @@ namespace trview
             cleanup_userdata<T>(L, 1);
             return 0;
         }
+
+        template <FunctionMap T>
+        int default_index(lua_State* L)
+        {
+            const std::string key = lua_tostring(L, 2);
+            const auto found = T.find(key);
+            if (found != T.end())
+            {
+                return found->second(L);
+            }
+            return 0;
+        }
+
+        template <typename T, auto Prop>
+        int prop_getter(lua_State* L)
+        {
+            const auto& self = get_userdata<T>(L, 1);
+            lua_pushnumber(L, self.*Prop);
+            return 1;
+        }
     }
 }

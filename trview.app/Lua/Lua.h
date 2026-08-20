@@ -110,6 +110,14 @@ namespace trview
         int store_metatable(lua_State* L, const std::unordered_map<std::string, lua_CFunction>& map);
         void create_metatable(lua_State* L, const std::unordered_map<std::string, lua_CFunction>& map);
         bool equal_metatable(lua_State* L, int index, int metatable);
+
+        using FunctionMap = const std::unordered_map<std::string, lua_CFunction>&;
+
+        template <FunctionMap T>
+        int default_index(lua_State* L);
+
+        template <typename T, auto Prop>
+        int prop_getter(lua_State* L);
     }
 }
 
