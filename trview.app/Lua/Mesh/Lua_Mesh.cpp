@@ -30,12 +30,6 @@ namespace trview
                 }
                 return 0;
             }
-
-            int mesh_gc(lua_State* L)
-            {
-                cleanup_userdata<std::shared_ptr<IMesh>>(L, 1);
-                return 0;
-            }
         }
 
         int create_mesh(lua_State* L, const std::shared_ptr<IMesh>& mesh)
@@ -52,7 +46,7 @@ namespace trview
             mesh_metatable = store_metatable(L,
                 {
                     { "__index", mesh_index },
-                    { "__gc", mesh_gc }
+                    { "__gc", default_gc<std::shared_ptr<IMesh>> }
                 });
 
             lua_newtable(L);

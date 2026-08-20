@@ -77,12 +77,6 @@ namespace trview
                 }
                 return 0;
             }
-
-            int vector3_gc(lua_State* L)
-            {
-                cleanup_userdata<Vector3>(L, 1);
-                return 0;
-            }
         }
 
         int create_vector3(lua_State* L, const Vector3& value)
@@ -99,13 +93,12 @@ namespace trview
 
         Vector3 to_vector3(lua_State* L, int index)
         {
-            const int field_index = index < 0 ? (index + lua_gettop(L) + 1) : index;
-            return *static_cast<Vector3*>(lua_touserdata(L, field_index));
+            return get_userdata<Vector3>(L, index);
         }
 
         Vector3 to_vector3(lua_State* L, int index, const std::string& name, const Vector3& default_value)
         {
-            if (LUA_TTABLE == lua_getfield(L, index, name.c_str()))
+            if (LUA_TUSERDATA == lua_getfield(L, index, name.c_str()))
             {
                 int field_index = lua_gettop(L);
                 Vector3 value = *static_cast<Vector3*>(lua_touserdata(L, field_index));
@@ -125,7 +118,7 @@ namespace trview
             vector3_metatable = store_metatable(L,
                 {
                     { "__index", vector3_index },
-                    { "__gc", vector3_gc }
+                    { "__gc", default_gc<Vector3> }
                 });
 
             lua_newtable(L);

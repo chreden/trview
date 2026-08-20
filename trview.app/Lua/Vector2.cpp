@@ -43,12 +43,6 @@ namespace trview
                 }
                 return 0;
             }
-
-            int vector2_gc(lua_State* L)
-            {
-                cleanup_userdata<Vector2>(L, 1);
-                return 0;
-            }
         }
 
         int create_vector2(lua_State* L, const Vector2& value)
@@ -63,7 +57,7 @@ namespace trview
             vector2_metatable = store_metatable(L,
                 {
                     { "__index", vector2_index },
-                    { "__gc", vector2_gc }
+                    { "__gc", default_gc<Vector2> }
                 });
 
             lua_newtable(L);

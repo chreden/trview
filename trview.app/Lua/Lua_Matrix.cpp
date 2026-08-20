@@ -25,12 +25,6 @@ namespace trview
                 return 0;
             }
 
-            int matrix_gc(lua_State* L)
-            {
-                cleanup_userdata<Matrix>(L, 1);
-                return 0;
-            }
-
             int matrix_mul(lua_State* L)
             {
                 const auto& self = get_userdata<Matrix>(L, 1);
@@ -95,7 +89,7 @@ namespace trview
             matrix_metatable = store_metatable(L,
                 {
                     { "__index", matrix_index },
-                    { "__gc", matrix_gc },
+                    { "__gc", default_gc<Matrix> },
                     { "__mul", matrix_mul }
                 });
 

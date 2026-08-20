@@ -103,6 +103,9 @@ namespace trview
         template <typename T>
         int gc(lua_State* L);
 
+        template <typename T>
+        int default_gc(lua_State* L);
+
         void assign_metatable(lua_State* L, int ref_index);
         int store_metatable(lua_State* L, const std::unordered_map<std::string, lua_CFunction>& map);
         void create_metatable(lua_State* L, const std::unordered_map<std::string, lua_CFunction>& map);

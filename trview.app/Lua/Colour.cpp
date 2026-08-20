@@ -96,12 +96,6 @@ namespace trview
                 }
                 return 0;
             }
-
-            int colour_gc(lua_State* L)
-            {
-                cleanup_userdata<Colour>(L, 1);
-                return 0;
-            }
         }
 
         int create_colour(lua_State* L, const Colour& value)
@@ -136,7 +130,7 @@ namespace trview
             colour_metatable = store_metatable(L,
                 {
                     { "__index", colour_index },
-                    { "__gc", colour_gc }
+                    { "__gc", default_gc<Colour> }
                 });
 
             lua_newtable(L);

@@ -107,12 +107,6 @@ namespace trview
                 return 0;
             }
 
-            int triangle_gc(lua_State* L)
-            {
-                cleanup_userdata<Triangle>(L, 1);
-                return 0;
-            }
-
             int triangle_constructor(lua_State* L)
             {
                 const Triangle::AnimationMode animation_mode = get_optional_enum<Triangle::AnimationMode>(L, 2, "animation_mode").value_or(Triangle::AnimationMode::None);
@@ -172,7 +166,7 @@ namespace trview
                 {
                     { "__index", triangle_index },
                     { "__newindex", triangle_newindex },
-                    { "__gc", triangle_gc }
+                    { "__gc", default_gc<Triangle> }
                 });
 
             lua_newtable(L);

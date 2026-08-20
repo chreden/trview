@@ -124,5 +124,12 @@ namespace trview
             userdata->~shared_ptr<T>();
             return 0;
         }
+
+        template <typename T>
+        int default_gc(lua_State* L)
+        {
+            cleanup_userdata<T>(L, 1);
+            return 0;
+        }
     }
 }
