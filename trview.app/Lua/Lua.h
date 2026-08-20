@@ -106,6 +106,7 @@ namespace trview
         void assign_metatable(lua_State* L, int ref_index);
         int store_metatable(lua_State* L, const std::unordered_map<std::string, lua_CFunction>& map);
         void create_metatable(lua_State* L, const std::unordered_map<std::string, lua_CFunction>& map);
+        bool equal_metatable(lua_State* L, int index, int metatable);
     }
 }
 

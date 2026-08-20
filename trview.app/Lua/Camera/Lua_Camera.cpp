@@ -80,10 +80,17 @@ namespace trview
                 }
                 else if (key == "target")
                 {
+                    if (lua::is_vector3(L, 3))
+                    {
+                        camera->set_target(to_vector3(L, 3) / trlevel::Scale);
+                        return 0;
+                    }
+
                     const int type = lua_type(L, 3);
                     if (equals_any(type, LUA_TUSERDATA, LUA_TTABLE))
                     {
-                        if (LUA_TTABLE == lua_getfield(L, -1, "position"))
+                        lua_getfield(L, -1, "position");
+                        if (is_vector3(L, -1))
                         {
                             camera->set_target(to_vector3(L, -1) / trlevel::Scale);
                             return 0;
@@ -92,12 +99,6 @@ namespace trview
                         {
                             lua_pop(L, 1);
                         }
-                    }
-
-                    if (type == LUA_TTABLE)
-                    {
-                        // Assume top is a vector3 if metatable lookups failed.
-                        camera->set_target(to_vector3(L, 3) / trlevel::Scale);
                     }
                 }
 

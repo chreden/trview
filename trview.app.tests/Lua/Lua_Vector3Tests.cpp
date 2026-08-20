@@ -13,7 +13,7 @@ TEST(Lua_Vector3, New)
     lua::vector3_register(L);
 
     ASSERT_EQ(0, luaL_dostring(L, "x = Vector3.new() return x"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
     ASSERT_EQ(0, luaL_dostring(L, "return x.x"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(0.0f, lua_tonumber(L, -1));
@@ -31,7 +31,7 @@ TEST(Lua_Vector3, NewXYZ)
     lua::vector3_register(L);
 
     ASSERT_EQ(0, luaL_dostring(L, "x = Vector3.new(1, 0.5, 0.25) return x"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
     ASSERT_EQ(0, luaL_dostring(L, "return x.x"));
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(1.0f, lua_tonumber(L, -1));

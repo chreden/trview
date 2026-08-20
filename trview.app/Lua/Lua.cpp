@@ -210,5 +210,17 @@ namespace trview
             lua_rawgeti(L, LUA_REGISTRYINDEX, ref_index);
             lua_setmetatable(L, -2);
         }
+
+        bool equal_metatable(lua_State* L, int index, int metatable)
+        {
+            if (0 == lua_getmetatable(L, index))
+            {
+                return false;
+            }
+            lua_rawgeti(L, LUA_REGISTRYINDEX, metatable);
+            bool equal = lua_compare(L, -2, -1, LUA_OPEQ);
+            lua_pop(L, 2);
+            return equal;
+        }
     }
 }

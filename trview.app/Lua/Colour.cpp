@@ -111,6 +111,11 @@ namespace trview
             return 1;
         }
 
+        bool is_colour(lua_State* L, int index)
+        {
+            return equal_metatable(L, index, colour_metatable);
+        }
+
         Colour to_colour(lua_State* L, int index)
         {
             const int field_index = index < 0 ? (index + lua_gettop(L) + 1) : index;

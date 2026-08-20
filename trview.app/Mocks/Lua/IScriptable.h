@@ -27,6 +27,7 @@ namespace trview
             MOCK_METHOD(void, set_position, (const DirectX::SimpleMath::Vector3&), (override));
             MOCK_METHOD(void, set_on_tooltip, (int), (override));
             MOCK_METHOD(void, set_screen_position, (const DirectX::SimpleMath::Vector3&), (override));
+            MOCK_METHOD(void, set_transform, (const DirectX::SimpleMath::Matrix&), (override));
             MOCK_METHOD(std::string, tooltip, (), (const, override));
         };
     }

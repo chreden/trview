@@ -51,23 +51,13 @@ TEST(Lua_Route, Colour)
     EXPECT_CALL(*route, colour).Times(1).WillOnce(Return(Colour(1, 2, 3, 4)));
 
     LuaState L;
+    lua::colour_register(L);
     lua::create_route(L, route);
     lua_setglobal(L, "r");
 
-    ASSERT_EQ(0, luaL_dostring(L, "x = r.colour return x"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return x.a"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(1.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return x.r"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(2.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return x.g"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(3.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return x.b"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(4.0f, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.colour"));
+    ASSERT_TRUE(lua::is_colour(L, -1));
+    ASSERT_EQ(lua::to_colour(L, -1), Colour(1, 2, 3, 4));
 }
 
 TEST(Lua_Route, IsRandomizer)
@@ -400,23 +390,13 @@ TEST(Lua_Route, WaypointColour)
     EXPECT_CALL(*route, waypoint_colour).Times(1).WillOnce(Return(Colour(1, 2, 3, 4)));
 
     LuaState L;
+    lua::colour_register(L);
     lua::create_route(L, route);
     lua_setglobal(L, "r");
 
-    ASSERT_EQ(0, luaL_dostring(L, "x = r.waypoint_colour return x"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return x.a"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(1.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return x.r"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(2.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return x.g"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(3.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return x.b"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(4.0f, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.waypoint_colour"));
+    ASSERT_TRUE(lua::is_colour(L, -1));
+    ASSERT_EQ(lua::to_colour(L, -1), Colour(1, 2, 3, 4));
 }
 
 TEST(Lua_Route, Waypoints)

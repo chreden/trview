@@ -31,6 +31,16 @@ namespace trview
                 return 0;
             }
 
+            int matrix_mul(lua_State* L)
+            {
+                const auto& self = get_userdata<Matrix>(L, 1);
+                if (is_matrix(L, 2))
+                {
+                    return create_matrix(L, self * get_userdata<Matrix>(L, 2));
+                }
+                return 0;
+            }
+
             int matrix_rotation_x(lua_State* L)
             {
                 return create_matrix(L, Matrix::CreateRotationX(static_cast<float>(lua_tonumber(L, 1))));
@@ -75,12 +85,18 @@ namespace trview
             return 1;
         }
 
+        bool is_matrix(lua_State* L, int index)
+        {
+            return equal_metatable(L, index, matrix_metatable);
+        }
+
         void matrix_register(lua_State* L)
         {
             matrix_metatable = store_metatable(L,
                 {
                     { "__index", matrix_index },
-                    { "__gc", matrix_gc }
+                    { "__gc", matrix_gc },
+                    { "__mul", matrix_mul }
                 });
 
             lua_newtable(L);

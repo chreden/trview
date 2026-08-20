@@ -343,7 +343,7 @@ namespace trview
                     lua_pop(L, 1);
                 }
 
-                if (LUA_TTABLE == lua_getfield(L, 1, "position"))
+                if (LUA_TUSERDATA == lua_getfield(L, 1, "position"))
                 {
                     const Vector3 position = to_vector3(L, -1) / trlevel::Scale;
                     if (auto room = to_room(L, 1, "room"))

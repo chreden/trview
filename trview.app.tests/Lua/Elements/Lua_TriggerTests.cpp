@@ -1,4 +1,5 @@
 #include <trview.app/Lua/Elements/Trigger/Lua_Trigger.h>
+#include <trview.app/Lua/Vector3.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
@@ -92,20 +93,13 @@ TEST(Lua_Trigger, Position)
     EXPECT_CALL(*trigger, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::vector3_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "return t.position"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return t.position.x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(1024.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return t.position.y"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(2048.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return t.position.z"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(3072.0, lua_tonumber(L, -1));
+    ASSERT_TRUE(lua::is_vector3(L, -1));
+    ASSERT_EQ(lua::to_vector3(L, -1), Vector3(1024, 2048, 3072));
 }
 
 TEST(Lua_Trigger, Room)
@@ -203,26 +197,16 @@ TEST(Lua_Trigger, SetVisible)
 TEST(Lua_Trigger, Colour)
 {
     auto trigger = mock_shared<MockTrigger>();
-    EXPECT_CALL(*trigger, colour).WillRepeatedly(Return(trview::Colour(1,2,3,4)));
+    EXPECT_CALL(*trigger, colour).WillRepeatedly(Return(trview::Colour(1, 0.5f, 0.25f)));
 
     LuaState L;
+    lua::colour_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
-    ASSERT_EQ(0, luaL_dostring(L, "x = t.colour return x"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return x.a"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(1.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return x.r"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(2.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return x.g"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(3.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return x.b"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(4.0f, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return t.colour"));
+    ASSERT_TRUE(lua::is_colour(L, -1));
+    ASSERT_EQ(lua::to_colour(L, -1), Colour(1, 0.5f, 0.25f));
 }
 
 TEST(Lua_Trigger, SetColourDefault)

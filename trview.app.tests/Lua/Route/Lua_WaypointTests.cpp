@@ -27,20 +27,13 @@ TEST(Lua_Waypoint, Colour)
     EXPECT_CALL(*waypoint, route_colour).WillRepeatedly(Return(Colour(1, 0.5f, 0.25f)));
 
     LuaState L;
+    lua::colour_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
     ASSERT_EQ(0, luaL_dostring(L, "return w.colour"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return w.colour.r"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(1.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return w.colour.g"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(0.5f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return w.colour.b"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(0.25f, lua_tonumber(L, -1));
+    ASSERT_TRUE(lua::is_colour(L, -1));
+    ASSERT_EQ(lua::to_colour(L, -1), Colour(1, 0.5f, 0.25f));
 }
 
 TEST(Lua_Waypoint, Item)
@@ -64,20 +57,13 @@ TEST(Lua_Waypoint, Normal)
     EXPECT_CALL(*waypoint, normal).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::vector3_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
     ASSERT_EQ(0, luaL_dostring(L, "return w.normal"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return w.normal.x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(1.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return w.normal.y"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(2.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return w.normal.z"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(3.0f, lua_tonumber(L, -1));
+    ASSERT_TRUE(lua::is_vector3(L, -1));
+    ASSERT_EQ(lua::to_vector3(L, -1), Vector3(1, 2, 3));
 }
 
 TEST(Lua_Waypoint, NewItem)
@@ -181,20 +167,13 @@ TEST(Lua_Waypoint, Position)
     EXPECT_CALL(*waypoint, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::vector3_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
     ASSERT_EQ(0, luaL_dostring(L, "return w.position"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return w.position.x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(1024.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return w.position.y"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(2048.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return w.position.z"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(3072.0f, lua_tonumber(L, -1));
+    ASSERT_TRUE(lua::is_vector3(L, -1));
+    ASSERT_EQ(lua::to_vector3(L, -1), Vector3(1024, 2048, 3072));
 }
 
 TEST(Lua_Waypoint, RandomizerSettings)
@@ -456,18 +435,11 @@ TEST(Lua_Waypoint, WaypointColour)
     EXPECT_CALL(*waypoint, waypoint_colour).WillRepeatedly(Return(Colour(1, 0.5f, 0.25f)));
 
     LuaState L;
+    lua::colour_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
     ASSERT_EQ(0, luaL_dostring(L, "return w.waypoint_colour"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return w.waypoint_colour.r"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(1.0f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return w.waypoint_colour.g"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(0.5f, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return w.waypoint_colour.b"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(0.25f, lua_tonumber(L, -1));
+    ASSERT_TRUE(lua::is_colour(L, -1));
+    ASSERT_EQ(lua::to_colour(L, -1), Colour(1, 0.5f, 0.25f));
 }
