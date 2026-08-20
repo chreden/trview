@@ -13,8 +13,7 @@ namespace trview
 
             int matrix_constructor(lua_State* L)
             {
-                L;
-                return 0;
+                return create_matrix(L, Matrix::Identity);
             }
 
             int matrix_index(lua_State* L)
@@ -32,17 +31,37 @@ namespace trview
                 return 0;
             }
 
+            int matrix_rotation_x(lua_State* L)
+            {
+                return create_matrix(L, Matrix::CreateRotationX(static_cast<float>(lua_tonumber(L, 1))));
+            }
+
             int matrix_rotation_y(lua_State* L)
             {
                 return create_matrix(L, Matrix::CreateRotationY(static_cast<float>(lua_tonumber(L, 1))));
             }
 
+            int matrix_rotation_z(lua_State* L)
+            {
+                return create_matrix(L, Matrix::CreateRotationZ(static_cast<float>(lua_tonumber(L, 1))));
+            }
+
             int matrix_class_index(lua_State* L)
             {
                 const std::string key = lua_tostring(L, 2);
-                if (key == "rotationY")
+                if (key == "rotationX")
+                {
+                    lua_pushcfunction(L, matrix_rotation_x);
+                    return 1;
+                }
+                else if (key == "rotationY")
                 {
                     lua_pushcfunction(L, matrix_rotation_y);
+                    return 1;
+                }
+                else if (key == "rotationZ")
+                {
+                    lua_pushcfunction(L, matrix_rotation_z);
                     return 1;
                 }
                 return 0;
