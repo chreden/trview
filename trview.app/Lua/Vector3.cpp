@@ -56,19 +56,12 @@ namespace trview
                 return 0;
             }
 
-            int vector3_length(lua_State* L)
-            {
-                const auto& self = get_userdata<Vector3>(L, 1);
-                lua_pushnumber(L, self.Length());
-                return 1;
-            }
-
             const std::unordered_map<std::string, lua_CFunction> Functions
             {
                 { "x", prop_getter<Vector3, &Vector3::x> },
                 { "y", prop_getter<Vector3, &Vector3::y> },
                 { "z", prop_getter<Vector3, &Vector3::z> },
-                { "length", vector3_length }
+                { "length", prop_getter<Vector3, &Vector3::Length> }
             };
         }
 

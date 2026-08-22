@@ -148,7 +148,15 @@ namespace trview
         int prop_getter(lua_State* L)
         {
             const auto& self = get_userdata<T>(L, 1);
-            lua_pushnumber(L, self.*Prop);
+            if constexpr (std::is_member_function_pointer_v<decltype(Prop)>)
+            {
+                const float result = (self.*Prop)();
+                lua_pushnumber(L, result);
+            }
+            else
+            {
+                lua_pushnumber(L, self.*Prop);
+            }
             return 1;
         }
     }
