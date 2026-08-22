@@ -70,32 +70,13 @@ namespace trview
                 return 0;
             }
 
-            int colour_index(lua_State* L)
+            const std::unordered_map<std::string, lua_CFunction> Functions
             {
-                const auto& self = get_userdata<Colour>(L, 1);
-                const std::string key = lua_tostring(L, 2);
-                if (key == "r")
-                {
-                    lua_pushnumber(L, self.r);
-                    return 1;
-                }
-                else if (key == "g")
-                {
-                    lua_pushnumber(L, self.g);
-                    return 1;
-                }
-                else if (key == "b")
-                {
-                    lua_pushnumber(L, self.b);
-                    return 1;
-                }
-                else if (key == "a")
-                {
-                    lua_pushnumber(L, self.a);
-                    return 1;
-                }
-                return 0;
-            }
+                { "r", prop_getter<Colour, &Colour::r> },
+                { "g", prop_getter<Colour, &Colour::g> },
+                { "b", prop_getter<Colour, &Colour::b> },
+                { "a", prop_getter<Colour, &Colour::a> }
+            };
         }
 
         int create_colour(lua_State* L, const Colour& value)
@@ -112,8 +93,7 @@ namespace trview
 
         Colour to_colour(lua_State* L, int index)
         {
-            const int field_index = index < 0 ? (index + lua_gettop(L) + 1) : index;
-            return *static_cast<Colour*>(lua_touserdata(L, field_index));
+            return get_userdata<Colour>(L, index);
         }
 
         int colour_new(lua_State* L)
@@ -129,7 +109,7 @@ namespace trview
         {
             colour_metatable = store_metatable(L,
                 {
-                    { "__index", colour_index },
+                    { "__index", default_index< Functions> },
                     { "__gc", default_gc<Colour> }
                 });
 
