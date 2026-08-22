@@ -8,7 +8,7 @@
 | colours | [Colour](colour.md)[] | R | |
 | current_frame | Number | R | |
 | current_time | Number | R | |
-| frames | [Frame](frame.md)[] | R | |
+| frames | [Frame](frame.md)[] | R | Not yet supported |
 | frame_time | Number | R | |
 | normal | [Vector3](vector3.md) | R | |
 | normals | [Vector3](vector3.md)[] | R | |
@@ -16,15 +16,16 @@
 | side_mode | [SideMode](#sidemode) | R | |
 | texture | Number | R | |
 | texture_mode | [TextureMode](#texturemode) | R | |
-| transform | [Matrix](matrix.md) | R | |
+| transform | [Matrix](matrix.md) | R | Not yet supported  |
 | transparency_mode | [TransparencyMode](#transparencymode) | R | |
-| uv | [Vector2](vector2.md)[] | R | |
+| uv | [Vector2](vector2.md)[] | R | Not yet supported |
 | vertices | [Vector3](vector3.md)[] | R | |
 
 # Constructor
 
 | Parameters | Description |
-|  | |
+| ---------- | ----------- |
+| `{ [optional] AnimationMode animation_mode, [optional] CollisionMode collision_mode, [optional] Colour[] colours, [optional] number current_frame, [optional] number current_time, [optional] Vector3[] normals, [optional] SideMode side_mode, [optional] number texture, [optional] TextureMode texture_mode, [optional] TransparencyMode transparency_mode, [optional] Vector3[] vertices }` | |
 
 # Non-Instance Functions
 

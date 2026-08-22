@@ -140,17 +140,6 @@ namespace trview
                         .vertices = { vertices[0], vertices[1], vertices[2] }
                     });
             }
-
-            int triangle_class_index(lua_State* L)
-            {
-                const std::string key = lua_tostring(L, 2);
-                if (key == "new")
-                {
-                    lua_pushcfunction(L, triangle_constructor);
-                    return 1;
-                }
-                return 0;
-            }
         }
 
         int create_triangle(lua_State* L, const Triangle& triangle)
@@ -199,8 +188,7 @@ namespace trview
                 });
             create_metatable(L,
                 {
-                    { "__call", triangle_constructor },
-                    { "__index", triangle_class_index }
+                    { "__call", triangle_constructor }
                 });
             lua_setglobal(L, "Triangle");
         }
