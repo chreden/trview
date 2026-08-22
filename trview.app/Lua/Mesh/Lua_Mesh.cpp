@@ -23,11 +23,7 @@ namespace trview
                 const auto self = get_userdata<std::shared_ptr<IMesh>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
                 self;
-                if (key == "test")
-                {
-                    lua_pushstring(L, "lmao");
-                    return 1;
-                }
+                key;
                 return 0;
             }
         }

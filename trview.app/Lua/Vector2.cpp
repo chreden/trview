@@ -27,22 +27,12 @@ namespace trview
                 return luaL_error(L, "Vector3 constructor expects 0 or 2 number arguments");
             }
 
-            int vector2_index(lua_State* L)
+            const std::unordered_map<std::string, lua_CFunction> Functions
             {
-                const auto& self = get_userdata<Vector2>(L, 1);
-                const std::string key = lua_tostring(L, 2);
-                if (key == "x")
-                {
-                    lua_pushnumber(L, self.x);
-                    return 1;
-                }
-                else if (key == "y")
-                {
-                    lua_pushnumber(L, self.y);
-                    return 1;
-                }
-                return 0;
-            }
+                { "x", prop_getter<Vector2, &Vector2::x> },
+                { "y", prop_getter<Vector2, &Vector2::y> },
+                { "length", prop_getter<Vector2, &Vector2::Length> }
+            };
         }
 
         int create_vector2(lua_State* L, const Vector2& value)
@@ -56,7 +46,7 @@ namespace trview
         {
             vector2_metatable = store_metatable(L,
                 {
-                    { "__index", vector2_index },
+                    { "__index", default_index<Functions> },
                     { "__gc", default_gc<Vector2> }
                 });
 

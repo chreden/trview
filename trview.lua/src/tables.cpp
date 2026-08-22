@@ -20,7 +20,7 @@ namespace trview
             luaL_checktype(L, index, LUA_TTABLE);
             lua_getfield(L, index, name.c_str());
             luaL_checktype(L, -1, LUA_TNUMBER);
-            float value = lua_tonumber(L, -1);
+            float value = static_cast<float>(lua_tonumber(L, -1));
             lua_pop(L, 1);
             return value;
         }
@@ -30,7 +30,7 @@ namespace trview
             luaL_checktype(L, index, LUA_TTABLE);
             lua_getfield(L, index, name.c_str());
             luaL_checktype(L, -1, LUA_TNUMBER);
-            int value = lua_tointeger(L, -1);
+            int value = static_cast<int>(lua_tointeger(L, -1));
             lua_pop(L, 1);
             return value;
         }
@@ -60,7 +60,7 @@ namespace trview
                 return std::nullopt;
             }
             luaL_checktype(L, -1, LUA_TNUMBER);
-            float value = lua_tonumber(L, -1);
+            float value = static_cast<float>(lua_tonumber(L, -1));
             lua_pop(L, 1);
             return value;
         }
@@ -75,7 +75,7 @@ namespace trview
                 return std::nullopt;
             }
             luaL_checktype(L, -1, LUA_TNUMBER);
-            int value = lua_tointeger(L, -1);
+            int value = static_cast<int>(lua_tointeger(L, -1));
             lua_pop(L, 1);
             return value;
         }
