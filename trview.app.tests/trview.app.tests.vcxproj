@@ -53,8 +53,10 @@
     <ClCompile Include="Lua\Lua_trviewTests.cpp" />
     <ClCompile Include="Lua\Lua_Vector2Tests.cpp" />
     <ClCompile Include="Lua\Lua_Vector3Tests.cpp" />
+    <ClCompile Include="Lua\Mesh\Lua_MeshTests.cpp" />
     <ClCompile Include="Lua\Route\Lua_RouteTests.cpp" />
     <ClCompile Include="Lua\Route\Lua_WaypointTests.cpp" />
+    <ClCompile Include="Lua\Triangle\Lua_TriangleTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Menus\MenuDetectorTests.cpp" />
     <ClCompile Include="NullImGuiBackend.cpp" />

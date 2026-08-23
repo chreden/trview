@@ -7,57 +7,58 @@
 using namespace trview;
 using namespace trview::tests;
 using namespace testing;
+using namespace DirectX::SimpleMath;
 
-TEST(Matrix, Constructor)
+TEST(Lua_Matrix, Constructor)
 {
     LuaState L;
     lua::matrix_register(L);
 
     ASSERT_EQ(0, luaL_dostring(L, "return Matrix()"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
-    ASSERT_EQ(lua::get_userdata<DirectX::SimpleMath::Matrix>(L, -1), DirectX::SimpleMath::Matrix::Identity);
+    ASSERT_EQ(lua::get_userdata<Matrix>(L, -1), Matrix::Identity);
 }
 
-TEST(Matrix, Multiply)
+TEST(Lua_Matrix, Multiply)
 {
     LuaState L;
     lua::matrix_register(L);
 
-    const DirectX::SimpleMath::Matrix rotation =
-        DirectX::SimpleMath::Matrix::CreateRotationX(3) *
-        DirectX::SimpleMath::Matrix::CreateRotationY(2);
+    const Matrix rotation =
+        Matrix::CreateRotationX(3) *
+        Matrix::CreateRotationY(2);
 
     ASSERT_EQ(0, luaL_dostring(L, "return Matrix.rotationX(3) * Matrix.rotationY(2)"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
-    ASSERT_EQ(lua::get_userdata<DirectX::SimpleMath::Matrix>(L, -1), rotation);
+    ASSERT_EQ(lua::get_userdata<Matrix>(L, -1), rotation);
 }
 
-TEST(Matrix, RotationX)
+TEST(Lua_Matrix, RotationX)
 {
     LuaState L;
     lua::matrix_register(L);
 
     ASSERT_EQ(0, luaL_dostring(L, "return Matrix.rotationX(3)"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
-    ASSERT_EQ(lua::get_userdata<DirectX::SimpleMath::Matrix>(L, -1), DirectX::SimpleMath::Matrix::CreateRotationX(3));
+    ASSERT_EQ(lua::get_userdata<Matrix>(L, -1), Matrix::CreateRotationX(3));
 }
 
-TEST(Matrix, RotationY)
+TEST(Lua_Matrix, RotationY)
 {
     LuaState L;
     lua::matrix_register(L);
 
     ASSERT_EQ(0, luaL_dostring(L, "return Matrix.rotationY(3)"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
-    ASSERT_EQ(lua::get_userdata<DirectX::SimpleMath::Matrix>(L, -1), DirectX::SimpleMath::Matrix::CreateRotationY(3));
+    ASSERT_EQ(lua::get_userdata<Matrix>(L, -1), Matrix::CreateRotationY(3));
 }
 
-TEST(Matrix, RotationZ)
+TEST(Lua_Matrix, RotationZ)
 {
     LuaState L;
     lua::matrix_register(L);
 
     ASSERT_EQ(0, luaL_dostring(L, "return Matrix.rotationZ(3)"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
-    ASSERT_EQ(lua::get_userdata<DirectX::SimpleMath::Matrix>(L, -1), DirectX::SimpleMath::Matrix::CreateRotationZ(3));
+    ASSERT_EQ(lua::get_userdata<Matrix>(L, -1), Matrix::CreateRotationZ(3));
 }

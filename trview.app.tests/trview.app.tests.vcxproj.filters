@@ -70,6 +70,12 @@
     <ClCompile Include="Lua\Lua_MatrixTests.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Triangle\Lua_TriangleTests.cpp">
+      <Filter>Lua\Triangle</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Mesh\Lua_MeshTests.cpp">
+      <Filter>Lua\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -122,6 +128,12 @@
     </Filter>
     <Filter Include="Sound">
       <UniqueIdentifier>{b852428e-6063-4bf2-9be2-dda97c0c3412}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Triangle">
+      <UniqueIdentifier>{0c7b873c-9d3d-4912-a471-aa0fa43b2f93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Mesh">
+      <UniqueIdentifier>{0014cb89-6e51-4428-987f-5083ecfd1199}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
