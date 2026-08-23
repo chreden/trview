@@ -78,3 +78,15 @@ TEST(Lua_Vector3, NewXYZ)
     ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
     ASSERT_EQ(0.25f, lua_tonumber(L, -1));
 }
+
+TEST(Lua_Vector3, Length)
+{
+    LuaState L;
+    lua::vector3_register(L);
+
+    ASSERT_EQ(0, luaL_dostring(L, "x = Vector3(1, 2, 3) return x"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return x.length"));
+    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
+    ASSERT_FLOAT_EQ(3.7416575f, static_cast<float>(lua_tonumber(L, -1)));
+}

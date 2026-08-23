@@ -17,3 +17,9 @@
 | rotationX | Matrix | `number angle` | Creates a rotation matrix around the X axis. Angle is in radians |
 | rotationY | Matrix | `number angle` | Creates a rotation matrix around the Y axis. Angle is in radians |
 | rotationZ | Matrix | `number angle` | Creates a rotation matrix around the Z axis. Angle is in radians |
+
+# Operators
+
+| Name | Returns | Parameters | Description |
+| ---- | ------- | ---------- | ----------- |
+| * | Matrix | Matrix | |
