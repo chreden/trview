@@ -67,15 +67,9 @@
     <ClCompile Include="Elements\FlybyTests.cpp" Filter="Elements" />
     <ClCompile Include="Filters\FilterStoreTests.cpp" Filter="Filters" />
     <ClCompile Include="Lua\Lua_Vector2Tests.cpp" Filter="Lua" />
-    <ClCompile Include="Lua\Lua_MatrixTests.cpp">
-      <Filter>Lua</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Triangle\Lua_TriangleTests.cpp">
-      <Filter>Lua\Triangle</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\Mesh\Lua_MeshTests.cpp">
-      <Filter>Lua\Mesh</Filter>
-    </ClCompile>
+    <ClCompile Include="Lua\Lua_MatrixTests.cpp" Filter="Lua" />
+    <ClCompile Include="Lua\Triangle\Lua_TriangleTests.cpp" Filter="Lua\Triangle" />
+    <ClCompile Include="Lua\Mesh\Lua_MeshTests.cpp" Filter="Lua\Mesh" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
