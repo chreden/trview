@@ -49,10 +49,14 @@
     <ClCompile Include="Lua\Elements\Lua_TriggerTests.cpp" />
     <ClCompile Include="Lua\Lua.cpp" />
     <ClCompile Include="Lua\Lua_ColourTests.cpp" />
+    <ClCompile Include="Lua\Lua_MatrixTests.cpp" />
     <ClCompile Include="Lua\Lua_trviewTests.cpp" />
+    <ClCompile Include="Lua\Lua_Vector2Tests.cpp" />
     <ClCompile Include="Lua\Lua_Vector3Tests.cpp" />
+    <ClCompile Include="Lua\Mesh\Lua_MeshTests.cpp" />
     <ClCompile Include="Lua\Route\Lua_RouteTests.cpp" />
     <ClCompile Include="Lua\Route\Lua_WaypointTests.cpp" />
+    <ClCompile Include="Lua\Triangle\Lua_TriangleTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Menus\MenuDetectorTests.cpp" />
     <ClCompile Include="NullImGuiBackend.cpp" />
@@ -104,6 +108,9 @@
     </ProjectReference>
     <ProjectReference Include="..\trview.lua.imgui\trview.lua.imgui.vcxproj">
       <Project>{cdbc4705-e8e2-4c5c-a1a6-ea66fe4b699b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\trview.lua\trview.lua.vcxproj">
+      <Project>{625c279f-ff28-4f69-f00c-bc574664077b}</Project>
     </ProjectReference>
     <ProjectReference Include="..\trview.tests.common\trview.tests.common.vcxproj">
       <Project>{3ab44a93-dbba-405e-8164-e5b20866ee1d}</Project>

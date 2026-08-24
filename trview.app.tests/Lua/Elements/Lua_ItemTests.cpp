@@ -1,4 +1,5 @@
 #include <trview.app/Lua/Elements/Item/Lua_Item.h>
+#include <trview.app/Lua/Vector3.h>
 #include <trview.app/Mocks/Elements/IItem.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.tests.common/Mocks.h>
@@ -156,20 +157,13 @@ TEST(Lua_Item, Position)
     EXPECT_CALL(*item, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::vector3_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.position"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return i.position.x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(1024.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return i.position.y"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(2048.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return i.position.z"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(3072.0, lua_tonumber(L, -1));
+    ASSERT_TRUE(lua::is_vector3(L, -1));
+    ASSERT_EQ(lua::to_vector3(L, -1), Vector3(1024, 2048, 3072));
 }
 
 TEST(Lua_Item, RemasteredExtra)

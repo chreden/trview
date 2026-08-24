@@ -1,4 +1,5 @@
 #include <trview.app/Lua/Elements/StaticMesh/Lua_StaticMesh.h>
+#include <trview.app/Lua/Vector3.h>
 #include <trview.app/Mocks/Elements/IStaticMesh.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.tests.common/Mocks.h>
@@ -37,29 +38,18 @@ TEST(Lua_StaticMesh, Collision)
     EXPECT_CALL(*static_mesh, collision).WillRepeatedly(Return(box));
 
     LuaState L;
+    lua::vector3_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.collision"));
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.collision.min.x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(-1024.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.collision.min.y"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(-2048.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.collision.min.z"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(-3072.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.collision.max.x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(1024.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.collision.max.y"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(2048.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.collision.max.z"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(3072.0, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return s.collision.min"));
+    ASSERT_TRUE(lua::is_vector3(L, -1));
+    ASSERT_EQ(lua::to_vector3(L, -1), Vector3(-1024, -2048, -3072));
+    ASSERT_EQ(0, luaL_dostring(L, "return s.collision.max"));
+    ASSERT_TRUE(lua::is_vector3(L, -1));
+    ASSERT_EQ(lua::to_vector3(L, -1), Vector3(1024, 2048, 3072));
 }
 
 TEST(Lua_StaticMesh, HasCollision)
@@ -96,20 +86,13 @@ TEST(Lua_StaticMesh, Position)
     EXPECT_CALL(*static_mesh, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::vector3_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.position"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.position.x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(1024.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.position.y"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(2048.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.position.z"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(3072.0, lua_tonumber(L, -1));
+    ASSERT_TRUE(lua::is_vector3(L, -1));
+    ASSERT_EQ(lua::to_vector3(L, -1), Vector3(1024, 2048, 3072));
 }
 
 TEST(Lua_StaticMesh, Room)
@@ -199,28 +182,17 @@ TEST(Lua_StaticMesh, Visibility)
     EXPECT_CALL(*static_mesh, visibility).WillRepeatedly(Return(box));
 
     LuaState L;
+    lua::vector3_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.visibility"));
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.visibility.min.x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(-1024.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.visibility.min.y"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(-2048.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.visibility.min.z"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(-3072.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.visibility.max.x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(1024.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.visibility.max.y"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(2048.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return s.visibility.max.z"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(3072.0, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return s.visibility.min"));
+    ASSERT_TRUE(lua::is_vector3(L, -1));
+    ASSERT_EQ(lua::to_vector3(L, -1), Vector3(-1024, -2048, -3072));
+    ASSERT_EQ(0, luaL_dostring(L, "return s.visibility.max"));
+    ASSERT_TRUE(lua::is_vector3(L, -1));
+    ASSERT_EQ(lua::to_vector3(L, -1), Vector3(1024, 2048, 3072));
 }
 

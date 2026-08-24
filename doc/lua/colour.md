@@ -1,4 +1,10 @@
-# Color
+# Colour
+
+# Constructor Functions
+
+| Parameters | Description |
+| ---------- | ----------- |
+| `number r, number g, number b, [optional] number a` | Creates a new colour |
 
 # Non-Instance Functions
 

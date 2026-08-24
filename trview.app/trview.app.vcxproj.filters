@@ -122,6 +122,10 @@
     <ClCompile Include="Elements\ElementFilters.cpp" Filter="Elements" />
     <ClCompile Include="Settings\UserSettingsPatches.cpp" Filter="Settings" />
     <ClCompile Include="Filters\FilterStore.cpp" Filter="Filters" />
+    <ClCompile Include="Lua\Mesh\Lua_Mesh.cpp" Filter="Lua\Mesh" />
+    <ClCompile Include="Lua\Triangle\Lua_Triangle.cpp" Filter="Lua\Triangle" />
+    <ClCompile Include="Lua\Vector2.cpp" Filter="Lua" />
+    <ClCompile Include="Lua\Lua_Matrix.cpp" Filter="Lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -368,10 +372,14 @@
     <ClInclude Include="Settings\UserSettingsPatches.h" Filter="Settings" />
     <ClInclude Include="Filters\IFilterStore.h" Filter="Filters" />
     <ClInclude Include="Filters\FilterStore.h" Filter="Filters" />
-    <ClInclude Include="Mocks\Filters\IFilterStore.h" Filters="Mocks\Filters" />
-    <ClInclude Include="Mocks\Filters\IFilterable.h" Filters="Mocks\Filters" />
-    <ClInclude Include="UI\Modal.h" Filters="UI\Modal" />
-    <ClInclude Include="UI\Modal.hpp" Filters="UI\Modal" />
+    <ClInclude Include="Mocks\Filters\IFilterStore.h" Filter="Mocks\Filters" />
+    <ClInclude Include="Mocks\Filters\IFilterable.h" Filter="Mocks\Filters" />
+    <ClInclude Include="UI\Modal.h" Filter="UI\Modal" />
+    <ClInclude Include="UI\Modal.hpp" Filter="UI\Modal" />
+    <ClInclude Include="Lua\Mesh\Lua_Mesh.h" Filter="Lua\Mesh" />
+    <ClInclude Include="Lua\Vector2.h" Filter="Lua" />
+    <ClInclude Include="Lua\Triangle\Lua_Triangle.h" />
+    <ClInclude Include="Lua\Lua_Matrix.h" Filter="Lua" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -610,6 +618,12 @@
     </Filter>
     <Filter Include="UI\Modal">
       <UniqueIdentifier>{29828ba3-89c1-4f39-b907-41e2b40d8341}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Mesh">
+      <UniqueIdentifier>{2bdc0ab8-9722-415d-8221-8388cffe4590}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Triangle">
+      <UniqueIdentifier>{f085dece-88c3-41f1-83b8-518066f3002f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -9,8 +9,12 @@
 #include "../Route/Lua_Route.h"
 #include "../Route/Lua_Waypoint.h"
 #include "../Colour.h"
+#include "../Vector2.h"
 #include "../Vector3.h"
+#include "../Lua_Matrix.h"
 #include "../Scriptable/IScriptable.h"
+#include "../Mesh/Lua_Mesh.h"
+#include "../Triangle/Lua_Triangle.h"
 #include "Lua/Lua.h"
 
 #include <future>
@@ -145,7 +149,8 @@ namespace trview
             const IWaypoint::Source& waypoint_source,
             const IScriptable::Source& scriptable_source,
             const std::shared_ptr<IDialogs>& dialogs,
-            const std::shared_ptr<IFiles>& files)
+            const std::shared_ptr<IFiles>& files,
+            const IMesh::Source& mesh_source)
         {
             IApplication** userdata = static_cast<IApplication**>(lua_newuserdata(L, sizeof(application)));
             *userdata = application;
@@ -163,9 +168,13 @@ namespace trview
             route_register(L, route_source, randomizer_route_source, dialogs, files);
             waypoint_register(L, waypoint_source);
             colour_register(L);
+            vector2_register(L);
             vector3_register(L);
+            matrix_register(L);
             scriptable_register(L, scriptable_source);
             camera_register(L);
+            triangle_register(L);
+            mesh_register(L, mesh_source);
         }
 
         void set_settings(const UserSettings& settings)

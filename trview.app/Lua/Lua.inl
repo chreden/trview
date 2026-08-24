@@ -75,6 +75,26 @@ namespace trview
         }
 
         template <typename T>
+        void create_userdata(lua_State* L, const T& value)
+        {
+            T* ptr = reinterpret_cast<T*>(lua_newuserdata(L, sizeof(T)));
+            new(ptr) T(value);
+        }
+
+        template <typename T>
+        void cleanup_userdata(lua_State* L, int index)
+        {
+            T* ptr = static_cast<T*>(lua_touserdata(L, index));
+            ptr->~T();
+        }
+
+        template <typename T>
+        T& get_userdata(lua_State* L, int index)
+        {
+            return *static_cast<T*>(lua_touserdata(L, index));
+        }
+
+        template <typename T>
         std::shared_ptr<T> get_self(lua_State* L, int index)
         {
             luaL_checktype(L, index, LUA_TUSERDATA);
@@ -103,6 +123,41 @@ namespace trview
             auto userdata = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, 1));
             userdata->~shared_ptr<T>();
             return 0;
+        }
+
+        template <typename T>
+        int default_gc(lua_State* L)
+        {
+            cleanup_userdata<T>(L, 1);
+            return 0;
+        }
+
+        template <FunctionMap T>
+        int default_index(lua_State* L)
+        {
+            const std::string key = lua_tostring(L, 2);
+            const auto found = T.find(key);
+            if (found != T.end())
+            {
+                return found->second(L);
+            }
+            return 0;
+        }
+
+        template <typename T, auto Prop>
+        int prop_getter(lua_State* L)
+        {
+            const auto& self = get_userdata<T>(L, 1);
+            if constexpr (std::is_member_function_pointer_v<decltype(Prop)>)
+            {
+                const float result = (self.*Prop)();
+                lua_pushnumber(L, result);
+            }
+            else
+            {
+                lua_pushnumber(L, self.*Prop);
+            }
+            return 1;
         }
     }
 }

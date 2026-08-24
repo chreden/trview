@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="inc">
+      <UniqueIdentifier>{8aacbe93-2872-4cfc-971e-a8c5a115cff7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{d3ea2f90-537a-4737-9f03-db0b54fda540}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\trview.lua.h" Filter="inc" />
+    <ClInclude Include="src\framework.h" Filter="src" />
+    <ClInclude Include="src\pch.h" Filter="src" />
+    <ClInclude Include="inc\tables.h" Filter="inc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\pch.cpp" Filter="src" />
+    <ClCompile Include="src\trview.lua.cpp" Filter="src" />
+    <ClCompile Include="src\tables.cpp" Filter="src" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inc\tables.inl" Filter="inc" />
+  </ItemGroup>
+</Project>

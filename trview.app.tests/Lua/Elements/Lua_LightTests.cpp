@@ -1,4 +1,6 @@
 #include <trview.app/Lua/Elements/Light/Lua_Light.h>
+#include <trview.app/Lua/Colour.h>
+#include <trview.app/Lua/Vector3.h>
 #include <trview.app/Mocks/Elements/ILight.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.tests.common/Mocks.h>
@@ -15,26 +17,16 @@ using namespace DirectX::SimpleMath;
 TEST(Lua_Light, Colour)
 {
     auto light = mock_shared<MockLight>();
-    EXPECT_CALL(*light, colour).WillRepeatedly(Return(Color(1, 2, 3, 4)));
+    EXPECT_CALL(*light, colour).WillRepeatedly(Return(Color(1, 0.5f, 0.25f)));
 
     LuaState L;
+    lua::colour_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.colour"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.colour.r"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(1.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.colour.g"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(2.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.colour.b"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(3.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.colour.a"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(4.0, lua_tonumber(L, -1));
+    ASSERT_TRUE(lua::is_colour(L, -1));
+    ASSERT_EQ(lua::to_colour(L, -1), Colour(1, 0.5f, 0.25f));
 }
 
 TEST(Lua_Light, Cutoff)
@@ -71,20 +63,13 @@ TEST(Lua_Light, Direction)
     EXPECT_CALL(*light, direction).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::vector3_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.direction"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.direction.x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(1.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.direction.y"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(2.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.direction.z"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(3.0, lua_tonumber(L, -1));
+    ASSERT_TRUE(lua::is_vector3(L, -1));
+    ASSERT_EQ(lua::to_vector3(L, -1), Vector3(1, 2, 3));
 }
 
 TEST(Lua_Light, Fade)
@@ -224,20 +209,13 @@ TEST(Lua_Light, Position)
     EXPECT_CALL(*light, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::vector3_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.position"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.position.x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(1024.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.position.y"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(2048.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return l.position.z"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(3072.0, lua_tonumber(L, -1));
+    ASSERT_TRUE(lua::is_vector3(L, -1));
+    ASSERT_EQ(lua::to_vector3(L, -1), Vector3(1024, 2048, 3072));
 }
 
 TEST(Lua_Light, Radius)

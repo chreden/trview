@@ -42,6 +42,7 @@ namespace trview
         {
             DirectX::SimpleMath::Vector2 uvs[3];
             uint32_t texture;
+            bool operator <=> (const Frame& other) const = default;
         };
 
         AnimationMode animation_mode{ AnimationMode::None };
@@ -63,6 +64,8 @@ namespace trview
         Triangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override, bool use_colour_override) const;
         DirectX::SimpleMath::Vector2 uv(uint32_t index) const;
         mutable std::optional<DirectX::SimpleMath::Vector3> calculated_position;
+
+        bool operator <=> (const Triangle& other) const = default;
     };
 
     // Determine whether the face should be transparent give the attribute and effects values. The 

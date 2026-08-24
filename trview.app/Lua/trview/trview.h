@@ -25,7 +25,8 @@ namespace trview
             const IWaypoint::Source& waypoint_source,
             const IScriptable::Source& scriptable_source,
             const std::shared_ptr<IDialogs>& dialogs,
-            const std::shared_ptr<IFiles>& files);
+            const std::shared_ptr<IFiles>& files,
+            const IMesh::Source& mesh_source);
         void set_settings(const UserSettings& settings);
     }
 }

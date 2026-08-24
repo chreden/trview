@@ -14,7 +14,6 @@
     <ClInclude Include="inc\trview.lua.imgui.h" />
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\tables.h" />
     <ClInclude Include="src\trview.lua.imgui.input.h" />
   </ItemGroup>
   <ItemGroup>
@@ -24,7 +23,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="src\tables.cpp" />
     <ClCompile Include="src\trview.lua.imgui.cpp" />
     <ClCompile Include="src\trview.lua.imgui.input.cpp" />
   </ItemGroup>

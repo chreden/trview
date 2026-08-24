@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.32014.148
+# Visual Studio Version 18
+VisualStudioVersion = 18.8.12023.21
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview", "trview\trview.vcxproj", "{8406D3CD-8C08-45C2-AF2C-844014A687A1}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -110,13 +110,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lua", "lua", "{D6B95B54-7EB
 		doc\lua\item.md = doc\lua\item.md
 		doc\lua\level.md = doc\lua\level.md
 		doc\lua\light.md = doc\lua\light.md
+		doc\lua\matrix.md = doc\lua\matrix.md
+		doc\lua\mesh.md = doc\lua\mesh.md
 		doc\lua\plugins.md = doc\lua\plugins.md
 		doc\lua\room.md = doc\lua\room.md
 		doc\lua\route.md = doc\lua\route.md
 		doc\lua\sector.md = doc\lua\sector.md
 		doc\lua\staticmesh.md = doc\lua\staticmesh.md
+		doc\lua\triangle.md = doc\lua\triangle.md
 		doc\lua\trigger.md = doc\lua\trigger.md
 		doc\lua\trview.md = doc\lua\trview.md
+		doc\lua\vector2.md = doc\lua\vector2.md
 		doc\lua\vector3.md = doc\lua\vector3.md
 		doc\lua\waypoint.md = doc\lua\waypoint.md
 	EndProjectSection
@@ -133,6 +137,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "formats", "formats", "{02EA
 	ProjectSection(SolutionItems) = preProject
 		doc\formats\index.md = doc\formats\index.md
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.lua", "trview.lua\trview.lua.vcxproj", "{625C279F-FF28-4F69-F00C-BC574664077B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -236,6 +242,10 @@ Global
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug|x64.Build.0 = Debug|x64
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release|x64.ActiveCfg = Release|x64
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release|x64.Build.0 = Release|x64
+		{625C279F-FF28-4F69-F00C-BC574664077B}.Debug|x64.ActiveCfg = Debug|x64
+		{625C279F-FF28-4F69-F00C-BC574664077B}.Debug|x64.Build.0 = Debug|x64
+		{625C279F-FF28-4F69-F00C-BC574664077B}.Release|x64.ActiveCfg = Release|x64
+		{625C279F-FF28-4F69-F00C-BC574664077B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

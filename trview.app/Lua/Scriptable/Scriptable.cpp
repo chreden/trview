@@ -42,9 +42,17 @@ namespace trview
                 auto scriptable = get_self<IScriptable>(L);
                 const std::string key = lua_tostring(L, 2);
 
-                if (key == "data")
+                if (key == "colour")
+                {
+                    scriptable->set_colour(get_userdata<Colour>(L, 3));
+                }
+                else if (key == "data")
                 {
                     scriptable->set_data(luaL_ref(L, LUA_REGISTRYINDEX));
+                }
+                else if (key == "mesh")
+                {
+                    scriptable->set_mesh(get_userdata<std::shared_ptr<IMesh>>(L, 3));
                 }
                 else if (key == "notes")
                 {
@@ -61,6 +69,10 @@ namespace trview
                 else if (key == "position")
                 {
                     scriptable->set_position(to_vector3(L, -1) / trlevel::Scale);
+                }
+                else if (key == "transform")
+                {
+                    scriptable->set_transform(get_userdata<Matrix>(L, -1));
                 }
 
                 return 0;
@@ -131,9 +143,19 @@ namespace trview
         return _data;
     }
 
+    void Scriptable::set_colour(const Colour& colour)
+    {
+        _colour = colour;
+    }
+
     void Scriptable::set_data(int ref)
     {
         _data = ref;
+    }
+
+    void Scriptable::set_mesh(const std::weak_ptr<IMesh>& mesh)
+    {
+        _mesh = mesh.lock();
     }
 
     void Scriptable::set_on_click(int ref)
@@ -158,11 +180,11 @@ namespace trview
 
     void Scriptable::render(const ICamera& camera)
     {
-        auto world = Matrix::CreateScale(0.25f) * Matrix::CreateTranslation(position());
+        auto world = Matrix::CreateScale(0.25f) * _transform * Matrix::CreateTranslation(position());
         auto wvp = world * camera.view_projection();
         auto light_direction = Vector3::TransformNormal(camera.position() - position(), world.Invert());
         light_direction.Normalize();
-        mesh()->render(wvp, _texture, Colour::White, 1.0f, light_direction);
+        mesh()->render(wvp, _texture, _colour, 1.0f, light_direction);
 
         const auto window_size = camera.view_size();
         set_screen_position(XMVector3Project(position(), 0, 0, window_size.width, window_size.height, 0, 1.0f, camera.projection(), camera.view(), Matrix::Identity));
@@ -193,6 +215,11 @@ namespace trview
     void Scriptable::set_screen_position(const DirectX::SimpleMath::Vector3& position)
     {
         _screen_position = position;
+    }
+
+    void Scriptable::set_transform(const DirectX::SimpleMath::Matrix& transform)
+    {
+        _transform = transform;
     }
 
     std::string Scriptable::tooltip() const

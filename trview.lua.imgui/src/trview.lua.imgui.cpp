@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "trview.lua.imgui.input.h"
-#include "tables.h"
+#include <trview.lua/inc/tables.h>
 
 namespace trview
 {

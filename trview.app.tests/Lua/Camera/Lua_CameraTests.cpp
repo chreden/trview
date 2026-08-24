@@ -31,20 +31,13 @@ TEST(Lua_Camera, Target)
     EXPECT_CALL(*camera, target).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::vector3_register(L);
     lua::create_camera(L, camera);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "return c.target"));
-    ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return c.target.x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(1024.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return c.target.y"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(2048.0, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return c.target.z"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_DOUBLE_EQ(3072.0, lua_tonumber(L, -1));
+    ASSERT_TRUE(lua::is_vector3(L, -1));
+    ASSERT_EQ(lua::to_vector3(L, -1), Vector3(1024, 2048, 3072));
 }
 
 TEST(Lua_Camera, SetMode)
@@ -65,9 +58,9 @@ TEST(Lua_Camera, SetTargetVector3)
     EXPECT_CALL(*camera, set_target(Vector3(1, 2, 3))).Times(1);
 
     LuaState L;
+    lua::vector3_register(L);
     lua::create_camera(L, camera);
     lua_setglobal(L, "c");
-    lua::vector3_register(L);
 
     ASSERT_EQ(0, luaL_dostring(L, "c.target = Vector3.new(1024, 2048, 3072)"));
 }
@@ -78,9 +71,9 @@ TEST(Lua_Camera, SetTargetPositionField)
     EXPECT_CALL(*camera, set_target(Vector3(1, 2, 3))).Times(1);
 
     LuaState L;
+    lua::vector3_register(L);
     lua::create_camera(L, camera);
     lua_setglobal(L, "c");
-    lua::vector3_register(L);
 
     ASSERT_EQ(0, luaL_dostring(L, "c.target = { position = Vector3.new(1024, 2048, 3072) }"));
 }

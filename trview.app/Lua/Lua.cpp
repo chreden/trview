@@ -90,8 +90,14 @@ namespace trview
     {
     }
 
-    Lua::Lua(const IRoute::Source& route_source, const IRandomizerRoute::Source& randomizer_route_source, const IWaypoint::Source& waypoint_source, const IScriptable::Source& scriptable_source, const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
-        : _route_source(route_source), _randomizer_route_source(randomizer_route_source), _waypoint_source(waypoint_source), _scriptable_source(scriptable_source), _dialogs(dialogs), _files(files)
+    Lua::Lua(const IRoute::Source& route_source,
+        const IRandomizerRoute::Source& randomizer_route_source,
+        const IWaypoint::Source& waypoint_source,
+        const IScriptable::Source& scriptable_source,
+        const std::shared_ptr<IDialogs>& dialogs,
+        const std::shared_ptr<IFiles>& files,
+        const IMesh::Source& mesh_source)
+        : _route_source(route_source), _randomizer_route_source(randomizer_route_source), _waypoint_source(waypoint_source), _scriptable_source(scriptable_source), _dialogs(dialogs), _files(files), _mesh_source(mesh_source)
     {
         create_state();
     }
@@ -147,7 +153,7 @@ namespace trview
         *userdata = this;
         lua_pushcclosure(L, dofile, 1);
         lua_setglobal(L, "dofile");
-        lua::trview_register(L, application, _route_source, _randomizer_route_source, _waypoint_source, _scriptable_source, _dialogs, _files);
+        lua::trview_register(L, application, _route_source, _randomizer_route_source, _waypoint_source, _scriptable_source, _dialogs, _files, _mesh_source);
         lua::imgui_register(L);
     }
 
@@ -175,6 +181,46 @@ namespace trview
         {
             lua_pushstring(L, text.c_str());
             return 1;
+        }
+
+        int store_metatable(lua_State* L, const std::unordered_map<std::string, lua_CFunction>& map)
+        {
+            lua_newtable(L);
+            for (const auto& func : map)
+            {
+                lua_pushcfunction(L, func.second);
+                lua_setfield(L, -2, func.first.c_str());
+            }
+            return luaL_ref(L, LUA_REGISTRYINDEX);
+        }
+
+        void create_metatable(lua_State* L, const std::unordered_map<std::string, lua_CFunction>& map)
+        {
+            lua_newtable(L);
+            for (const auto& func : map)
+            {
+                lua_pushcfunction(L, func.second);
+                lua_setfield(L, -2, func.first.c_str());
+            }
+            lua_setmetatable(L, -2);
+        }
+
+        void assign_metatable(lua_State* L, int ref_index)
+        {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, ref_index);
+            lua_setmetatable(L, -2);
+        }
+
+        bool equal_metatable(lua_State* L, int index, int metatable)
+        {
+            if (0 == lua_getmetatable(L, index))
+            {
+                return false;
+            }
+            lua_rawgeti(L, LUA_REGISTRYINDEX, metatable);
+            bool equal = lua_compare(L, -2, -1, LUA_OPEQ);
+            lua_pop(L, 2);
+            return equal;
         }
     }
 }

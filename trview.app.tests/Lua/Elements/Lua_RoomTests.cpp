@@ -1,4 +1,5 @@
 #include <trview.app/Lua/Elements/Room/Lua_Room.h>
+#include <trview.app/Lua/Vector3.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/ICameraSink.h>
 #include <trview.app/Mocks/Elements/ILight.h>
@@ -261,18 +262,13 @@ TEST(Lua_Room, Position)
     auto room = mock_shared<MockRoom>()->with_room_info(info);
 
     LuaState L;
+    lua::vector3_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
-    ASSERT_EQ(0, luaL_dostring(L, "return r.position.x"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(1000, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return r.position.y"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(2000, lua_tonumber(L, -1));
-    ASSERT_EQ(0, luaL_dostring(L, "return r.position.z"));
-    ASSERT_EQ(LUA_TNUMBER, lua_type(L, -1));
-    ASSERT_EQ(3000, lua_tonumber(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "return r.position"));
+    ASSERT_TRUE(lua::is_vector3(L, -1));
+    ASSERT_EQ(lua::to_vector3(L, -1), Vector3(1000, 2000, 3000));
 }
 
 TEST(Lua_Room, Sector)
