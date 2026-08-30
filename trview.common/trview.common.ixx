@@ -4,3 +4,4 @@ export import :Point;
 export import :Window;
 export import :Colour;
 export import :Size;
+export import :JsonSerializers;
