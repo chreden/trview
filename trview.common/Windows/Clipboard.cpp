@@ -1,5 +1,7 @@
 module;
 
+#include <Windows.h>
+
 module trview.common:Clipboard;
 
 namespace trview

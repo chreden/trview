@@ -1,5 +1,6 @@
 module;
 
+#include <Windows.h>
 #include <commdlg.h>
 #include <ShlObj.h>
 #include <wrl/client.h>

@@ -1,6 +1,11 @@
+module;
+
+#include <Windows.h>
+
 export module trview.common:MessageHandler;
 
 import std;
+import std.compat;
 import :Window;
 
 namespace trview

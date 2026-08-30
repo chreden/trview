@@ -1,6 +1,7 @@
 export module trview.common:IFiles;
 
 import std;
+import std.compat;
 
 namespace trview
 {

@@ -1,5 +1,6 @@
 export module trview.common;
 
+export import :Algorithms;
 export import :Point;
 export import :Window;
 export import :Colour;
@@ -17,3 +18,4 @@ export import :IMessageSystem;
 export import :TokenStore;
 export import :Message;
 export import :Timer;
+export import :Log;

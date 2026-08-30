@@ -1,5 +1,5 @@
-#include "Activity.h"
-#include "ILog.h"
+module;
+module trview.common:Activity;
 
 namespace trview
 {

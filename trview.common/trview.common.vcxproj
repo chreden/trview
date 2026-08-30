@@ -11,7 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Algorithms.h" />
+    <ClCompile Include="Algorithms.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Algorithms.hpp" />
     <ClCompile Include="Colour.ixx">
       <FileType>Document</FileType>
@@ -22,15 +24,24 @@
     <ClCompile Include="JsonSerializers.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Logs\Activity.h" />
-    <ClInclude Include="Logs\ILog.h" />
-    <ClInclude Include="Logs\Log.h" />
-    <ClInclude Include="Logs\LogMessage.h" />
+    <ClCompile Include="Logs\Activity.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Logs\ILog.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Logs\Log.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Logs\LogMessage.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Maths.h" />
     <ClCompile Include="Json.ixx">
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="Json.hpp" />
+    <ClCompile Include="Logs\ILog.cpp" />
     <ClCompile Include="MessageHandler.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -63,8 +74,13 @@
     <ClInclude Include="Mocks\Windows\IDialogs.h" />
     <ClInclude Include="Mocks\Windows\IShell.h" />
     <ClInclude Include="Mocks\Windows\IShortcuts.h" />
-    <ClInclude Include="Resources.h" />
+    <ClCompile Include="Resources.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Size.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Resource.ixx">
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="stdafx.h" />

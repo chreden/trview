@@ -1,10 +1,12 @@
+module;
+
+#include <Windows.h>
+
 export module trview.common:Window;
 
 import std;
 import :Point;
 import :Size;
-
-#include <Windows.h>
 
 namespace trview
 {

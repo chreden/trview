@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <algorithm>
-
 namespace trview
 {
     template <typename... Args>

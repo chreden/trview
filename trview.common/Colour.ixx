@@ -1,7 +1,11 @@
+module;
+
+#include <external/DirectXTK/Inc/SimpleMath.h>
+
 export module trview.common:Colour;
 
 import std;
-#include <external/DirectXTK/Inc/SimpleMath.h>
+import std.compat;
 
 namespace trview
 {

@@ -1,6 +1,7 @@
 export module trview.common:IDialogs;
 
 import std;
+import std.compat;
 import :Window;
 
 namespace trview

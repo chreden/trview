@@ -1,4 +1,7 @@
 module;
+
+#include <Windows.h>
+
 module trview.common:Strings;
 
 import std;

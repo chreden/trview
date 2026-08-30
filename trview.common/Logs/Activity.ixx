@@ -1,10 +1,12 @@
-#pragma once
+export module trview.common:Activity;
 
-#include "ILog.h"
+import std;
+import :ILog;
+import :LogMessage;
 
 namespace trview
 {
-    class Activity
+    export class Activity
     {
     public:
         /// <summary>

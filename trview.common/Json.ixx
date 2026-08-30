@@ -1,8 +1,7 @@
 export module trview.common:Json;
 
 import nlohmann.json;
-
-#include <optional>
+import std;
 
 namespace trview
 {

@@ -1,8 +1,10 @@
-#pragma once
+export module trview.common:LogMessage;
+
+import std;
 
 namespace trview
 {
-    struct LogMessage
+    export struct LogMessage
     {
         enum class Status
         {

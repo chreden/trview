@@ -1,3 +1,7 @@
+module;
+
+#include <Windows.h>
+
 export module trview.common:Shortcuts;
 
 import std;

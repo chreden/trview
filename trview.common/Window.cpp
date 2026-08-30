@@ -1,5 +1,7 @@
 module;
 
+#include <Windows.h>
+
 module trview.common:Window;
 
 import :Strings;

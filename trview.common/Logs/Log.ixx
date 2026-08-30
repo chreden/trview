@@ -1,12 +1,12 @@
-#pragma once
+export module trview.common:Log;
 
-#include "ILog.h"
-#include "LogMessage.h"
-#include <mutex>
+import std;
+import :ILog;
+import :LogMessage;
 
 namespace trview
 {
-    class Log final : public ILog
+    export class Log final : public ILog
     {
     public:
         virtual ~Log() = default;

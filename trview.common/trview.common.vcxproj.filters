@@ -3,19 +3,13 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Maths.h" />
-    <ClInclude Include="Algorithms.h" />
     <ClInclude Include="Algorithms.hpp" />
     <ClInclude Include="Mocks\Windows\IShortcuts.h" Filter="Mocks\Windows" />
     <ClInclude Include="Json.hpp" />
     <ClInclude Include="Mocks\Windows\IDialogs.h" Filter="Mocks\Windows" />
     <ClInclude Include="Mocks\IFiles.h" Filter="Mocks" />
-    <ClInclude Include="Resources.h" />
     <ClInclude Include="Mocks\Windows\IShell.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Logs\ILog.h" Filter="Logs" />
-    <ClInclude Include="Logs\Log.h" Filter="Logs" />
     <ClInclude Include="Mocks\Logs\ILog.h" Filter="Mocks\Logs" />
-    <ClInclude Include="Logs\Activity.h" Filter="Logs" />
-    <ClInclude Include="Logs\LogMessage.h" Filter="Logs" />
     <ClInclude Include="Version.h" />
     <ClInclude Include="Version.hpp" />
     <ClInclude Include="Mocks\Messages\IRecipient.h" Filter="Mocks\Messages" />
@@ -134,6 +128,24 @@
     <ClCompile Include="Windows\IFiles.ixx">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Algorithms.ixx" />
+    <ClCompile Include="Logs\ILog.ixx">
+      <Filter>Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Logs\ILog.cpp">
+      <Filter>Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Logs\LogMessage.ixx">
+      <Filter>Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Logs\Log.ixx">
+      <Filter>Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Logs\Activity.ixx">
+      <Filter>Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources.ixx" />
+    <ClCompile Include="Resource.ixx" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

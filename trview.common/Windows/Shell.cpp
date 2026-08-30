@@ -1,5 +1,6 @@
 module;
 
+#include <Windows.h>
 #include <shellapi.h>
 
 module trview.common:Shell;
