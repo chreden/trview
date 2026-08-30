@@ -1,6 +1,7 @@
-#pragma once
+export module trview.common:Shell;
 
-#include "IShell.h"
+import std;
+import :IShell;
 
 namespace trview
 {

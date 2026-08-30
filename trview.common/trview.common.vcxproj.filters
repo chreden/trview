@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="Timer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="Algorithms.h" />
@@ -11,8 +10,6 @@
     <ClInclude Include="Mocks\Windows\IDialogs.h" Filter="Mocks\Windows" />
     <ClInclude Include="Mocks\IFiles.h" Filter="Mocks" />
     <ClInclude Include="Resources.h" />
-    <ClInclude Include="Windows\IShell.h" Filter="Windows" />
-    <ClInclude Include="Windows\Shell.h" Filter="Windows" />
     <ClInclude Include="Mocks\Windows\IShell.h" Filter="Mocks\Windows" />
     <ClInclude Include="Logs\ILog.h" Filter="Logs" />
     <ClInclude Include="Logs\Log.h" Filter="Logs" />
@@ -40,7 +37,6 @@
     <ClCompile Include="Windows\Shortcuts.cpp" Filter="Windows" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Windows\Dialogs.cpp" Filter="Windows" />
-    <ClCompile Include="Files.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="Windows\Shell.cpp" Filter="Windows" />
@@ -76,8 +72,6 @@
     </ClCompile>
     <ClCompile Include="Colour.ixx" />
     <ClCompile Include="Strings.ixx" />
-    <ClCompile Include="IFiles.ixx" />
-    <ClCompile Include="Files.ixx" />
     <ClCompile Include="Windows\IFiles.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
@@ -120,6 +114,25 @@
     </ClCompile>
     <ClCompile Include="Messages\MessageSystem.ixx">
       <Filter>Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.ixx" />
+    <ClCompile Include="Windows\IShell.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Shell.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IShell.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Files.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Files.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IFiles.ixx">
+      <Filter>Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

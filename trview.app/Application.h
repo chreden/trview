@@ -4,7 +4,6 @@
 
 import trview.common;
 
-#include <trview.common/Timer.h>
 #include "Elements/ITypeInfoLookup.h"
 #include <trview.app/Menus/IFileMenu.h>
 #include <trview.app/Menus/IUpdateChecker.h>

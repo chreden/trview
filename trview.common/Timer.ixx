@@ -5,15 +5,14 @@
 /// used to make sure that operations are scaled by time, so that they are framerate
 /// independent.
 
-#pragma once
+export module trview.common:Timer;
 
-#include <cstdint>
-#include <functional>
+import std;
 
 namespace trview
 {
     /// Keeps track of time and records time between updates by polling a time source.
-    class Timer
+    export class Timer
     {
     public:
         /// Creates a new timer that will poll the specified time source.
@@ -45,5 +44,5 @@ namespace trview
 
     /// Creates a time source that uses the Windows high performance counter to measure the passage of time.
     /// @returns The time source function to call.
-    std::function<float()> default_time_source();
+    export std::function<float()> default_time_source();
 }

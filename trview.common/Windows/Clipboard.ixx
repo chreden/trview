@@ -1,11 +1,12 @@
 export module trview.common:Clipboard;
 
+import std;
 import :IClipboard;
 import :Window;
 
 namespace trview
 {
-    class Clipboard final : public IClipboard
+    export class Clipboard final : public IClipboard
     {
     public:
         explicit Clipboard(const Window& window);

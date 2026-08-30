@@ -16,3 +16,4 @@ export import :IDialogs;
 export import :IMessageSystem;
 export import :TokenStore;
 export import :Message;
+export import :Timer;

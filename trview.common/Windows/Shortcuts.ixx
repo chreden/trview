@@ -1,12 +1,13 @@
 export module trview.common:Shortcuts;
 
+import std;
 import :Event;
 import :IShortcuts;
 import :MessageHandler;
 
 namespace trview
 {
-    class Shortcuts : public IShortcuts, public MessageHandler
+    export class Shortcuts : public IShortcuts, public MessageHandler
     {
     public:
         explicit Shortcuts(const Window& window);

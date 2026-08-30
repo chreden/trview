@@ -1,4 +1,5 @@
-#include "Timer.h"
+module;
+module trview.common:Timer;
 
 namespace trview
 {

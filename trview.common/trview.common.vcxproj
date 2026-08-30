@@ -19,9 +19,6 @@
     <ClCompile Include="Event.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClCompile Include="Files.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
     <ClCompile Include="JsonSerializers.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -30,9 +27,6 @@
     <ClInclude Include="Logs\Log.h" />
     <ClInclude Include="Logs\LogMessage.h" />
     <ClInclude Include="Maths.h" />
-    <ClCompile Include="IFiles.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
     <ClCompile Include="Json.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -77,7 +71,9 @@
     <ClCompile Include="Strings.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Timer.h" />
+    <ClCompile Include="Timer.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="TokenStore.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -92,6 +88,8 @@
     <ClCompile Include="Windows\Dialogs.ixx">
       <FileType>Document</FileType>
     </ClCompile>
+    <ClCompile Include="Windows\Files.cpp" />
+    <ClCompile Include="Windows\Files.ixx" />
     <ClCompile Include="Windows\IClipboard.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -99,12 +97,18 @@
     <ClCompile Include="Windows\IDialogs.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Windows\IShell.h" />
+    <ClCompile Include="Windows\IFiles.ixx" />
+    <ClCompile Include="Windows\IShell.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Windows\IShell.cpp" />
     <ClCompile Include="Windows\IShortcuts.cpp" />
     <ClCompile Include="Windows\IShortcuts.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Windows\Shell.h" />
+    <ClCompile Include="Windows\Shell.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Windows\Shortcuts.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -112,7 +116,6 @@
   <ItemGroup>
     <ClCompile Include="Colour.cpp" />
     <ClCompile Include="EventToken.cpp" />
-    <ClCompile Include="Files.cpp" />
     <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="Logs\Activity.cpp" />
     <ClCompile Include="Logs\Log.cpp" />

@@ -1,11 +1,11 @@
 export module trview.common:IClipboard;
 
+import std;
 import :Window;
-#include <string>
 
 namespace trview
 {
-    struct IClipboard
+    export struct IClipboard
     {
         virtual ~IClipboard() = 0;
         virtual std::wstring read() const = 0;

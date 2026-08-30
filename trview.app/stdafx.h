@@ -44,7 +44,6 @@
 #include <trview.common/Algorithms.h>
 #include <trview.common/Maths.h>
 #include <trview.common/Resources.h>
-#include <trview.common/Timer.h>
 #include <trview.graphics/RasterizerStateStore.h>
 #include <trview.graphics/IDevice.h>
 #include <trview.graphics/IDeviceWindow.h>

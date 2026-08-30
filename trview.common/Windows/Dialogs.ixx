@@ -1,11 +1,12 @@
 export module trview.common:Dialogs;
 
+import std;
 import :IDialogs;
 import :Window;
 
 namespace trview
 {
-    class Dialogs final : public IDialogs
+    export class Dialogs final : public IDialogs
     {
     public:
         explicit Dialogs(const Window& window);

@@ -1,5 +1,6 @@
 export module trview.common:IShortcuts;
 
+import std;
 import :Event;
 import :Window;
 
