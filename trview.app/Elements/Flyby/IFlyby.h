@@ -9,11 +9,10 @@
 
 #include <trlevel/trtypes.h>
 
-#include <trview.common/Event.h>
+import trview.common;
 
 #include "../../Geometry/IRenderable.h"
 #include "../../Geometry/PickResult.h"
-
 #include "../../Filters/IFilterable.h"
 
 namespace trview

@@ -5,7 +5,8 @@
 #include <trlevel/trtypes.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/IMesh.h>
-#include <trview.common/Event.h>
+
+import trview.common;
 
 #include "../Filters/IFilterable.h"
 

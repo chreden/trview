@@ -5,7 +5,7 @@ import :Event;
 
 namespace trview
 {
-    class TokenStore
+    export class TokenStore
     {
     public:
         TokenStore& operator += (EventBase::Token&& token);

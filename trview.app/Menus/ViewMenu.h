@@ -1,8 +1,6 @@
 #pragma once
 
-#include <trview.common/MessageHandler.h>
-#include <trview.common/Event.h>
-#include <trview.common/Colour.h>
+import trview.common;
 
 namespace trview
 {

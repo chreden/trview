@@ -1,14 +1,11 @@
 export module trview.common:IDialogs;
 
 import :Window;
-
-#include <optional>
-#include <string>
-#include <vector>
+import std;
 
 namespace trview
 {
-    struct IDialogs
+    export struct IDialogs
     {
         enum class Buttons
         {

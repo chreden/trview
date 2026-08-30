@@ -1,11 +1,11 @@
-#pragma once
+export module trview.common:IMessageSystem;
 
-#include "Message.h"
-#include "IRecipient.h"
+import :Message;
+import :IRecipient;
 
 namespace trview
 {
-    struct IMessageSystem
+    export struct IMessageSystem
     {
         virtual ~IMessageSystem() = 0;
         virtual void add_recipient(const std::weak_ptr<IRecipient>& recipient) = 0;

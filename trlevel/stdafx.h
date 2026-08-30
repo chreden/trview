@@ -18,5 +18,3 @@
 
 #include <external/zlib/zlib.h>
 #include <SimpleMath.h>
-
-#include <trview.common/Strings.h>

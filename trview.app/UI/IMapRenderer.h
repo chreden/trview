@@ -1,6 +1,7 @@
 #pragma once
 
-#include <trview.common/Event.h>
+import trview.common;
+
 #include <trview.app/Elements/Room.h>
 #include "../Settings/UserSettings.h"
 

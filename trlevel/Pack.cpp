@@ -1,7 +1,8 @@
 #include "Pack.h"
 #include "Level_common.h"
 
-#include <trview.common/Strings.h>
+import trview.common;
+
 #include <ranges>
 #include <utility>
 #include <filesystem>

@@ -7,13 +7,13 @@
 
 #pragma once
 
+import trview.common;
+
 #include <wrl/client.h>
 #include <d3d11.h>
 #include <cstdint>
 #include <vector>
 #include <trview.graphics/Device.h>
-#include <trview.common/Colour.h>
-#include <trview.common/Size.h>
 
 namespace trview
 {

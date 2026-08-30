@@ -5,7 +5,7 @@ import :Window;
 
 namespace trview
 {
-    struct IShortcuts
+    export struct IShortcuts
     {
         using Source = std::function<std::shared_ptr<IShortcuts>(const Window&)>;
 

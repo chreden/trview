@@ -13,7 +13,7 @@
 
 #include <trview.common/Logs/ILog.h>
 #include <trview.common/Logs/Activity.h>
-#include <trview.common/IFiles.h>
+import trview.common;
 
 namespace trlevel
 {

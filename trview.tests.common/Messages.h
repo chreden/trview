@@ -3,7 +3,8 @@
 #include <vector>
 #include <optional>
 #include <string>
-#include <trview.common/Messages/Message.h>
+
+import trview.common;
 
 namespace trview
 {

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <trview.common/Colour.h>
+import trview.common;
+
 #include "../Elements/Types.h"
 #include <external/nlohmann/json.hpp>
 

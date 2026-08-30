@@ -1,7 +1,7 @@
 #pragma once
 
-#include <trview.common/Event.h>
-#include <trview.common/Messages/IRecipient.h>
+import trview.common;
+
 #include <string>
 #include <cstdint>
 

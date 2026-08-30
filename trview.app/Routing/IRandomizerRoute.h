@@ -5,9 +5,9 @@
 #include <memory>
 #include <vector>
 
-#include <trview.common/IFiles.h>
-#include "../Settings/RandomizerSettings.h"
+import trview.common;
 
+#include "../Settings/RandomizerSettings.h"
 #include "IRoute.h"
 
 namespace trview

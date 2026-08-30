@@ -7,7 +7,6 @@
 #include <shellapi.h>
 #include <ShlObj.h>
 
-#include <trview.common/TokenStore.h>
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>
 #include <trview.tests.common/Window.h>
@@ -68,11 +67,6 @@ namespace testing
 #include <trview.app/Mocks/UI/IViewOptions.h>
 #include <trview.app/Mocks/UI/IViewerUI.h>
 #include <trview.app/Mocks/Windows/IViewer.h>
-#include <trview.common/Mocks/IFiles.h>
-#include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.common/Mocks/Windows/IDialogs.h>
-#include <trview.common/Mocks/Windows/IShell.h>
-#include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.graphics/mocks/D3D/ID3D11DeviceContext.h>
 #include <trview.graphics/mocks/IDevice.h>
 #include <trview.graphics/mocks/IDeviceWindow.h>

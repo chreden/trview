@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include <trview.common/Window.h>
-#include <trview.common/Colour.h>
+import trview.common;
+
 #include "IRenderTarget.h"
 #include "IDevice.h"
 #include "IDeviceWindow.h"

@@ -1,16 +1,15 @@
-#pragma once
+export module trview.common:Message;
 
-#include <memory>
-#include <string>
+import std;
 
 namespace trview
 {
-    struct IMessageData
+    export struct IMessageData
     {
         virtual ~IMessageData() = 0;
     };
 
-    template <typename T>
+    export template <typename T>
     struct MessageData : public IMessageData
     {
         virtual ~MessageData() = default;
@@ -23,7 +22,7 @@ namespace trview
         T value;
     };
 
-    struct Message
+    export struct Message
     {
         std::string type;
         std::shared_ptr<IMessageData> data;

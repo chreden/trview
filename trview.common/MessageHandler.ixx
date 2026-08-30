@@ -6,7 +6,7 @@ import :Window;
 namespace trview
 {
     /// Base class for things that handle Windows messages.
-    class MessageHandler
+    export class MessageHandler
     {
     public:
         /// Create a new MessageHandler.

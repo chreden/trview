@@ -7,7 +7,7 @@
 #include <optional>
 #include <vector>
 
-#include <trview.common/IFiles.h>
+import trview.common;
 
 namespace trlevel
 {

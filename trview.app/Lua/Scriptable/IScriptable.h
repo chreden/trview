@@ -3,7 +3,7 @@
 #include <functional>
 #include <memory>
 
-#include <trview.common/Event.h>
+import trview.common;
 
 #include "../../Geometry/IMesh.h"
 

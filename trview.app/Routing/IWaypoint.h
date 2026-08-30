@@ -3,9 +3,9 @@
 #include <map>
 #include <variant>
 #include <SimpleMath.h>
-#include <trview.common/Colour.h>
 #include "../Geometry/IRenderable.h"
-#include <trview.common/Event.h>
+
+import trview.common;
 
 namespace trview
 {

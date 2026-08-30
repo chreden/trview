@@ -3,7 +3,8 @@
 #include <cstdint>
 #include <SimpleMath.h>
 
-#include <trview.common/Event.h>
+import trview.common;
+
 #include "../Elements/IItem.h"
 #include "../Elements/ITrigger.h"
 #include "../Elements/ILevel.h"

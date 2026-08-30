@@ -2,10 +2,9 @@
 
 #include <future>
 
-#include <trview.common/Window.h>
-#include <trview.common/Timer.h>
-#include <trview.common/TokenStore.h>
+import trview.common;
 
+#include <trview.common/Timer.h>
 #include "Elements/ITypeInfoLookup.h"
 #include <trview.app/Menus/IFileMenu.h>
 #include <trview.app/Menus/IUpdateChecker.h>
@@ -15,13 +14,9 @@
 #include <trview.app/Settings/ISettingsLoader.h>
 #include <trview.app/Settings/IStartupOptions.h>
 #include <trview.app/Windows/IViewer.h>
-#include <trview.common/Windows/IDialogs.h>
-#include <trview.common/Windows/IShortcuts.h>
 #include "UI/IImGuiBackend.h"
 #include "Plugins/IPlugins.h"
 #include "UI/Fonts/IFonts.h"
-#include <trview.common/Messages/IRecipient.h>
-#include <trview.common/Messages/IMessageSystem.h>
 
 struct ImFont;
 

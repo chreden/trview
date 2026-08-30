@@ -1,7 +1,8 @@
 #include "Texture.h"
 #include <trview.common/Resources.h>
 #include <external/DirectXTK/Inc/WICTextureLoader.h>
-#include <trview.common/Strings.h>
+
+import trview.common;
 
 using namespace Microsoft::WRL;
 

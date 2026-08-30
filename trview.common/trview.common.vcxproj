@@ -40,14 +40,27 @@
     <ClCompile Include="MessageHandler.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Messages\IMessageSystem.h" />
-    <ClInclude Include="Messages\IRecipient.h" />
-    <ClInclude Include="Messages\Message.h" />
-    <ClInclude Include="Messages\MessageSystem.h" />
+    <ClCompile Include="Messages\IMessageSystem.cpp" />
+    <ClCompile Include="Messages\IMessageSystem.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Messages\IRecipient.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Messages\Message.cpp" />
+    <ClCompile Include="Messages\Message.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Messages\MessageSystem.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Mocks\IFiles.h" />
     <ClInclude Include="Mocks\Logs\ILog.h" />
-    <ClInclude Include="Mocks\Messages\IMessageSystem.h" />
+    <ClInclude Include="Mocks\Messages\IMessageSystem.h">
+      <FileType>Document</FileType>
+    </ClInclude>
     <ClInclude Include="Mocks\Messages\IRecipient.h" />
+    <ClCompile Include="Messages\IRecipient.cpp" />
     <ClCompile Include="Mocks\Windows\MockClipboard.ixx">
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

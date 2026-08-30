@@ -1,8 +1,9 @@
 #pragma once
 
+import trview.common;
+
 #include <list>
 #include <string>
-#include <trview.common/Event.h>
 #include <trlevel/IPack.h>
 
 #include "LevelSortingMode.h"

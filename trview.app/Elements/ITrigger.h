@@ -9,8 +9,9 @@
 #include "../Geometry/Triangle.h"
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.app/Elements/Types.h>
-#include <trview.common/Event.h>
 #include "../Filters/IFilterable.h"
+
+import trview.common;
 
 namespace trview
 {

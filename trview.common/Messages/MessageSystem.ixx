@@ -1,15 +1,13 @@
-#pragma once
+export module trview.common:MessageSystem;
 
-#include "IMessageSystem.h"
+import :IMessageSystem;
+import :IRecipient;
 
-#include <vector>
-#include <memory>
+import std;
 
 namespace trview
 {
-    struct IRecipient;
-
-    class MessageSystem final : public IMessageSystem
+    export class MessageSystem final : public IMessageSystem
     {
     public:
         virtual ~MessageSystem() = default;

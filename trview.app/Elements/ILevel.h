@@ -9,10 +9,10 @@
 #include <trview.app/Elements/ILight.h>
 #include "CameraSink/ICameraSink.h"
 #include "Flyby/IFlyby.h"
-#include <trview.common/Event.h>
 #include "../UI/MapColours.h"
 #include <trlevel/IPack.h>
-#include <trview.common/Messages/IRecipient.h>
+
+import trview.common;
 
 namespace trview
 {

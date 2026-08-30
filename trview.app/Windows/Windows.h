@@ -1,9 +1,8 @@
 #pragma once
 
 #include <unordered_map>
-#include <trview.common/Windows/IShortcuts.h>
-#include <trview.common/TokenStore.h>
-#include <trview.common/MessageHandler.h>
+
+import trview.common;
 
 #include "IWindows.h"
 #include "IWindow.h"

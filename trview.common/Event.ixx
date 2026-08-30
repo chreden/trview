@@ -12,7 +12,7 @@ import std;
 namespace trview
 {
     /// Base class for all Events so that the Token system can track events.
-    class EventBase
+    export class EventBase
     {
     public:
         /// Event tokens are stored in order to keep function callbacks alive and so the
@@ -55,7 +55,7 @@ namespace trview
     };
 
     /// Class that others can register with to be called back when something happens.
-    template < typename... Args >
+    export template < typename... Args >
     class Event : public EventBase
     {
     public:

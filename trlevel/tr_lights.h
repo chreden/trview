@@ -2,7 +2,8 @@
 
 #include "trtypes.h"
 #include "LevelVersion.h"
-#include <trview.common/Colour.h>
+
+import trview.common;
 
 namespace trlevel
 {

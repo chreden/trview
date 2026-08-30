@@ -4,7 +4,7 @@ import std;
 
 namespace trview
 {
-    struct IFiles
+    export struct IFiles
     {
         struct File
         {

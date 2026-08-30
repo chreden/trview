@@ -3,13 +3,9 @@
 #include "UserCancelledException.h"
 #include "Lua/trview/trview.h"
 #include "Windows/IWindows.h"
-
 #include "Resources/resource.h"
 #include "Elements/SoundSource/ISoundSource.h"
 #include "Elements/Flyby/IFlybyNode.h"
-
-#include <trview.common/Messages/IMessageSystem.h>
-#include <trview.common/Messages/Message.h>
 #include "Messages/Messages.h"
 
 using namespace DirectX::SimpleMath;

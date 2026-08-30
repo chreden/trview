@@ -4,7 +4,7 @@ import :IFiles;
 
 namespace trview
 {
-    class Files final : public IFiles
+    export class Files final : public IFiles
     {
     public:
         virtual ~Files() = default;

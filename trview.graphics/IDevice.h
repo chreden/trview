@@ -1,10 +1,11 @@
 #pragma once
 
+import trview.common;
+
 #include <memory>
 #include <wrl/client.h>
 #include <d3d11.h>
 #include <optional>
-#include <trview.common/Window.h>
 
 namespace trview
 {
