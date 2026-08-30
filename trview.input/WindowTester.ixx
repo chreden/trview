@@ -1,14 +1,13 @@
-#pragma once
+export module trview.input:WindowTester;
 
 import trview.common;
-
-#include "IWindowTester.h"
+import :IWindowTester;
 
 namespace trview
 {
     namespace input
     {
-        class WindowTester final : public MessageHandler, public IWindowTester
+        export class WindowTester final : public MessageHandler, public IWindowTester
         {
         public:
             explicit WindowTester(const Window& window);

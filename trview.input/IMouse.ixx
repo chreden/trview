@@ -1,16 +1,14 @@
-#pragma once
+export module trview.input:IMouse;
 
-#include <cstdint>
-#include <memory>
-#include <functional>
-
+import std;
+import std.compat;
 import trview.common;
 
 namespace trview
 {
     namespace input
     {
-        struct IMouse
+        export struct IMouse
         {
             using Source = std::function<std::shared_ptr<IMouse>(const Window& window)>;
 

@@ -1,13 +1,13 @@
-#include "WindowTester.h"
+module;
+
+#include <Windows.h>
+
+module trview.input:WindowTester;
 
 namespace trview
 {
     namespace input
     {
-        IWindowTester::~IWindowTester()
-        {
-        }
-
         WindowTester::WindowTester(const Window& window)
             : MessageHandler(window)
         {

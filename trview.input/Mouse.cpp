@@ -1,4 +1,8 @@
-#include "Mouse.h"
+module;
+
+#include <Windows.h>
+
+module trview.input:Mouse;
 
 namespace trview
 {
@@ -8,10 +12,6 @@ namespace trview
         {
             /// The amount of milliseconds before a click is no longer considered a click.
             const uint32_t ClickDelta = 200;
-        }
-
-        IMouse::~IMouse()
-        {
         }
 
         Mouse::Mouse(const Window& window, std::unique_ptr<IWindowTester>&& window_tester)

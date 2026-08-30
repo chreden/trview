@@ -4,15 +4,18 @@
 /// Given a window will receive input messages and translate them into events that
 /// can be subscribed to.
 
-#pragma once
-
-import trview.common;
+module;
 
 #include <Windows.h>
-#include <cstdint>
 
-#include "IMouse.h"
-#include "IWindowTester.h"
+export module trview.input:Mouse;
+
+import trview.common;
+import std;
+import std.compat;
+
+import :IMouse;
+import :IWindowTester;
 
 namespace trview
 {

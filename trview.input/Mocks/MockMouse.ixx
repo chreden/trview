@@ -1,6 +1,10 @@
-#pragma once
+module;
 
-#include "../IMouse.h"
+#include <gmock/gmock.h>
+
+export module trview.input:MockMouse;
+
+import :IMouse;
 
 namespace trview
 {
@@ -8,7 +12,7 @@ namespace trview
     {
         namespace mocks
         {
-            struct MockMouse : public IMouse
+            export struct MockMouse : public IMouse
             {
                 MockMouse();
                 virtual ~MockMouse();

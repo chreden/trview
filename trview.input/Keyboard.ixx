@@ -4,10 +4,10 @@
 /// Given a window will receive input messages and translate them into events that
 /// can be subscribed to.
 
-#pragma once
+export module trview.input:Keyboard;
 
-#include <cstdint>
-
+import std;
+import std.compat;
 import trview.common;
 
 namespace trview
@@ -15,7 +15,7 @@ namespace trview
     namespace input
     {
         /// Receives keyboard input for a specific window.
-        class Keyboard : public MessageHandler
+        export class Keyboard : public MessageHandler
         {
         public:
             /// Create a keyboard to listen to keyboard messages for a specific window.

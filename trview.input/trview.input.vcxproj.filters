@@ -4,17 +4,20 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="WindowTester.cpp" />
-    <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Mouse.h" />
-    <ClInclude Include="Keyboard.h" />
-    <ClInclude Include="IWindowTester.h" />
-    <ClInclude Include="WindowTester.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="IMouse.h" />
-    <ClInclude Include="Mocks\IMouse.h" Filter="Mocks" />
+    <ClCompile Include="trview.input.ixx" />
+    <ClCompile Include="Mocks\MockMouse.ixx">
+      <Filter>Mocks</Filter>
+    </ClCompile>
+    <ClCompile Include="IWindowTester.ixx" />
+    <ClCompile Include="IMouse.ixx" />
+    <ClCompile Include="Keyboard.ixx" />
+    <ClCompile Include="Mouse.ixx" />
+    <ClCompile Include="WindowTester.ixx" />
+    <ClCompile Include="IMouse.cpp" />
+    <ClCompile Include="IWindowTester.cpp" />
+    <ClCompile Include="Mocks\MockMouse.cpp">
+      <Filter>Mocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">

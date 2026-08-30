@@ -1,8 +1,6 @@
-#pragma once
+export module trview.input:IWindowTester;
 
-#include <memory>
-#include <functional>
-
+import std;
 import trview.common;
 
 namespace trview
@@ -10,7 +8,7 @@ namespace trview
     namespace input
     {
         /// Used to check for Windows information.
-        struct IWindowTester
+        export struct IWindowTester
         {
             using Source = std::function<std::unique_ptr<IWindowTester>(const Window&)>;
 
