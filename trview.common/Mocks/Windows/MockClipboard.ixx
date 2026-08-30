@@ -1,12 +1,17 @@
-export module trview.common:Mocks;
+module;
+
+#include <gmock/gmock.h>
+
+export module trview.common:MockClipboard;
 
 import :IClipboard;
+import std;
 
 namespace trview
 {
     namespace mocks
     {
-        struct MockClipboard : public IClipboard
+        export struct MockClipboard : public IClipboard
         {
             MockClipboard();
             virtual ~MockClipboard();

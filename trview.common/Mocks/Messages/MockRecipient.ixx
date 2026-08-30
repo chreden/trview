@@ -1,6 +1,10 @@
-#pragma once
+module;
 
-#include "../../Messages/IRecipient.h"
+#include <gmock/gmock.h>
+
+export module trview.common:MockRecipient;
+
+import :IRecipient;
 
 namespace trview
 {

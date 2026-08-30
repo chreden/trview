@@ -1,6 +1,10 @@
-#pragma once
+module;
 
-#include "../../Messages/IMessageSystem.h"
+#include <gmock/gmock.h>
+
+export module trview.common:MockMessageSystem;
+
+import :IMessageSystem;
 
 namespace trview
 {

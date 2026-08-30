@@ -1,6 +1,10 @@
-#pragma once
+module;
 
-#include "../../Windows/IDialogs.h"
+#include <gmock/gmock.h>
+
+export module trview.common:MockDialogs;
+
+import :IDialogs;
 
 namespace trview
 {

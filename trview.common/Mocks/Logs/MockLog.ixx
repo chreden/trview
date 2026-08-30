@@ -1,12 +1,17 @@
-#pragma once
+module;
 
-#include "../../Logs/ILog.h"
+#include <gmock/gmock.h>
+
+export module trview.common:MockLog;
+
+import :ILog;
+import std;
 
 namespace trview
 {
     namespace mocks
     {
-        struct MockLog : public ILog
+        export struct MockLog : public ILog
         {
             MockLog();
             virtual ~MockLog();

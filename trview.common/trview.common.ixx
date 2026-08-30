@@ -19,3 +19,12 @@ export import :TokenStore;
 export import :Message;
 export import :Timer;
 export import :Log;
+
+export import :MockClipboard;
+export import :MockDialogs;
+export import :MockShell;
+export import :MockShortcuts;
+export import :MockRecipient;
+export import :MockMessageSystem;
+export import :MockLog;
+export import :MockFiles;

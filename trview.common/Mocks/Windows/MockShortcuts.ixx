@@ -1,12 +1,18 @@
-#pragma once
+module;
 
-#include "../../Windows/IShortcuts.h"
+#include <gmock/gmock.h>
+
+export module trview.common:MockShortcuts;
+
+import :IShortcuts;
+import :Event;
+import std;
 
 namespace trview
 {
     namespace mocks
     {
-        struct MockShortcuts : public IShortcuts
+        export struct MockShortcuts : public IShortcuts
         {
             MockShortcuts();
             virtual ~MockShortcuts();

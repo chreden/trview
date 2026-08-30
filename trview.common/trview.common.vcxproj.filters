@@ -4,18 +4,9 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="Algorithms.hpp" />
-    <ClInclude Include="Mocks\Windows\IShortcuts.h" Filter="Mocks\Windows" />
     <ClInclude Include="Json.hpp" />
-    <ClInclude Include="Mocks\Windows\IDialogs.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\IFiles.h" Filter="Mocks" />
-    <ClInclude Include="Mocks\Windows\IShell.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Mocks\Logs\ILog.h" Filter="Mocks\Logs" />
     <ClInclude Include="Version.h" />
     <ClInclude Include="Version.hpp" />
-    <ClInclude Include="Mocks\Messages\IRecipient.h" Filter="Mocks\Messages" />
-    <ClInclude Include="Mocks\Messages\IMessageSystem.h">
-      <Filter>Messages</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Size.cpp" />
@@ -36,7 +27,6 @@
     <ClCompile Include="Windows\Shell.cpp" Filter="Windows" />
     <ClCompile Include="Logs\Log.cpp" Filter="Logs" />
     <ClCompile Include="Logs\Activity.cpp" Filter="Logs" />
-    <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
     <ClCompile Include="Messages\MessageSystem.cpp" Filter="Messages" />
     <ClCompile Include="trview.common.ixx" />
     <ClCompile Include="Point.ixx" />
@@ -146,6 +136,51 @@
     </ClCompile>
     <ClCompile Include="Resources.ixx" />
     <ClCompile Include="Resource.ixx" />
+    <ClCompile Include="Mocks\Windows\MockShortcuts.ixx">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockClipboard.cpp">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockShortcuts.cpp">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\MockFiles.ixx">
+      <Filter>Mocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockFiles.cpp">
+      <Filter>Mocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Logs\MockLog.cpp">
+      <Filter>Mocks\Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Logs\MockLog.ixx">
+      <Filter>Mocks\Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Messages\MockMessageSystem.cpp">
+      <Filter>Mocks\Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Messages\MockMessageSystem.ixx">
+      <Filter>Mocks\Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Messages\MockRecipient.cpp">
+      <Filter>Mocks\Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockDialogs.ixx">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockShell.ixx">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Messages\MockDialogs.cpp">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Messages\MockShell.cpp">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Messages\MockRecipient.ixx">
+      <Filter>Mocks\Messages</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

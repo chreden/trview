@@ -1,12 +1,17 @@
-#pragma once
+module;
 
-#include "../IFiles.h"
+#include <gmock/gmock.h>
+
+export module trview.common:MockFiles;
+
+import :IFiles;
+import std;
 
 namespace trview
 {
     namespace mocks
     {
-        struct MockFiles : public IFiles
+        export struct MockFiles : public IFiles
         {
             MockFiles();
             virtual ~MockFiles();

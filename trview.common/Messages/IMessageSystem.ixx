@@ -2,6 +2,7 @@ export module trview.common:IMessageSystem;
 
 import :Message;
 import :IRecipient;
+import std;
 
 namespace trview
 {

@@ -1,6 +1,10 @@
-#pragma once
+module;
 
-#include "../../Windows/IShell.h"
+#include <gmock/gmock.h>
+
+export module trview.common:MockShell;
+
+import :IShell;
 
 namespace trview
 {

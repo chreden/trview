@@ -59,21 +59,43 @@
     <ClCompile Include="Messages\MessageSystem.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Mocks\IFiles.h" />
-    <ClInclude Include="Mocks\Logs\ILog.h" />
-    <ClInclude Include="Mocks\Messages\IMessageSystem.h">
+    <ClCompile Include="Mocks\Logs\MockLog.cpp" />
+    <ClCompile Include="Mocks\Messages\MockDialogs.cpp" />
+    <ClCompile Include="Mocks\Messages\MockMessageSystem.cpp" />
+    <ClCompile Include="Mocks\Messages\MockRecipient.cpp" />
+    <ClCompile Include="Mocks\Messages\MockShell.cpp" />
+    <ClCompile Include="Mocks\MockFiles.ixx">
       <FileType>Document</FileType>
-    </ClInclude>
-    <ClInclude Include="Mocks\Messages\IRecipient.h" />
+    </ClCompile>
+    <ClCompile Include="Mocks\Logs\MockLog.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\Messages\MockMessageSystem.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\Messages\MockRecipient.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Messages\IRecipient.cpp" />
+    <ClCompile Include="Mocks\Windows\MockClipboard.cpp" />
     <ClCompile Include="Mocks\Windows\MockClipboard.ixx">
       <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="Mocks\Windows\IDialogs.h" />
-    <ClInclude Include="Mocks\Windows\IShell.h" />
-    <ClInclude Include="Mocks\Windows\IShortcuts.h" />
+    <ClCompile Include="Mocks\Windows\MockDialogs.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockShell.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockFiles.cpp" />
+    <ClCompile Include="Mocks\Windows\MockShortcuts.cpp" />
+    <ClCompile Include="Mocks\Windows\MockShortcuts.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Resources.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -137,10 +159,6 @@
     <ClCompile Include="Logs\Log.cpp" />
     <ClCompile Include="MessageHandler.cpp" />
     <ClCompile Include="Messages\MessageSystem.cpp" />
-    <ClCompile Include="Mocks\Mocks.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Point.ixx" />
     <ClCompile Include="Resources.cpp" />
