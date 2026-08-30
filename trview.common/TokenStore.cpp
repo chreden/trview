@@ -1,4 +1,5 @@
-#include "TokenStore.h"
+module;
+module trview.common:TokenStore;
 
 namespace trview
 {

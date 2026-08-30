@@ -1,13 +1,13 @@
-#pragma once
+export module trview.common:JsonSerializers;
 
-#include <external/nlohmann/json.hpp>
-
-#include "Point.h"
-#include "Size.h"
-#include "Colour.h"
+import nlohmann.json;
 
 namespace trview
 {
+    struct Point;
+    struct Size;
+    struct Colour;
+
     void from_json(const nlohmann::json& json, Point& point);
     void from_json(const nlohmann::json& json, Size& size);
     void from_json(const nlohmann::json& json, Colour& colour);

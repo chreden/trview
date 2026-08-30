@@ -1,8 +1,12 @@
-#include "Dialogs.h"
-#include "Strings.h"
+module;
+
 #include <commdlg.h>
 #include <ShlObj.h>
 #include <wrl/client.h>
+
+module trview.common:Dialogs;
+
+import :Strings;
 
 using namespace Microsoft::WRL;
 
@@ -63,10 +67,6 @@ namespace trview
             final_filter += L'\0';
             return final_filter;
         }
-    }
-
-    IDialogs::~IDialogs()
-    {
     }
 
     Dialogs::Dialogs(const Window& window)

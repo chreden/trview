@@ -1,7 +1,7 @@
-#pragma once
+export module trview.common:TokenStore;
 
-#include <vector>
-#include "Event.h"
+import std;
+import :Event;
 
 namespace trview
 {

@@ -1,35 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="Size.h" />
     <ClInclude Include="Timer.h" />
-    <ClInclude Include="Window.h" />
-    <ClInclude Include="Point.h" />
-    <ClInclude Include="Colour.h" />
-    <ClInclude Include="MessageHandler.h" Filter="Windows" />
-    <ClInclude Include="Event.h" Filter="Events" />
-    <ClInclude Include="TokenStore.h" Filter="Events" />
-    <ClInclude Include="Strings.h" />
-    <ClInclude Include="Windows\Clipboard.h" Filter="Windows" />
-    <ClInclude Include="Windows\Shortcuts.h" Filter="Windows" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="Algorithms.h" />
     <ClInclude Include="Algorithms.hpp" />
     <ClInclude Include="Mocks\Windows\IShortcuts.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Windows\IShortcuts.h" Filter="Windows" />
-    <ClInclude Include="Windows\IClipboard.h" Filter="Windows" />
-    <ClInclude Include="Mocks\Windows\IClipboard.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Json.h" />
     <ClInclude Include="Json.hpp" />
-    <ClInclude Include="Windows\IDialogs.h" Filter="Windows" />
-    <ClInclude Include="Windows\Dialogs.h" Filter="Windows" />
     <ClInclude Include="Mocks\Windows\IDialogs.h" Filter="Mocks\Windows" />
-    <ClInclude Include="IFiles.h" />
-    <ClInclude Include="Files.h" />
     <ClInclude Include="Mocks\IFiles.h" Filter="Mocks" />
     <ClInclude Include="Resources.h" />
-    <ClInclude Include="JsonSerializers.h" />
     <ClInclude Include="Windows\IShell.h" Filter="Windows" />
     <ClInclude Include="Windows\Shell.h" Filter="Windows" />
     <ClInclude Include="Mocks\Windows\IShell.h" Filter="Mocks\Windows" />
@@ -69,6 +50,58 @@
     <ClCompile Include="Logs\Activity.cpp" Filter="Logs" />
     <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
     <ClCompile Include="Messages\MessageSystem.cpp" Filter="Messages" />
+    <ClCompile Include="trview.common.ixx" />
+    <ClCompile Include="Point.ixx" />
+    <ClCompile Include="Window.ixx" />
+    <ClCompile Include="JsonSerializers.ixx" />
+    <ClCompile Include="Json.ixx" />
+    <ClCompile Include="Windows\Clipboard.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IClipboard.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IClipboard.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IDialogs.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Dialogs.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IDialogs.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandler.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Colour.ixx" />
+    <ClCompile Include="Strings.ixx" />
+    <ClCompile Include="IFiles.ixx" />
+    <ClCompile Include="Files.ixx" />
+    <ClCompile Include="Windows\IFiles.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockClipboard.ixx">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IShortcuts.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Shortcuts.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IShortcuts.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.ixx">
+      <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="TokenStore.ixx">
+      <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Size.ixx" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

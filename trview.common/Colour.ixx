@@ -1,6 +1,6 @@
-#pragma once
+export module trview.common:Colour;
 
-#include <string>
+import std;
 #include <external/DirectXTK/Inc/SimpleMath.h>
 
 namespace trview

@@ -1,12 +1,7 @@
-/// @file MessageHandler.h
-/// @brief Class that receives Windows messages.
+export module trview.common:MessageHandler;
 
-#pragma once
-
-#include <optional>
-#include <cstdint>
-#include <Windows.h>
-#include "Window.h"
+import std;
+import :Window;
 
 namespace trview
 {

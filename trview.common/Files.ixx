@@ -1,6 +1,6 @@
-#pragma once
+export module trview.common:Files;
 
-#include "IFiles.h"
+import :IFiles;
 
 namespace trview
 {

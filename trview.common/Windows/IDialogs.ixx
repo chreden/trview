@@ -1,9 +1,10 @@
-#pragma once
+export module trview.common:IDialogs;
+
+import :Window;
 
 #include <optional>
 #include <string>
 #include <vector>
-#include "../Window.h"
 
 namespace trview
 {

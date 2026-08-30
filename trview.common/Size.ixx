@@ -1,3 +1,5 @@
+export module trview.common:Size;
+
 /// @file Size.h
 /// @brief Class used to represent a size.
 /// 

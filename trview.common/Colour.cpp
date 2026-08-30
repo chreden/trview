@@ -1,6 +1,8 @@
-#include "Colour.h"
-#include <trview.common/Json.h>
-#include <trview.common/Strings.h>
+module;
+module trview.common:Colour;
+
+import :Json;
+import :Strings;
 
 namespace trview
 {

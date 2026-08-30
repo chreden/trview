@@ -1,3 +1,5 @@
+export module trview.common:Event;
+
 /// @file Event.h
 /// @brief Class that others can register with to be called back when something happens.
 /// 
@@ -5,10 +7,7 @@
 /// registered to listen to this event. Events can be chained together. Subscription
 /// is done by the += operator.
 
-#pragma once
-
-#include <vector>
-#include <functional>
+import std;
 
 namespace trview
 {

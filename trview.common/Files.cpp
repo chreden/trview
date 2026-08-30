@@ -1,6 +1,10 @@
-#include "Files.h"
-#include "Strings.h"
+module;
+
 #include <shlobj.h>
+
+module trview.common:Files;
+
+import :Strings;
 
 namespace trview
 {
@@ -17,10 +21,6 @@ namespace trview
                 }
             }
         };
-    }
-
-    IFiles::~IFiles()
-    {
     }
 
     std::string Files::appdata_directory() const

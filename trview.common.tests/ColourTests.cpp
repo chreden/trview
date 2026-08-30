@@ -1,5 +1,5 @@
-#include <trview.common/Colour.h>
-#include <trview.common/JsonSerializers.h>
+import trview.common;
+import nlohmann.json;
 
 using namespace trview;
 

@@ -1,8 +1,8 @@
-#pragma once
+export module trview.common:Shortcuts;
 
-#include "IShortcuts.h"
-#include "../MessageHandler.h"
-#include "../Event.h"
+import :Event;
+import :IShortcuts;
+import :MessageHandler;
 
 namespace trview
 {

@@ -1,6 +1,7 @@
-#pragma once
+export module trview.common:Dialogs;
 
-#include "IDialogs.h"
+import :IDialogs;
+import :Window;
 
 namespace trview
 {

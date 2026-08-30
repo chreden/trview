@@ -1,9 +1,6 @@
-#pragma once
+export module trview.common:Json;
 
-#pragma warning(push)
-#pragma warning(disable : 4127)
-#include <external/nlohmann/json.hpp>
-#pragma warning(pop)
+import nlohmann.json;
 
 #include <optional>
 

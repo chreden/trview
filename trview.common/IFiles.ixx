@@ -1,9 +1,6 @@
-#pragma once
+export module trview.common:IFiles;
 
-#include <string>
-#include <cstdint>
-#include <vector>
-#include <optional>
+import std;
 
 namespace trview
 {

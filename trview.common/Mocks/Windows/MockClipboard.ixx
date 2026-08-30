@@ -1,6 +1,6 @@
-#pragma once
+export module trview.common:Mocks;
 
-#include "../../Windows/IClipboard.h"
+import :IClipboard;
 
 namespace trview
 {

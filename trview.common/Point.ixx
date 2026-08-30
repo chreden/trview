@@ -1,8 +1,10 @@
-#pragma once
+export module trview.common:Point;
+
+import nlohmann.json;
 
 namespace trview
 {
-    struct Point
+    export struct Point
     {
         Point();
 
@@ -18,4 +20,6 @@ namespace trview
 
         float x, y;
     };
+
+    export void from_json(const nlohmann::json& json, Point& point);
 }

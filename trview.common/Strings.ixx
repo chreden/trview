@@ -1,6 +1,6 @@
-#pragma once
+export module trview.common:Strings;
 
-#include <string>
+import std;
 
 namespace trview
 {

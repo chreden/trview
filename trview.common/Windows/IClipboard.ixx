@@ -1,6 +1,6 @@
-#pragma once
+export module trview.common:IClipboard;
 
-#include "../Window.h"
+import :Window;
 #include <string>
 
 namespace trview

@@ -1,10 +1,10 @@
-#pragma once
+export module trview.common:Window;
+
+import std;
+import :Point;
+import :Size;
 
 #include <Windows.h>
-#include <cstdint>
-#include <string>
-#include "Size.h"
-#include "Point.h"
 
 namespace trview
 {
