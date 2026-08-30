@@ -10,7 +10,7 @@ export module trview.common:Size;
 namespace trview
 {
     /// A two dimensional size.
-    struct Size
+    export struct Size
     {
         /// Create a new size with width and height initialised to zero.
         Size();
