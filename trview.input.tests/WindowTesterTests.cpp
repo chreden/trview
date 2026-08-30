@@ -1,5 +1,7 @@
 #include "gtest/gtest.h"
-#include <trview.input/WindowTester.h>
+
+import trview.input;
+
 #include <trview.tests.common/Window.h>
 
 using namespace trview::tests;

@@ -22,7 +22,7 @@ namespace trview
     namespace input
     {
         /// Receives mouse input on a specific window.
-        class Mouse final : public IMouse, public MessageHandler
+        export class Mouse final : public IMouse, public MessageHandler
         {
         public:
             /// Creates an instance of the Mouse class.
