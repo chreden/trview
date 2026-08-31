@@ -58,6 +58,7 @@
     <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
     <ClCompile Include="Buffer.cpp" Filter="Buffer" />
     <ClCompile Include="Sampler\SamplerState.cpp" Filter="Sampler" />
+    <ClCompile Include="trview.graphics.ixx" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
