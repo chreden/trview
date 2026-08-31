@@ -1,17 +1,13 @@
-#pragma once
+export module trview.lau:DRM;
 
-#include <memory>
-#include <string>
-#include <cstdint>
-#include <vector>
-#include <sstream>
-#include <unordered_map>
+import std;
+import std.compat;
 
 namespace trview
 {
     namespace lau
     {
-        struct FileHeader
+        export struct FileHeader
         {
             uint16_t flags[4];
             uint32_t id;
@@ -19,7 +15,7 @@ namespace trview
         };
 
 #pragma pack(push, 1)
-        enum class SectionType : uint32_t
+        export enum class SectionType : uint32_t
         {
             Section = 0,
             Texture = 5,
@@ -28,7 +24,7 @@ namespace trview
             WorldMesh = 10
         };
 
-        struct SectionHeader
+        export struct SectionHeader
         {
             uint32_t length;
             SectionType type;
@@ -39,7 +35,7 @@ namespace trview
 
 #pragma pack(pop)
 
-        struct Section
+        export struct Section
         {
             uint32_t index;
             SectionHeader header;
@@ -53,13 +49,13 @@ namespace trview
             }
         };
 
-        struct Drm
+        export struct Drm
         {
             uint32_t version;
             FileHeader file_header;
             std::vector<Section> sections;
         };
 
-        std::unique_ptr<Drm> load_drm(const std::wstring& filename);
+        export std::unique_ptr<Drm> load_drm(const std::wstring& filename);
     }
 }

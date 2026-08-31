@@ -1,6 +1,7 @@
-#include "drm.h"
-#include <fstream>
-#include <unordered_set>
+module trview.lau:DRM;
+
+import std;
+import std.compat;
 
 namespace trview
 {
