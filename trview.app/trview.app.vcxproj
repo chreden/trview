@@ -106,7 +106,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Level\LevelNameLookup.h" />
     <ClInclude Include="Elements\Flyby\Flyby.h" />
     <ClInclude Include="Elements\Flyby\FlybyNode.h" />
-    <ClInclude Include="Elements\Flyby\IFlyby.h" />
+    <ClCompile Include="Elements\Flyby\IFlyby.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Elements\Flyby\IFlybyNode.h" />
     <ClInclude Include="Elements\Remastered\INgPlusSwitcher.h" />
     <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h" />
@@ -122,7 +124,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Lua\Camera\Lua_Camera.h" />
     <ClInclude Include="Lua\Lua_Matrix.h" />
     <ClInclude Include="Lua\Mesh\Lua_Mesh.h" />
-    <ClInclude Include="Lua\Scriptable\IScriptable.h" />
+    <ClCompile Include="Lua\Scriptable\IScriptable.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Lua\Scriptable\Scriptable.h" />
     <ClInclude Include="Lua\Triangle\Lua_Triangle.h" />
     <ClInclude Include="Lua\Vector2.h" />
@@ -192,11 +196,17 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\IApplication.h" />
     <ClInclude Include="Mocks\Lua\ILua.h" />
     <ClInclude Include="Mocks\Plugins\IPlugin.h" />
-    <ClInclude Include="Mocks\Plugins\IPlugins.h" />
+    <ClInclude Include="Mocks\Plugins\IPlugins.h">
+      <FileType>Document</FileType>
+    </ClInclude>
     <ClInclude Include="Mocks\Routing\IRandomizerRoute.h" />
     <ClInclude Include="Mocks\Tools\IToolbar.h" />
-    <ClInclude Include="Plugins\IPlugin.h" />
-    <ClInclude Include="Plugins\IPlugins.h" />
+    <ClCompile Include="Plugins\IPlugin.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Plugins\IPlugins.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Plugins\Plugin.h" />
     <ClInclude Include="Plugins\Plugins.h" />
     <ClCompile Include="Routing\IRandomizerRoute.ixx">
@@ -244,7 +254,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\Viewer.cpp" />
     <ClCompile Include="Windows\WindowResizer.cpp" />
     <ClInclude Include="UI\Fonts\Fonts.h" />
-    <ClInclude Include="UI\Fonts\IFonts.h" />
+    <ClCompile Include="UI\Fonts\IFonts.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="UI\ILevelInfo.h" />
     <ClInclude Include="UI\Modal.h" />
     <ClInclude Include="UI\Modal.hpp" />
@@ -275,7 +287,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="Elements\CameraSink\CameraSink.h" />
-    <ClInclude Include="Elements\CameraSink\ICameraSink.h" />
+    <ClCompile Include="Elements\CameraSink\ICameraSink.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Elements\Item.h" />
     <ClCompile Include="Elements\Floordata.ixx">
       <FileType>Document</FileType>
@@ -286,14 +300,18 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\ILevel.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Elements\ILight.h" />
+    <ClCompile Include="Elements\ILight.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Elements\IRoom.ixx">
       <FileType>Document</FileType>
     </ClCompile>
     <ClCompile Include="Elements\ISector.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Elements\IStaticMesh.h" />
+    <ClCompile Include="Elements\IStaticMesh.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Elements\ITrigger.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -302,10 +320,16 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ClCompile>
     <ClInclude Include="Elements\Level.h" />
     <ClInclude Include="Elements\Light.h" />
-    <ClInclude Include="Elements\PickFilter.h" />
-    <ClInclude Include="Elements\RenderFilter.h" />
+    <ClCompile Include="Elements\PickFilter.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Elements\RenderFilter.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Elements\Room.h" />
-    <ClInclude Include="Elements\RoomInfo.h" />
+    <ClCompile Include="Elements\RoomInfo.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Elements\Sector.h" />
     <ClInclude Include="Elements\StaticMesh.h" />
     <ClInclude Include="Elements\Trigger.h" />
@@ -315,7 +339,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ClCompile>
     <ClInclude Include="Filters\Filters.h" />
     <ClInclude Include="Filters\Filters.hpp" />
-    <ClInclude Include="Geometry\IMesh.h" />
+    <ClCompile Include="Geometry\IMesh.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Geometry\IPicking.h" />
     <ClCompile Include="Geometry\IRenderable.ixx">
       <FileType>Document</FileType>
@@ -325,8 +351,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ClCompile>
     <ClInclude Include="Geometry\Matrix.h" />
     <ClInclude Include="Geometry\Mesh.h" />
-    <ClInclude Include="Geometry\MeshVertex.h" />
-    <ClInclude Include="Geometry\PickInfo.h" />
+    <ClCompile Include="Geometry\MeshVertex.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Geometry\PickInfo.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Geometry\Picking.h" />
     <ClCompile Include="Geometry\PickResult.ixx">
       <FileType>Document</FileType>
@@ -335,11 +365,17 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Geometry\Triangle.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Graphics\ILevelTextureStorage.h" />
-    <ClInclude Include="Graphics\IMeshStorage.h" />
+    <ClCompile Include="Graphics\ILevelTextureStorage.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Graphics\IMeshStorage.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Graphics\ISectorHighlight.h" />
     <ClInclude Include="Graphics\ISelectionRenderer.h" />
-    <ClInclude Include="Graphics\ITextureStorage.h" />
+    <ClCompile Include="Graphics\ITextureStorage.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Graphics\LevelTextureStorage.h" />
     <ClInclude Include="Graphics\MeshStorage.h" />
     <ClInclude Include="Graphics\SectorHighlight.h" />
@@ -440,7 +476,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\GoTo.h" />
     <ClInclude Include="UI\ICameraControls.h" />
     <ClInclude Include="UI\IContextMenu.h" />
-    <ClInclude Include="UI\IImGuiBackend.h" />
+    <ClCompile Include="UI\IImGuiBackend.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="UI\IMapRenderer.h" />
     <ClInclude Include="UI\ISettingsWindow.h" />
     <ClInclude Include="UI\IViewerUI.h" />
@@ -526,6 +564,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ProjectReference>
     <ProjectReference Include="..\trview.common\trview.common.vcxproj">
       <Project>{d0633291-23a6-4b3f-9a5e-e94d20f66a07}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\trview.graphics\trview.graphics.vcxproj">
+      <Project>{3270fd29-edab-40be-8ca1-dabc5e261e4c}</Project>
     </ProjectReference>
     <ProjectReference Include="..\trview.input\trview.input.vcxproj">
       <Project>{0b28c3cd-d28a-4923-9577-50eb1ee29212}</Project>

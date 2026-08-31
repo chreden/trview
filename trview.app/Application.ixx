@@ -1,3 +1,7 @@
+module;
+
+#include <Windows.h>
+
 export module trview.app:Application;
 
 import std;
@@ -16,6 +20,8 @@ import :IViewer;
 import :IImguiBackend;
 import :IPlugins;
 import :IFonts;
+import :ILevel;
+import :UserSettings;
 
 struct ImFont;
 

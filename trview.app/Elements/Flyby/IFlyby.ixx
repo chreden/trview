@@ -1,26 +1,22 @@
-#pragma once
+export module trview.app:IFlyby;
 
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
-#include <vector>
-#include <bitset>
+import std;
+import std.compat;
 
-#include <trlevel/trtypes.h>
-
+import trlevel;
 import trview.common;
 
-#include "../../Geometry/IRenderable.h"
-#include "../../Geometry/PickResult.h"
-#include "../../Filters/IFilterable.h"
+import :IRenderable;
+import :PickResult;
+import :IFilterable;
+import :ICamera;
 
 namespace trview
 {
     struct IFlybyNode;
     struct ILevel;
 
-    struct IFlyby : public IRenderable, public IFilterable
+    export struct IFlyby : public IRenderable, public IFilterable
     {
         using Source = std::function<std::shared_ptr<IFlyby>(const std::vector<trlevel::tr4_flyby_camera>&, const std::weak_ptr<ILevel>&)>;
 

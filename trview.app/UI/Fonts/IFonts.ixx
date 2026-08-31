@@ -1,14 +1,13 @@
-#pragma once
+export module trview.app:IFonts;
 
-#include <string>
-#include <vector>
-#include "../../Settings/FontSetting.h"
+import std;
+import :FontSetting;
 
 struct ImFont;
 
 namespace trview
 {
-    struct IFonts
+    export struct IFonts
     {
         struct Font
         {

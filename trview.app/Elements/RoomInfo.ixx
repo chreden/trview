@@ -1,10 +1,10 @@
-#pragma once
+export module trview.app:RoomInfo;
 
-#include <cstdint>
+import std.compat;
 
 namespace trview
 {
-    struct RoomInfo
+    export struct RoomInfo
     {
         int32_t x;
         int32_t y;

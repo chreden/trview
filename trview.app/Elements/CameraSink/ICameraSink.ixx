@@ -1,15 +1,20 @@
-#pragma once
+export module trview.app:ICameraSink;
 
-#include <trlevel/trtypes.h>
-#include "../../Geometry/IRenderable.h"
-#include "../../Geometry/PickResult.h"
-#include "../../Geometry/IMesh.h"
-#include "../ITrigger.h"
-#include "../../Filters/IFilterable.h"
+import std;
+import std.compat;
+
+import trlevel;
+import trview.common;
+
+import :IRenderable;
+import :PickResult;
+import :IMesh;
+import :ITrigger;
+import :IFilterable;
 
 namespace trview
 {
-    struct ICameraSink : public IRenderable, public IFilterable
+    export struct ICameraSink : public IRenderable, public IFilterable
     {
         enum class Type
         {
@@ -38,6 +43,6 @@ namespace trview
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const = 0;
     };
 
-    std::weak_ptr<IRoom> actual_room(const ICameraSink& camera_sink);
-    std::string to_string(ICameraSink::Type type);
+    export std::weak_ptr<IRoom> actual_room(const ICameraSink& camera_sink);
+    export std::string to_string(ICameraSink::Type type);
 }

@@ -1,17 +1,20 @@
-#pragma once
+module;
 
-#include <vector>
 #include <SimpleMath.h>
 
-#include "ITextureStorage.h"
-#include "../Geometry/Triangle.h"
+export module trview.app:ILevelTextureStorage;
 
-#include <trlevel/ILevel.h>
+import std;
 
+import trlevel;
+import trview.graphics;
+
+import :Triangle;
+import :ITextureStorage;
 
 namespace trview
 {
-    struct ILevelTextureStorage : public ITextureStorage
+    export struct ILevelTextureStorage : public ITextureStorage
     {
         using Source = std::function<std::shared_ptr<ILevelTextureStorage>(const trlevel::ILevel&)>;
 

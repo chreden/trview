@@ -1,12 +1,13 @@
-#pragma once
+export module trview.app:ITextureStorage;
 
-#include <string>
-#include <cstdint>
-#include <trview.graphics/Texture.h>
+import std;
+import std.compat;
+
+import trview.graphics;
 
 namespace trview
 {
-    struct ITextureStorage
+    export struct ITextureStorage
     {
         virtual ~ITextureStorage() = 0;
         virtual void add_texture(const std::vector<uint32_t>& pixels, uint32_t width, uint32_t height) = 0;

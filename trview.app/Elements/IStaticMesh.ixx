@@ -1,14 +1,15 @@
-#pragma once
+export module trview.app:IStaticMesh;
 
-#include <cstdint>
-#include <SimpleMath.h>
-#include <trlevel/trtypes.h>
-#include <trview.app/Camera/ICamera.h>
-#include <trview.app/Geometry/IMesh.h>
+import std;
+import std.compat;
 
+import trlevel;
 import trview.common;
 
-#include "../Filters/IFilterable.h"
+import :ICamera;
+import :IMesh;
+import :IFilterable;
+import :PickResult;
 
 namespace trview
 {
@@ -16,7 +17,7 @@ namespace trview
     struct IRoom;
     struct ILevel;
 
-    struct IStaticMesh : public IFilterable
+    export struct IStaticMesh : public IFilterable
     {
         enum class Type
         {
@@ -52,10 +53,10 @@ namespace trview
         Event<> on_changed;
     };
 
-    constexpr std::string to_string(IStaticMesh::Type type) noexcept;
+    export constexpr std::string to_string(IStaticMesh::Type type) noexcept;
 
-    uint32_t static_mesh_room(const std::shared_ptr<IStaticMesh>& static_mesh);
-    uint32_t static_mesh_room(const IStaticMesh& static_mesh);
+    export uint32_t static_mesh_room(const std::shared_ptr<IStaticMesh>& static_mesh);
+    export uint32_t static_mesh_room(const IStaticMesh& static_mesh);
 }
 
 #include "IStaticMesh.inl"

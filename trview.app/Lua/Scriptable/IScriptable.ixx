@@ -1,11 +1,11 @@
-#pragma once
+export module trview.app:IScriptable;
 
-#include <functional>
-#include <memory>
+import std;
+import std.compat;
 
 import trview.common;
 
-#include "../../Geometry/IMesh.h"
+import :IMesh;
 
 struct lua_State;
 
@@ -13,7 +13,7 @@ namespace trview
 {
     struct ICamera;
 
-    struct IScriptable
+    export struct IScriptable
     {
         using Source = std::function<std::shared_ptr<IScriptable>(lua_State*)>;
         virtual ~IScriptable() = 0;
@@ -40,8 +40,8 @@ namespace trview
 
     namespace lua
     {
-        int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable);
-        void scriptable_register(lua_State* L, const IScriptable::Source& source);
-        std::shared_ptr<IScriptable> to_scriptable(lua_State* L, int index);
+        export int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable);
+        export void scriptable_register(lua_State* L, const IScriptable::Source& source);
+        export std::shared_ptr<IScriptable> to_scriptable(lua_State* L, int index);
     }
 }

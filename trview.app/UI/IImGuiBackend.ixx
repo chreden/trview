@@ -1,8 +1,12 @@
-#pragma once
+module;
+
+#include <Windows.h>
+
+export module trview.app:IImguiBackend;
 
 namespace trview
 {
-    struct IImGuiBackend
+    export struct IImGuiBackend
     {
         virtual ~IImGuiBackend() = 0;
         virtual void initialise() = 0;

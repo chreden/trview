@@ -1,13 +1,16 @@
-#pragma once
+export module trview.app:IMeshStorage;
 
-#include <cstdint>
-#include <trlevel/ILevel.h>
-#include <trview.app/Graphics/ILevelTextureStorage.h>
+import std;
+import std.compat;
+
+import trlevel;
+
+import :ILevelTextureStorage;
 
 namespace trview
 {
     struct IMesh;
-    struct IMeshStorage
+    export struct IMeshStorage
     {
         using Source = std::function<std::unique_ptr<IMeshStorage>(const trlevel::ILevel&, const ILevelTextureStorage&)>;
         virtual ~IMeshStorage() = 0;

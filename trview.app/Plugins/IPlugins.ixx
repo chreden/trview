@@ -1,11 +1,13 @@
-#pragma once
+export module trview.app:IPlugins;
 
-#include "IPlugin.h"
+import std;
+
+import :IPlugin;
 
 namespace trview
 {
     struct IApplication;
-    struct IPlugins
+    export struct IPlugins
     {
         virtual ~IPlugins() = 0;
         virtual std::vector<std::weak_ptr<IPlugin>> plugins() const = 0;

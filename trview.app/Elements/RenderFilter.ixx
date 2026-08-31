@@ -1,8 +1,10 @@
-#pragma once
+export module trview.app:RenderFilter;
+
+import std.compat;
 
 namespace trview
 {
-    enum class RenderFilter : uint32_t
+    export enum class RenderFilter : uint32_t
     {
         None = 0x0,
         Rooms = 0x1,

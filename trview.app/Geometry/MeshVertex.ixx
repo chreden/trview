@@ -1,10 +1,12 @@
-#pragma once
+module;
 
 #include <SimpleMath.h>
 
+export module trview.app:MeshVertex;
+
 namespace trview
 {
-    struct MeshVertex
+    export struct MeshVertex
     {
         DirectX::SimpleMath::Vector3 pos;
         DirectX::SimpleMath::Vector3 normal;

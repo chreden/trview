@@ -1,12 +1,14 @@
-#pragma once
-
-import trview.common;
+module;
 
 #include <SimpleMath.h>
 
+export module trview.app:PickInfo;
+
+import trview.common;
+
 namespace trview
 {
-    struct PickInfo
+    export struct PickInfo
     {
         Size  screen_size;
         Point screen_position;

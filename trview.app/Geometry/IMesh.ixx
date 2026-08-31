@@ -1,13 +1,23 @@
-#pragma once
+module;
 
-#include "Triangle.h"
-#include "MeshVertex.h"
-#include <trview.app/Graphics/ILevelTextureStorage.h>
-#include <trview.app/Geometry/PickResult.h>
+#include <SimpleMath.h>
+
+export module trview.app:IMesh;
+
+import std;
+import std.compat;
+
+import trlevel;
+import trview.graphics;
+
+import :Triangle;
+import :MeshVertex;
+import :ILevelTextureStorage;
+import :PickResult;
 
 namespace trview
 {
-    struct IMesh
+    export struct IMesh
     {
         using Source = std::function<std::shared_ptr<IMesh>(const std::vector<Triangle>&)>;
 
@@ -36,15 +46,15 @@ namespace trview
     /// @param texture_storage The textures for the level.
     /// @param transparent_collision Whether to include transparent triangles in collision triangles.
     /// @returns The new mesh.
-    std::shared_ptr<IMesh> create_mesh(const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, const trlevel::PlatformAndVersion& platform_and_version, bool transparent_collision = true);
+    export std::shared_ptr<IMesh> create_mesh(const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, const trlevel::PlatformAndVersion& platform_and_version, bool transparent_collision = true);
 
     /// Create a new cube mesh.
-    std::shared_ptr<IMesh> create_cube_mesh(const IMesh::Source& source);
-    std::shared_ptr<IMesh> create_frustum_mesh(const IMesh::Source& source);
+    export std::shared_ptr<IMesh> create_cube_mesh(const IMesh::Source& source);
+    export std::shared_ptr<IMesh> create_frustum_mesh(const IMesh::Source& source);
 
-    std::shared_ptr<IMesh> create_sphere_mesh(const IMesh::Source& source, uint32_t stacks, uint32_t slices);
+    export std::shared_ptr<IMesh> create_sphere_mesh(const IMesh::Source& source, uint32_t stacks, uint32_t slices);
 
-    enum class SpriteOffsetMode
+    export enum class SpriteOffsetMode
     {
         RoomSprite,
         Entity
@@ -55,7 +65,7 @@ namespace trview
     /// @param sprite The game sprite definition to use.
     /// @param scale The output scale matrix.
     /// @param offset The output offset.
-    std::shared_ptr<IMesh> create_sprite_mesh(
+    export std::shared_ptr<IMesh> create_sprite_mesh(
         const IMesh::Source& source,
         const std::optional<trlevel::tr_sprite_texture>& sprite,
         DirectX::SimpleMath::Matrix& scale,
@@ -66,7 +76,7 @@ namespace trview
     /// @param source The function to call to create a IMesh
     /// @param sprite The game sprite definition to use.
     /// @param scale The output scale matrix.
-    std::shared_ptr<IMesh> create_sprite_mesh(
+    export std::shared_ptr<IMesh> create_sprite_mesh(
         const IMesh::Source& source,
         const std::optional<trlevel::tr_sprite_texture>& sprite,
         DirectX::SimpleMath::Matrix& scale,
@@ -82,7 +92,7 @@ namespace trview
     /// @param transparent_triangles The collection to add transparent triangles to.
     /// @param collision_triangles The collection to add collision triangles to.
     /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
-    void process_textured_rectangles(
+    export void process_textured_rectangles(
         const std::vector<trlevel::tr4_mesh_face4>& rectangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
@@ -98,7 +108,7 @@ namespace trview
     /// @param transparent_triangles The collection to add transparent triangles to.
     /// @param collision_triangles The collection to add collision triangles to.
     /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
-    void process_textured_triangles(
+    export void process_textured_triangles(
         const std::vector<trlevel::tr4_mesh_face3>& triangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
@@ -112,7 +122,7 @@ namespace trview
     // output_vertices: The collection to add the new vertices to.
     // output_indices: The collection to add new indices to.
     // collision_triangles: The collection to add collision triangles to.
-    void process_coloured_rectangles(
+    export void process_coloured_rectangles(
         const std::vector<trlevel::tr_face4>& rectangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
@@ -126,7 +136,7 @@ namespace trview
     // output_vertices: The collection to add the new vertices to.
     // output_indices: The collection to add new indices to.
     // collision_triangles: The collection to add collision triangles to.
-    void process_coloured_triangles(
+    export void process_coloured_triangles(
         const std::vector<trlevel::tr_face3>& triangles,
         const std::vector<trlevel::trview_room_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
@@ -136,11 +146,11 @@ namespace trview
     /// Convert the vertex to the scale used by the viewer.
     /// @param vertex The vertex to convert.
     /// @retrurns The scaled vector.
-    DirectX::SimpleMath::Vector3 convert_vertex(const trlevel::tr_vertex& vertex);
+    export DirectX::SimpleMath::Vector3 convert_vertex(const trlevel::tr_vertex& vertex);
 
 #pragma warning(push)
 #pragma warning(disable : 4324)
-    __declspec(align(16)) struct MeshData
+    export __declspec(align(16)) struct MeshData
     {
         DirectX::SimpleMath::Matrix matrix;
         DirectX::SimpleMath::Color colour;

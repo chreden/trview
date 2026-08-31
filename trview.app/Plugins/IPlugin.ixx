@@ -1,14 +1,13 @@
-#pragma once
+export module trview.app:IPlugin;
 
-#include <string>
-
+import std;
 import trview.common;
 
 namespace trview
 {
     struct IApplication;
 
-    struct IPlugin
+    export struct IPlugin
     {
         using Source = std::function<std::shared_ptr<IPlugin>(const std::string& directory)>;
 

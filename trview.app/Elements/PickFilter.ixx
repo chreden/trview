@@ -1,11 +1,13 @@
-#pragma once
+export module trview.app:PickFilter;
+
+import std.compat;
 
 namespace trview
 {
     /// <summary>
     /// Target filters for picking.
     /// </summary>
-    enum class PickFilter : uint32_t
+    export enum class PickFilter : uint32_t
     {
         None = 0x0,
         Geometry = 0x1,
