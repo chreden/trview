@@ -1,4 +1,5 @@
-#include "DepthStencil.h"
+module;
+module trview.graphics:DepthStencil;
 
 using namespace Microsoft::WRL;
 

@@ -19,6 +19,9 @@ export import :TokenStore;
 export import :Message;
 export import :Timer;
 export import :Log;
+export import :Version;
+export import :Resource;
+export import :Resources;
 
 export import :MockClipboard;
 export import :MockDialogs;

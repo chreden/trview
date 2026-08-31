@@ -115,8 +115,9 @@
     <ClCompile Include="TokenStore.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Version.h" />
-    <ClInclude Include="Version.hpp" />
+    <ClCompile Include="Version.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Window.ixx">
       <FileType>Document</FileType>
     </ClCompile>

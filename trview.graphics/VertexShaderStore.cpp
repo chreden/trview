@@ -1,4 +1,4 @@
-#include "VertexShaderStore.h"
+module trview.graphics:VertexShaderStore;
 
 using namespace Microsoft::WRL;
 

@@ -1,5 +1,5 @@
-#include "Buffer.h"
-#include "IDevice.h"
+module;
+module trview.graphics:Buffer;
 
 using namespace Microsoft::WRL;
 

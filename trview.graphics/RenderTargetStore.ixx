@@ -1,0 +1,23 @@
+module;
+
+#include <wrl/client.h>
+#include <d3d11.h>
+
+export module trview.graphics:RenderTargetStore;
+
+namespace trview
+{
+    namespace graphics
+    {
+        class RenderTargetStore final
+        {
+        public:
+            explicit RenderTargetStore(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
+            ~RenderTargetStore();
+        private:
+            Microsoft::WRL::ComPtr<ID3D11DeviceContext> _context;
+            Microsoft::WRL::ComPtr<ID3D11RenderTargetView> _render_target;
+            Microsoft::WRL::ComPtr<ID3D11DepthStencilView> _depth_stencil;
+        };
+    }
+}

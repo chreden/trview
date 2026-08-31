@@ -5,8 +5,6 @@
     <ClInclude Include="Maths.h" />
     <ClInclude Include="Algorithms.hpp" />
     <ClInclude Include="Json.hpp" />
-    <ClInclude Include="Version.h" />
-    <ClInclude Include="Version.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Size.cpp" />
@@ -181,6 +179,7 @@
     <ClCompile Include="Mocks\Messages\MockRecipient.ixx">
       <Filter>Mocks\Messages</Filter>
     </ClCompile>
+    <ClCompile Include="Version.ixx" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

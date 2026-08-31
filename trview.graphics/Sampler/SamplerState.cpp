@@ -1,14 +1,10 @@
-#include "SamplerState.h"
-#include "IDevice.h"
+module;
+module trview.graphics:SamplerState;
 
 namespace trview
 {
     namespace graphics
     {
-        ISamplerState::~ISamplerState()
-        {
-        }
-
         SamplerState::SamplerState(
             const std::weak_ptr<IDevice>& device,
             const Microsoft::WRL::ComPtr<ID3D11SamplerState>& sampler_state)

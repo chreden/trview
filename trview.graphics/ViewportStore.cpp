@@ -1,4 +1,4 @@
-#include "ViewportStore.h"
+module trview.graphics:ViewportStore;
 
 namespace trview
 {

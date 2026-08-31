@@ -1,0 +1,25 @@
+module;
+
+#include <gmock/gmock.h>
+
+export module trview.graphics:MockShader;
+
+import :IShader;
+import :Printers;
+
+namespace trview
+{
+    namespace graphics
+    {
+        namespace mocks
+        {
+            export struct MockShader : public IShader
+            {
+                MockShader();
+                virtual ~MockShader();
+                MOCK_METHOD(void, apply, (const Microsoft::WRL::ComPtr<ID3D11DeviceContext>&), (override));
+            };
+        }
+    }
+}
+
