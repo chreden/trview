@@ -1,17 +1,22 @@
-#pragma once
+export module trview.app:Floordata;
 
-#include "Types.h"
-#include "IItem.h"
+import std;
+import std.compat;
+
+import trlevel;
+
+import :Types;
+import :IItem;
 
 namespace trview
 {
-    enum class FloordataMeanings
+    export enum class FloordataMeanings
     {
         None,
         Generate
     };
 
-    struct Floordata
+    export struct Floordata
     {
         struct Command
         {
@@ -61,18 +66,18 @@ namespace trview
     /// <param name="floordata">The raw floor data.</param>
     /// <param name="index">The index to start at.</param>
     /// <returns>The parsed floor data.</returns>
-    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, bool trng, std::optional<trlevel::PlatformAndVersion> version);
+    export Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, bool trng, std::optional<trlevel::PlatformAndVersion> version);
 
-    Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items, bool trng, std::optional<trlevel::PlatformAndVersion> version);
+    export Floordata parse_floordata(const std::vector<uint16_t>& floordata, uint32_t index, FloordataMeanings meanings, const std::vector<std::weak_ptr<IItem>>& items, bool trng, std::optional<trlevel::PlatformAndVersion> version);
 
-    enum class TriangulationDirection
+    export enum class TriangulationDirection
     {
         None,
         NwSe,
         NeSw
     };
 
-    struct Triangulation
+    export struct Triangulation
     {
         int16_t function;
         TriangulationDirection direction;
@@ -82,7 +87,7 @@ namespace trview
         float c11;
     };
 
-    Triangulation parse_triangulation(uint16_t floor, uint16_t data);
+    export Triangulation parse_triangulation(uint16_t floor, uint16_t data);
 
-    std::string to_string(Floordata::Command::Function function);
+    export std::string to_string(Floordata::Command::Function function);
 }

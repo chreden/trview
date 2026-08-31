@@ -229,6 +229,12 @@
     <ClCompile Include="Elements\IRoom.ixx">
       <Filter>Elements\Room</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\ISector.ixx">
+      <Filter>Elements\Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Floordata.ixx">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -335,7 +341,6 @@
     <ClInclude Include="Elements\Light.h" Filter="Elements\Light" />
     <ClInclude Include="UI\ISettingsWindow.h" Filter="UI\Settings" />
     <ClInclude Include="UI\SettingsWindow.h" Filter="UI\Settings" />
-    <ClInclude Include="Elements\Floordata.h" Filter="Elements" />
     <ClInclude Include="Filters\Filters.h" Filter="Filters" />
     <ClInclude Include="Filters\Filters.hpp" Filter="Filters" />
     <ClInclude Include="Elements\Room.h" Filter="Elements\Room" />
@@ -361,7 +366,6 @@
     <ClInclude Include="Lua\Elements\Trigger\Lua_Trigger.h" Filter="Lua\Elements\Trigger" />
     <ClInclude Include="Lua\Vector3.h" Filter="Lua" />
     <ClInclude Include="Elements\Trigger.h" Filter="Elements\Trigger" />
-    <ClInclude Include="Elements\ISector.h" Filter="Elements\Sector" />
     <ClInclude Include="Elements\Sector.h" Filter="Elements\Sector" />
     <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h" Filter="Lua\Elements\Sector" />
     <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h" Filter="Lua\Elements\CameraSink" />

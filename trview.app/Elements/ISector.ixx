@@ -1,23 +1,22 @@
-#pragma once
+module;
 
-#include <array>
-#include <set>
-#include <unordered_set>
-#include <vector>
 #include <SimpleMath.h>
-#include "Types.h"
-#include "trlevel/ILevel.h"
-#include "trlevel/trtypes.h"
-#include "Floordata.h"
 
-#include "../Filters/IFilterable.h"
+export module trview.app:ISector;
+
+import std;
+import trlevel;
+
+import :Types;
+import :Floordata;
+import :IFilterable;
 
 namespace trview
 {
     struct IRoom;
     struct ITrigger;
 
-    struct ISector : public IFilterable
+    export struct ISector : public IFilterable
     {
         using Source = std::function<std::shared_ptr<ISector>(const trlevel::ILevel&, const trlevel::tr3_room&,
             const trlevel::tr_room_sector&, int, const std::weak_ptr<IRoom>&, uint32_t)>;
@@ -140,9 +139,9 @@ namespace trview
         virtual bool stopper() const = 0;
     };
 
-    bool is_no_space(SectorFlag flags);
-    constexpr std::string to_string(TriangulationDirection direction);
-    uint32_t sector_room(const std::shared_ptr<ISector>& sector);
+    export bool is_no_space(SectorFlag flags);
+    export constexpr std::string to_string(TriangulationDirection direction);
+    export uint32_t sector_room(const std::shared_ptr<ISector>& sector);
 }
 
 #include "ISector.hpp"

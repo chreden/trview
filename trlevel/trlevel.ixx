@@ -22,3 +22,4 @@ export import :TR2;
 export import :TR3;
 export import :Decrypter;
 export import :Types;
+export import :Rooms;

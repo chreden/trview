@@ -277,7 +277,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\CameraSink\CameraSink.h" />
     <ClInclude Include="Elements\CameraSink\ICameraSink.h" />
     <ClInclude Include="Elements\Item.h" />
-    <ClInclude Include="Elements\Floordata.h" />
+    <ClCompile Include="Elements\Floordata.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Elements\IItem.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -288,7 +290,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\IRoom.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Elements\ISector.h" />
+    <ClCompile Include="Elements\ISector.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Elements\IStaticMesh.h" />
     <ClCompile Include="Elements\ITrigger.ixx">
       <FileType>Document</FileType>
