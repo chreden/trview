@@ -1,5 +1,10 @@
-#include "tr_lights.h"
-#include <ranges>
+module;
+
+#include <SimpleMath.h>
+
+module trlevel:Lights;
+
+import std;
 
 namespace trlevel
 {

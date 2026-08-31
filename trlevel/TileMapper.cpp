@@ -1,4 +1,9 @@
-#include "TileMapper.h"
+module trlevel:TileMapper;
+
+import std;
+import std.compat;
+
+import :Types;
 
 namespace trlevel
 {

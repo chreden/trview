@@ -51,19 +51,21 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\zlib;$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>
       </AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BuildStlModules>false</BuildStlModules>
+      <PrecompiledHeaderFile />
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -72,7 +74,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -81,12 +83,14 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\zlib;$(SolutionDir)external\DirectXTK\Inc;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalOptions>
       </AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BuildStlModules>false</BuildStlModules>
+      <PrecompiledHeaderFile />
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -96,29 +100,74 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Decrypter.h" />
-    <ClInclude Include="Hasher.h" />
-    <ClInclude Include="IDecrypter.h" />
-    <ClInclude Include="IHasher.h" />
-    <ClInclude Include="ILevel.h" />
-    <ClInclude Include="IPack.h" />
-    <ClInclude Include="Level.h" />
-    <ClInclude Include="LevelEncryptedException.h" />
-    <ClInclude Include="LevelLoadException.h" />
-    <ClInclude Include="LevelVersion.h" />
+    <ClCompile Include="Decrypter.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Hasher.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="IDecrypter.cpp" />
+    <ClCompile Include="IDecrypter.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="IHasher.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="IHasher.cpp" />
+    <ClCompile Include="ILevel.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="IPack.cpp" />
+    <ClCompile Include="IPack.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Level.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="LevelEncryptedException.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="LevelLoadException.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="LevelVersion.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="LevelVersion.hpp" />
-    <ClInclude Include="Level_common.h" />
-    <ClInclude Include="Level_psx.h" />
-    <ClInclude Include="Level_tr1.h" />
-    <ClInclude Include="Level_tr2.h" />
-    <ClInclude Include="Level_tr3.h" />
-    <ClInclude Include="Mocks\ILevel.h" />
-    <ClInclude Include="Pack.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="TileMapper.h" />
-    <ClInclude Include="trtypes.h" />
-    <ClInclude Include="tr_lights.h" />
-    <ClInclude Include="tr_rooms.h" />
+    <ClCompile Include="Level\ILevel.cpp" />
+    <ClCompile Include="Level_common.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Level_psx.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Level_tr1.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Level_tr2.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Level_tr3.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\MockLevel.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Pack.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="TileMapper.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="trtypes.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="tr_lights.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="tr_rooms.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Decrypter.cpp">
@@ -130,25 +179,22 @@
     <ClCompile Include="LevelVersion.cpp" />
     <ClCompile Include="Level_common.cpp" />
     <ClCompile Include="Level_psx.cpp" />
-    <ClCompile Include="Level_tr1_pc.cpp" />
-    <ClCompile Include="Level_tr1_psx.cpp" />
-    <ClCompile Include="Level_tr1_saturn.cpp" />
-    <ClCompile Include="Level_tr2_pc.cpp" />
-    <ClCompile Include="Level_tr2_psx.cpp" />
-    <ClCompile Include="Level_tr3_pc.cpp" />
-    <ClCompile Include="Level_tr3_psx.cpp" />
-    <ClCompile Include="Level_tr4_pc.cpp" />
-    <ClCompile Include="Level_tr4_psx.cpp" />
-    <ClCompile Include="Level_tr5_dc.cpp" />
-    <ClCompile Include="Level_tr5_pc.cpp" />
-    <ClCompile Include="Level_tr5_psx.cpp" />
+    <ClCompile Include="Level_tr1_pc.ixx" />
+    <ClCompile Include="Level_tr1_psx.ixx" />
+    <ClCompile Include="Level_tr1_saturn.ixx" />
+    <ClCompile Include="Level_tr2_pc.ixx" />
+    <ClCompile Include="Level_tr2_psx.ixx" />
+    <ClCompile Include="Level_tr3_pc.ixx" />
+    <ClCompile Include="Level_tr3_psx.ixx" />
+    <ClCompile Include="Level_tr4_pc.ixx" />
+    <ClCompile Include="Level_tr4_psx.ixx" />
+    <ClCompile Include="Level_tr5_dc.ixx" />
+    <ClCompile Include="Level_tr5_pc.ixx" />
+    <ClCompile Include="Level_tr5_psx.ixx" />
     <ClCompile Include="Mocks\MockLevel.cpp" />
     <ClCompile Include="Pack.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="TileMapper.cpp" />
+    <ClCompile Include="trlevel.ixx" />
     <ClCompile Include="trtypes.cpp" />
     <ClCompile Include="tr_lights.cpp" />
     <ClCompile Include="tr_rooms.cpp" />

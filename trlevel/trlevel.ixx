@@ -1,0 +1,22 @@
+export module trlevel;
+
+export import :Common;
+export import :ILevel;
+export import :IPack;
+export import :LevelVersion;
+export import :Lights;
+export import :IDecrypter;
+export import :Level;
+export import :TR1PC;
+export import :TR2PC;
+export import :TR3PC;
+export import :TR4PC;
+export import :TR5PC;
+export import :TR1PSX;
+export import :TR2PSX;
+export import :TR3PSX;
+export import :TR4PSX;
+export import :TR5PSX;
+export import :TR1;
+export import :TR2;
+export import :TR3;

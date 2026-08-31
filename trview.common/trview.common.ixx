@@ -22,6 +22,8 @@ export import :Log;
 export import :Version;
 export import :Resource;
 export import :Resources;
+export import :Activity;
+export import :ILog;
 
 export import :MockClipboard;
 export import :MockDialogs;

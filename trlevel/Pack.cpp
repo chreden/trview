@@ -1,11 +1,10 @@
-#include "Pack.h"
-#include "Level_common.h"
+module trlevel:Pack;
+
+import std;
 
 import trview.common;
 
-#include <ranges>
-#include <utility>
-#include <filesystem>
+import :Common;
 
 namespace trlevel
 {
@@ -16,10 +15,6 @@ namespace trlevel
             uint32_t start;
             uint32_t size;
         };
-    }
-
-    IPack::~IPack()
-    {
     }
 
     Pack::Pack(std::basic_ispanstream<uint8_t>& file, const trlevel::ILevel::PackSource& level_source)

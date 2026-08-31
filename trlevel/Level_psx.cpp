@@ -1,12 +1,11 @@
-#include "Level_psx.h"
-#include "Level_common.h"
-#include "Level.h"
-#include "IPack.h"
+module trlevel:PSX;
 
-#include <trview.common/Algorithms.h>
+import std;
+import std.compat;
+import trview.common;
 
-#include <format>
-#include <ranges>
+import :Common;
+import :Level;
 
 namespace trlevel
 {
@@ -162,7 +161,7 @@ namespace trlevel
         const auto sound_offsets = read_vector<uint32_t, uint32_t>(file);
         if (!sound_offsets.empty())
         {
-            const auto sound_data = read_vector<uint32_t, byte>(file);
+            const auto sound_data = read_vector<uint32_t, uint8_t>(file);
 
             for (uint32_t s = 0; s < sound_offsets.size(); ++s)
             {
