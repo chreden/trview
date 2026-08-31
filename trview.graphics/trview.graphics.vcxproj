@@ -117,7 +117,6 @@
     <ClCompile Include="SpriteSizeStore.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="stdafx.h" />
     <ClCompile Include="Sprite\ISprite.cpp" />
     <ClCompile Include="Texture.ixx">
       <FileType>Document</FileType>
@@ -137,10 +136,6 @@
     <ClCompile Include="DepthStencil.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="DeviceWindow.cpp" />
-    <ClCompile Include="Mocks\Mocks.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PixelShaderStore.cpp" />
     <ClCompile Include="RasterizerStateStore.cpp" />
@@ -150,10 +145,6 @@
     <ClCompile Include="ShaderStorage.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteSizeStore.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="trview.graphics.ixx" />
     <ClCompile Include="VertexShader.cpp" />
@@ -212,16 +203,18 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BuildStlModules>false</BuildStlModules>
@@ -233,7 +226,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -241,10 +234,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BuildStlModules>false</BuildStlModules>

@@ -1,3 +1,8 @@
+module;
+
+#include <d3d11.h>
+#include <wrl/client.h>
+
 module trview.graphics:ViewportStore;
 
 namespace trview

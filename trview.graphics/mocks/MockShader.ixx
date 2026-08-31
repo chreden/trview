@@ -1,5 +1,7 @@
 module;
 
+#include <d3d11.h>
+#include <wrl/client.h>
 #include <gmock/gmock.h>
 
 export module trview.graphics:MockShader;

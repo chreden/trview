@@ -1,4 +1,7 @@
+module;
 module trview.graphics:MockShader;
+
+import std;
 
 namespace trview
 {
@@ -6,6 +9,10 @@ namespace trview
     {
         namespace mocks
         {
+            MockShader::MockShader()
+            {
+            }
+
             MockShader::~MockShader()
             {
             }

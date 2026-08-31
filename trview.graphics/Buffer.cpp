@@ -1,4 +1,8 @@
 module;
+
+#include <d3d11.h>
+#include <wrl/client.h>
+
 module trview.graphics:Buffer;
 
 using namespace Microsoft::WRL;
@@ -7,10 +11,6 @@ namespace trview
 {
     namespace graphics
     {
-        IBuffer::~IBuffer()
-        {
-        }
-
         Buffer::Buffer(const std::shared_ptr<IDevice>& device, uint32_t size)
         {
             D3D11_BUFFER_DESC buffer_desc;

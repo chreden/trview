@@ -1,10 +1,12 @@
 module;
 
 #include <d3d11.h>
+#include <wrl/client.h>
 
 export module trview.graphics:IBuffer;
 
 import std;
+import std.compat;
 
 namespace trview
 {
