@@ -1,9 +1,6 @@
-#pragma once
+export module trview.tests.common:Messages;
 
-#include <vector>
-#include <optional>
-#include <string>
-
+import std;
 import trview.common;
 
 namespace trview

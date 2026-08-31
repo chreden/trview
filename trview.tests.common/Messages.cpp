@@ -1,6 +1,7 @@
-#include "Messages.h"
-#include <format>
-#include <ranges>
+module;
+module trview.tests.common:Messages;
+
+import std;
 
 namespace trview
 {

@@ -1,7 +1,11 @@
-#pragma once
+module;
 
-#include <tuple>
-#include <memory>
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+
+export module trview.tests.common:Mocks;
+
+import std;
 
 namespace trview
 {
@@ -12,7 +16,7 @@ namespace trview
         /// </summary>
         /// <typeparam name="T">The mock type.</typeparam>
         /// <returns>Mock pointer and reference to mock.</returns>
-        template <typename T>
+        export template <typename T>
         std::tuple<std::unique_ptr<T>, T&> create_mock();
 
         /// <summary>
@@ -20,7 +24,7 @@ namespace trview
         /// </summary>
         /// <typeparam name="T">The mock type.</typeparam>
         /// <returns>Mock pointer</returns>
-        template <typename T>
+        export template <typename T>
         auto mock_unique();
 
         /// <summary>
@@ -28,7 +32,7 @@ namespace trview
         /// </summary>
         /// <typeparam name="T">The mock type.</typeparam>
         /// <returns>The new mock.</returns>
-        template <typename T>
+        export template <typename T>
         auto mock_shared();
     }
 }
