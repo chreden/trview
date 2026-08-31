@@ -9,15 +9,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\trview.lua.h" Filter="inc" />
     <ClInclude Include="src\framework.h" Filter="src" />
-    <ClInclude Include="src\pch.h" Filter="src" />
-    <ClInclude Include="inc\tables.h" Filter="inc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\pch.cpp" Filter="src" />
-    <ClCompile Include="src\trview.lua.cpp" Filter="src" />
     <ClCompile Include="src\tables.cpp" Filter="src" />
+    <ClCompile Include="inc\tables.ixx">
+      <Filter>inc</Filter>
+    </ClCompile>
+    <ClCompile Include="inc\trview.lua.ixx">
+      <Filter>inc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="inc\tables.inl" Filter="inc" />

@@ -1,5 +1,11 @@
-#include "pch.h"
-#include "../inc/tables.h"
+module;
+
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+
+module trview.lua:Tables;
+
+import std;
 
 namespace trview
 {
