@@ -1,6 +1,8 @@
-#pragma once
+module;
 
-struct lua_State;
+#include <external/lua/src/lua.h>
+
+export module trview.lua.imgui:Input;
 
 namespace trview
 {
