@@ -1,7 +1,11 @@
-#pragma once
+module;
 
 #include <SimpleMath.h>
-#include "Triangle.h"
+
+export module trview.app:PickResult;
+
+import std;
+import :Triangle;
 
 namespace trview
 {
@@ -19,7 +23,7 @@ namespace trview
     struct ITrigger;
     struct IWaypoint;
 
-    struct PickResult
+    export struct PickResult
     {
         enum class Type
         {
@@ -62,10 +66,10 @@ namespace trview
 
     /// Get the appropriate colour for a pick.
     /// @param pick The result to test.
-    Colour pick_to_colour(const PickResult& pick);
+    export Colour pick_to_colour(const PickResult& pick);
 
     /// If the next pick is nearer than the current and is a hit, choose that one.
-    PickResult nearest_result(const PickResult& current, const PickResult& next);
+    export PickResult nearest_result(const PickResult& current, const PickResult& next);
 
-    std::string generate_pick_message(const PickResult& result, const ILevel& level);
+    export std::string generate_pick_message(const PickResult& result, const ILevel& level);
 }

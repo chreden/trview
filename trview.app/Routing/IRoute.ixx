@@ -1,14 +1,12 @@
-#pragma once
+export module trview.app:IRoute;
 
-#include <cstdint>
-#include <optional>
-#include <string>
-#include <vector>
-
-#include <trview.app/Routing/IWaypoint.h>
-#include <trview.app/Geometry/PickResult.h>
+import std;
+import std.compat;
 
 import trview.common;
+
+import :IWaypoint;
+import :PickResult;
 
 namespace trview
 {
@@ -17,7 +15,7 @@ namespace trview
     /// <summary>
     /// A route is a series of waypoints with notes.
     /// </summary>
-    struct IRoute
+    export struct IRoute
     {
         struct FileData final
         {
@@ -173,5 +171,5 @@ namespace trview
         virtual uint32_t waypoints() const = 0;
     };
 
-    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename);
+    export std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename);
 }

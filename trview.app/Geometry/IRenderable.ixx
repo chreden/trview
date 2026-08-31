@@ -1,14 +1,19 @@
-#pragma once
+module;
 
 #include <SimpleMath.h>
-#include <trview.app/Geometry/ITransparencyBuffer.h>
+
+export module trview.app:IRenderable;
+
+import std;
+
+import :ITransparencyBuffer;
 
 namespace trview
 {
     struct ICamera;
 
     /// Interface for something that can be rendered by the viewer.
-    struct IRenderable
+    export struct IRenderable
     {
         /// Destructor for IRenderable.
         virtual ~IRenderable() = 0;

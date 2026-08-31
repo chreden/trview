@@ -1,10 +1,12 @@
-#pragma once
+export module trview.app:ViewMenu;
+
+import std;
 
 import trview.common;
 
 namespace trview
 {
-    class ViewMenu final : public MessageHandler
+    export class ViewMenu final : public MessageHandler
     {
     public:
         explicit ViewMenu(const Window& window);

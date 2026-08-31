@@ -1,11 +1,17 @@
-#pragma once
+module;
 
-#include "Triangle.h"
-#include <trview.app/Camera/ICamera.h>
+#include <SimpleMath.h>
+
+export module trview.app:ITransparencyBuffer;
+
+import std;
+
+import :ICamera;
+import :Triangle;
 
 namespace trview
 {
-    struct ITransparencyBuffer
+    export struct ITransparencyBuffer
     {
         virtual ~ITransparencyBuffer() = 0;
         // Add a triangle to the transparency buffer. The triangle will be added to the end

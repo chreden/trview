@@ -1,14 +1,13 @@
-#pragma once
+export module trview.app:TypeInfo;
 
-#include <unordered_set>
-#include <string>
+import std;
 
 namespace trview
 {
     /// <summary>
     /// Information about a game type.
     /// </summary>
-    struct TypeInfo final
+    export struct TypeInfo final
     {
         /// <summary>
         /// Friendly name for the type.

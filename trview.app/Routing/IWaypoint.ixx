@@ -1,11 +1,14 @@
-#pragma once
+module;
 
-#include <map>
-#include <variant>
 #include <SimpleMath.h>
-#include "../Geometry/IRenderable.h"
+
+export module trview.app:IWaypoint;
+
+import std;
 
 import trview.common;
+
+import :IRenderable;
 
 namespace trview
 {
@@ -18,7 +21,7 @@ namespace trview
     /// <summary>
     /// A waypoint in a route.
     /// </summary>
-    struct IWaypoint : public IRenderable
+    export struct IWaypoint : public IRenderable
     {
         /// <summary>
         /// Defines the possible types of waypoint.
@@ -141,11 +144,11 @@ namespace trview
     /// </summary>
     /// <param name="value">The string to convert.</param>
     /// <returns>The converted type.</returns>
-    IWaypoint::Type waypoint_type_from_string(const std::string& value);
+    export IWaypoint::Type waypoint_type_from_string(const std::string& value);
     /// <summary>
     /// Convert an IWaypoint::Type to a string.
     /// </summary>
     /// <param name="type">The type to convert.</param>
     /// <returns>The string value.</returns>
-    std::string waypoint_type_to_string(IWaypoint::Type type);
+    export std::string waypoint_type_to_string(IWaypoint::Type type);
 }

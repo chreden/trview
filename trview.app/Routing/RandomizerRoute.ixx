@@ -1,10 +1,11 @@
-#pragma once
+export module trview.app:RandomizerRoute;
 
-#include "IRoute.h"
-#include "IRandomizerRoute.h"
+import std;
 
-#include <map>
-#include <vector>
+import trview.common;
+
+import :IRoute;
+import :IRandomizerRoute;
 
 namespace trview
 {
@@ -12,7 +13,7 @@ namespace trview
     /// Version of route that has a set of unbound waypoints that are eventually
     /// converted to bound ones. It then exposes the route through the interface.
     /// </summary>
-    class RandomizerRoute final : public IRandomizerRoute, public std::enable_shared_from_this<IRandomizerRoute>
+    export class RandomizerRoute final : public IRandomizerRoute, public std::enable_shared_from_this<IRandomizerRoute>
     {
     public:
         explicit RandomizerRoute(const std::shared_ptr<IRoute>& inner_route, const IWaypoint::Source& waypoint_source);

@@ -1,10 +1,14 @@
-#pragma once
+module;
 
 #include <SimpleMath.h>
 
+export module trview.app:Triangle;
+
+import std;
+
 namespace trview
 {
-    struct Triangle
+    export struct Triangle
     {
         enum class AnimationMode
         {
@@ -73,5 +77,5 @@ namespace trview
     // attribute: The texture attribute value.
     // effects: The face effects value.
     // Returns: True if the face is transparent. If this is false, out is not set.
-    bool determine_transparency(uint16_t attribute, uint16_t effects, Triangle::TransparencyMode& out);
+    export bool determine_transparency(uint16_t attribute, uint16_t effects, Triangle::TransparencyMode& out);
 }

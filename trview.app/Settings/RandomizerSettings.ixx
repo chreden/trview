@@ -1,12 +1,12 @@
-#pragma once
+export module trview.app:RandomizerSettings;
 
-#include <map>
-#include <variant>
-#include <external/nlohmann/json.hpp>
+import std;
+import std.compat;
+import nlohmann.json;
 
 namespace trview
 {
-    struct RandomizerSettings
+    export struct RandomizerSettings
     {
         struct Setting
         {
@@ -45,6 +45,6 @@ namespace trview
         uint32_t settings_of_type(Setting::Type type) const;
     };
 
-    void to_json(nlohmann::json& json, const RandomizerSettings& settings);
-    void from_json(const nlohmann::json& json, RandomizerSettings& settings);
+    export void to_json(nlohmann::json& json, const RandomizerSettings& settings);
+    export void from_json(const nlohmann::json& json, RandomizerSettings& settings);
 }

@@ -1,19 +1,19 @@
-/// @brief Defines an interface for working with cameras.
-
-#pragma once
+module;
 
 #include <SimpleMath.h>
 
+export module trview.app:ICamera;
+
 import trview.common;
 
-#include "ProjectionMode.h"
+import :ProjectionMode;
 
 namespace trview
 {
     struct UserSettings;
 
     /// Interface for a camera.
-    struct ICamera
+    export struct ICamera
     {
         /// Defines the behaviour of the camera and the way it reacts to input.
         enum class Mode

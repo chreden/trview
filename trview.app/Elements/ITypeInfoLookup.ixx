@@ -1,13 +1,15 @@
-#pragma once
+export module trview.app:ITypeInfoLookup;
 
-#include <cstdint>
-#include <string>
-#include <trlevel/LevelVersion.h>
-#include "TypeInfo.h"
+import std;
+import std.compat;
+
+import trlevel;
+
+import :TypeInfo;
 
 namespace trview
 {
-    struct ITypeInfoLookup
+    export struct ITypeInfoLookup
     {
     public:
         virtual ~ITypeInfoLookup() = 0;

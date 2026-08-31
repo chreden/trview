@@ -1,19 +1,16 @@
-#pragma once
+export module trview.app:IRandomizerRoute;
 
-#include <cstdint>
-#include <string>
-#include <memory>
-#include <vector>
+import std;
 
 import trview.common;
 
-#include "../Settings/RandomizerSettings.h"
-#include "IRoute.h"
+import :RandomizerSettings;
+import :IRoute;
 
 namespace trview
 {
     struct IWaypoint;
-    struct IRandomizerRoute : public IRoute
+    export struct IRandomizerRoute : public IRoute
     {
         struct FileData final
         {
@@ -29,5 +26,5 @@ namespace trview
         virtual void move_level(const std::string& from, const std::string& to) = 0;
     };
 
-    std::shared_ptr<IRoute> import_randomizer_route(const IRandomizerRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings);
+    export std::shared_ptr<IRoute> import_randomizer_route(const IRandomizerRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings);
 }

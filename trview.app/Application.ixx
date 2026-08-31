@@ -1,21 +1,21 @@
-#pragma once
+export module trview.app:Application;
 
-#include <future>
+import std;
 
 import trview.common;
 
-#include "Elements/ITypeInfoLookup.h"
-#include <trview.app/Menus/IFileMenu.h>
-#include <trview.app/Menus/IUpdateChecker.h>
-#include <trview.app/Menus/ViewMenu.h>
-#include <trview.app/Routing/IRoute.h>
-#include "Routing/IRandomizerRoute.h"
-#include <trview.app/Settings/ISettingsLoader.h>
-#include <trview.app/Settings/IStartupOptions.h>
-#include <trview.app/Windows/IViewer.h>
-#include "UI/IImGuiBackend.h"
-#include "Plugins/IPlugins.h"
-#include "UI/Fonts/IFonts.h"
+import :ITypeInfoLookup;
+import :IFileMenu;
+import :IUpdateChecker;
+import :ViewMenu;
+import :IRoute;
+import :IRandomizerRoute;
+import :ISettingsLoader;
+import :IStartupOptions;
+import :IViewer;
+import :IImguiBackend;
+import :IPlugins;
+import :IFonts;
 
 struct ImFont;
 
@@ -23,7 +23,7 @@ namespace trview
 {
     struct IWindows;
 
-    struct IApplication
+    export struct IApplication
     {
         virtual ~IApplication() = 0;
         virtual int run() = 0;
@@ -38,7 +38,7 @@ namespace trview
         Event<> on_closing;
     };
 
-    class Application final : public IApplication, public MessageHandler, public IRecipient
+    export class Application final : public IApplication, public MessageHandler, public IRecipient
     {
     public:
         enum class LoadMode
@@ -159,5 +159,5 @@ namespace trview
         std::shared_ptr<IMessageSystem> _messaging;
     };
 
-    std::shared_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);
+    export std::shared_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);
 }

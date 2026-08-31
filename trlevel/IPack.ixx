@@ -9,7 +9,7 @@ import :LevelVersion;
 
 namespace trlevel
 {
-    struct IPack
+    export struct IPack
     {
         struct Part
         {
@@ -27,8 +27,8 @@ namespace trlevel
         virtual void set_filename(const std::string& filename) = 0;
     };
 
-    std::string pack_filename(const std::string& filename);
-    std::optional<std::vector<uint8_t>> pack_entry(const IPack& pack, uint32_t offset);
-    std::vector<trview::IFiles::File> valid_pack_levels(const IPack& pack);
+    export std::string pack_filename(const std::string& filename);
+    export std::optional<std::vector<uint8_t>> pack_entry(const IPack& pack, uint32_t offset);
+    export std::vector<trview::IFiles::File> valid_pack_levels(const IPack& pack);
 }
 

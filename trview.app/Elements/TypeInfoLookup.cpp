@@ -65,10 +65,6 @@ namespace trview
         }
     }
 
-    ITypeInfoLookup::~ITypeInfoLookup()
-    {
-    }
-
     TypeInfoLookup::TypeInfoLookup(const std::string& type_name_json, const std::optional<std::string>& extra_type_name_json)
     {
         auto parse_json = [&](const auto& data)

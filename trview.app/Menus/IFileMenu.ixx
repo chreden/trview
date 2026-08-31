@@ -1,16 +1,15 @@
-#pragma once
+export module trview.app:IFileMenu;
 
+import std;
+
+import trlevel;
 import trview.common;
 
-#include <list>
-#include <string>
-#include <trlevel/IPack.h>
-
-#include "LevelSortingMode.h"
+import :LevelSortingMode;
 
 namespace trview
 {
-    struct IFileMenu
+    export struct IFileMenu
     {
         virtual ~IFileMenu() = 0;
 
