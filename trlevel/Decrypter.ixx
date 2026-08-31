@@ -4,7 +4,7 @@ import :IDecrypter;
 
 namespace trlevel
 {
-    class Decrypter : public IDecrypter
+    export class Decrypter : public IDecrypter
     {
     public:
         virtual ~Decrypter() = default;
