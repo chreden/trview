@@ -1,26 +1,28 @@
-#pragma once
+module;
 
-#include <cstdint>
-#include <functional>
-#include <set>
-#include <vector>
-#include <unordered_set>
 #include <SimpleMath.h>
-#include "IItem.h"
-#include <trview.app/Elements/ISector.h>
-#include <trview.app/Elements/ITrigger.h>
-#include <trview.app/Elements/RoomInfo.h>
-#include <trview.app/Elements/PickFilter.h>
-#include <trview.app/Elements/ILight.h>
-#include <trview.app/Geometry/ITransparencyBuffer.h>
-#include <trview.app/Geometry/PickInfo.h>
-#include <trview.app/Graphics/ILevelTextureStorage.h>
-#include <trview.app/Graphics/IMeshStorage.h>
-#include <trview.common/Logs/Activity.h>
-#include "RenderFilter.h"
-#include "CameraSink/ICameraSink.h"
-#include "IStaticMesh.h"
-#include "../Filters/IFilterable.h"
+
+export module trview.app:IRoom;
+
+import std;
+
+import trlevel;
+import trview.common;
+
+import :IItem;
+import :ISector;
+import :ITrigger;
+import :RoomInfo;
+import :PickFilter;
+import :ILight;
+import :ITransparencyBuffer;
+import :PickInfo;
+import :ILevelTextureStorage;
+import :IMeshStorage;
+import :RenderFilter;
+import :ICameraSink;
+import :IStaticMesh;
+import :IFilterable;
 
 namespace trview
 {
@@ -29,7 +31,7 @@ namespace trview
     /// <summary>
     /// Represents a room in a level.
     /// </summary>
-    struct IRoom : public IFilterable
+    export struct IRoom : public IFilterable
     {
         /// <summary>
         /// The different types of alternate modes for a <see cref="IRoom"/>.
@@ -338,21 +340,21 @@ namespace trview
     /// <param name="room">The room to search.</param>
     /// <param name="point">The point to test.</param>
     /// <returns>The sector or nullptr if no match.</returns>
-    std::shared_ptr<ISector> sector_from_point(const IRoom& room, const DirectX::SimpleMath::Vector3& point);
+    export std::shared_ptr<ISector> sector_from_point(const IRoom& room, const DirectX::SimpleMath::Vector3& point);
 
-    std::string to_string(IRoom::AlternateMode mode);
+    export std::string to_string(IRoom::AlternateMode mode);
 
-    std::string light_mode_name(int16_t light_mode);
-    uint32_t room_number(const std::weak_ptr<IRoom>& room);
+    export std::string light_mode_name(int16_t light_mode);
+    export uint32_t room_number(const std::weak_ptr<IRoom>& room);
 
-    struct VerticalPortalInfo
+    export struct VerticalPortalInfo
     {
         std::shared_ptr<ISector>        sector;
         DirectX::SimpleMath::Vector3    offset;
         std::shared_ptr<IRoom>          room;
     };
 
-    std::optional<VerticalPortalInfo> sector_above(const std::shared_ptr<ISector>& sector);
-    std::optional<VerticalPortalInfo> sector_below(const std::shared_ptr<ISector>& sector);
+    export std::optional<VerticalPortalInfo> sector_above(const std::shared_ptr<ISector>& sector);
+    export std::optional<VerticalPortalInfo> sector_below(const std::shared_ptr<ISector>& sector);
 }
 

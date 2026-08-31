@@ -1,6 +1,6 @@
-#pragma once
+export module trview.app:IWindows;
 
-#include <memory>
+import std;
 
 namespace trview
 {
@@ -16,7 +16,7 @@ namespace trview
     struct IWindow;
     struct UserSettings;
 
-    struct IWindows
+    export struct IWindows
     {
         using Creator = std::function<std::shared_ptr<IWindow>()>;
 

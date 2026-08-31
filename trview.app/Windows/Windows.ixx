@@ -1,15 +1,15 @@
-#pragma once
+export module trview.app:Windows;
 
-#include <unordered_map>
+import std;
 
 import trview.common;
 
-#include "IWindows.h"
-#include "IWindow.h"
+import :IWindows;
+import :IWindow;
 
 namespace trview
 {
-    class Windows final : public IWindows, public MessageHandler
+    export class Windows final : public IWindows, public MessageHandler
     {
     public:
         explicit Windows(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts);

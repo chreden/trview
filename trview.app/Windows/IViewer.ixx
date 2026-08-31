@@ -1,19 +1,22 @@
-#pragma once
+module;
 
-#include <cstdint>
 #include <SimpleMath.h>
+
+export module trview.app:IViewer;
+
+import std;
 
 import trview.common;
 
-#include "../Elements/IItem.h"
-#include "../Elements/ITrigger.h"
-#include "../Elements/ILevel.h"
-#include "../Routing/IRoute.h"
-#include "../Settings/UserSettings.h"
+import :IItem;
+import :ITrigger;
+import :ILevel;
+import :IRoute;
+import :UserSettings;
 
 namespace trview
 {
-    struct IViewer
+    export struct IViewer
     {
         struct Options
         {

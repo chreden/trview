@@ -1,6 +1,6 @@
-#pragma once
+export module trview.app:IFilterable;
 
-#include <cstdint>
+import std.compat;
 
 namespace trview
 {

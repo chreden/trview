@@ -1,10 +1,10 @@
-#pragma once
+export module trview.app:IStartupOptions;
 
-#include <string>
+import std;
 
 namespace trview
 {
-    struct IStartupOptions
+    export struct IStartupOptions
     {
         using CommandLine = std::wstring;
         virtual ~IStartupOptions() = 0;

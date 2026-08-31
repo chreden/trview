@@ -1,6 +1,6 @@
-#pragma once
+export module trview.app:ISettingsLoader;
 
-#include "UserSettings.h"
+import :UserSettings;
 
 namespace trview
 {

@@ -1,25 +1,28 @@
-#pragma once
+module;
 
 #include <SimpleMath.h>
-#include "../Elements/IItem.h"
-#include "../Elements/ITrigger.h"
-#include "../Elements/IRoom.h"
-#include "../Elements/IStaticMesh.h"
-#include "../Lua/Scriptable/IScriptable.h"
-#include <trview.app/Elements/ILight.h>
-#include "CameraSink/ICameraSink.h"
-#include "Flyby/IFlyby.h"
-#include "../UI/MapColours.h"
-#include <trlevel/IPack.h>
 
+export module trview.app:ILevel;
+
+import trlevel;
 import trview.common;
+
+import :IItem;
+import :ITrigger;
+import :IRoom;
+import :IStaticMesh;
+import :IScriptable;
+import :ILight;
+import :ICameraSink;
+import :IFlyby;
+import :MapColours;
 
 namespace trview
 {
     struct ISoundStorage;
     struct ISoundSource;
 
-    struct ILevel : public IRecipient
+    export struct ILevel : public IRecipient
     {
         using Source = std::function<std::shared_ptr<ILevel>(const std::string&, const std::shared_ptr<trlevel::IPack>&, trlevel::ILevel::LoadCallbacks)>;
 
@@ -170,5 +173,5 @@ namespace trview
     /// <param name="type_id">The type id to search for.</param>
     /// <param name="output_item">The item to output the result into.</param>
     /// <returns>True if the item was found.</returns>
-    bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item);
+    export bool find_last_item_by_type_id(const ILevel& level, uint32_t type_id, std::weak_ptr<IItem>& output_item);
 }

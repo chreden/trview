@@ -1,16 +1,16 @@
-#pragma once
+export module trview.app:UserSettings;
 
-#include <list>
-#include <string>
-#include "RandomizerSettings.h"
-#include "../UI/MapColours.h"
-#include "FontSetting.h"
-#include "PluginSetting.h"
-#include "../Menus/LevelSortingMode.h"
+import std;
+
+import :RandomizerSettings;
+import :MapColours;
+import :FontSetting;
+import :PluginSetting;
+import :LevelSortingMode;
 
 namespace trview
 {
-    struct UserSettings
+    export struct UserSettings
     {
         struct Fonts
         {

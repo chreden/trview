@@ -1,10 +1,10 @@
-#pragma once
+export module trview.app:FontSetting;
 
-#include <string>
+import std;
 
 namespace trview
 {
-    struct FontSetting final
+    export struct FontSetting final
     {
         std::string name;
         std::string filename;

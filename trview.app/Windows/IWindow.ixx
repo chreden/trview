@@ -1,9 +1,9 @@
-#pragma once
+export module trview.app:IWindow;
+
+import std;
+import std.compat;
 
 import trview.common;
-
-#include <string>
-#include <cstdint>
 
 namespace trview
 {

@@ -1,13 +1,15 @@
-#pragma once
+export module trview.app:MapColours;
+
+import std;
+import nlohmann.json;
 
 import trview.common;
 
-#include "../Elements/Types.h"
-#include <external/nlohmann/json.hpp>
+import :Types;
 
 namespace trview
 {
-    class MapColours final
+    export class MapColours final
     {
     public:
         enum class Special
@@ -33,6 +35,6 @@ namespace trview
         std::unordered_map<Special, Colour> _override_special_colours;
     };
 
-    void to_json(nlohmann::json& json, const MapColours& colours);
-    void from_json(const nlohmann::json& json, MapColours& colours);
+    export void to_json(nlohmann::json& json, const MapColours& colours);
+    export void from_json(const nlohmann::json& json, MapColours& colours);
 }

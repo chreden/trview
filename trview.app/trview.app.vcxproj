@@ -113,7 +113,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\SoundSource\ISoundSource.h" />
     <ClInclude Include="Elements\SoundSource\SoundSource.h" />
     <ClInclude Include="Filters\FilterStore.h" />
-    <ClInclude Include="Filters\IFilterable.h" />
+    <ClCompile Include="Filters\IFilterable.ixx" />
     <ClInclude Include="Filters\IFilterStore.h" />
     <ClInclude Include="Geometry\Model\IModel.h" />
     <ClInclude Include="Geometry\Model\IModelStorage.h" />
@@ -147,7 +147,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\UI\ILevelInfo.h" />
     <ClInclude Include="Mocks\Windows\IWindow.h" />
     <ClInclude Include="Mocks\Windows\IWindows.h" />
-    <ClInclude Include="Settings\FontSetting.h" />
+    <ClCompile Include="Settings\FontSetting.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="trview_imgui.cpp" />
     <ClCompile Include="Lua\Lua.cpp" />
     <ClCompile Include="Menus\AlternateGroupToggler.cpp" />
@@ -203,7 +205,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Routing\RandomizerRoute.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Settings\PluginSetting.h" />
+    <ClCompile Include="Settings\PluginSetting.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Settings\UserSettingsPatches.h" />
     <ClInclude Include="Sound\ISound.h" />
     <ClInclude Include="Sound\ISoundStorage.h" />
@@ -249,10 +253,14 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\About\AboutWindow.h" />
     <ClInclude Include="Windows\Console\Console.h" />
     <ClInclude Include="Windows\Diff\DiffWindow.h" />
-    <ClInclude Include="Windows\IWindow.h" />
+    <ClCompile Include="Windows\IWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Windows\Pack\PackWindow.h" />
     <ClInclude Include="Windows\Sounds\SoundsWindow.h" />
-    <ClInclude Include="Windows\Windows.h" />
+    <ClCompile Include="Windows\Windows.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.ixx">
@@ -270,13 +278,21 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\CameraSink\ICameraSink.h" />
     <ClInclude Include="Elements\Item.h" />
     <ClInclude Include="Elements\Floordata.h" />
-    <ClInclude Include="Elements\IItem.h" />
-    <ClInclude Include="Elements\ILevel.h" />
+    <ClCompile Include="Elements\IItem.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Elements\ILevel.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Elements\ILight.h" />
-    <ClInclude Include="Elements\IRoom.h" />
+    <ClCompile Include="Elements\IRoom.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Elements\ISector.h" />
     <ClInclude Include="Elements\IStaticMesh.h" />
-    <ClInclude Include="Elements\ITrigger.h" />
+    <ClCompile Include="Elements\ITrigger.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Elements\ITypeInfoLookup.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -290,7 +306,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\StaticMesh.h" />
     <ClInclude Include="Elements\Trigger.h" />
     <ClInclude Include="Elements\TypeInfoLookup.h" />
-    <ClInclude Include="Elements\Types.h" />
+    <ClCompile Include="Elements\Types.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Filters\Filters.h" />
     <ClInclude Include="Filters\Filters.hpp" />
     <ClInclude Include="Geometry\IMesh.h" />
@@ -388,14 +406,20 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ClCompile>
     <ClInclude Include="Routing\Route.h" />
     <ClInclude Include="Routing\Waypoint.h" />
-    <ClInclude Include="Settings\IStartupOptions.h" />
-    <ClInclude Include="Settings\ISettingsLoader.h" />
+    <ClCompile Include="Settings\IStartupOptions.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Settings\ISettingsLoader.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Settings\RandomizerSettings.ixx">
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="Settings\SettingsLoader.h" />
-    <ClInclude Include="Settings\StartupOptions.h" />
-    <ClInclude Include="Settings\UserSettings.h" />
+    <ClInclude Include="Settings\StartupOptions.ixx" />
+    <ClCompile Include="Settings\UserSettings.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Tools\Compass.h" />
     <ClInclude Include="Tools\ICompass.h" />
     <ClInclude Include="Tools\IMeasure.h" />
@@ -418,7 +442,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\IViewerUI.h" />
     <ClInclude Include="UI\IViewOptions.h" />
     <ClInclude Include="UI\LevelInfo.h" />
-    <ClInclude Include="UI\MapColours.h" />
+    <ClCompile Include="UI\MapColours.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="UI\MapRenderer.h" />
     <ClInclude Include="UI\RoomNavigator.h" />
     <ClInclude Include="UI\SettingsWindow.h" />
@@ -427,8 +453,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\ViewOptions.h" />
     <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h" />
     <ClInclude Include="Windows\ItemsWindow.h" />
-    <ClInclude Include="Windows\IViewer.h" />
-    <ClInclude Include="Windows\IWindows.h" />
+    <ClCompile Include="Windows\IViewer.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Windows\IWindows.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Windows\LightsWindow.h" />
     <ClInclude Include="Windows\Log\LogWindow.h" />
     <ClInclude Include="Windows\Plugins\PluginsWindow.h" />

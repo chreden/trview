@@ -1,11 +1,12 @@
-#pragma once
+export module trview.app:StartupOptions;
 
-#include "IStartupOptions.h"
-#include <set>
+import std;
+
+import :IStartupOptions;
 
 namespace trview
 {
-    class StartupOptions final : public IStartupOptions
+    export class StartupOptions final : public IStartupOptions
     {
     public:
         explicit StartupOptions(const CommandLine& command_line);

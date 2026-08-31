@@ -1,4 +1,4 @@
-#pragma once
+export module trview.app:PluginSetting;
 
 namespace trview
 {

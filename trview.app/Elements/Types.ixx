@@ -1,11 +1,12 @@
-#pragma once
+export module trview.app:Types;
 
-#include <vector>
+import std;
+import std.compat;
 
 namespace trview
 {
     // Flags stored on sector to determine behaviour 
-    enum class SectorFlag
+    export enum class SectorFlag
     {
         None = 0x0,
         Portal = 0x1,
@@ -27,7 +28,7 @@ namespace trview
         Climbable = ClimbableNorth | ClimbableEast | ClimbableSouth | ClimbableWest
     };
 
-    enum ClimbableWalls
+    export enum ClimbableWalls
     {
         Top = 0x1, 
         Right = 0x2, 
@@ -35,19 +36,19 @@ namespace trview
         Left = 0x8
     };
 
-    enum class TriggerType
+    export enum class TriggerType
     {
         Trigger, Pad, Switch, Key, Pickup, HeavyTrigger, Antipad, Combat, Dummy,
         AntiTrigger, HeavySwitch, HeavyAntiTrigger, Monkey, Skeleton, Tightrope, Crawl, Climb
     };
 
-    enum class TriggerCommandType
+    export enum class TriggerCommandType
     {
         Object, Camera, UnderwaterCurrent, FlipMap, FlipOn, FlipOff, LookAtItem,
         EndLevel, PlaySoundtrack, Flipeffect, SecretFound, ClearBodies, Flyby, Cutscene
     };
 
-    struct TriggerInfo
+    export struct TriggerInfo
     {
         struct Command
         {
@@ -61,7 +62,7 @@ namespace trview
         std::vector<Command> commands;
     };
 
-    class Command final
+    export class Command final
     {
     public:
         Command(uint32_t number, TriggerCommandType type, const std::vector<uint16_t>& data);
@@ -74,5 +75,4 @@ namespace trview
         TriggerCommandType _type;
         std::vector<uint16_t> _data;
     };
-    
 }

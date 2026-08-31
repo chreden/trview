@@ -21,3 +21,4 @@ export import :TR1;
 export import :TR2;
 export import :TR3;
 export import :Decrypter;
+export import :Types;

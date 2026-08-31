@@ -1,17 +1,16 @@
-#pragma once
+export module trview.app:ITrigger;
 
-#include <cstdint>
-#include <vector>
-
-#include <trlevel/LevelVersion.h>
-
-#include <trview.app/Geometry/IRenderable.h>
-#include "../Geometry/Triangle.h"
-#include <trview.app/Geometry/PickResult.h>
-#include <trview.app/Elements/Types.h>
-#include "../Filters/IFilterable.h"
+import std;
+import std.compat;
 
 import trview.common;
+import trlevel;
+
+import :IRenderable;
+import :Triangle;
+import :PickResult;
+import :Types;
+import :IFilterable;
 
 namespace trview
 {
@@ -19,7 +18,7 @@ namespace trview
     struct IRoom;
     struct ISector;
 
-    struct ITrigger : public IRenderable, public IFilterable
+    export struct ITrigger : public IRenderable, public IFilterable
     {
         const static inline Colour Trigger_Colour{ 0.5f, 1, 0, 1 };
 
@@ -53,19 +52,19 @@ namespace trview
     /// Get the string representation of the trigger type specified.
     /// @param type The type to test.
     /// @returns The string version of the enum.
-    std::string to_string(TriggerType type);
+    export std::string to_string(TriggerType type);
 
     /// Get the string representation of the command type specified.
     /// @param type The type to test.
     /// @returns The string version of the enum.
-    std::string command_type_name(TriggerCommandType type);
+    export std::string command_type_name(TriggerCommandType type);
 
-    bool has_command(const ITrigger& trigger, TriggerCommandType type);
-    bool has_any_command(const ITrigger& trigger, const std::vector<TriggerCommandType>& type);
+    export bool has_command(const ITrigger& trigger, TriggerCommandType type);
+    export bool has_any_command(const ITrigger& trigger, const std::vector<TriggerCommandType>& type);
 
-    bool command_has_index(TriggerCommandType type);
-    bool command_is_item(TriggerCommandType type);
+    export bool command_has_index(TriggerCommandType type);
+    export bool command_is_item(TriggerCommandType type);
 
-    uint32_t trigger_room(const std::shared_ptr<ITrigger>& trigger);
-    uint32_t trigger_room(const ITrigger& trigger);
+    export uint32_t trigger_room(const std::shared_ptr<ITrigger>& trigger);
+    export uint32_t trigger_room(const ITrigger& trigger);
 }
