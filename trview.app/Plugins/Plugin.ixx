@@ -1,13 +1,18 @@
-#pragma once
+module;
 
-#include <trview.common/TokenStore.h>
-#include <trview.common/IFiles.h>
-#include "IPlugin.h"
-#include "../Lua/ILua.h"
+#include <external/lua/src/lua.h>
+
+export module trview.app:Plugin;
+
+import std;
+import trview.common;
+
+import :IPlugin;
+import :ILua;
 
 namespace trview
 {
-    class Plugin final : public IPlugin
+    export class Plugin final : public IPlugin
     {
     public:
         explicit Plugin(std::unique_ptr<ILua> lua, const std::string& name, const std::string& author, const std::string& description);

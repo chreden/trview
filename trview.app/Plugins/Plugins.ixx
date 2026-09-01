@@ -1,14 +1,16 @@
-#pragma once
+export module trview.app:Plugins;
 
-#include "IPlugins.h"
-#include "IPlugin.h"
-#include "../Settings/UserSettings.h"
-#include <trview.common/IFiles.h>
-#include <trview.common/Messages/IRecipient.h>
+import std;
+
+import trview.common;
+
+import :IPlugins;
+import :IPlugin;
+import :UserSettings;
 
 namespace trview
 {
-    class Plugins final : public IPlugins, public IRecipient
+    export class Plugins final : public IPlugins, public IRecipient
     {
     public:
         explicit Plugins(const std::shared_ptr<IFiles>& files,

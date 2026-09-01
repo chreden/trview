@@ -1,10 +1,19 @@
-#pragma once
+module;
 
-#include "IScriptable.h"
+#include <external/lua/src/lua.h>
+
+export module trview.app:Scriptable;
+
+import std;
+
+import trview.graphics;
+
+import :IScriptable;
+import :IMesh;
 
 namespace trview
 {
-    class Scriptable : public IScriptable, public std::enable_shared_from_this<IScriptable>
+    export class Scriptable : public IScriptable, public std::enable_shared_from_this<IScriptable>
     {
     public:
         explicit Scriptable(lua_State* L, const std::shared_ptr<IMesh>& mesh, const graphics::Texture& texture);
@@ -40,5 +49,5 @@ namespace trview
         DirectX::SimpleMath::Matrix _transform{ DirectX::SimpleMath::Matrix::Identity };
     };
 
-    int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable);
+    export int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable);
 }

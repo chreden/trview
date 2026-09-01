@@ -1,17 +1,17 @@
-#pragma once
+export module trview.app:MeshStorage;
 
-#include <unordered_map>
-#include <cstdint>
-#include <memory>
-#include <trlevel/ILevel.h>
-#include "IMeshStorage.h"
-#include <trview.app/Geometry/IMesh.h>
+import std;
+
+import trlevel;
+
+import :IMeshStorage;
+import :IMesh;
 
 namespace trview
 {
     struct ILevelTextureStorage;
 
-    class MeshStorage final : public IMeshStorage
+    export class MeshStorage final : public IMeshStorage
     {
     public:
         explicit MeshStorage(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);

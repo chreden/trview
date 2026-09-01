@@ -144,14 +144,18 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="Geometry\Model\Model.h" />
-    <ClInclude Include="Geometry\Model\ModelStorage.ixx" />
+    <ClCompile Include="Geometry\Model\ModelStorage.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Lua\Camera\Lua_Camera.h" />
     <ClInclude Include="Lua\Lua_Matrix.h" />
     <ClInclude Include="Lua\Mesh\Lua_Mesh.h" />
     <ClCompile Include="Lua\Scriptable\IScriptable.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Lua\Scriptable\Scriptable.h" />
+    <ClCompile Include="Lua\Scriptable\Scriptable.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Lua\Triangle\Lua_Triangle.h" />
     <ClInclude Include="Lua\Vector2.h" />
     <ClInclude Include="Menus\ImGuiFileMenu.h" />
@@ -235,8 +239,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Plugins\IPlugins.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Plugins\Plugin.h" />
-    <ClInclude Include="Plugins\Plugins.h" />
+    <ClCompile Include="Plugins\Plugin.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Plugins\Plugins.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Routing\IRandomizerRoute.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -437,7 +445,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Graphics\LevelTextureStorage.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Graphics\MeshStorage.h" />
+    <ClCompile Include="Graphics\MeshStorage.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Graphics\SectorHighlight.h" />
     <ClCompile Include="Graphics\SelectionRenderer.ixx">
       <FileType>Document</FileType>

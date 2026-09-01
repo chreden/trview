@@ -42,6 +42,12 @@ import :LevelNameLookup;
 import :LevelTextureStorage;
 import :SoundStorage;
 import :NgPlusSwitcher;
+import :MeshStorage;
+import :ModelStorage;
+import :Scriptable;
+import :Plugins;
+import :Plugin;
+import :Lua;
 
 namespace trview
 {
