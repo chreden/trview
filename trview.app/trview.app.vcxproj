@@ -105,14 +105,18 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Level\ILevelNameLookup.h" />
     <ClInclude Include="Elements\Level\LevelNameLookup.h" />
     <ClInclude Include="Elements\Flyby\Flyby.h" />
-    <ClInclude Include="Elements\Flyby\FlybyNode.h" />
+    <ClInclude Include="Elements\Flyby\FlybyNode.h">
+      <FileType>Document</FileType>
+    </ClInclude>
     <ClCompile Include="Elements\Flyby\IFlyby.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Elements\Flyby\IFlybyNode.h" />
+    <ClCompile Include="Elements\Flyby\IFlybyNode.ixx" />
     <ClInclude Include="Elements\Remastered\INgPlusSwitcher.h" />
     <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h" />
-    <ClInclude Include="Elements\SoundSource\ISoundSource.h" />
+    <ClCompile Include="Elements\SoundSource\ISoundSource.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Elements\SoundSource\SoundSource.h" />
     <ClInclude Include="Filters\FilterStore.h" />
     <ClCompile Include="Filters\IFilterable.ixx" />
@@ -456,7 +460,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="Settings\SettingsLoader.h" />
-    <ClInclude Include="Settings\StartupOptions.ixx" />
+    <ClCompile Include="Settings\StartupOptions.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Settings\UserSettings.ixx">
       <FileType>Document</FileType>
     </ClCompile>

@@ -289,6 +289,15 @@
     <ClCompile Include="UI\Fonts\IFonts.ixx">
       <Filter>UI\Fonts</Filter>
     </ClCompile>
+    <ClCompile Include="Settings\StartupOptions.ixx">
+      <Filter>Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\SoundSource\ISoundSource.ixx">
+      <Filter>Elements\SoundSource</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Flyby\IFlybyNode.ixx">
+      <Filter>Elements\Flyby</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -353,7 +362,6 @@
     <ClInclude Include="UI\IViewerUI.h" Filter="UI" />
     <ClInclude Include="Mocks\Elements\IItem.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Elements\IRoom.h" Filter="Mocks\Elements" />
-    <ClInclude Include="Settings\StartupOptions.ixx" Filter="Settings" />
     <ClInclude Include="Mocks\Settings\IStartupOptions.h" Filter="Mocks\Settings" />
     <ClInclude Include="Mocks\Elements\ITrigger.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Elements\IStaticMesh.h" Filter="Mocks\Elements" />
@@ -444,7 +452,6 @@
     <ClInclude Include="Sound\ISound.h" Filter="Sound" />
     <ClInclude Include="Sound\Sound.h" Filter="Sound" />
     <ClInclude Include="Windows\Sounds\SoundsWindow.h" Filter="Windows\Sounds" />
-    <ClInclude Include="Elements\SoundSource\ISoundSource.h" Filter="Elements\SoundSource" />
     <ClInclude Include="Elements\SoundSource\SoundSource.h" Filter="Elements\SoundSource" />
     <ClInclude Include="Mocks\Elements\ISoundSource.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" Filter="Mocks\Sound" />
@@ -464,8 +471,6 @@
     <ClInclude Include="Mocks\Geometry\IModelStorage.h" Filter="Mocks\Geometry" />
     <ClInclude Include="Elements\Flyby\Flyby.h" Filter="Elements\Flyby" />
     <ClInclude Include="Mocks\Elements\IFlyby.h" Filter="Mocks\Elements" />
-    <ClInclude Include="Elements\Flyby\IFlybyNode.h" Filter="Elements\Flyby" />
-    <ClInclude Include="Elements\Flyby\FlybyNode.h" Filter="Elements\Flyby" />
     <ClInclude Include="Mocks\Elements\IFlybyNode.h" Filter="Mocks\Elements" />
     <ClInclude Include="Messages\Messages.h" Filter="Messages" />
     <ClInclude Include="Elements\Level\ILevelNameLookup.h" Filter="Elements\Level" />
@@ -489,6 +494,9 @@
     <ClInclude Include="Lua\Lua_Matrix.h" Filter="Lua" />
     <ClInclude Include="Mocks\Plugins\IPlugins.h">
       <Filter>Mocks\Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Flyby\FlybyNode.h">
+      <Filter>Elements\Flyby</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

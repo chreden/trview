@@ -1,19 +1,21 @@
-#pragma once
-
-#include <cstdint>
-#include <functional>
+module;
 
 #include <SimpleMath.h>
 
-#include <trlevel/trtypes.h>
+export module trview.app:IFlybyNode;
 
-#include "../../Filters/IFilterable.h"
+import std;
+import std.compat;
+
+import trlevel;
+
+import :IFilterable;
 
 namespace trview
 {
     struct ILevel;
     struct IFlyby;
-    struct IFlybyNode : public IFilterable
+    export struct IFlybyNode : public IFilterable
     {
         using Source = std::function<std::shared_ptr<IFlybyNode>(const trlevel::tr4_flyby_camera&, const std::weak_ptr<IFlyby>&, const std::weak_ptr<ILevel>&)>;
 

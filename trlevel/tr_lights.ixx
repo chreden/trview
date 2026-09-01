@@ -36,11 +36,11 @@ namespace trlevel
         float density() const;
     };
 
-    std::string to_string(LightType type);
-    std::vector<tr_x_room_light> convert_lights(std::vector<tr_room_light> lights);
-    std::vector<tr_x_room_light> convert_lights(std::vector<tr_room_light_psx> lights);
-    std::vector<tr_x_room_light> convert_lights(std::vector<tr2_room_light> lights);
-    std::vector<tr_x_room_light> convert_lights(std::vector<tr3_room_light> lights);
-    std::vector<tr_x_room_light> convert_lights(std::vector<tr4_room_light> lights);
-    std::vector<tr_x_room_light> convert_lights(std::vector<tr5_room_light> lights);
+    export std::string to_string(LightType type);
+    export std::vector<tr_x_room_light> convert_lights(std::vector<tr_room_light> lights);
+    export std::vector<tr_x_room_light> convert_lights(std::vector<tr_room_light_psx> lights);
+    export std::vector<tr_x_room_light> convert_lights(std::vector<tr2_room_light> lights);
+    export std::vector<tr_x_room_light> convert_lights(std::vector<tr3_room_light> lights);
+    export std::vector<tr_x_room_light> convert_lights(std::vector<tr4_room_light> lights);
+    export std::vector<tr_x_room_light> convert_lights(std::vector<tr5_room_light> lights);
 }

@@ -62,11 +62,11 @@ namespace trview
         virtual bool is_remastered_extra() const = 0;
     };
 
-    bool is_mutant_egg(const IItem& item);
-    bool is_mutant_egg(uint32_t type_id);
-    uint16_t mutant_egg_contents(const IItem& item);
-    uint16_t mutant_egg_contents(uint16_t flags);
-    uint32_t item_room(const std::shared_ptr<IItem>& item);
-    uint32_t item_room(const IItem& item);
-    bool is_virtual(const IItem& item);
+    export bool is_mutant_egg(const IItem& item);
+    export bool is_mutant_egg(uint32_t type_id);
+    export uint16_t mutant_egg_contents(const IItem& item);
+    export uint16_t mutant_egg_contents(uint16_t flags);
+    export uint32_t item_room(const std::shared_ptr<IItem>& item);
+    export uint32_t item_room(const IItem& item);
+    export bool is_virtual(const IItem& item);
 }

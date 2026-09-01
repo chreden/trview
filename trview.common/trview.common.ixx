@@ -24,6 +24,7 @@ export import :Resource;
 export import :Resources;
 export import :Activity;
 export import :ILog;
+export import :Json;
 
 export import :MockClipboard;
 export import :MockDialogs;

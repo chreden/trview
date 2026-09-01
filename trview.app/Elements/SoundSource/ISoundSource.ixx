@@ -1,17 +1,14 @@
-#pragma once
+export module trview.app:ISoundSource;
 
-#include <functional>
-#include <memory>
-#include <optional>
+import std;
+import std.compat;
 
-#include <trlevel/LevelVersion.h>
+import trlevel;
+import trview.common;
 
-#include <trview.common/Event.h>
-
-#include "../../Geometry/IRenderable.h"
-#include "../../Geometry/PickResult.h"
-
-#include "../../Filters/IFilterable.h"
+import :IRenderable;
+import :PickResult;
+import :IFilterable;
 
 namespace trlevel
 {
@@ -21,7 +18,7 @@ namespace trlevel
 
 namespace trview
 {
-    struct ISoundSource : public IRenderable, public IFilterable
+    export struct ISoundSource : public IRenderable, public IFilterable
     {
         using Source = std::function<std::shared_ptr<ISoundSource>(uint32_t, const trlevel::tr_sound_source&, const std::optional<trlevel::tr_x_sound_details>&, trlevel::LevelVersion, const std::weak_ptr<ILevel>&)>;
         virtual ~ISoundSource() = 0;

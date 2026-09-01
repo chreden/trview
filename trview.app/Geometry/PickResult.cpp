@@ -1,9 +1,19 @@
-#include "PickResult.h"
-#include <trview.common/Colour.h>
-#include "../Elements/ILevel.h"
-#include "../Routing/IRoute.h"
-#include "../Elements/SoundSource/ISoundSource.h"
-#include "../Elements/Flyby/IFlybyNode.h"
+module trview.app:PickResult;
+
+import std;
+
+import trview.common;
+
+import :ILevel;
+import :IItem;
+import :ITrigger;
+import :ILight;
+import :IRoom;
+import :IWaypoint;
+import :ICameraSink;
+import :ISoundSource;
+import :IScriptable;
+import :IFlybyNode;
 
 namespace trview
 {
