@@ -1,16 +1,18 @@
+export module trview.app:Camera;
+
+import std;
+
+import trview.common;
+
+import :ICamera;
+
 /// @brief Defines base class for camera.
-
-#pragma once
-
-#include <optional>
-#include <trview.common/Event.h>
-#include "ICamera.h"
 
 namespace trview
 {
     /// Base class for cameras. Does most of the calculation of view and projection
     /// matrices based on the vector created by subclasses.
-    class Camera : public ICamera
+    export class Camera : public ICamera
     {
     public:
         /// Alignment mode for the camera.

@@ -1,23 +1,25 @@
-/// @file ItemsWindow.h
-/// @brief Used to show and filter the items in the level.
+export module trview.app:ItemsWindow;
 
-#pragma once
+import std;
+import std.compat;
 
-#include <trview.common/TokenStore.h>
-#include <trview.common/Windows/IClipboard.h>
-#include <trview.common/Messages/IMessageSystem.h>
-#include "../Filters/Filters.h"
+import trlevel;
+import trview.common;
 
-#include "IWindow.h"
-#include "../Elements/IItem.h"
-#include "../Track/Track.h"
-#include "AutoHider.h"
-#include "../Settings/UserSettings.h"
+import :IWindow;
+import :IItem;
+import :ITrigger;
+import :IFilterStore;
+import :Filters;
+import :Track;
+import :UserSettings;
+import :AutoHider;
+import :Types;
 
 namespace trview
 {
     /// Used to show and filter the items in the level.
-    class ItemsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
+    export class ItemsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

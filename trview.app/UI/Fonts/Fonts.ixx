@@ -1,14 +1,17 @@
-#pragma once
+module;
 
-#include <unordered_map>
+#include <external/imgui/imgui.h>
 
-#include <trview.common/IFiles.h>
+export module trview.app:Fonts;
 
-#include "IFonts.h"
+import std;
+import trview.common;
+
+import :IFonts;
 
 namespace trview
 {
-    class Fonts : public IFonts
+    export class Fonts : public IFonts
     {
     public:
         explicit Fonts(const std::shared_ptr<IFiles>& files);

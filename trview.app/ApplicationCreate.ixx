@@ -48,6 +48,11 @@ import :Scriptable;
 import :Plugins;
 import :Plugin;
 import :Lua;
+import :Fonts;
+import :MapRenderer;
+import :Camera;
+import :PluginsWindow;
+import :ItemsWindow;
 
 namespace trview
 {

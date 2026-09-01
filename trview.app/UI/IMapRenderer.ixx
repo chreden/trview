@@ -1,13 +1,17 @@
-#pragma once
+export module trview.app:IMapRenderer;
+
+import std;
+import std.compat;
 
 import trview.common;
 
-#include <trview.app/Elements/Room.h>
-#include "../Settings/UserSettings.h"
+import :IRoom;
+import :ISector;
+import :UserSettings;
 
 namespace trview
 {
-    struct IMapRenderer
+    export struct IMapRenderer
     {
         enum class Mode
         {

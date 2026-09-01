@@ -1,22 +1,21 @@
-#pragma once
+module;
 
 #include <SimpleMath.h>
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
 
-#include <vector> 
-#include <memory>
-#include <algorithm>
+export module trview.app:MapRenderer;
 
-#include <trview.app/Elements/Types.h>
-#include <trview.common/Point.h>
-#include <trview.common/Size.h>
-#include <trview.app/Elements/Room.h>
-#include "Fonts/IFonts.h"
-#include "../trview_imgui.h"
+import std;
 
-#include "IMapRenderer.h"
-#include <trview.common/Messages/IRecipient.h>
-#include <trview.common/Messages/IMessageSystem.h>
+import trview.common;
 
+import :IFonts;
+import :Types;
+import :IRoom;
+import :imgui;
+import :IMapRenderer;
+import :UserSettings;
 
 namespace trview
 {
@@ -34,7 +33,7 @@ namespace trview
         };
     }
 
-    class MapRenderer final : public IMapRenderer, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    export class MapRenderer final : public IMapRenderer, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         MapRenderer(const std::shared_ptr<IFonts>& fonts,

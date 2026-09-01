@@ -295,7 +295,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\TriggersWindow.cpp" />
     <ClCompile Include="Windows\Viewer.cpp" />
     <ClCompile Include="Windows\WindowResizer.cpp" />
-    <ClInclude Include="UI\Fonts\Fonts.h" />
+    <ClCompile Include="UI\Fonts\Fonts.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="UI\Fonts\IFonts.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -307,7 +309,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UserCancelledException.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Windows\AutoHider.h" />
+    <ClCompile Include="Windows\AutoHider.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Windows\About\AboutWindow.h" />
     <ClInclude Include="Windows\Console\Console.h" />
     <ClInclude Include="Windows\Diff\DiffWindow.h" />
@@ -324,7 +328,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Application.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Camera\Camera.h" />
+    <ClCompile Include="Camera\Camera.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Camera\CameraInput.h" />
     <ClCompile Include="Camera\ICamera.ixx">
       <FileType>Document</FileType>
@@ -555,12 +561,16 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Tools\IMeasure.h" />
     <ClInclude Include="Tools\Measure.h" />
     <ClInclude Include="Tools\Toolbar.h" />
-    <ClInclude Include="Track\Track.h" />
+    <ClCompile Include="Track\Track.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="trview_imgui.ixx">
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="trview_imgui.hpp" />
-    <ClInclude Include="Type.h" />
+    <ClCompile Include="Type.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="UI\CameraControls.h" />
     <ClInclude Include="UI\CameraPosition.h" />
     <ClInclude Include="UI\ContextMenu.h" />
@@ -571,7 +581,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\IImGuiBackend.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="UI\IMapRenderer.h" />
+    <ClCompile Include="UI\IMapRenderer.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="UI\ISettingsWindow.h" />
     <ClInclude Include="UI\IViewerUI.h" />
     <ClInclude Include="UI\IViewOptions.h" />
@@ -579,14 +591,18 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\MapColours.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="UI\MapRenderer.h" />
+    <ClCompile Include="UI\MapRenderer.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="UI\RoomNavigator.h" />
     <ClInclude Include="UI\SettingsWindow.h" />
     <ClInclude Include="UI\Tooltip.h" />
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UI\ViewOptions.h" />
     <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h" />
-    <ClInclude Include="Windows\ItemsWindow.h" />
+    <ClCompile Include="Windows\ItemsWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Windows\IViewer.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -595,7 +611,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ClCompile>
     <ClInclude Include="Windows\LightsWindow.h" />
     <ClInclude Include="Windows\Log\LogWindow.h" />
-    <ClInclude Include="Windows\Plugins\PluginsWindow.h" />
+    <ClCompile Include="Windows\Plugins\PluginsWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Windows\RoomsWindow.h" />
     <ClInclude Include="Windows\RouteWindow.h" />
     <ClCompile Include="Windows\RowCounter.ixx">

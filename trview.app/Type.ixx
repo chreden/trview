@@ -1,8 +1,10 @@
-#pragma once
+export module trview.app:Type;
+
+import std;
 
 namespace trview
 {
-    enum class Type
+    export enum class Type
     {
         CameraSink,
         Item,
@@ -12,7 +14,7 @@ namespace trview
         Trigger
     };
 
-    constexpr std::string to_string(Type type) noexcept;
+    export constexpr std::string to_string(Type type) noexcept;
 }
 
 #include "Type.inl"

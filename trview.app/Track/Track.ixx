@@ -1,12 +1,19 @@
-#pragma once
+module;
 
-#include "../Type.h"
-#include <array>
-#include <trview.common/Event.h>
+#include <external/imgui/imgui.h>
+
+export module trview.app:Track;
+
+import std;
+import std.compat;
+
+import trview.common;
+
+import :Type;
 
 namespace trview
 {
-    template <Type... Args>
+    export template <Type... Args>
     class Track
     {
     public:

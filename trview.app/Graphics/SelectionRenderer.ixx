@@ -21,18 +21,11 @@ import :ISelectionRenderer;
 
 namespace trview
 {
-    namespace graphics
-    {
-        struct IShader;
-        struct IShaderStorage;
-        class Device;
-    }
-
     struct IRenderable;
     struct ICamera;
 
     /// Draws an outline around an object.
-    class SelectionRenderer final : public ISelectionRenderer
+    export class SelectionRenderer final : public ISelectionRenderer
     {
     public:
         /// Create a new SelectionRenderer.

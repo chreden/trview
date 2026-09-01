@@ -1,15 +1,17 @@
-#pragma once
+export module trview.app:PluginsWindow;
 
-#include "../../Plugins/IPlugins.h"
-#include "../IWindow.h"
-#include <trview.common/Windows/IShell.h>
-#include <trview.common/Windows/IDialogs.h>
-#include <trview.common/Messages/IMessageSystem.h>
-#include "../../Settings/UserSettings.h"
+import std;
+import trview.common;
+
+import :IWindow;
+import :UserSettings;
+import :IPlugins;
+
+#pragma once
 
 namespace trview
 {
-    class PluginsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
+    export class PluginsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

@@ -31,6 +31,7 @@ export import :Dialogs;
 export import :Clipboard;
 export import :IShell;
 export import :Shell;
+export import :IClipboard;
 
 export import :MockClipboard;
 export import :MockDialogs;

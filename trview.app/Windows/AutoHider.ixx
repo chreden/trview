@@ -1,11 +1,12 @@
-#pragma once
+export module trview.app:AutoHider;
 
-#include <ranges>
-#include "../Filters/Filters.h"
+import std;
+
+import :Filters;
 
 namespace trview
 {
-    class AutoHider final
+    export class AutoHider final
     {
     public:
         bool changed() const;

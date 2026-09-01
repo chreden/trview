@@ -1,4 +1,4 @@
-#include "Type.h"
+#pragma once
 
 namespace trview
 {

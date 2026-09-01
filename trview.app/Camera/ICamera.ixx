@@ -7,11 +7,10 @@ export module trview.app:ICamera;
 import trview.common;
 
 import :ProjectionMode;
+import :UserSettings;
 
 namespace trview
 {
-    struct UserSettings;
-
     /// Interface for a camera.
     export struct ICamera
     {
