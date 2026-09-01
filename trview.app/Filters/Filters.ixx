@@ -1,21 +1,25 @@
-#pragma once
+module;
 
-#include <vector>
-#include <string>
-#include <map>
-#include <unordered_map>
-#include <variant>
-#include <ranges>
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
 
-#include "../Windows/RowCounter.h"
-#include "IFilterable.h"
-#include "../UI/Modal.h"
+export module trview.app:Filters;
+
+import std;
+
+import trview.common;
+
+import :IFilterable;
+import :RowCounter;
+import :Modal;
+import :imgui;
 
 namespace trview
 {
     struct IFilterStore;
 
-    enum class CompareOp
+    export enum class CompareOp
     {
         Equal,
         NotEqual,
@@ -32,19 +36,19 @@ namespace trview
         Matches
     };
 
-    enum class Op
+    export enum class Op
     {
         And,
         Or
     };
 
-    enum class EditMode
+    export enum class EditMode
     {
         Read,
         ReadWrite
     };
 
-    class Filters
+    export class Filters
     {
     public:
         struct Names
@@ -223,15 +227,15 @@ namespace trview
         Modal<ModalState> _save_modal;
     };
 
-    constexpr std::string to_string(CompareOp op) noexcept;
-    constexpr std::string to_string(Op op) noexcept;
+    export constexpr std::string to_string(CompareOp op) noexcept;
+    export constexpr std::string to_string(Op op) noexcept;
 
     /// <summary>
     /// Get the <see cref="CompareOp" />s that a type supports.
     /// </summary>
     /// <typeparam name="T">The type to check.</typeparam>
     /// <returns>Supported <see cref="CompareOp"/>s</returns>
-    template <typename T>
+    export template <typename T>
     constexpr std::vector<CompareOp> compare_ops() noexcept;
 
     /// <summary>
@@ -239,10 +243,10 @@ namespace trview
     /// </summary>
     /// <typeparam name="T">Type to check.</typeparam>
     /// <returns>The acceptable options. Emtpy means that there are no restrictions.</returns>
-    template <typename T>
+    export template <typename T>
     constexpr std::vector<std::string> available_options() noexcept;
 
-    template <typename T>
+    export template <typename T>
     std::unordered_map<std::string, Filters::Toggle> default_hide(const std::vector<std::shared_ptr<T>>& filtered_entries);
 }
 

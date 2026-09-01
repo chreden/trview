@@ -1,8 +1,14 @@
-#include "TransparencyBuffer.h"
-#include <trview.app/Camera/ICamera.h>
-#include <trview.app/Graphics/ITextureStorage.h>
-#include <trview.app/Geometry/MeshVertex.h>
-#include <trview.app/Geometry/IMesh.h>
+module;
+
+#include <d3d11.h>
+#include <wrl/client.h>
+
+module trview.app:TransparencyBuffer;
+
+import :ICamera;
+import :ITextureStorage;
+import :MeshVertex;
+import :IMesh;
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;

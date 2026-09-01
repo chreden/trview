@@ -1,14 +1,17 @@
-#pragma once
+export module trview.app:ModelStorage;
 
-#include <trlevel/ILevel.h>
+import std;
+import std.compat;
 
-#include "IModelStorage.h"
-#include "IModel.h"
+import trlevel;
+
+import :IModel;
+import :IModelStorage;
+import :IMeshStorage;
 
 namespace trview
 {
-    struct IMeshStorage;
-    class ModelStorage final : public IModelStorage
+    export class ModelStorage final : public IModelStorage
     {
     public:
         explicit ModelStorage(const std::shared_ptr<IMeshStorage>& mesh_storage,

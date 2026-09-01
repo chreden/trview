@@ -1,7 +1,5 @@
 #pragma once
 
-#include <trview.common/Messages/IMessageSystem.h>
-
 namespace trview
 {
     namespace messages

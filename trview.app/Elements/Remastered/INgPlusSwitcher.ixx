@@ -1,17 +1,17 @@
-#pragma once
+export module trview.app:INgPlusSwitcher;
 
-namespace trlevel
-{
-    struct ILevel;
-}
+import std;
+import std.compat;
+
+import trlevel;
+
+import :IItem;
+import :ILevel;
+import :IModelStorage;
 
 namespace trview
 {
-    struct IItem;
-    struct ILevel;
-    struct IModelStorage;
-
-    struct INgPlusSwitcher
+    export struct INgPlusSwitcher
     {
         virtual ~INgPlusSwitcher() = 0;
         virtual std::vector<std::shared_ptr<IItem>> extras_for_level(

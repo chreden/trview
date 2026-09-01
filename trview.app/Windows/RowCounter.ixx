@@ -1,8 +1,10 @@
-#pragma once
+export module trview.app:RowCounter;
+
+import std;
 
 namespace trview
 {
-    class RowCounter
+    export class RowCounter
     {
     public:
         RowCounter(const std::string& entry_name, std::size_t maximum_size);

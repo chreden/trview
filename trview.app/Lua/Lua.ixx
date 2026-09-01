@@ -1,26 +1,26 @@
-#pragma once
+module;
 
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
-#include <string>
-#include <vector>
-#include <cstdint>
-#include <trview.common/Event.h>
-#include <functional>
-#include "ILua.h"
-#include "../Routing/IRoute.h"
-#include "../Routing/IRandomizerRoute.h"
-#include "../Settings/UserSettings.h"
-#include "Scriptable/IScriptable.h"
 
-#include <trview.common/Windows/IDialogs.h>
-#include <trview.common/IFiles.h>
+export module trview.app:Lua;
+
+import std;
+
+import trview.common;
+
+import :ILua;
+import :IRoute;
+import :IRandomizerRoute;
+import :IWaypoint;
+import :IScriptable;
+import :IMesh;
 
 namespace trview
 {
     struct IApplication;
 
-    class Lua final : public ILua
+    export class Lua final : public ILua
     {
     public:
         explicit Lua(

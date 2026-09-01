@@ -12,7 +12,7 @@ namespace trview
 {
     namespace graphics
     {
-        class SamplerState final : public ISamplerState
+        export class SamplerState final : public ISamplerState
         {
         public:
             SamplerState(

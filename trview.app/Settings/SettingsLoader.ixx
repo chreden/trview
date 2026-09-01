@@ -1,11 +1,14 @@
-#pragma once
+export module trview.app:SettingsLoader;
 
-#include "ISettingsLoader.h"
-#include <trview.common/IFiles.h>
+import std;
+
+import trview.common;
+
+import :ISettingsLoader;
 
 namespace trview
 {
-    class SettingsLoader : public ISettingsLoader
+    export class SettingsLoader : public ISettingsLoader
     {
     public:
         virtual ~SettingsLoader() = default;

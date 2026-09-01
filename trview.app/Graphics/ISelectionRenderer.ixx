@@ -1,11 +1,11 @@
-#pragma once
+export module trview.app:ISelectionRenderer;
 
-#include <trview.app/Camera/ICamera.h>
-#include <trview.app/Geometry/IRenderable.h>
+import :ICamera;
+import :IRenderable;
 
 namespace trview
 {
-    struct ISelectionRenderer
+    export struct ISelectionRenderer
     {
         virtual ~ISelectionRenderer() = 0;
 

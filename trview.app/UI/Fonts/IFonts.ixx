@@ -1,9 +1,11 @@
+module;
+
+#include <external/imgui/imgui.h>
+
 export module trview.app:IFonts;
 
 import std;
 import :FontSetting;
-
-struct ImFont;
 
 namespace trview
 {

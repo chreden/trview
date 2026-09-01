@@ -1,94 +1,37 @@
-#include "Application.h"
+module;
 
-#include <trlevel/Level.h>
-#include <trlevel/Decrypter.h>
-#include <trlevel/Pack.h>
-#include <trlevel/Hasher.h>
-#include <trview.common/Files.h>
-#include <trview.common/Logs/Log.h>
-#include <trview.common/windows/Clipboard.h>
-#include <trview.common/Windows/Dialogs.h>
-#include <trview.common/Windows/Shell.h>
-
-#include <trview.graphics/Sprite.h>
-#include <trview.graphics/ShaderStorage.h>
-#include <trview.graphics/DeviceWindow.h>
-#include <trview.graphics/RenderTarget.h>
-#include <trview.graphics/Buffer.h>
-#include <trview.graphics/Sampler/SamplerState.h>
-#include <trview.input/WindowTester.h>
-
+#include <Windows.h>
+#include <d3d11.h>
 #include "Resources/resource.h"
-#include "Resources/DefaultShaders.h"
-#include "Resources/DefaultTextures.h"
 
-#include "Elements/TypeInfoLookup.h"
-#include "Elements/CameraSink/CameraSink.h"
-#include "Elements/Flyby/Flyby.h"
-#include "Elements/Flyby/FlybyNode.h"
-#include "Elements/Item.h"
-#include "Elements/Light.h"
-#include "Elements/Trigger.h"
-#include "Elements/Remastered/NgPlusSwitcher.h"
-#include "Elements/StaticMesh.h"
-#include "Elements/Sector.h"
-#include "Elements/SoundSource/SoundSource.h"
-#include "Elements/Level.h"
-#include "Filters/FilterStore.h"
-#include "Graphics/TextureStorage.h"
-#include "Geometry/Mesh.h"
-#include "Geometry/Picking.h"
-#include "Geometry/TransparencyBuffer.h"
-#include "Geometry/Model/Model.h"
-#include "Geometry/Model/ModelStorage.h"
-#include "Graphics/LevelTextureStorage.h"
-#include "Graphics/MeshStorage.h"
-#include "Graphics/SelectionRenderer.h"
-#include "Graphics/SectorHighlight.h"
-#include "Lua/Scriptable/Scriptable.h"
-#include "Lua/Lua.h"
-#include "Menus/FileMenu.h"
-#include "Menus/ImGuiFileMenu.h"
-#include "Menus/UpdateChecker.h"
-#include "Routing/Waypoint.h"
-#include "Routing/RandomizerRoute.h"
-#include "Routing/Route.h"
-#include "Settings/SettingsLoader.h"
-#include "Settings/StartupOptions.h"
-#include "Sound/SoundStorage.h"
-#include "UI/CameraControls.h"
-#include "UI/ContextMenu.h"
-#include "UI/SettingsWindow.h"
-#include "UI/ViewerUI.h"
-#include "UI/ViewOptions.h"
-#include "UI/MapRenderer.h"
-#include "Windows/ItemsWindow.h"
-#include "Windows/LightsWindow.h"
-#include "Windows/RoomsWindow.h"
-#include "Windows/RouteWindow.h"
-#include "Windows/TriggersWindow.h"
-#include "Windows/Viewer.h"
-#include "Windows/Log/LogWindow.h"
-#include "UI/DX11ImGuiBackend.h"
-#include "Windows/Textures/TexturesWindow.h"
-#include "Windows/CameraSink/CameraSinkWindow.h"
-#include "Windows/Console/Console.h"
-#include "Plugins/Plugins.h"
-#include "Plugins/Plugin.h"
-#include "Windows/Plugins/PluginsWindow.h"
-#include "Tools/Toolbar.h"
-#include "UI/Fonts/Fonts.h"
-#include "Windows/Sounds/SoundsWindow.h"
-#include "Windows/Statics/StaticsWindow.h"
-#include "Windows/Windows.h"
-#include "Windows/About/AboutWindow.h"
-#include "Windows/Diff/DiffWindow.h"
-#include "Windows/Pack/PackWindow.h"
-#include "UI/LevelInfo.h"
-#include "Elements/Level/LevelNameLookup.h"
+export module trview.app:ApplicationCreate;
 
-#include <trview.common/Messages/MessageSystem.h>
-#include <trview.common/Windows/Shortcuts.h>
+import std;
+import std.compat;
+
+import trlevel;
+import trview.common;
+import trview.graphics;
+
+import :Application;
+import :IRandomizerRoute;
+import :UserSettings;
+import :TypeInfoLookup;
+import :SettingsLoader;
+import :FilterStore;
+import :TextureStorage;
+import :StartupOptions;
+import :DefaultShaders;
+import :DefaultTextures;
+import :TransparencyBuffer;
+import :IMesh;
+import :Mesh;
+import :Route;
+import :Waypoint;
+import :SelectionRenderer;
+import :RandomizerRoute;
+import :Level;
+import :StaticMesh;
 
 namespace trview
 {

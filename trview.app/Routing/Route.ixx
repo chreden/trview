@@ -1,18 +1,22 @@
-#pragma once
+export module trview.app:Route;
 
-#include <trview.app/Graphics/ISelectionRenderer.h>
-#include <trview.app/Graphics/ILevelTextureStorage.h>
-#include <trview.app/Routing/IRoute.h>
-#include <trview.app/Camera/ICamera.h>
-#include <trview.common/IFiles.h>
-#include "../Settings/UserSettings.h"
+import std;
+import std.compat;
+
+import trview.common;
+
+import :IRoute;
+import :ISelectionRenderer;
+import :ILevelTextureStorage;
+import :ICamera;
+import :UserSettings;
 
 namespace trview
 {
     struct ILevel;
 
     /// A series of waypoints.
-    class Route final : public IRoute, public std::enable_shared_from_this<Route>
+    export class Route final : public IRoute, public std::enable_shared_from_this<Route>
     {
     public:
         explicit Route(const std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source, const UserSettings& settings);

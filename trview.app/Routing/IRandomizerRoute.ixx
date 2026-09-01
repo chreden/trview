@@ -6,10 +6,10 @@ import trview.common;
 
 import :RandomizerSettings;
 import :IRoute;
+import :IWaypoint;
 
 namespace trview
 {
-    struct IWaypoint;
     export struct IRandomizerRoute : public IRoute
     {
         struct FileData final

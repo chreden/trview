@@ -11,7 +11,7 @@ import :IHasher;
 
 namespace trlevel
 {
-    class Hasher final : public IHasher
+    export class Hasher final : public IHasher
     {
     public:
         Hasher();

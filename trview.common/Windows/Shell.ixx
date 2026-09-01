@@ -5,7 +5,7 @@ import :IShell;
 
 namespace trview
 {
-    class Shell final : public IShell
+    export class Shell final : public IShell
     {
     public:
         virtual ~Shell() = default;

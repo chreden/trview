@@ -1,15 +1,16 @@
-#pragma once
+export module trview.app:FilterStore;
 
-#include <trview.common/IFiles.h>
-#include <trview.common/Messages/IRecipient.h>
+import std;
 
-#include "IFilterStore.h"
-#include "Filters.h"
-#include "../Settings/UserSettings.h"
+import trview.common;
+
+import :IFilterStore;
+import :UserSettings;
+import :Filters;
 
 namespace trview
 {
-    class FilterStore final : public IFilterStore, public IRecipient
+    export class FilterStore final : public IFilterStore, public IRecipient
     {
     public:
         explicit FilterStore(const std::shared_ptr<IFiles>& files, const UserSettings& settings);

@@ -1,10 +1,13 @@
-#pragma once
+export module trview.app:ILua;
+
+import std;
+
+import trview.common;
 
 namespace trview
 {
     struct IApplication;
-
-    struct ILua
+    export struct ILua
     {
         virtual ~ILua() = 0;
         virtual void do_file(const std::string& file) = 0;

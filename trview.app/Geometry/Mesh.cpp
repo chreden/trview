@@ -1,5 +1,15 @@
-#include "Mesh.h"
-#include <ranges>
+module;
+
+#include <d3d11.h>
+#include <wrl/client.h>
+#include <SimpleMath.h>
+
+module trview.app:Mesh;
+
+import std;
+import std.compat;
+
+import :MeshVertex;
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;

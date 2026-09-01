@@ -7,11 +7,10 @@ import trview.common;
 
 import :IWaypoint;
 import :PickResult;
+import :UserSettings;
 
 namespace trview
 {
-    struct UserSettings;
-
     /// <summary>
     /// A route is a series of waypoints with notes.
     /// </summary>

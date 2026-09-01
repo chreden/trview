@@ -1,13 +1,12 @@
-#pragma once
+export module trview.app:IFilterStore;
 
-#include <map>
-#include <string>
+import std;
 
-#include "Filters.h"
+import :Filters;
 
 namespace trview
 {
-    struct IFilterStore
+    export struct IFilterStore
     {
         virtual ~IFilterStore() = 0;
         virtual void add(const std::string& key, const Filters::Filter& filter) = 0;

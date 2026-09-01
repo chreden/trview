@@ -1,4 +1,10 @@
-#pragma once
+module;
+
+#include <external/imgui/imgui.h>
+
+export module trview.app:imgui;
+
+import std;
 
 namespace trview
 {

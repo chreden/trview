@@ -1,44 +1,34 @@
-#pragma once
+module;
 
-#include <memory>
 #include <wrl/client.h>
 #include <d3d11.h>
-#include <vector>
-#include <set>
 
-#include <trlevel/ILevel.h>
-#include "ILevel.h"
+export module trview.app:Level;
 
-#include <trview.graphics/Sampler/ISamplerState.h>
+import std;
+import std.compat;
 
-#include "../Geometry/ITransparencyBuffer.h"
-#include "../Graphics/ISelectionRenderer.h"
-#include "../Graphics/IMeshStorage.h"
-#include "Remastered/INgPlusSwitcher.h"
+import trlevel;
+import trview.common;
+import trview.graphics;
 
-#include <trview.graphics/IBuffer.h>
-#include <trview.common/TokenStore.h>
-
-#include "SoundSource/ISoundSource.h"
-#include "Flyby/IFlyby.h"
-
-#include <trview.common/Messages/IMessageSystem.h>
-
-#include "Level/ILevelNameLookup.h"
+import :ILevel;
+import :ITransparencyBuffer;
+import :ISelectionRenderer;
+import :IMeshStorage;
+import :INgPlusSwitcher;
+import :ISoundSource;
+import :IFlyby;
+import :ILevelNameLookup;
+import :Messages;
+import :ILevelTextureStorage;
 
 namespace trview
 {
-    struct ILevelTextureStorage;
     struct ICamera;
     struct ISoundStorage;
 
-    namespace graphics
-    {
-        struct IShaderStorage;
-        struct IShader;
-    }
-
-    class Level final : public ILevel, public std::enable_shared_from_this<ILevel>
+    export class Level final : public ILevel, public std::enable_shared_from_this<ILevel>
     {
     public:
         Level(const std::shared_ptr<graphics::IDevice>& device,

@@ -1,15 +1,16 @@
-#pragma once
+export module trview.app:Waypoint;
 
-#include <trview.app/Geometry/IMesh.h>
-#include <variant>
-#include "IWaypoint.h"
+import std;
+
+import :IWaypoint;
+import :IMesh;
 
 namespace trview
 {
     /// <summary>
     /// A waypoint is an entry in a route.
     /// </summary>
-    class Waypoint final : public IWaypoint
+    export class Waypoint final : public IWaypoint
     {
     public:
         /// <summary>

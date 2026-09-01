@@ -25,6 +25,12 @@ export import :Resources;
 export import :Activity;
 export import :ILog;
 export import :Json;
+export import :MessageSystem;
+export import :Shortcuts;
+export import :Dialogs;
+export import :Clipboard;
+export import :IShell;
+export import :Shell;
 
 export import :MockClipboard;
 export import :MockDialogs;

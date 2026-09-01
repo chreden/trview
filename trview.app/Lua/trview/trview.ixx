@@ -1,16 +1,16 @@
-#pragma once
+module;
 
 #include <external/lua/src/lua.h>
-#include <external/lua/src/lauxlib.h>
 
-#include <trview.common/IFiles.h>
-#include <trview.common/Windows/IDialogs.h>
+export module trview.app:trview;
 
-#include "../../Elements/ILevel.h"
-#include "../../Routing/IRoute.h"
-#include "../../Routing/IRandomizerRoute.h"
-#include "../../Settings/UserSettings.h"
-#include "../Scriptable/IScriptable.h"
+import trview.common;
+
+import :ILevel;
+import :IRoute;
+import :IRandomizerRoute;
+import :UserSettings;
+import :IScriptable;
 
 namespace trview
 {
@@ -18,7 +18,7 @@ namespace trview
 
     namespace lua
     {
-        void trview_register(lua_State* L,
+        export void trview_register(lua_State* L,
             IApplication* application,
             const IRoute::Source& route_source,
             const IRandomizerRoute::Source& randomizer_route_source,
@@ -27,6 +27,6 @@ namespace trview
             const std::shared_ptr<IDialogs>& dialogs,
             const std::shared_ptr<IFiles>& files,
             const IMesh::Source& mesh_source);
-        void set_settings(const UserSettings& settings);
+        export void set_settings(const UserSettings& settings);
     }
 }

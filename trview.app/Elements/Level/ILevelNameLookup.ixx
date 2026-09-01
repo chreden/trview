@@ -1,19 +1,15 @@
-#pragma once
+export module trview.app:ILevelNameLookup;
 
-#include <vector>
-#include <memory>
-#include <optional>
-#include <string>
+import std;
+import std.compat;
 
-namespace trlevel
-{
-    struct ILevel;
-}
+import trlevel;
+
+import :ILevel;
 
 namespace trview
 {
-    struct ILevel;
-    struct ILevelNameLookup
+    export struct ILevelNameLookup
     {
         struct Name
         {

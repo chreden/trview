@@ -1,12 +1,12 @@
-#pragma once
+export module trview.app:TypeInfoLookup;
 
-#include "ITypeInfoLookup.h"
-#include <unordered_map>
-#include <unordered_set>
+import std;
+
+import :ITypeInfoLookup;
 
 namespace trview
 {
-    class TypeInfoLookup : public ITypeInfoLookup
+    export class TypeInfoLookup : public ITypeInfoLookup
     {
     public:
         explicit TypeInfoLookup(const std::string& type_name_json, const std::optional<std::string>& extra_type_name_json);

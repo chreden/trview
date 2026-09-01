@@ -1,8 +1,16 @@
-#pragma once
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+
+export module trview.app:Modal;
+
+import std;
 
 namespace trview
 {
-    template <typename State>
+    export template <typename State>
     class Modal
     {
     public:

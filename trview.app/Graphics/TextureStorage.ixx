@@ -1,8 +1,10 @@
-#pragma once
+export module trview.app:TextureStorage;
 
-#include <trview.app/Graphics/ITextureStorage.h>
-#include <unordered_map>
-#include <trview.graphics/IDevice.h>
+import std;
+
+import trview.graphics;
+
+import :ITextureStorage;
 
 namespace trview
 {

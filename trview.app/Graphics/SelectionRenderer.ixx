@@ -1,20 +1,23 @@
+module;
+
+#include <d3d11.h>
+#include <wrl/client.h>
+#include <SimpleMath.h>
+
+export module trview.app:SelectionRenderer;
+
 /// @file SelectionRenderer.h
 /// @brief Draws an outline around an object.
 /// 
 /// Draws an outline around an object to help the user find the object and know which one
 /// is selected.
 
-#pragma once
+import std;
 
-#include <functional>
-#include <memory>
-#include <d3d11.h>
-#include <wrl/client.h>
-#include <SimpleMath.h>
+import trview.graphics;
 
-#include <trview.app/Geometry/ITransparencyBuffer.h>
-#include <trview.graphics/IRenderTarget.h>
-#include "ISelectionRenderer.h"
+import :ITransparencyBuffer;
+import :ISelectionRenderer;
 
 namespace trview
 {

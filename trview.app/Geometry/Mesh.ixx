@@ -1,17 +1,24 @@
-#pragma once
+module;
 
-#include <unordered_set>
-#include <memory>
-#include <trlevel/trtypes.h>
-#include <trlevel/LevelVersion.h>
-#include <trview.graphics/IDevice.h>
-#include "IMesh.h"
+#include <d3d11.h>
+#include <wrl/client.h>
+
+export module trview.app:Mesh;
+
+import std;
+import std.compat;
+
+import trlevel;
+import trview.graphics;
+
+import :IMesh;
+import :ITextureStorage;
 
 namespace trview
 {
     struct ILevelTextureStorage;
 
-    class Mesh : public IMesh
+    export class Mesh : public IMesh
     {
     public:
         /// Create a mesh using the specified vertices and indices.

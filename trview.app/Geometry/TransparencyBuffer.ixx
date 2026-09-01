@@ -1,22 +1,24 @@
-#pragma once
+module;
 
-#include <vector>
-#include <SimpleMath.h>
-#include <wrl/client.h>
 #include <d3d11.h>
-#include <trview.app/Geometry/MeshVertex.h>
-#include <trview.graphics/IDevice.h>
-#include <trview.graphics/Texture.h>
-#include "ITransparencyBuffer.h"
+#include <wrl/client.h>
+#include <SimpleMath.h>
+
+export module trview.app:TransparencyBuffer;
+
+import std;
+
+import trview.graphics;
+
+import :ITransparencyBuffer;
+import :ITextureStorage;
+import :MeshVertex;
 
 namespace trview
 {
-    struct ITextureStorage;
-    struct ICamera;
-
     // Collects transparent triangles to be rendered and provides
     // the buffers required for rendering.
-    class TransparencyBuffer final : public ITransparencyBuffer
+    export class TransparencyBuffer final : public ITransparencyBuffer
     {
     public:
         explicit TransparencyBuffer(const std::shared_ptr<graphics::IDevice>& device, const std::weak_ptr<ITextureStorage>& level_texture_storage);

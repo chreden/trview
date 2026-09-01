@@ -1,12 +1,25 @@
-#include "Application.h"
-#include <trlevel/LevelEncryptedException.h>
-#include "UserCancelledException.h"
-#include "Lua/trview/trview.h"
-#include "Windows/IWindows.h"
+module;
+
+#include <SimpleMath.h>
+#include <external/imgui/imgui.h>
+
 #include "Resources/resource.h"
-#include "Elements/SoundSource/ISoundSource.h"
-#include "Elements/Flyby/IFlybyNode.h"
-#include "Messages/Messages.h"
+
+module trview.app:Application;
+
+// #include "Elements/SoundSource/ISoundSource.h"
+// #include "Elements/Flyby/IFlybyNode.h"
+
+import trlevel;
+
+import trview.common;
+
+import :IWindows;
+import :Messages;
+import :IWaypoint;
+import :UserCancelledException;
+import :Lua;
+import :trview;
 
 using namespace DirectX::SimpleMath;
 

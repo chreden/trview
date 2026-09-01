@@ -1,13 +1,5 @@
 #pragma once
 
-#include <external/imgui/imgui.h>
-#include <external/imgui/imgui_internal.h>
-#include <external/imgui/misc/cpp/imgui_stdlib.h>
-#include <charconv>
-#include <ranges>
-
-#include "../trview_imgui.h"
-
 namespace trview
 {
     constexpr std::string to_string(CompareOp op) noexcept

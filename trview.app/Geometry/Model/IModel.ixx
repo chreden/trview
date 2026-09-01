@@ -1,11 +1,20 @@
-#pragma once
+module;
 
-#include "../PickResult.h"
+#include <SimpleMath.h>
+
+export module trview.app:IModel;
+
+import std;
+import std.compat;
+
+import trlevel;
+
+import :PickResult;
+import :ITransparencyBuffer;
+import :IMesh;
 
 namespace trview
 {
-    struct ITransparencyBuffer;
-    struct IMesh;
     struct IModel
     {
         using Source = std::function<std::shared_ptr<IModel>(const trlevel::tr_model&, const std::vector<std::shared_ptr<IMesh>>&, const std::vector<DirectX::SimpleMath::Matrix>&)>;

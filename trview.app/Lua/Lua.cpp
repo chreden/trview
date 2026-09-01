@@ -1,8 +1,20 @@
-#include "Lua.h"
-#include <trview.common/Strings.h>
-#include "trview/trview.h"
+module;
+
 #include <external/lua/src/lualib.h>
-#include <trview.lua.imgui/inc/trview.lua.imgui.h>
+
+module trview.app:Lua;
+
+import std;
+
+import trview.common;
+import trview.lua.imgui;
+
+import :IRoute;
+import :IRandomizerRoute;
+import :IWaypoint;
+import :IScriptable;
+
+#include "trview/trview.h"
 #include "Route/Lua_Waypoint.h"
 
 namespace trview
