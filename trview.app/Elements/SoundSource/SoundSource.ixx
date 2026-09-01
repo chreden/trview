@@ -1,12 +1,15 @@
-#pragma once
+export module trview.app:SoundSource;
 
-#include "ISoundSource.h"
-#include <trlevel/LevelVersion.h>
-#include "../../Geometry/IMesh.h"
+import trlevel;
+import trview.graphics;
+
+import :ISoundSource;
+import :IMesh;
+import :ITextureStorage;
 
 namespace trview
 {
-    class SoundSource final : public ISoundSource, public std::enable_shared_from_this<ISoundSource>
+    export class SoundSource final : public ISoundSource, public std::enable_shared_from_this<ISoundSource>
     {
     public:
         explicit SoundSource(

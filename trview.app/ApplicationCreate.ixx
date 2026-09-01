@@ -32,6 +32,16 @@ import :SelectionRenderer;
 import :RandomizerRoute;
 import :Level;
 import :StaticMesh;
+import :Sector;
+import :Light;
+import :CameraSink;
+import :SoundSource;
+import :FlybyNode;
+import :Flyby;
+import :LevelNameLookup;
+import :LevelTextureStorage;
+import :SoundStorage;
+import :NgPlusSwitcher;
 
 namespace trview
 {

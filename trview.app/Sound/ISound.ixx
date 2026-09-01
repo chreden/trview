@@ -1,4 +1,7 @@
-#pragma once
+export module trview.app:ISound;
+
+import std;
+import std.compat;
 
 namespace trview
 {

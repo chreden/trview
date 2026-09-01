@@ -1,10 +1,13 @@
-#pragma once
+export module trview.app:StaticMesh;
 
-#include <trview.app/Elements/IStaticMesh.h>
+import std;
+import std.compat;
+
+import :IStaticMesh;
 
 namespace trview
 {
-    class StaticMesh final : public IStaticMesh
+    export class StaticMesh final : public IStaticMesh
     {
     public:
         StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, const std::shared_ptr<IMesh>& mesh, const std::weak_ptr<IRoom>& room, const std::weak_ptr<ILevel>& level, const std::shared_ptr<IMesh>& bounding_mesh);

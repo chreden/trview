@@ -1,12 +1,13 @@
-#pragma once
+export module trview.app:LevelNameLookup;
 
-#include <trview.common/IFiles.h>
-#include "ILevelNameLookup.h"
-#include <trlevel/LevelVersion.h>
+import trlevel;
+import trview.common;
+
+import :ILevelNameLookup;
 
 namespace trview
 {
-    class LevelNameLookup final : public ILevelNameLookup
+    export class LevelNameLookup final : public ILevelNameLookup
     {
     public:
         explicit LevelNameLookup(const std::shared_ptr<IFiles>& files, const std::string& level_hashes_json);

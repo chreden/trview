@@ -1,9 +1,9 @@
-#pragma once
+export module trview.app:Light;
 
-#include <memory>
+import std;
 
-#include "ILight.h"
-#include <trview.app/Geometry/IMesh.h>
+import :IMesh;
+import :ILight;
 
 namespace trview
 {

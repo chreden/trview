@@ -1,14 +1,13 @@
-#pragma once
+export module trview.app:ISoundStorage;
 
-#include <cstdint>
-#include <vector>
-#include <memory>
+import std;
+import std.compat;
+
+import :ISound;
 
 namespace trview
 {
-    struct ISound;
-
-    struct ISoundStorage
+    export struct ISoundStorage
     {
         struct Index
         {

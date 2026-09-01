@@ -12,7 +12,7 @@ import :Types;
 
 namespace trlevel
 {
-    class Level : public ILevel
+    export class Level : public ILevel
     {
     public:
         explicit Level(const std::string& filename,

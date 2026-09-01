@@ -1,18 +1,16 @@
-#pragma once
+export module trview.app:NgPlusSwitcher;
 
-#include <cstdint>
-#include <string>
-#include <unordered_map>
+import std;
+import std.compat;
 
-#include <trlevel/LevelVersion.h>
+import trlevel;
 
-#include "INgPlusSwitcher.h"
-
-#include "../IItem.h"
+import :INgPlusSwitcher;
+import :IItem;
 
 namespace trview
 {
-    class NgPlusSwitcher final : public INgPlusSwitcher
+    export class NgPlusSwitcher final : public INgPlusSwitcher
     {
     public:
         NgPlusSwitcher(const IItem::EntitySource& item_source);

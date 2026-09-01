@@ -1,10 +1,10 @@
-#pragma once
+export module trview.app:FlybyNode;
 
-#include "IFlybyNode.h"
+import :IFlybyNode;
 
 namespace trview
 {
-    class FlybyNode final : public IFlybyNode
+    export class FlybyNode final : public IFlybyNode
     {
     public:
         explicit FlybyNode(const trlevel::tr4_flyby_camera& camera, const std::weak_ptr<IFlyby>& flyby, const std::weak_ptr<ILevel>& level);

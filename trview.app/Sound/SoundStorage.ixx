@@ -1,15 +1,13 @@
-#pragma once
+export module trview.app:SoundStorage;
 
-#include <memory>
-#include <unordered_map>
-#include <vector>
+import std;
+import std.compat;
 
-#include "ISoundStorage.h"
-#include "ISound.h"
+import :ISoundStorage;
 
 namespace trview
 {
-    class SoundStorage final : public ISoundStorage
+    export class SoundStorage final : public ISoundStorage
     {
     public:
         explicit SoundStorage(const ISound::Source& sound_source);

@@ -25,3 +25,4 @@ export import :Types;
 export import :Rooms;
 export import :LevelEncryptedException;
 export import :Hasher;
+export import :Pack;

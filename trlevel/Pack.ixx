@@ -7,7 +7,7 @@ import :ILevel;
 
 namespace trlevel
 {
-    class Pack final : public IPack, public std::enable_shared_from_this<IPack>
+    export class Pack final : public IPack, public std::enable_shared_from_this<IPack>
     {
     public:
         explicit Pack(std::basic_ispanstream<uint8_t>& file, const trlevel::ILevel::PackSource& level_source);

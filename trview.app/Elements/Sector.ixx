@@ -1,12 +1,13 @@
-#pragma once
+export module trview.app:Sector;
 
-#include <memory>
-#include <utility>
-#include "ISector.h"
+import std;
+import std.compat;
+
+import :ISector;
 
 namespace trview
 {
-    class Sector final : public ISector
+    export class Sector final : public ISector
     {
     public:
         // Constructs sector object and parses floor data automatically 

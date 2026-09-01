@@ -1,19 +1,15 @@
-#pragma once
+export module trview.app:LevelTextureStorage;
 
-#include <vector>
-#include <array>
-#include <memory>
-#include <unordered_map>
-#include <unordered_set>
-#include <SimpleMath.h>
-#include <trlevel/trtypes.h>
-#include <trlevel/ILevel.h>
-#include <trview.app/Graphics/ILevelTextureStorage.h>
-#include <trview.graphics/IDevice.h>
+import std;
+
+import trlevel;
+import trview.graphics;
+
+import :ILevelTextureStorage;
 
 namespace trview
 {
-    class LevelTextureStorage final : public ILevelTextureStorage
+    export class LevelTextureStorage final : public ILevelTextureStorage
     {
     public:
         explicit LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage);

@@ -1,12 +1,12 @@
-#pragma once
+export module trview.app:Flyby;
 
-#include "IFlyby.h"
-#include "IFlybyNode.h"
-#include "../../Geometry/IMesh.h"
+import :IFlyby;
+import :IFlybyNode;
+import :IMesh;
 
 namespace trview
 {
-    class Flyby final : public IFlyby, public std::enable_shared_from_this<IFlyby>
+    export class Flyby final : public IFlyby, public std::enable_shared_from_this<IFlyby>
     {
     public:
         explicit Flyby(const std::shared_ptr<IMesh>& mesh, const std::weak_ptr<ILevel>& level);

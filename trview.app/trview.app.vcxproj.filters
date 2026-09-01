@@ -375,6 +375,45 @@
     <ClCompile Include="Geometry\Model\IModel.ixx">
       <Filter>Geometry\Model</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\StaticMesh.ixx">
+      <Filter>Elements\StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Sector.ixx">
+      <Filter>Elements\Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Light.ixx">
+      <Filter>Elements\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\CameraSink\CameraSink.ixx">
+      <Filter>Elements\CameraSink</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\SoundSource\SoundSource.ixx">
+      <Filter>Elements\SoundSource</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Flyby\FlybyNode.ixx">
+      <Filter>Elements\Flyby</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Flyby\Flyby.ixx">
+      <Filter>Elements\Flyby</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Level\LevelNameLookup.ixx">
+      <Filter>Elements\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\LevelTextureStorage.ixx">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\ISoundStorage.ixx">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\SoundStorage.ixx">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\ISound.ixx">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Remastered\NgPlusSwitcher.ixx">
+      <Filter>Elements\Remastered</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" Filter="Camera" />
@@ -396,7 +435,6 @@
     <ClInclude Include="UI\ViewOptions.h" Filter="UI" />
     <ClInclude Include="Menus\UpdateChecker.h" Filter="Menus" />
     <ClInclude Include="Camera\CameraInput.h" Filter="Camera" />
-    <ClInclude Include="Graphics\LevelTextureStorage.h" Filter="Graphics" />
     <ClInclude Include="Graphics\MeshStorage.h" Filter="Graphics" />
     <ClInclude Include="Menus\MenuDetector.h" Filter="Menus" />
     <ClInclude Include="Windows\Viewer.h" Filter="Windows" />
@@ -455,7 +493,6 @@
     <ClInclude Include="Mocks\UI\IImGuiBackend.h" Filter="Mocks\UI" />
     <ClInclude Include="UI\IMapRenderer.h" Filter="UI\Minimap" />
     <ClInclude Include="UI\MapRenderer.h" Filter="UI\Minimap" />
-    <ClInclude Include="Elements\Light.h" Filter="Elements\Light" />
     <ClInclude Include="UI\ISettingsWindow.h" Filter="UI\Settings" />
     <ClInclude Include="UI\SettingsWindow.h" Filter="UI\Settings" />
     <ClInclude Include="Filters\Filters.hpp" Filter="Filters" />
@@ -463,7 +500,6 @@
     <ClInclude Include="Menus\FileMenu.h" Filter="Menus" />
     <ClInclude Include="Mocks\Menus\IFileMenu.h" Filter="Mocks\Menus" />
     <ClInclude Include="Windows\Log\LogWindow.h" Filter="Windows\Log" />
-    <ClInclude Include="Elements\CameraSink\CameraSink.h" Filter="Elements\CameraSink" />
     <ClInclude Include="Mocks\Elements\ICameraSink.h" Filter="Mocks\Elements" />
     <ClInclude Include="Windows\Textures\TexturesWindow.h" Filter="Windows\Textures" />
     <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h" Filter="Windows\CameraSink" />
@@ -477,7 +513,6 @@
     <ClInclude Include="Lua\Elements\Trigger\Lua_Trigger.h" Filter="Lua\Elements\Trigger" />
     <ClInclude Include="Lua\Vector3.h" Filter="Lua" />
     <ClInclude Include="Elements\Trigger.h" Filter="Elements\Trigger" />
-    <ClInclude Include="Elements\Sector.h" Filter="Elements\Sector" />
     <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h" Filter="Lua\Elements\Sector" />
     <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h" Filter="Lua\Elements\CameraSink" />
     <ClInclude Include="Windows\Console\Console.h" Filter="Windows\Console" />
@@ -491,7 +526,6 @@
     <ClInclude Include="Mocks\Plugins\IPlugin.h" Filter="Mocks\Plugins" />
     <ClInclude Include="Windows\Plugins\PluginsWindow.h" Filter="Windows\Plugins" />
     <ClInclude Include="Lua\Elements\StaticMesh\Lua_StaticMesh.h" Filter="Lua\Elements\StaticMesh" />
-    <ClInclude Include="Elements\StaticMesh.h" Filter="Elements\StaticMesh" />
     <ClInclude Include="Lua\BoundingBox.h" Filter="Lua" />
     <ClInclude Include="Tools\IToolbar.h" Filter="Tools" />
     <ClInclude Include="Mocks\Tools\IToolbar.h" Filter="Mocks\Tools" />
@@ -505,16 +539,11 @@
     <ClInclude Include="Lua\Scriptable\Scriptable.h" Filter="Lua\Scriptable" />
     <ClInclude Include="Lua\Camera\Lua_Camera.h" Filter="Lua\Camera" />
     <ClInclude Include="Mocks\Lua\IScriptable.h" Filter="Mocks\Lua" />
-    <ClInclude Include="Sound\ISoundStorage.h" Filter="Sound" />
-    <ClInclude Include="Sound\SoundStorage.h" Filter="Sound" />
-    <ClInclude Include="Sound\ISound.h" Filter="Sound" />
     <ClInclude Include="Sound\Sound.h" Filter="Sound" />
     <ClInclude Include="Windows\Sounds\SoundsWindow.h" Filter="Windows\Sounds" />
-    <ClInclude Include="Elements\SoundSource\SoundSource.h" Filter="Elements\SoundSource" />
     <ClInclude Include="Mocks\Elements\ISoundSource.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" Filter="Mocks\Sound" />
     <ClInclude Include="Mocks\Sound\ISound.h" Filter="Mocks\Sound" />
-    <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h" Filter="Elements\Remastered" />
     <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h" Filter="Mocks\Elements" />
     <ClInclude Include="Windows\AutoHider.h" Filter="Windows" />
     <ClInclude Include="Windows\About\AboutWindow.h" Filter="Windows\About" />
@@ -524,10 +553,8 @@
     <ClInclude Include="Geometry\Model\Model.h" Filter="Geometry\Model" />
     <ClInclude Include="Geometry\Model\ModelStorage.ixx" Filter="Geometry\Model" />
     <ClInclude Include="Mocks\Geometry\IModelStorage.h" Filter="Mocks\Geometry" />
-    <ClInclude Include="Elements\Flyby\Flyby.h" Filter="Elements\Flyby" />
     <ClInclude Include="Mocks\Elements\IFlyby.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Elements\IFlybyNode.h" Filter="Mocks\Elements" />
-    <ClInclude Include="Elements\Level\LevelNameLookup.h" Filter="Elements\Level" />
     <ClInclude Include="UI\ILevelInfo.h" Filter="UI" />
     <ClInclude Include="Mocks\UI\ILevelInfo.h" Filter="Mocks\UI" />
     <ClInclude Include="Mocks\Elements\ILevelNameLookup.h" Filter="Mocks\Elements" />
@@ -544,9 +571,6 @@
     <ClInclude Include="Lua\Lua_Matrix.h" Filter="Lua" />
     <ClInclude Include="Mocks\Plugins\IPlugins.h">
       <Filter>Mocks\Plugins</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Flyby\FlybyNode.h">
-      <Filter>Elements\Flyby</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

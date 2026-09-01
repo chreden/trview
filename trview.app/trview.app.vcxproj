@@ -105,11 +105,15 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\Level\ILevelNameLookup.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Elements\Level\LevelNameLookup.h" />
-    <ClInclude Include="Elements\Flyby\Flyby.h" />
-    <ClInclude Include="Elements\Flyby\FlybyNode.h">
+    <ClCompile Include="Elements\Level\LevelNameLookup.ixx">
       <FileType>Document</FileType>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="Elements\Flyby\Flyby.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Elements\Flyby\FlybyNode.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Elements\Flyby\IFlyby.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -117,11 +121,15 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\Remastered\INgPlusSwitcher.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Elements\Remastered\NgPlusSwitcher.h" />
+    <ClCompile Include="Elements\Remastered\NgPlusSwitcher.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Elements\SoundSource\ISoundSource.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Elements\SoundSource\SoundSource.h" />
+    <ClCompile Include="Elements\SoundSource\SoundSource.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Filters\FilterStore.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -239,10 +247,16 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="Settings\UserSettingsPatches.h" />
-    <ClInclude Include="Sound\ISound.h" />
-    <ClInclude Include="Sound\ISoundStorage.h" />
+    <ClCompile Include="Sound\ISound.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Sound\ISoundStorage.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Sound\Sound.h" />
-    <ClInclude Include="Sound\SoundStorage.h" />
+    <ClCompile Include="Sound\SoundStorage.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Tools\IToolbar.h" />
     <ClInclude Include="Type.inl">
       <FileType>Document</FileType>
@@ -310,7 +324,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Camera\ProjectionMode.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Elements\CameraSink\CameraSink.h" />
+    <ClCompile Include="Elements\CameraSink\CameraSink.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Elements\CameraSink\ICameraSink.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -345,7 +361,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\Level.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Elements\Light.h" />
+    <ClCompile Include="Elements\Light.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Elements\PickFilter.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -356,8 +374,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\RoomInfo.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Elements\Sector.h" />
-    <ClInclude Include="Elements\StaticMesh.h" />
+    <ClCompile Include="Elements\Sector.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Elements\StaticMesh.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Elements\Trigger.h" />
     <ClCompile Include="Elements\TypeInfoLookup.ixx">
       <FileType>Document</FileType>
@@ -412,7 +434,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Graphics\ITextureStorage.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Graphics\LevelTextureStorage.h" />
+    <ClCompile Include="Graphics\LevelTextureStorage.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Graphics\MeshStorage.h" />
     <ClInclude Include="Graphics\SectorHighlight.h" />
     <ClCompile Include="Graphics\SelectionRenderer.ixx">
