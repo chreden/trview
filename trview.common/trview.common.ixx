@@ -32,6 +32,7 @@ export import :Clipboard;
 export import :IShell;
 export import :Shell;
 export import :IClipboard;
+export import :LogMessage;
 
 export import :MockClipboard;
 export import :MockDialogs;

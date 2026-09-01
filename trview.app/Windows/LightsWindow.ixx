@@ -1,20 +1,21 @@
-#pragma once
+export module trview.app:LightsWindow;
 
-#include <trview.common/TokenStore.h>
-#include <trview.common/Windows/IClipboard.h>
-#include "../Elements/ILight.h"
-#include "../Filters/Filters.h"
-#include "../Track/Track.h"
-#include "AutoHider.h"
-#include "IWindow.h"
+import std;
 
-#include "../Settings/UserSettings.h"
+import trlevel;
+import trview.common;
 
-#include <trview.common/Messages/IMessageSystem.h>
+import :ILevel;
+import :ILight;
+import :Filters;
+import :Track;
+import :AutoHider;
+import :IWindow;
+import :UserSettings;
 
 namespace trview
 {
-    class LightsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
+    export class LightsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

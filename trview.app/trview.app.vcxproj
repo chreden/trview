@@ -613,15 +613,21 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\IWindows.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Windows\LightsWindow.h" />
-    <ClInclude Include="Windows\Log\LogWindow.h" />
+    <ClCompile Include="Windows\LightsWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Windows\Log\LogWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Windows\Plugins\PluginsWindow.ixx">
       <FileType>Document</FileType>
     </ClCompile>
     <ClCompile Include="Windows\RoomsWindow.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Windows\RouteWindow.h" />
+    <ClCompile Include="Windows\RouteWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Windows\RowCounter.ixx">
       <FileType>Document</FileType>
     </ClCompile>

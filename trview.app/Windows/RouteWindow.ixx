@@ -1,24 +1,19 @@
+export module trview.app:RouteWindow;
 
-#pragma once
+import std;
 
-#include <trview.common/Event.h>
-#include "../Routing/IWaypoint.h"
-#include "../Elements/IItem.h"
-#include "../Elements/Room.h"
-#include <trview.common/Windows/IClipboard.h>
-#include <trview.common/Windows/IDialogs.h>
-#include <trview.common/IFiles.h>
-#include <trview.common/Windows/IShell.h>
-#include <trview.common/Messages/IMessageSystem.h>
-#include "IWindow.h"
+import trview.common;
 
-#include "../Settings/RandomizerSettings.h"
+import :IWaypoint;
+import :IItem;
+import :IRoom;
+import :IWindow;
+import :RandomizerSettings;
+import :IRoute;
 
 namespace trview
 {
-    struct IRoute;
-
-    class RouteWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
+    export class RouteWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

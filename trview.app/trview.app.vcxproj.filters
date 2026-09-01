@@ -466,6 +466,15 @@
     <ClCompile Include="Windows\TriggersWindow.ixx">
       <Filter>Windows\Triggers</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\RouteWindow.ixx">
+      <Filter>Windows\Route</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\LightsWindow.ixx">
+      <Filter>Windows\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Log\LogWindow.ixx">
+      <Filter>Windows\Log</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UI\CameraControls.h" Filter="UI" />
@@ -532,17 +541,14 @@
     <ClInclude Include="UI\ICameraControls.h" Filter="UI" />
     <ClInclude Include="Mocks\UI\ICameraControls.h" Filter="Mocks\UI" />
     <ClInclude Include="Mocks\UI\IMapRenderer.h" Filter="Mocks\UI" />
-    <ClInclude Include="Windows\LightsWindow.h" Filter="Windows\Lights" />
     <ClInclude Include="Mocks\Elements\ILight.h" Filter="Mocks\Elements" />
     <ClInclude Include="trview_imgui.hpp" />
-    <ClInclude Include="Windows\RouteWindow.h" Filter="Windows\Route" />
     <ClInclude Include="UI\DX11ImGuiBackend.h" Filter="UI" />
     <ClInclude Include="Mocks\UI\IImGuiBackend.h" Filter="Mocks\UI" />
     <ClInclude Include="Filters\Filters.hpp" Filter="Filters" />
     <ClInclude Include="Elements\Room.h" Filter="Elements\Room" />
     <ClInclude Include="Menus\FileMenu.h" Filter="Menus" />
     <ClInclude Include="Mocks\Menus\IFileMenu.h" Filter="Mocks\Menus" />
-    <ClInclude Include="Windows\Log\LogWindow.h" Filter="Windows\Log" />
     <ClInclude Include="Mocks\Elements\ICameraSink.h" Filter="Mocks\Elements" />
     <ClInclude Include="Windows\Textures\TexturesWindow.h" Filter="Windows\Textures" />
     <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h" Filter="Windows\CameraSink" />

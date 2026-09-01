@@ -56,6 +56,9 @@ import :ItemsWindow;
 import :RoomsWindow;
 import :SettingsWindow;
 import :TriggersWindow;
+import :RouteWindow;
+import :LightsWindow;
+import :LogWindow;
 
 namespace trview
 {

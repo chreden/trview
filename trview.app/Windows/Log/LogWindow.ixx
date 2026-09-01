@@ -1,13 +1,14 @@
-#pragma once
+export module trview.app:LogWindow;
 
-#include <trview.common/Logs/ILog.h>
-#include <trview.common/IFiles.h>
-#include <trview.common/Windows/IDialogs.h>
-#include "../IWindow.h"
+import std;
+
+import trview.common;
+
+import :IWindow;
 
 namespace trview
 {
-    class LogWindow final : public IWindow
+    export class LogWindow final : public IWindow
     {
     public:
         struct Names
