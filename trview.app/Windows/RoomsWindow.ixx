@@ -1,18 +1,23 @@
-#pragma once
+export module trview.app:RoomsWindow;
 
-#include "IWindow.h"
+import std;
 
-#include <trview.common/Windows/IClipboard.h>
-#include <trview.common/TokenStore.h>
-#include <trview.common/Messages/IMessageSystem.h>
+import trlevel;
+import trview.common;
 
-#include "../Settings/UserSettings.h"
-
-#include "../Elements/IItem.h"
-#include "../UI/IMapRenderer.h"
-#include "../Filters/Filters.h"
-#include "../Track/Track.h"
-#include "AutoHider.h"
+import :IWindow;
+import :IMapRenderer;
+import :IFilterStore;
+import :IItem;
+import :ILight;
+import :ICameraSink;
+import :Filters;
+import :ITrigger;
+import :IStaticMesh;
+import :Track;
+import :UserSettings;
+import :Type;
+import :AutoHider;
 
 namespace trview
 {

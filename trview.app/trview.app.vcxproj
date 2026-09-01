@@ -584,7 +584,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\IMapRenderer.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="UI\ISettingsWindow.h" />
+    <ClCompile Include="UI\ISettingsWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="UI\IViewerUI.h" />
     <ClInclude Include="UI\IViewOptions.h" />
     <ClInclude Include="UI\LevelInfo.h" />
@@ -595,7 +597,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="UI\RoomNavigator.h" />
-    <ClInclude Include="UI\SettingsWindow.h" />
+    <ClCompile Include="UI\SettingsWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="UI\Tooltip.h" />
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UI\ViewOptions.h" />
@@ -614,7 +618,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\Plugins\PluginsWindow.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Windows\RoomsWindow.h" />
+    <ClCompile Include="Windows\RoomsWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Windows\RouteWindow.h" />
     <ClCompile Include="Windows\RowCounter.ixx">
       <FileType>Document</FileType>

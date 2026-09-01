@@ -53,6 +53,8 @@ import :MapRenderer;
 import :Camera;
 import :PluginsWindow;
 import :ItemsWindow;
+import :RoomsWindow;
+import :SettingsWindow;
 
 namespace trview
 {

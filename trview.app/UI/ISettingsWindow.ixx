@@ -1,11 +1,14 @@
-#pragma once
+export module trview.app:ISettingsWindow;
 
-#include <trview.common/Event.h>
-#include "../Settings/FontSetting.h"
+import std;
+
+import trview.common;
+
+import :FontSetting;
 
 namespace trview
 {
-    struct ISettingsWindow
+    export struct ISettingsWindow
     {
         virtual ~ISettingsWindow() = 0;
         Event<std::string, FontSetting> on_font;

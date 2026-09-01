@@ -1,24 +1,23 @@
+export module trview.app:SettingsWindow;
+
 /// @file SettingsWindow.h
 /// @brief UI window for program level settings.
 
-#pragma once
+import std;
 
-#include "ISettingsWindow.h"
-#include "../Settings/UserSettings.h"
+import trview.common;
+import trview.graphics;
 
-#include <trview.common/Windows/IShell.h>
-#include <trview.common/Windows/IDialogs.h>
-#include "Fonts/IFonts.h"
-
-#include <trview.common/Messages/IMessageSystem.h>
-#include <trview.common/Messages/IRecipient.h>
+import :ISettingsWindow;
+import :UserSettings;
+import :IFonts;
+import :ITextureStorage;
 
 namespace trview
 {
-    struct ITextureStorage;
 
     /// UI window for program level settings.
-    class SettingsWindow final : public ISettingsWindow, public IRecipient
+    export class SettingsWindow final : public ISettingsWindow, public IRecipient
     {
     public:
         struct Names
