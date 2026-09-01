@@ -463,6 +463,9 @@
     <ClCompile Include="UI\SettingsWindow.ixx">
       <Filter>UI\Settings</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\TriggersWindow.ixx">
+      <Filter>Windows\Triggers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UI\CameraControls.h" Filter="UI" />
@@ -532,7 +535,6 @@
     <ClInclude Include="Windows\LightsWindow.h" Filter="Windows\Lights" />
     <ClInclude Include="Mocks\Elements\ILight.h" Filter="Mocks\Elements" />
     <ClInclude Include="trview_imgui.hpp" />
-    <ClInclude Include="Windows\TriggersWindow.h" Filter="Windows\Triggers" />
     <ClInclude Include="Windows\RouteWindow.h" Filter="Windows\Route" />
     <ClInclude Include="UI\DX11ImGuiBackend.h" Filter="UI" />
     <ClInclude Include="Mocks\UI\IImGuiBackend.h" Filter="Mocks\UI" />

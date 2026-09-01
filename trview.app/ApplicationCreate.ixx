@@ -55,6 +55,7 @@ import :PluginsWindow;
 import :ItemsWindow;
 import :RoomsWindow;
 import :SettingsWindow;
+import :TriggersWindow;
 
 namespace trview
 {

@@ -1,23 +1,24 @@
+export module trview.app:TriggersWindow;
+
 /// @file TriggersWindow.h
 /// @brief Used to show and filter the triggers in the level.
 
-#pragma once
+import std;
 
-#include <trview.common/Windows/IClipboard.h>
-#include <trview.common/TokenStore.h>
-#include <trview.common/Messages/IMessageSystem.h>
-#include "../Filters/Filters.h"
-#include "../Track/Track.h"
+import trlevel;
+import trview.common;
 
-#include "IWindow.h"
-#include "../Elements/IItem.h"
-#include "../Elements/ITrigger.h"
-#include "AutoHider.h"
-#include "../Settings/UserSettings.h"
+import :Filters;
+import :Track;
+import :IWindow;
+import :IItem;
+import :ITrigger;
+import :AutoHider;
+import :UserSettings;
 
 namespace trview
 {
-    class TriggersWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
+    export class TriggersWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

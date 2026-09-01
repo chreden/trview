@@ -627,7 +627,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ClCompile>
     <ClInclude Include="Windows\Statics\StaticsWindow.h" />
     <ClInclude Include="Windows\Textures\TexturesWindow.h" />
-    <ClInclude Include="Windows\TriggersWindow.h" />
+    <ClCompile Include="Windows\TriggersWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Windows\Viewer.h" />
     <ClInclude Include="Windows\WindowResizer.h" />
   </ItemGroup>
