@@ -1,23 +1,24 @@
-#pragma once
+export module trview.app:SoundsWindow;
 
-#include <trview.common/TokenStore.h>
-#include <trview.common/Messages/IMessageSystem.h>
+import std;
+import std.compat;
 
-#include "../../Filters/Filters.h"
-#include "../AutoHider.h"
-#include "../../Settings/UserSettings.h"
+import trview.common;
+import trlevel;
 
-#include <trlevel/LevelVersion.h>
-#include "../../Elements/SoundSource/ISoundSource.h"
-#include "../../Sound/ISoundStorage.h"
-
-#include "../IWindow.h"
+import :IWindow;
+import :ISoundSource;
+import :IFilterStore;
+import :ISoundStorage;
+import :Filters;
+import :AutoHider;
+import :UserSettings;
 
 namespace trview
 {
     struct ILevel;
 
-    class SoundsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
+    export class SoundsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

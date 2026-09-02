@@ -1,16 +1,18 @@
-/// @file CameraPosition.h
-/// @brief Displays the camera position on the screen.
+module;
 
-#pragma once
-
-#include <optional>
 #include <SimpleMath.h>
-#include <trview.common/Event.h>
+#include <external/imgui/imgui.h>
+
+export module trview.app:CameraPosition;
+
+import std;
+
+import trview.common;
 
 namespace trview
 {
     /// Displays the camera position on the screen.
-    class CameraPosition final
+    export class CameraPosition final
     {
     public:
         struct Names

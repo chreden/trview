@@ -1,13 +1,13 @@
-#pragma once
+export module trview.app:IContextMenu;
 
-#include <trview.common/Event.h>
-#include "../Elements/ITrigger.h"
+import trview.common;
+
+import :ITrigger;
+import :IWindow;
 
 namespace trview
 {
-    struct IWindow;
-
-    struct IContextMenu
+    export struct IContextMenu
     {
         enum class CopyType
         {

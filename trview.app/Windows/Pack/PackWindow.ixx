@@ -1,12 +1,13 @@
-#pragma once
+export module trview.app:PackWindow;
 
-#include "../IWindow.h"
-#include <trview.common/Messages/IMessageSystem.h>
-#include <trlevel/IPack.h>
+import trlevel;
+import trview.common;
+
+import :IWindow;
 
 namespace trview
 {
-    class PackWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
+    export class PackWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         explicit PackWindow(const std::shared_ptr<IFiles>& files, const std::shared_ptr<IDialogs>& dialogs, const std::weak_ptr<IMessageSystem>& messaging);

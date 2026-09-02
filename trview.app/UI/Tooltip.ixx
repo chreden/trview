@@ -1,7 +1,8 @@
-#pragma once
+export module trview.app:Tooltip;
 
-#include <string>
-#include <trview.common/Colour.h>
+import std;
+
+import trview.common;
 
 namespace trview
 {

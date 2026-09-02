@@ -1,25 +1,25 @@
+export module trview.app:GoTo;
+
 /// @file GoToRoom.h
 /// @brief UI element that allows the user to type in a number to focus on that.
 /// 
 /// Creates a text box that can be activated with a shortcut. The user can then type in a
 /// room or item number and the camera will be focused on that room.
 
-#pragma once
+import std;
+import std.compat;
 
-#include <cstdint>
-#include <variant>
-#include <string>
-#include <trview.common/Event.h>
+import trview.common;
+
+import :IItem;
+import :IRoom;
+import :ITrigger;
 
 namespace trview
 {
-    struct IItem;
-    struct IRoom;
-    struct ITrigger;
-
     /// This window presents the user with a box where they can enter the number of the thing
     /// that they want to go to. Then when they press enter, that will be the selected.
-    class GoTo final
+    export class GoTo final
     {
     public:
         struct GoToItem final

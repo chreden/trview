@@ -1,18 +1,16 @@
-#pragma once
+export module trview.app:StaticsWindow;
 
-#include <vector>
+import std;
 
-#include <trview.common/TokenStore.h>
-#include <trview.common/Windows/IClipboard.h>
-#include <trview.common/Messages/IMessageSystem.h>
+import trview.common;
 
-#include "../../Elements/IRoom.h"
-#include "../../Elements/IStaticMesh.h"
-#include "../../Filters/Filters.h"
-#include "../../Settings/UserSettings.h"
-#include "../../Track/Track.h"
-#include "../AutoHider.h"
-#include "../IWindow.h"
+import :IWindow;
+import :IRoom;
+import :IFilterStore;
+import :IStaticMesh;
+import :AutoHider;
+import :UserSettings;
+import :Track;
 
 namespace trview
 {

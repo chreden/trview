@@ -1,26 +1,31 @@
-#pragma once
+export module trview.app:IViewerUI;
 
-#include <memory>
+import std;
+import std.compat;
 
-#include <trview.app/Elements/ISector.h>
-#include <trview.app/Geometry/PickInfo.h>
-#include <trview.app/Settings/UserSettings.h>
-#include "IContextMenu.h"
+import trview.common;
 
-#include <trview.common/Event.h>
-
+import :PickInfo;
+import :UserSettings;
+import :ISector;
+import :ICamera;
+import :IContextMenu;
+import :FontSetting;
+import :PickResult;
+import :ILevel;
+import :IWindow;
 
 namespace trview
 {
     struct IRoom;
 
-    enum class Tool
+    export enum class Tool
     {
         None,
         Measure
     };
 
-    struct IViewerUI
+    export struct IViewerUI
     {
         virtual ~IViewerUI() = 0;
 

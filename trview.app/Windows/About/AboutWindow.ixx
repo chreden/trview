@@ -1,10 +1,10 @@
-#pragma once
+export module trview.app:AboutWindow;
 
-#include "../IWindow.h"
+import :IWindow;
 
 namespace trview
 {
-    class AboutWindow final : public IWindow
+    export class AboutWindow final : public IWindow
     {
     public:
         virtual ~AboutWindow() = default;

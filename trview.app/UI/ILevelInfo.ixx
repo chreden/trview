@@ -1,13 +1,14 @@
-#pragma once
+export module trview.app:ILevelInfo;
 
-#include <memory>
+import std;
 
-#include <trview.common/Event.h>
+import trview.common;
+
+import :ILevel;
 
 namespace trview
 {
-    struct ILevel;
-    struct ILevelInfo
+    export struct ILevelInfo
     {
         virtual ~ILevelInfo() = 0;
         virtual void render() = 0;

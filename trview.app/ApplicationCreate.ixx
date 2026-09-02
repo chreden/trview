@@ -12,6 +12,7 @@ import std.compat;
 import trlevel;
 import trview.common;
 import trview.graphics;
+import trview.input;
 
 import :Application;
 import :IRandomizerRoute;
@@ -62,6 +63,18 @@ import :LogWindow;
 import :CameraSinkWindow;
 import :TexturesWindow;
 import :Console;
+import :StaticsWindow;
+import :SoundsWindow;
+import :AboutWindow;
+import :DiffWindow;
+import :PackWindow;
+import :ImGuiFileMenu;
+import :Windows;
+import :ViewerUI;
+import :ViewOptions;
+import :ContextMenu;
+import :CameraControls;
+import :Toolbar;
 
 namespace trview
 {

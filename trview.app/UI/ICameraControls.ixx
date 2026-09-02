@@ -1,12 +1,12 @@
-#pragma once
+export module trview.app:ICameraControls;
 
-#include <trview.common/Event.h>
-#include "../Camera/ProjectionMode.h"
-#include "../Camera/ICamera.h"
+import trview.common;
+import :ICamera;
+import :ProjectionMode;
 
 namespace trview
 {
-    struct ICameraControls
+    export struct ICameraControls
     {
         virtual ~ICameraControls() = 0;
         /// <summary>

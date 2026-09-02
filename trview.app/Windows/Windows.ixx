@@ -1,6 +1,7 @@
 export module trview.app:Windows;
 
 import std;
+import std.compat;
 
 import trview.common;
 

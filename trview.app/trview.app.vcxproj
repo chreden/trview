@@ -158,7 +158,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ClCompile>
     <ClInclude Include="Lua\Triangle\Lua_Triangle.h" />
     <ClInclude Include="Lua\Vector2.h" />
-    <ClInclude Include="Menus\ImGuiFileMenu.h" />
+    <ClCompile Include="Menus\ImGuiFileMenu.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Messages\Messages.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -265,7 +267,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Sound\SoundStorage.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Tools\IToolbar.h" />
+    <ClCompile Include="Tools\IToolbar.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Type.inl">
       <FileType>Document</FileType>
     </ClInclude>
@@ -301,7 +305,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\Fonts\IFonts.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="UI\ILevelInfo.h" />
+    <ClCompile Include="UI\ILevelInfo.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="UI\Modal.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -312,16 +318,24 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\AutoHider.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Windows\About\AboutWindow.h" />
+    <ClCompile Include="Windows\About\AboutWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Windows\Console\Console.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Windows\Diff\DiffWindow.h" />
+    <ClCompile Include="Windows\Diff\DiffWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Windows\IWindow.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Windows\Pack\PackWindow.h" />
-    <ClInclude Include="Windows\Sounds\SoundsWindow.h" />
+    <ClCompile Include="Windows\Pack\PackWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Windows\Sounds\SoundsWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Windows\Windows.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -562,7 +576,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Tools\ICompass.h" />
     <ClInclude Include="Tools\IMeasure.h" />
     <ClInclude Include="Tools\Measure.h" />
-    <ClInclude Include="Tools\Toolbar.h" />
+    <ClCompile Include="Tools\Toolbar.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Track\Track.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -573,13 +589,25 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Type.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="UI\CameraControls.h" />
-    <ClInclude Include="UI\CameraPosition.h" />
-    <ClInclude Include="UI\ContextMenu.h" />
+    <ClCompile Include="UI\CameraControls.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="UI\CameraPosition.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="UI\ContextMenu.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="UI\DX11ImGuiBackend.h" />
-    <ClInclude Include="UI\GoTo.h" />
-    <ClInclude Include="UI\ICameraControls.h" />
-    <ClInclude Include="UI\IContextMenu.h" />
+    <ClCompile Include="UI\GoTo.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="UI\ICameraControls.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="UI\IContextMenu.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="UI\IImGuiBackend.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -589,8 +617,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\ISettingsWindow.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="UI\IViewerUI.h" />
-    <ClInclude Include="UI\IViewOptions.h" />
+    <ClCompile Include="UI\IViewerUI.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="UI\IViewOptions.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="UI\LevelInfo.h" />
     <ClCompile Include="UI\MapColours.ixx">
       <FileType>Document</FileType>
@@ -598,13 +630,21 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\MapRenderer.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="UI\RoomNavigator.h" />
+    <ClCompile Include="UI\RoomNavigator.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="UI\SettingsWindow.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="UI\Tooltip.h" />
-    <ClInclude Include="UI\ViewerUI.h" />
-    <ClInclude Include="UI\ViewOptions.h" />
+    <ClCompile Include="UI\Tooltip.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="UI\ViewerUI.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="UI\ViewOptions.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Windows\CameraSink\CameraSinkWindow.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -635,7 +675,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\RowCounter.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Windows\Statics\StaticsWindow.h" />
+    <ClCompile Include="Windows\Statics\StaticsWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Windows\Textures\TexturesWindow.ixx">
       <FileType>Document</FileType>
     </ClCompile>

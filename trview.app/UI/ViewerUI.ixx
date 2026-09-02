@@ -1,24 +1,29 @@
-#pragma once
+export module trview.app:ViewerUI;
 
-#include <trview.app/Tools/IToolbar.h>
-#include <trview.app/UI/ICameraControls.h>
-#include <trview.app/UI/CameraPosition.h>
-#include <trview.app/UI/IContextMenu.h>
-#include <trview.app/UI/GoTo.h>
-#include <trview.app/UI/IViewerUI.h>
-#include <trview.app/UI/ILevelInfo.h>
-#include <trview.app/UI/RoomNavigator.h>
-#include <trview.app/UI/ISettingsWindow.h>
-#include <trview.app/UI/Tooltip.h>
-#include <trview.app/UI/IViewOptions.h>
-#include <trview.input/Mouse.h>
-#include <trview.app/UI/IMapRenderer.h>
-#include <trview.common/TokenStore.h>
-#include <trview.common/Messages/IMessageSystem.h>
+import std;
+import std.compat;
+
+import trview.common;
+import trview.input;
+
+import :IViewerUI;
+import :IMapRenderer;
+import :ISettingsWindow;
+import :IViewOptions;
+import :IContextMenu;
+import :ICameraControls;
+import :IToolbar;
+import :ILevelInfo;
+import :UserSettings;
+import :IRoute;
+import :GoTo;
+import :RoomNavigator;
+import :Tooltip;
+import :CameraPosition;
 
 namespace trview
 {
-    class ViewerUI final : public IViewerUI, public IRecipient
+    export class ViewerUI final : public IViewerUI, public IRecipient
     {
     public:
         explicit ViewerUI(const Window& window,

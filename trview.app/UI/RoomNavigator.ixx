@@ -1,19 +1,21 @@
+export module trview.app:RoomNavigator;
+
 /// @file RoomNavigator.h
 /// @brief UI element that allows the user to toggle various room modes and to select different rooms.
 /// 
 /// Adds a small UI element that has a checkbox for each room mode and also allows the user to control
 /// the currently selected room.
 
-#pragma once
+import std;
+import std.compat;
 
-#include <cstdint>
-#include <trview.common/Event.h>
+import trview.common;
 
 namespace trview
 {
     /// The room navigator control allows the user to select which room to look at and
     /// whether to highlight the current room.
-    class RoomNavigator final
+    export class RoomNavigator final
     {
     public:
         /// Event raised when the user selects a different room. The room that the user has selected is passed as

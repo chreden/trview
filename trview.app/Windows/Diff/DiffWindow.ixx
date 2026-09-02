@@ -1,19 +1,17 @@
-#pragma once
+export module trview.app:DiffWindow;
 
-#include <future>
-#include <string>
-#include <trview.common/Windows/IDialogs.h>
-#include <trview.common/TokenStore.h>
-#include <trview.common/Messages/IMessageSystem.h>
+import std;
 
-#include "../../Menus/IFileMenu.h"
-#include "../../Elements/ILevel.h"
-#include "../IWindow.h"
-#include "../../Settings/UserSettings.h"
+import trview.common;
+
+import :IWindow;
+import :ILevel;
+import :IFileMenu;
+import :UserSettings;
 
 namespace trview
 {
-    class DiffWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
+    export class DiffWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

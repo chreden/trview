@@ -1,12 +1,11 @@
-#pragma once
+export module trview.app:ContextMenu;
 
-#include "IContextMenu.h"
+import :IContextMenu;
+import :IWindows;
 
 namespace trview
 {
-    struct IWindows;
-
-    class ContextMenu final : public IContextMenu
+    export class ContextMenu final : public IContextMenu
     {
     public:
         /// Control names used for automation

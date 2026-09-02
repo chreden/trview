@@ -1,17 +1,15 @@
-#pragma once
+export module trview.app:ImGuiFileMenu;
 
-#include "IFileMenu.h"
-#include "../Elements/Level/ILevelNameLookup.h"
+import std;
+import trview.common;
 
-#include <trview.common/Windows/IDialogs.h>
-#include <trview.common/IFiles.h>
-#include <trview.common/Messages/IRecipient.h>
-
-#include <optional>
+import :IFileMenu;
+import :ILevelNameLookup;
+import :LevelSortingMode;
 
 namespace trview
 {
-    class ImGuiFileMenu final : public IFileMenu, public IRecipient
+    export class ImGuiFileMenu final : public IFileMenu, public IRecipient
     {
     public:
         using LevelNameSource = std::function<std::optional<ILevelNameLookup::Name>(const std::string&, const std::shared_ptr<trlevel::IPack>&)>;

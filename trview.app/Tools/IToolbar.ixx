@@ -1,8 +1,12 @@
-#pragma once
+export module trview.app:IToolbar;
+
+import std;
+
+import trview.common;
 
 namespace trview
 {
-    struct IToolbar
+    export struct IToolbar
     {
         virtual ~IToolbar() = 0;
         virtual void add_tool(const std::string& name) = 0;

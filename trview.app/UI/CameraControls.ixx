@@ -1,20 +1,21 @@
+export module trview.app:CameraControls;
+
+import std;
+
+import :ICameraControls;
+
 /// @file CameraControls.h
 /// @brief UI element that contains the camera modes and settings.
 /// 
 /// Creates elements that the user can click to change the behaviour of the camera and switch
 /// between different cameras.
 
-#pragma once
-
-#include "ICameraControls.h"
-#include <string>
-
 namespace trview
 {
     /// <summary>
     /// The camera controls control has settings for the operation mode of the camera and other camera related settings.
     /// </summary>
-    class CameraControls final : public ICameraControls
+    export class CameraControls final : public ICameraControls
     {
     public:
         struct Names

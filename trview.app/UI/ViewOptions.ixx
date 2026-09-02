@@ -1,13 +1,14 @@
-#pragma once
+export module trview.app:ViewOptions;
 
-#include <cstdint>
-#include "IViewOptions.h"
+import std;
+
+import :IViewOptions;
 
 namespace trview
 {
     struct IWindows;
 
-    class ViewOptions final : public IViewOptions
+    export class ViewOptions final : public IViewOptions
     {
     public:
         struct Names

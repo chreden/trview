@@ -1,16 +1,14 @@
-/// @file Toolbar.h
-/// @brief Window that contains buttons for speedrun planning tools.
+export module trview.app:Toolbar;
 
-#pragma once
+import std;
 
-#include <string>
-#include "../Plugins/IPlugins.h"
-#include "IToolbar.h"
+import :IToolbar;
+import :IPlugins;
 
 namespace trview
 {
     /// Window that contains buttons for speedrun planning tools.
-    class Toolbar final : public IToolbar
+    export class Toolbar final : public IToolbar
     {
     public:
         explicit Toolbar(const std::weak_ptr<IPlugins>& plugins);

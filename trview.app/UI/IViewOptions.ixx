@@ -1,12 +1,13 @@
-#pragma once
+export module trview.app:IViewOptions;
 
-#include <set>
-#include <cstdint>
-#include <trview.common/Event.h>
+import std;
+import std.compat;
+
+import trview.common;
 
 namespace trview
 {
-    struct IViewOptions
+    export struct IViewOptions
     {
         virtual ~IViewOptions() = 0;
         /// <summary>
