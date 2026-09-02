@@ -1,9 +1,8 @@
-#include "Sector.h"
-#include "IRoom.h"
-#include "Floordata.h"
-#include <trview.common/Algorithms.h>
-#include <ranges>
-#include "ILevel.h"
+module trview.app:Sector;
+
+import :IRoom;
+import :ILevel;
+import :Types;
 
 using namespace DirectX::SimpleMath;
 

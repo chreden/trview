@@ -1,5 +1,11 @@
-#include "SoundSource.h"
-#include <trlevel/trtypes.h>
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:SoundSource;
+
+import trlevel;
+import trview.common;
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

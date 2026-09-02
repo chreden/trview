@@ -1,8 +1,13 @@
-#include "NgPlusSwitcher.h"
-#include "../../Resources/resource.h"
-#include <trview.common/Resources.h>
-#include "../ILevel.h"
-#include <trlevel/ILevel.h>
+module;
+
+#include <external/nlohmann/json.hpp>
+#include "Resources/resource.h"
+
+module trview.app:NgPlusSwitcher;
+
+import trlevel;
+import trview.common;
+import nlohmann.json;
 
 using namespace trlevel;
 

@@ -1,11 +1,11 @@
-#include "Room.h"
-#include <trview.app/Geometry/MeshVertex.h>
-#include <trview.app/Camera/ICamera.h>
-#include <trview.app/Elements/ILevel.h>
-#include <trview.common/Algorithms.h>
-#include <format>
-#include <trview.common/Logs/Activity.h>
-#include <ranges>
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:Room;
+
+import std;
+import :ILevel;
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
