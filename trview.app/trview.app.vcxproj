@@ -313,7 +313,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="Windows\About\AboutWindow.h" />
-    <ClInclude Include="Windows\Console\Console.h" />
+    <ClCompile Include="Windows\Console\Console.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Windows\Diff\DiffWindow.h" />
     <ClCompile Include="Windows\IWindow.ixx">
       <FileType>Document</FileType>
@@ -603,7 +605,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\Tooltip.h" />
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UI\ViewOptions.h" />
-    <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h" />
+    <ClCompile Include="Windows\CameraSink\CameraSinkWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Windows\ItemsWindow.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -632,7 +636,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="Windows\Statics\StaticsWindow.h" />
-    <ClInclude Include="Windows\Textures\TexturesWindow.h" />
+    <ClCompile Include="Windows\Textures\TexturesWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Windows\TriggersWindow.ixx">
       <FileType>Document</FileType>
     </ClCompile>

@@ -1,18 +1,20 @@
-#pragma once
+module;
 
-#include <unordered_set>
+#include <external/imgui/imgui.h>
 
-#include "../IWindow.h"
-#include "../../Plugins/IPlugins.h"
-#include "../../UI/Fonts/IFonts.h"
+export module trview.app:Console;
 
-#include <trview.common/Event.h>
-#include <trview.common/Windows/IDialogs.h>
-#include <trview.common/TokenStore.h>
+import std;
+import trview.common;
+
+import :IWindow;
+import :IPlugins;
+import :IPlugin;
+import :IFonts;
 
 namespace trview
 {
-    class Console final : public IWindow
+    export class Console final : public IWindow
     {
     public:
         struct Names

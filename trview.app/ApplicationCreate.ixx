@@ -59,6 +59,9 @@ import :TriggersWindow;
 import :RouteWindow;
 import :LightsWindow;
 import :LogWindow;
+import :CameraSinkWindow;
+import :TexturesWindow;
+import :Console;
 
 namespace trview
 {

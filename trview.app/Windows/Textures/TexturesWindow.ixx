@@ -1,12 +1,15 @@
-#pragma once
+export module trview.app:TexturesWindow;
 
-#include "../IWindow.h"
-#include <trview.common/Messages/IMessageSystem.h>
-#include "../../Graphics/ILevelTextureStorage.h"
+import std;
+
+import trview.common;
+
+import :IWindow;
+import :ILevelTextureStorage;
 
 namespace trview
 {
-    class TexturesWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
+    export class TexturesWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

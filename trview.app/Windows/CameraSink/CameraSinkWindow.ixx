@@ -1,24 +1,29 @@
-#pragma once
+module;
 
-#include <trview.common/TokenStore.h>
-#include <trview.common/Windows/IClipboard.h>
-#include <trview.common/Messages/IMessageSystem.h>
+#include <external/imgui/imgui.h>
 
-#include "../../Filters/Filters.h"
+export module trview.app:CameraSinkWindow;
 
-#include <trlevel/LevelVersion.h>
+import trlevel;
 
-#include "../../Track/Track.h"
-#include "../AutoHider.h"
-#include "../../Settings/UserSettings.h"
-#include "../IWindow.h"
+import trview.common;
 
-#include "../../Elements/CameraSink/ICameraSink.h"
-#include "../../Elements/Flyby/IFlyby.h"
+import :IWindow;
+import :ICamera;
+import :ICameraSink;
+import :IFlybyNode;
+import :IRoom;
+import :IFilterStore;
+import :Filters;
+import :ITrigger;
+import :IFlyby;
+import :Track;
+import :AutoHider;
+import :UserSettings;
 
 namespace trview
 {
-    class CameraSinkWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
+    export class CameraSinkWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

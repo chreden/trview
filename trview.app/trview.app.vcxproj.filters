@@ -475,6 +475,15 @@
     <ClCompile Include="Windows\Log\LogWindow.ixx">
       <Filter>Windows\Log</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\CameraSink\CameraSinkWindow.ixx">
+      <Filter>Windows\CameraSink</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Textures\TexturesWindow.ixx">
+      <Filter>Windows\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Console\Console.ixx">
+      <Filter>Windows\Console</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UI\CameraControls.h" Filter="UI" />
@@ -550,8 +559,6 @@
     <ClInclude Include="Menus\FileMenu.h" Filter="Menus" />
     <ClInclude Include="Mocks\Menus\IFileMenu.h" Filter="Mocks\Menus" />
     <ClInclude Include="Mocks\Elements\ICameraSink.h" Filter="Mocks\Elements" />
-    <ClInclude Include="Windows\Textures\TexturesWindow.h" Filter="Windows\Textures" />
-    <ClInclude Include="Windows\CameraSink\CameraSinkWindow.h" Filter="Windows\CameraSink" />
     <ClInclude Include="Lua\Elements\Level\Lua_Level.h" Filter="Lua\Elements\Level" />
     <ClInclude Include="Type.inl" />
     <ClInclude Include="Lua\Elements\Item\Lua_Item.h" Filter="Lua\Elements\Item" />
@@ -562,7 +569,6 @@
     <ClInclude Include="Elements\Trigger.h" Filter="Elements\Trigger" />
     <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h" Filter="Lua\Elements\Sector" />
     <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h" Filter="Lua\Elements\CameraSink" />
-    <ClInclude Include="Windows\Console\Console.h" Filter="Windows\Console" />
     <ClInclude Include="Lua\Elements\Light\Lua_Light.h" Filter="Lua\Elements\Light" />
     <ClInclude Include="Lua\Colour.h" Filter="Lua" />
     <ClInclude Include="Mocks\IApplication.h" Filter="Mocks" />
