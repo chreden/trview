@@ -143,7 +143,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Geometry\Model\IModelStorage.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Geometry\Model\Model.h" />
+    <ClCompile Include="Geometry\Model\Model.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Geometry\Model\ModelStorage.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -362,7 +364,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\CameraSink\ICameraSink.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Elements\Item.h" />
+    <ClCompile Include="Elements\Item.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Elements\Floordata.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -402,7 +406,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\RenderFilter.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Elements\Room.h" />
+    <ClCompile Include="Elements\Room.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Elements\RoomInfo.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -412,7 +418,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\StaticMesh.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Elements\Trigger.h" />
+    <ClCompile Include="Elements\Trigger.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Elements\TypeInfoLookup.ixx">
       <FileType>Document</FileType>
     </ClCompile>

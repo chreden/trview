@@ -84,6 +84,10 @@ import :SectorHighlight;
 import :FileMenu;
 import :UpdateChecker;
 import :DX11ImGuiBackend;
+import :Item;
+import :Trigger;
+import :Model;
+import :Room;
 
 namespace trview
 {

@@ -598,6 +598,18 @@
     <ClCompile Include="Windows\Viewer.ixx">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\Item.ixx">
+      <Filter>Elements\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Trigger.ixx">
+      <Filter>Elements\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Model\Model.ixx">
+      <Filter>Geometry\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Room.ixx">
+      <Filter>Elements\Room</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\resource.h" Filter="Resources" />
@@ -640,17 +652,14 @@
     <ClInclude Include="trview_imgui.hpp" />
     <ClInclude Include="Mocks\UI\IImGuiBackend.h" Filter="Mocks\UI" />
     <ClInclude Include="Filters\Filters.hpp" Filter="Filters" />
-    <ClInclude Include="Elements\Room.h" Filter="Elements\Room" />
     <ClInclude Include="Mocks\Menus\IFileMenu.h" Filter="Mocks\Menus" />
     <ClInclude Include="Mocks\Elements\ICameraSink.h" Filter="Mocks\Elements" />
     <ClInclude Include="Lua\Elements\Level\Lua_Level.h" Filter="Lua\Elements\Level" />
     <ClInclude Include="Type.inl" />
     <ClInclude Include="Lua\Elements\Item\Lua_Item.h" Filter="Lua\Elements\Item" />
     <ClInclude Include="Lua\Elements\Room\Lua_Room.h" Filter="Lua\Elements\Room" />
-    <ClInclude Include="Elements\Item.h" Filter="Elements\Item" />
     <ClInclude Include="Lua\Elements\Trigger\Lua_Trigger.h" Filter="Lua\Elements\Trigger" />
     <ClInclude Include="Lua\Vector3.h" Filter="Lua" />
-    <ClInclude Include="Elements\Trigger.h" Filter="Elements\Trigger" />
     <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h" Filter="Lua\Elements\Sector" />
     <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h" Filter="Lua\Elements\CameraSink" />
     <ClInclude Include="Lua\Elements\Light\Lua_Light.h" Filter="Lua\Elements\Light" />
@@ -674,7 +683,6 @@
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" Filter="Mocks\Sound" />
     <ClInclude Include="Mocks\Sound\ISound.h" Filter="Mocks\Sound" />
     <ClInclude Include="Mocks\Elements\INgPlusSwitcher.h" Filter="Mocks\Elements" />
-    <ClInclude Include="Geometry\Model\Model.h" Filter="Geometry\Model" />
     <ClInclude Include="Mocks\Geometry\IModelStorage.h" Filter="Mocks\Geometry" />
     <ClInclude Include="Mocks\Elements\IFlyby.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Elements\IFlybyNode.h" Filter="Mocks\Elements" />

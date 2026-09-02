@@ -1,11 +1,14 @@
-#pragma once
+export module trview.app:Model;
 
-#include "../IMesh.h"
-#include "IModel.h"
+import trview.graphics;
+
+import :IModel;
+import :IMesh;
+import :ITextureStorage;
 
 namespace trview
 {
-    class Model final : public IModel
+    export class Model final : public IModel
     {
     public:
         explicit Model(const trlevel::tr_model& model, const std::vector<std::shared_ptr<IMesh>>& meshes, const std::vector<DirectX::SimpleMath::Matrix>& transforms, const std::weak_ptr<IMesh>& null_mesh, const std::weak_ptr<ITextureStorage>& texture_storage);

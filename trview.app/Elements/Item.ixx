@@ -1,31 +1,24 @@
-#pragma once
+module;
 
-#include <cstdint>
 #include <SimpleMath.h>
 
-#include <memory>
-#include <vector>
+export module trview.app:Item;
 
-#include <trview.app/Geometry/PickResult.h>
-#include <trview.app/Geometry/IRenderable.h>
-#include <trview.app/Geometry/IMesh.h>
-#include "IItem.h"
-#include "TypeInfo.h"
+import std;
 
-namespace trlevel
-{
-    struct ILevel;
-    struct tr2_entity;
-    struct tr_model;
-    struct tr_sprite_sequence;
-}
+import trlevel;
+
+import :IItem;
+import :PickResult;
+import :IRenderable;
+import :IMesh;
+import :TypeInfo;
+import :ICamera;
+import :IModel;
 
 namespace trview
 {
-    struct ICamera;
-    struct IModel;
-
-    class Item final : public IItem, public std::enable_shared_from_this<IItem>
+    export class Item final : public IItem, public std::enable_shared_from_this<IItem>
     {
     public:
         explicit Item(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IModelStorage& model_storage, const std::weak_ptr<ILevel>& owning_level, uint32_t number, const TypeInfo& type, const std::vector<std::weak_ptr<ITrigger>>& triggers, const std::weak_ptr<IRoom>& room);

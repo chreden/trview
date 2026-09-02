@@ -1,37 +1,32 @@
-#pragma once
+module;
 
-#include <vector>
-#include <cstdint>
-#include <set>
-#include <memory>
-#include <optional>
 #include <DirectXCollision.h>
 #include <SimpleMath.h>
 
-#include <trlevel/trtypes.h>
-#include <trlevel/ILevel.h>
-#include <trview.app/Geometry/ITransparencyBuffer.h>
-#include <trview.app/Geometry/IMesh.h>
-#include <trview.app/Elements/ISector.h>
-#include <trview.app/Geometry/PickResult.h>
-#include <trview.graphics/Texture.h>
-#include "IStaticMesh.h"
-#include "IRoom.h"
+export module trview.app:Room;
 
-#include <trview.common/TokenStore.h>
-#include <trview.common/Logs/ILog.h>
+import std;
 
-#include <trview.graphics/Sampler/ISamplerState.h>
+import trlevel;
+import trview.common;
+import trview.graphics;
+
+import :IRoom;
+import :IStaticMesh;
+import :ITransparencyBuffer;
+import :IMesh;
+import :ISector;
+import :PickResult;
 
 namespace trview
 {
-    struct Sampler
+    export struct Sampler
     {
     public:
         void apply();
     };
 
-    class Room final : public IRoom, public std::enable_shared_from_this<IRoom>
+    export class Room final : public IRoom, public std::enable_shared_from_this<IRoom>
     {
     public:
         explicit Room(const trlevel::tr3_room& room,

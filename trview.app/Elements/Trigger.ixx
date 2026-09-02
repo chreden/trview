@@ -1,17 +1,16 @@
-#pragma once
+export module trview.app:Trigger;
 
-#include <memory>
+import std;
 
-#include <trview.app/Geometry/IMesh.h>
-#include <trview.app/Elements/ITrigger.h>
-#include <trview.app/Camera/ICamera.h>
-#include "../Elements/ISector.h"
+import :IMesh;
+import :ITrigger;
+import :ICamera;
+import :ISector;
+import :Types;
 
 namespace trview
 {
-    struct TriggerInfo;
-
-    class Trigger final : public ITrigger, public std::enable_shared_from_this<ITrigger>
+    export class Trigger final : public ITrigger, public std::enable_shared_from_this<ITrigger>
     {
     public:
         explicit Trigger(uint32_t number, const std::weak_ptr<IRoom>& room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, trlevel::LevelVersion level_version, const std::weak_ptr<ILevel>& level, const std::weak_ptr<ISector>& sector, const IMesh::Source& mesh_source);
