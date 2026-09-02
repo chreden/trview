@@ -1,12 +1,16 @@
-#include "TriggersWindow.h"
-#include <trview.common/Strings.h>
-#include "../trview_imgui.h"
-#include <format>
-#include "RowCounter.h"
-#include "../Elements/IRoom.h"
-#include "../Elements/ILevel.h"
-#include "../Messages/Messages.h"
-#include "../Elements/ElementFilters.h"
+module;
+
+#include <external/imgui/imgui.h>
+#include <SimpleMath.h>
+
+module trview.app:TriggersWindow;
+
+import std;
+import std.compat;
+
+import :ILevel;
+import :Messages;
+import :Filters;
 
 namespace trview
 {

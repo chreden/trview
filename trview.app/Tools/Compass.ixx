@@ -41,14 +41,4 @@ namespace trview
         Camera _mesh_camera;
         bool _visible{ true };
     };
-
-    /// Get a string representation of a compass axis.
-    /// @param axis The axis.
-    /// @returns The name of the axis.
-    export std::string axis_name(Compass::Axis axis);
-
-    /// Align a camera to a particular axis.
-    /// @param camera The camera to adjust.
-    /// @param axis The axis.
-    export void align_camera_to_axis(ICamera& camera, Compass::Axis axis);
 }

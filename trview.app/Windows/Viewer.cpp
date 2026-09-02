@@ -1,16 +1,25 @@
-#include "Viewer.h"
-#include "Resources/resource.h"
+module;
 
-#include <trlevel/ILevel.h>
-#include <trview.common/Strings.h>
-#include <trview.common/Messages/Message.h>
+#include <Windows.h>
+#include <external/imgui/imgui.h>
+#include <SimpleMath.h>
+#include "../Resources/resource.h"
 
-#include "../Elements/Flyby/IFlybyNode.h"
-#include "../Messages/Messages.h"
-#include "../Elements/SoundSource/ISoundSource.h"
-#include "../Elements/ILevel.h"
-#include "../Windows/IWindow.h"
-#include "../Filters/Filters.h"
+module trview.app:Viewer;
+
+import std;
+
+import trview.common;
+
+import :Messages;
+import :Filters;
+import :RoomInfo;
+import :ICompass;
+import :IWaypoint;
+import :IRoom;
+import :PickResult;
+import :ISoundSource;
+import :IFlybyNode;
 
 using namespace DirectX::SimpleMath;
 
@@ -475,7 +484,7 @@ namespace trview
                 return;
             }
 
-            Compass::Axis axis;
+            ICompass::Axis axis;
             if (_compass->pick(info.screen_position, info.screen_size, axis))
             {
                 result.hit = true;

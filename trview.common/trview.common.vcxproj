@@ -36,7 +36,9 @@
     <ClCompile Include="Logs\LogMessage.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Maths.h" />
+    <ClCompile Include="Maths.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Json.ixx">
       <FileType>Document</FileType>
     </ClCompile>

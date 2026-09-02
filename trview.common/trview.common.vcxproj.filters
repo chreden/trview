@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Maths.h" />
     <ClInclude Include="Algorithms.hpp" />
     <ClInclude Include="Json.hpp" />
   </ItemGroup>
@@ -180,6 +179,7 @@
       <Filter>Mocks\Messages</Filter>
     </ClCompile>
     <ClCompile Include="Version.ixx" />
+    <ClCompile Include="Maths.ixx" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
