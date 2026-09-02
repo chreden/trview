@@ -1,6 +1,8 @@
-#include "Trigger.h"
-#include <trview.app/Elements/Types.h>
-#include <ranges>
+module trview.app:Trigger;
+
+import std;
+import std.compat;
+import trview.common;
 
 namespace trview
 {

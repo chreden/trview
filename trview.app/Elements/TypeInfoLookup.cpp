@@ -1,6 +1,13 @@
-#include "TypeInfoLookup.h"
-#include <trview.common/Json.h>
-#include "IItem.h"
+module;
+
+#include <external/nlohmann/json.hpp>
+
+module trview.app:TypeInfoLookup;
+
+import std.compat;
+import trlevel;
+
+import :IItem;
 
 using namespace trlevel;
 
