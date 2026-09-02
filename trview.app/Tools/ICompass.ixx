@@ -1,13 +1,12 @@
-#pragma once
+export module trview.app:ICompass;
 
-#include <trview.app/Camera/Camera.h>
+import trview.common;
 
-#include <trview.common/Point.h>
-#include <trview.common/Size.h>
+import :ICamera;
 
 namespace trview
 {
-    struct ICompass
+    export struct ICompass
     {
         /// The axis on the compass.
         enum class Axis

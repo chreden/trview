@@ -17,7 +17,7 @@ import :IRandomizerRoute;
 import :ISettingsLoader;
 import :IStartupOptions;
 import :IViewer;
-import :IImguiBackend;
+import :IImGuiBackend;
 import :IPlugins;
 import :IFonts;
 import :ILevel;

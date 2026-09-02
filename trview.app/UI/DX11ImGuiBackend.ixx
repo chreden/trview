@@ -1,12 +1,19 @@
-#pragma once
+module;
 
-#include <trview.common/IFiles.h>
-#include <trview.graphics/IDevice.h>
-#include "IImGuiBackend.h"
+#include <Windows.h>
+
+export module trview.app:DX11ImGuiBackend;
+
+import std;
+
+import trview.common;
+import trview.graphics;
+
+import :IImGuiBackend;
 
 namespace trview
 {
-    class DX11ImGuiBackend : public IImGuiBackend
+    export class DX11ImGuiBackend : public IImGuiBackend
     {
     public:
         DX11ImGuiBackend(const Window& window, const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<IFiles>& files);

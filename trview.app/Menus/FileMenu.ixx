@@ -1,15 +1,20 @@
-#pragma once
+module;
 
-#include <trview.common/TokenStore.h>
-#include <trview.common/MessageHandler.h>
-#include <trview.common/IFiles.h>
-#include <trview.common/Messages/IMessageSystem.h>
-#include "IFileMenu.h"
-#include "../Elements/Level/ILevelNameLookup.h"
+#include <Windows.h>
+
+export module trview.app:FileMenu;
+
+import std;
+
+import trview.common;
+
+import :IFileMenu;
+import :ILevelNameLookup;
+import :LevelSortingMode;
 
 namespace trview
 {
-    class FileMenu final : public IFileMenu, public MessageHandler, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    export class FileMenu final : public IFileMenu, public MessageHandler, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         static const inline std::string default_file_pattern{ "\\*.TR2*,\\*.TR4*,\\*.TRC*,\\*.PHD,\\*.PSX,\\*.OBJ,\\*.TOM,\\*.SAT" };

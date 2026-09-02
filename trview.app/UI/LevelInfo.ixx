@@ -1,18 +1,19 @@
+export module trview.app:LevelInfo;
+
 /// @file LevelInfo.h
 /// @brief UI element that shows the name of the currently loaded level as well as which game it is made for.
 /// 
 /// Adds a small window to the top of the screen that show the icon of the game that the level is made for 
 /// as well as the final part of the level filename.
 
-#pragma once
+import std;
 
-#include <string>
-#include <unordered_map>
-#include <trlevel/LevelVersion.h>
-#include <trview.graphics/Texture.h>
-#include "../Elements/Level/ILevelNameLookup.h"
-#include "../Graphics/ITextureStorage.h"
-#include "ILevelInfo.h"
+import trlevel;
+import trview.graphics;
+
+import :ILevelInfo;
+import :ILevelNameLookup;
+import :ITextureStorage;
 
 namespace trview
 {
@@ -20,7 +21,7 @@ namespace trview
 
     /// The level info display shows the name of the current level as well
     /// as the game that the level was built for.
-    class LevelInfo final : public ILevelInfo
+    export class LevelInfo final : public ILevelInfo
     {
     public:
         /// Creates an instance of the LevelInfo class. 

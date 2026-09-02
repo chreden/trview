@@ -1,12 +1,17 @@
-#pragma once
+module;
 
 #include <SimpleMath.h>
-#include <trview.common/Event.h>
-#include <trview.app/Camera/ICamera.h>
+
+export module trview.app:IMeasure;
+
+import std;
+import trview.common;
+
+import :ICamera;
 
 namespace trview
 {
-    struct IMeasure
+    export struct IMeasure
     {
         virtual ~IMeasure() = 0;
 

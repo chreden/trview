@@ -2,7 +2,7 @@ module;
 
 #include <Windows.h>
 
-export module trview.app:IImguiBackend;
+export module trview.app:IImGuiBackend;
 
 namespace trview
 {

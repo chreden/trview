@@ -1,17 +1,14 @@
-/// @file WindowResizer.h
-/// @brief When the window is resized this will raise an event.
+export module trview.app:WindowResizer;
 
+import std;
+import std.compat;
 
-#pragma once
-
-#include <trview.common/MessageHandler.h>
-#include <trview.common/Event.h>
-#include <trview.common/Size.h>
+import trview.common;
 
 namespace trview
 {
     /// Raises an event when the window is resized.
-    class WindowResizer final : public MessageHandler
+    export class WindowResizer final : public MessageHandler
     {
     public:
         /// Create a WindowResizer.

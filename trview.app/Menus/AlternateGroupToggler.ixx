@@ -1,16 +1,14 @@
-/// @file AlternateGroupToggler.h
-/// @brief Watches for input and toggles alternate groups when the user presses number keys.
+export module trview.app:AlternateGroupToggler;
 
-#pragma once
+import std;
+import std.compat;
 
-#include <cstdint>
-#include <trview.common/MessageHandler.h>
-#include <trview.common/Event.h>
+import trview.common;
 
 namespace trview
 {
     /// Watches for input and toggles alternate groups when the user presses number keys.
-    class AlternateGroupToggler final : public MessageHandler
+    export class AlternateGroupToggler final : public MessageHandler
     {
     public:
         /// Create a new AlternateGroupToggler.

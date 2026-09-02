@@ -347,7 +347,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Camera\Camera.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Camera\CameraInput.h" />
+    <ClCompile Include="Camera\CameraInput.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Camera\ICamera.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -424,7 +426,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Geometry\IMesh.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Geometry\IPicking.h" />
+    <ClCompile Include="Geometry\IPicking.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Geometry\IRenderable.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -441,7 +445,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Geometry\PickInfo.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Geometry\Picking.h" />
+    <ClCompile Include="Geometry\Picking.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Geometry\PickResult.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -457,7 +463,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Graphics\IMeshStorage.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Graphics\ISectorHighlight.h" />
+    <ClCompile Include="Graphics\ISectorHighlight.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Graphics\ISelectionRenderer.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -470,7 +478,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Graphics\MeshStorage.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Graphics\SectorHighlight.h" />
+    <ClCompile Include="Graphics\SectorHighlight.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Graphics\SelectionRenderer.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -484,16 +494,24 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Lua\trview\trview.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Menus\AlternateGroupToggler.h" />
-    <ClInclude Include="Menus\FileMenu.h" />
+    <ClCompile Include="Menus\AlternateGroupToggler.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Menus\FileMenu.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Menus\IFileMenu.ixx">
       <FileType>Document</FileType>
     </ClCompile>
     <ClCompile Include="Menus\IUpdateChecker.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Menus\MenuDetector.h" />
-    <ClInclude Include="Menus\UpdateChecker.h" />
+    <ClCompile Include="Menus\MenuDetector.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Menus\UpdateChecker.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Menus\ViewMenu.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -572,10 +590,18 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Settings\UserSettings.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Tools\Compass.h" />
-    <ClInclude Include="Tools\ICompass.h" />
-    <ClInclude Include="Tools\IMeasure.h" />
-    <ClInclude Include="Tools\Measure.h" />
+    <ClCompile Include="Tools\Compass.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Tools\ICompass.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Tools\IMeasure.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Tools\Measure.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Tools\Toolbar.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -598,7 +624,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\ContextMenu.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="UI\DX11ImGuiBackend.h" />
+    <ClCompile Include="UI\DX11ImGuiBackend.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="UI\GoTo.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -623,7 +651,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\IViewOptions.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="UI\LevelInfo.h" />
+    <ClCompile Include="UI\LevelInfo.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="UI\MapColours.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -684,8 +714,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\TriggersWindow.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Windows\Viewer.h" />
-    <ClInclude Include="Windows\WindowResizer.h" />
+    <ClCompile Include="Windows\Viewer.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Windows\WindowResizer.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\trview.app.rc" />

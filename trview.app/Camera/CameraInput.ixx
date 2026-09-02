@@ -1,17 +1,21 @@
-#pragma once
+module;
 
 #include <SimpleMath.h>
-#include <cstdint>
 
-#include <trview.input/IMouse.h>
-#include <trview.common/Event.h>
+export module trview.app:CameraInput;
 
-#include "../Camera/ICamera.h"
+import std;
+import std.compat;
+
+import trview.common;
+import trview.input;
+
+import :ICamera;
 
 namespace trview
 {
     /// Converts mouse and keyboard input into the control events for the camera.
-    class CameraInput final
+    export class CameraInput final
     {
     public:
         /// Get the movement vector based on the current input state.

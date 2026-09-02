@@ -547,33 +547,70 @@
     <ClCompile Include="Tools\Toolbar.ixx">
       <Filter>Tools</Filter>
     </ClCompile>
+    <ClCompile Include="UI\LevelInfo.ixx">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\IPicking.ixx">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\ICompass.ixx">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\Compass.ixx">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\IMeasure.ixx">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\Measure.ixx">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\ISectorHighlight.ixx">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\SectorHighlight.ixx">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\CameraInput.ixx">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\WindowResizer.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\AlternateGroupToggler.ixx">
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\MenuDetector.ixx">
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Picking.ixx">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\FileMenu.ixx">
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\UpdateChecker.ixx">
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\DX11ImGuiBackend.ixx">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Viewer.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="UI\LevelInfo.h" Filter="UI" />
-    <ClInclude Include="Tools\Compass.h" Filter="Tools" />
-    <ClInclude Include="Tools\Measure.h" Filter="Tools" />
-    <ClInclude Include="Windows\WindowResizer.h" Filter="Windows" />
-    <ClInclude Include="Geometry\Picking.h" Filter="Geometry" />
-    <ClInclude Include="Graphics\SectorHighlight.h" Filter="Graphics" />
-    <ClInclude Include="Menus\AlternateGroupToggler.h" Filter="Menus" />
-    <ClInclude Include="Menus\UpdateChecker.h" Filter="Menus" />
-    <ClInclude Include="Camera\CameraInput.h" Filter="Camera" />
-    <ClInclude Include="Menus\MenuDetector.h" Filter="Menus" />
-    <ClInclude Include="Windows\Viewer.h" Filter="Windows" />
     <ClInclude Include="Resources\resource.h" Filter="Resources" />
     <ClInclude Include="Resources\targetver.h" Filter="Resources" />
     <ClInclude Include="Mocks\Elements\ILevel.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" Filter="Mocks\UI" />
-    <ClInclude Include="Geometry\IPicking.h" Filter="Geometry" />
     <ClInclude Include="Mocks\Geometry\IPicking.h" Filter="Mocks\Geometry" />
     <ClInclude Include="Mocks\Menus\IUpdateChecker.h" Filter="Mocks\Menus" />
     <ClInclude Include="Mocks\Settings\ISettingsLoader.h" Filter="Mocks\Settings" />
     <ClInclude Include="Mocks\Windows\IViewer.h" Filter="Mocks\Windows" />
     <ClInclude Include="Mocks\Graphics\ITextureStorage.h" Filter="Mocks\Graphics" />
     <ClInclude Include="Mocks\Routing\IRoute.h" Filter="Mocks\Routing" />
-    <ClInclude Include="Tools\ICompass.h" Filter="Tools" />
     <ClInclude Include="Mocks\Tools\ICompass.h" Filter="Mocks\Tools" />
-    <ClInclude Include="Tools\IMeasure.h" Filter="Tools" />
     <ClInclude Include="Mocks\Tools\IMeasure.h" Filter="Mocks\Tools" />
     <ClInclude Include="Mocks\Graphics\ILevelTextureStorage.h" Filter="Mocks\Graphics" />
     <ClInclude Include="Mocks\Graphics\IMeshStorage.h" Filter="Mocks\Graphics" />
@@ -582,7 +619,6 @@
     <ClInclude Include="Mocks\Elements\ITypeInfoLookup.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Geometry\IMesh.h" Filter="Mocks\Geometry" />
     <ClInclude Include="Geometry\Matrix.h" Filter="Geometry" />
-    <ClInclude Include="Graphics\ISectorHighlight.h" Filter="Graphics" />
     <ClInclude Include="Mocks\Graphics\ISectorHighlight.h" Filter="Mocks\Graphics" />
     <ClInclude Include="Mocks\Elements\IItem.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Elements\IRoom.h" Filter="Mocks\Elements" />
@@ -602,11 +638,9 @@
     <ClInclude Include="Mocks\UI\IMapRenderer.h" Filter="Mocks\UI" />
     <ClInclude Include="Mocks\Elements\ILight.h" Filter="Mocks\Elements" />
     <ClInclude Include="trview_imgui.hpp" />
-    <ClInclude Include="UI\DX11ImGuiBackend.h" Filter="UI" />
     <ClInclude Include="Mocks\UI\IImGuiBackend.h" Filter="Mocks\UI" />
     <ClInclude Include="Filters\Filters.hpp" Filter="Filters" />
     <ClInclude Include="Elements\Room.h" Filter="Elements\Room" />
-    <ClInclude Include="Menus\FileMenu.h" Filter="Menus" />
     <ClInclude Include="Mocks\Menus\IFileMenu.h" Filter="Mocks\Menus" />
     <ClInclude Include="Mocks\Elements\ICameraSink.h" Filter="Mocks\Elements" />
     <ClInclude Include="Lua\Elements\Level\Lua_Level.h" Filter="Lua\Elements\Level" />

@@ -1,15 +1,17 @@
-#pragma once
+export module trview.app:Compass;
 
-#include <trview.graphics/IDevice.h>
-#include <trview.graphics/IRenderTarget.h>
-#include <trview.graphics/ISprite.h>
-#include <trview.app/Geometry/IMesh.h>
-#include "ICompass.h"
+import std;
+
+import trview.graphics;
+
+import :IMesh;
+import :ICompass;
+import :Camera;
 
 namespace trview
 {
     /// The compass shows the X, Y and Z axes.
-    class Compass final : public ICompass
+    export class Compass final : public ICompass
     {
     public:
         /// Create a compass.
@@ -43,10 +45,10 @@ namespace trview
     /// Get a string representation of a compass axis.
     /// @param axis The axis.
     /// @returns The name of the axis.
-    std::string axis_name(Compass::Axis axis);
+    export std::string axis_name(Compass::Axis axis);
 
     /// Align a camera to a particular axis.
     /// @param camera The camera to adjust.
     /// @param axis The axis.
-    void align_camera_to_axis(ICamera& camera, Compass::Axis axis);
+    export void align_camera_to_axis(ICamera& camera, Compass::Axis axis);
 }

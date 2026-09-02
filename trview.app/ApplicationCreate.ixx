@@ -75,6 +75,15 @@ import :ViewOptions;
 import :ContextMenu;
 import :CameraControls;
 import :Toolbar;
+import :LevelInfo;
+import :Viewer;
+import :Compass;
+import :Measure;
+import :Picking;
+import :SectorHighlight;
+import :FileMenu;
+import :UpdateChecker;
+import :DX11ImGuiBackend;
 
 namespace trview
 {

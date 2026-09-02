@@ -1,10 +1,12 @@
-#pragma once
+export module trview.app:Picking;
 
-#include "IPicking.h"
+import trview.common;
+
+import :IPicking;
 
 namespace trview
 {
-    class Picking final : public IPicking
+    export class Picking final : public IPicking
     {
     public:
         virtual ~Picking() = default;

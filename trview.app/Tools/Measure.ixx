@@ -1,12 +1,14 @@
-#pragma once
+export module trview.app:Measure;
 
-#include <optional>
-#include <trview.app/Geometry/IMesh.h>
-#include "IMeasure.h"
+import std;
+import trview.graphics;
+
+import :IMeasure;
+import :IMesh;
 
 namespace trview
 {
-    class Measure final : public IMeasure
+    export class Measure final : public IMeasure
     {
     public:
         /// Create a new measure tool.

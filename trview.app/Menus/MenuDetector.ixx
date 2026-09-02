@@ -1,11 +1,12 @@
-#pragma once
+export module trview.app:MenuDetector;
 
-#include <trview.common/Event.h>
-#include <trview.common/MessageHandler.h>
+import std;
+
+import trview.common;
 
 namespace trview
 {
-    class MenuDetector final : public MessageHandler
+    export class MenuDetector final : public MessageHandler
     {
     public:
         /// Create a new MenuDetector.

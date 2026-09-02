@@ -1,12 +1,15 @@
-#pragma once
+export module trview.app:ISectorHighlight;
 
-#include <trview.graphics/IDevice.h>
-#include <trview.app/Elements/ISector.h>
-#include <trview.app/Camera/ICamera.h>
+import std;
+
+import trview.graphics;
+
+import :ISector;
+import :ICamera;
 
 namespace trview
 {
-    struct ISectorHighlight
+    export struct ISectorHighlight
     {
         virtual ~ISectorHighlight() = 0;
         virtual void set_sector(const std::shared_ptr<ISector>& sector, const DirectX::SimpleMath::Matrix& room_offset) = 0;

@@ -13,6 +13,9 @@ import :ITrigger;
 import :ILevel;
 import :IRoute;
 import :UserSettings;
+import :ICamera;
+import :FontSetting;
+import :IWaypoint;
 
 namespace trview
 {

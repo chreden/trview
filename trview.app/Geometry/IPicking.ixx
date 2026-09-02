@@ -1,15 +1,15 @@
-#pragma once
+export module trview.app:IPicking;
 
-#include <trview.common/Event.h>
+import trview.common;
 
-#include "PickInfo.h"
-#include "PickResult.h"
+import :PickInfo;
+import :PickResult;
 
 namespace trview
 {
     struct ICamera;
 
-    struct IPicking
+    export struct IPicking
     {
         virtual ~IPicking() = 0;
 

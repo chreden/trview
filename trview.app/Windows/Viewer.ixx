@@ -1,45 +1,30 @@
-/// @file Viewer.h
-/// @brief Class that brings together the component parts of the application.
-/// 
-/// Class that coordinates all the parts of the application.
-
-#pragma once
+module;
 
 #include <Windows.h>
-#include <cstdint>
-#include <memory>
-#include <string>
 
-#include <trview.common/Timer.h>
-#include <trview.common/Window.h>
-#include <trview.graphics/IDevice.h>
-#include <trview.input/Keyboard.h>
-#include <trview.input/IMouse.h>
-#include <trview.common/TokenStore.h>
+export module trview.app:Viewer;
 
-#include <trview.app/Camera/ICamera.h>
-#include <trview.app/Camera/CameraInput.h>
-#include <trview.app/Settings/UserSettings.h>
-#include <trview.app/Windows/WindowResizer.h>
-#include <trview.app/Tools/Measure.h>
-#include <trview.app/Tools/Compass.h>
-#include <trview.app/Menus/AlternateGroupToggler.h>
-#include <trview.app/Geometry/IPicking.h>
-#include <trview.app/Graphics/ISectorHighlight.h>
-#include <trview.app/UI/IViewerUI.h>
-#include <trview.app/Menus/MenuDetector.h>
-#include <trview.common/Windows/IShortcuts.h>
-#include <trview.graphics/IDeviceWindow.h>
-#include <trview.app/Windows/IViewer.h>
-#include <trview.common/Windows/IClipboard.h>
+import std;
 
-#include <trview.graphics/Sampler/ISamplerState.h>
-#include <trview.common/Messages/IMessageSystem.h>
+import trview.common;
+import trview.graphics;
+import trview.input;
+
+import :IViewer;
+import :IViewerUI;
+import :IPicking;
+import :ICompass;
+import :IMeasure;
+import :ISectorHighlight;
+import :CameraInput;
+import :WindowResizer;
+import :AlternateGroupToggler;
+import :MenuDetector;
 
 namespace trview
 {
     /// Class that coordinates all the parts of the application.
-    class Viewer : public IViewer, public MessageHandler, public IRecipient, public std::enable_shared_from_this<IRecipient>
+    export class Viewer : public IViewer, public MessageHandler, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {
     public:
         /// Create a new viewer.
@@ -164,7 +149,7 @@ namespace trview
         Tool _active_tool{ Tool::None };
         std::unique_ptr<IMeasure> _measure;
         std::unique_ptr<ICompass> _compass;
-        std::optional<Compass::Axis> _compass_axis;
+        std::optional<ICompass::Axis> _compass_axis;
 
         // Temporary route objects.
         PickResult _context_pick;

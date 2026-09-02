@@ -1,15 +1,16 @@
-#pragma once
+export module trview.app:UpdateChecker;
 
-#include <thread>
-#include <string>
-#include <trview.common/MessageHandler.h>
-#include "IUpdateChecker.h"
+import std;
+
+import trview.common;
+
+import :IUpdateChecker;
 
 namespace trview
 {
     /// Checks github for a later release of trview. If there is one, adds a menu
     /// item so that the user can update.
-    class UpdateChecker final : public IUpdateChecker, public MessageHandler
+    export class UpdateChecker final : public IUpdateChecker, public MessageHandler
     {
     public:
         /// Create a new instance of the UpdateChecker class.

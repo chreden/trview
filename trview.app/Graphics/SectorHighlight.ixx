@@ -1,11 +1,12 @@
-#pragma once
+export module trview.app:SectorHighlight;
 
-#include "ISectorHighlight.h"
-#include <trview.app/Geometry/IMesh.h>
+import :ISectorHighlight;
+
+import :IMesh;
 
 namespace trview
 {
-    class SectorHighlight final : public ISectorHighlight
+    export class SectorHighlight final : public ISectorHighlight
     {
     public:
         explicit SectorHighlight(const IMesh::Source& mesh_source);
