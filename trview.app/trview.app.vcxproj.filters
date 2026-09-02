@@ -610,6 +610,9 @@
     <ClCompile Include="Elements\Room.ixx">
       <Filter>Elements\Room</Filter>
     </ClCompile>
+    <ClCompile Include="Geometry\Matrix.ixx">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\resource.h" Filter="Resources" />
@@ -630,7 +633,6 @@
     <ClInclude Include="Mocks\Geometry\ITransparencyBuffer.h" Filter="Mocks\Geometry" />
     <ClInclude Include="Mocks\Elements\ITypeInfoLookup.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Geometry\IMesh.h" Filter="Mocks\Geometry" />
-    <ClInclude Include="Geometry\Matrix.h" Filter="Geometry" />
     <ClInclude Include="Mocks\Graphics\ISectorHighlight.h" Filter="Mocks\Graphics" />
     <ClInclude Include="Mocks\Elements\IItem.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Elements\IRoom.h" Filter="Mocks\Elements" />

@@ -1,5 +1,11 @@
-#include "Light.h"
-#include "../Elements/ILevel.h"
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:Light;
+
+import trview.common;
+import :ILevel;
 
 namespace trview
 {

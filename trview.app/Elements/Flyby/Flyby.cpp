@@ -1,5 +1,10 @@
-#include "Flyby.h"
-#include <ranges>
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:Flyby;
+
+import std;
 
 namespace trview
 {

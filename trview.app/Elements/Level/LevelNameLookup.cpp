@@ -1,14 +1,17 @@
-#include "LevelNameLookup.h"
-#include "../ILevel.h"
-#include <trlevel/ILevel.h>
+module;
 
-#include <filesystem>
-#include <spanstream>
-#include <ranges>
+#include <Windows.h>
+#include <external/nlohmann/json.hpp>
 
-#include <bcrypt.h>
+module trview.app:LevelNameLookup;
 
-#include <trlevel/Level_common.h>
+import std;
+import std.compat;
+
+import trview.common;
+import nlohmann.json;
+
+import :ILevelNameLookup;
 
 namespace trview
 {
@@ -662,7 +665,7 @@ namespace trview
                         return level_name_from_strings(_files, strings_path, *level_index);
                     }
                 }
-                catch (const nlohmann::detail::parse_error& e)
+                catch (const std::exception& e)
                 {
                     OutputDebugStringA(e.what());
                 }

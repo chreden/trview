@@ -1,4 +1,10 @@
-#include "CameraInput.h"
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:CameraInput;
+
+import std.compat;
 
 namespace trview
 {

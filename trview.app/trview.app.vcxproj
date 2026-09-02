@@ -443,7 +443,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Geometry\ITransparencyBuffer.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Geometry\Matrix.h" />
+    <ClCompile Include="Geometry\Matrix.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Geometry\Mesh.ixx">
       <FileType>Document</FileType>
     </ClCompile>

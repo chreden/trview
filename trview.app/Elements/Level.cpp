@@ -1,18 +1,17 @@
-#include "Level.h"
+module;
 
-#include <trview.graphics/IShaderStorage.h>
-#include <trview.graphics/IShader.h>
-#include "../Elements/Flyby/IFlybyNode.h"
+#include <d3d11.h>
+#include <SimpleMath.h>
 
-#include "../Graphics/LevelTextureStorage.h"
-#include "../Camera/ICamera.h"
-#include "Remastered/INgPlusSwitcher.h"
-#include <trview.graphics/RasterizerStateStore.h>
-#include <format>
-#include <ranges>
+module trview.app:Level;
 
-#include "../Settings/UserSettings.h"
-#include "../Messages/Messages.h"
+import trlevel;
+import trview.graphics;
+
+import :ICamera;
+import :ISector;
+import :ILevelNameLookup;
+import :IFlybyNode;
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -31,7 +30,7 @@ namespace trview
 #pragma pack(pop)
 #pragma warning(pop)
 
-        constexpr uint16_t get_skidoo(trlevel::PlatformAndVersion version)
+        uint16_t get_skidoo(trlevel::PlatformAndVersion version)
         {
             if (version.version != trlevel::LevelVersion::Tomb2)
             {
@@ -46,7 +45,7 @@ namespace trview
             return 51;
         }
 
-        constexpr bool is_skidoo_driver(trlevel::PlatformAndVersion version, uint16_t id)
+        bool is_skidoo_driver(trlevel::PlatformAndVersion version, uint16_t id)
         {
             if (version.version != trlevel::LevelVersion::Tomb2)
             {

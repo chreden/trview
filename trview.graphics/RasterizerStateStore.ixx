@@ -9,7 +9,7 @@ namespace trview
 {
     namespace graphics
     {
-        class RasterizerStateStore final
+        export class RasterizerStateStore final
         {
         public:
             explicit RasterizerStateStore(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);

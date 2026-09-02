@@ -1,4 +1,10 @@
-#include "FlybyNode.h"
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:FlybyNode;
+
+import :IFlyby;
 
 namespace trview
 {

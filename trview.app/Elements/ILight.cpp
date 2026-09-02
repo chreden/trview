@@ -1,5 +1,10 @@
-#include "ILight.h"
-#include "IRoom.h"
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:ILight;
+
+import :IRoom;
 
 namespace trview
 {

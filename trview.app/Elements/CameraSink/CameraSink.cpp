@@ -1,5 +1,10 @@
-#include "CameraSink.h"
-#include "../ILevel.h"
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:CameraSink;
+
+import :ILevel;
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

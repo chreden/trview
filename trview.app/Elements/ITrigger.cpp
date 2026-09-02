@@ -1,5 +1,6 @@
-#include "ITrigger.h"
-#include "IRoom.h"
+module trview.app:ITrigger;
+
+import :IRoom;
 
 namespace trview
 {
