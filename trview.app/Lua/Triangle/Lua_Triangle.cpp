@@ -1,8 +1,16 @@
-#include "Lua_Triangle.h"
-#include "../Lua.h"
-#include "../Vector3.h"
-#include "../Colour.h"
-#include <trview.lua/inc/tables.h>
+module;
+
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+#include <SimpleMath.h>
+
+module trview.app:LuaTriangle;
+
+import trview.lua;
+
+import :Lua;
+import :LuaColour;
+import :LuaVector3;
 
 using namespace DirectX::SimpleMath;
 

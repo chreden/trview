@@ -1,11 +1,14 @@
-#include "../../Geometry/IMesh.h"
+module;
 
-struct lua_State;
+#include <external/lua/src/lua.h>
+
+export module trview.app:LuaTriangle;
+
+import std;
+import :Triangle;
 
 namespace trview
 {
-    struct Triangle;
-
     namespace lua
     {
         int create_triangle(lua_State* L, const Triangle& triangle);

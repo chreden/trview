@@ -1,6 +1,7 @@
 module;
 
 #include <external/lua/src/lualib.h>
+#include <external/lua/src/lauxlib.h>
 
 module trview.app:Lua;
 
@@ -14,8 +15,8 @@ import :IRandomizerRoute;
 import :IWaypoint;
 import :IScriptable;
 
-#include "trview/trview.h"
-#include "Route/Lua_Waypoint.h"
+import :LuaWaypoint;
+import :trview;
 
 namespace trview
 {

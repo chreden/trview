@@ -1,10 +1,15 @@
-#include "LightsWindow.h"
-#include "../trview_imgui.h"
-#include <format>
-#include "RowCounter.h"
-#include "../Messages/Messages.h"
-#include "../Elements/ILevel.h"
-#include "../Elements/ElementFilters.h"
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+#include <SimpleMath.h>
+
+module trview.app:LightsWindow;
+
+import :Messages;
+import :ILevel;
+import :imgui;
 
 namespace trview
 {

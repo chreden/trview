@@ -151,18 +151,24 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Geometry\Model\ModelStorage.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Lua\Camera\Lua_Camera.h" />
+    <ClCompile Include="Lua\Camera\Lua_Camera.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Lua\Lua_Matrix.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Lua\Mesh\Lua_Mesh.h" />
+    <ClCompile Include="Lua\Mesh\Lua_Mesh.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Lua\Scriptable\IScriptable.ixx">
       <FileType>Document</FileType>
     </ClCompile>
     <ClCompile Include="Lua\Scriptable\Scriptable.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Lua\Triangle\Lua_Triangle.h" />
+    <ClCompile Include="Lua\Triangle\Lua_Triangle.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Lua\Vector2.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -244,8 +250,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Lua\ILua.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Lua\Route\Lua_Route.h" />
-    <ClInclude Include="Lua\Route\Lua_Waypoint.h" />
+    <ClCompile Include="Lua\Route\Lua_Route.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Lua\Route\Lua_Waypoint.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Lua\Vector3.ixx" />
     <ClCompile Include="UI\Fonts\Fonts.cpp" />
     <ClCompile Include="Windows\Console\Console.cpp" />
@@ -826,6 +836,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ProjectReference>
     <ProjectReference Include="..\trview.lua.imgui\trview.lua.imgui.vcxproj">
       <Project>{cdbc4705-e8e2-4c5c-a1a6-ea66fe4b699b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\trview.lua\trview.lua.vcxproj">
+      <Project>{625c279f-ff28-4f69-f00c-bc574664077b}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

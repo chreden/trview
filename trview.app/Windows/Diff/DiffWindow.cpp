@@ -1,18 +1,17 @@
-#include "DiffWindow.h"
-#include <format>
-#include <ranges>
-#include <trlevel/LevelEncryptedException.h>
-#include "../../UserCancelledException.h"
-#include "../../trview_imgui.h"
+module;
 
-#include "../../Elements/ITrigger.h"
-#include "../../Elements/ILight.h"
-#include "../../Elements/SoundSource/ISoundSource.h"
-#include "../../Elements/IRoom.h"
-#include "../../Elements/ISector.h"
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+#include <SimpleMath.h>
 
-#include "../../Messages/Messages.h"
+module trview.app:DiffWindow;
 
+import trlevel;
+
+import :imgui;
+import :Messages;
+import :UserCancelledException;
 
 namespace trview
 {

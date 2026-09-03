@@ -1,14 +1,14 @@
-#include "ViewerUI.h"
-#include <trview.app/Graphics/ILevelTextureStorage.h>
-#include "GoTo.h"
-#include <trview.app/UI/ContextMenu.h>
-#include <trview.input/WindowTester.h>
-#include <trview.common/Windows/Shortcuts.h>
-#include "../Routing/IRoute.h"
-#include "../Windows/IViewer.h"
-#include <ranges>
-#include <trview.common/Messages/Message.h>
-#include "../Messages/Messages.h"
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+
+module trview.app:ViewerUI;
+
+import :Messages;
+import :IViewer;
+import :IScriptable;
 
 using namespace DirectX::SimpleMath;
 

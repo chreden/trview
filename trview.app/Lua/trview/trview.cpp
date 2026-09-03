@@ -1,23 +1,30 @@
-#include "trview.h"
-#include "../Elements/Level/Lua_Level.h"
-#include "../../Application.h"
-#include <trlevel/LevelEncryptedException.h>
-#include "../../UserCancelledException.h"
-#include "../Camera/Lua_Camera.h"
-#include "../Elements/Room/Lua_Room.h"
-#include "../Elements/Sector/Lua_Sector.h"
-#include "../Route/Lua_Route.h"
-#include "../Route/Lua_Waypoint.h"
-#include "../Colour.h"
-#include "../Vector2.h"
-#include "../Vector3.h"
-#include "../Lua_Matrix.h"
-#include "../Scriptable/IScriptable.h"
-#include "../Mesh/Lua_Mesh.h"
-#include "../Triangle/Lua_Triangle.h"
-#include "Lua/Lua.h"
+module;
 
-#include <future>
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+
+module trview.app:trview;
+
+import trlevel;
+
+import std;
+
+import :Lua;
+import :LuaLevel;
+import :LuaCamera;
+import :UserCancelledException;
+import :LuaRoute;
+import :LuaRoom;
+import :LuaVector2;
+import :LuaVector3;
+import :LuaMatrix;
+import :LuaMesh;
+import :LuaTriangle;
+import :LuaColour;
+import :LuaWaypoint;
+import :IScriptable;
+import :Application;
+import :LuaSector;
 
 namespace trview
 {

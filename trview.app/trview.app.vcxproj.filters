@@ -670,6 +670,21 @@
     <ClCompile Include="Settings\UserSettingsPatches.ixx">
       <Filter>Settings</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Camera\Lua_Camera.ixx">
+      <Filter>Lua\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Route\Lua_Waypoint.ixx">
+      <Filter>Lua\Route</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Mesh\Lua_Mesh.ixx">
+      <Filter>Lua\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Route\Lua_Route.ixx">
+      <Filter>Lua\Route</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Triangle\Lua_Triangle.ixx">
+      <Filter>Lua\Triangle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\resource.h" Filter="Resources" />
@@ -716,12 +731,9 @@
     <ClInclude Include="Elements\ISector.hpp" Filter="Elements\Sector" />
     <ClInclude Include="Mocks\Plugins\IPlugin.h" Filter="Mocks\Plugins" />
     <ClInclude Include="Mocks\Tools\IToolbar.h" Filter="Mocks\Tools" />
-    <ClInclude Include="Lua\Route\Lua_Route.h" Filter="Lua\Route" />
-    <ClInclude Include="Lua\Route\Lua_Waypoint.h" Filter="Lua\Route" />
     <ClInclude Include="Mocks\Routing\IRandomizerRoute.h" Filter="Mocks\Routing" />
     <ClInclude Include="Mocks\UI\IFonts.h" Filter="Mocks\UI" />
     <ClInclude Include="Mocks\Windows\IWindows.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Lua\Camera\Lua_Camera.h" Filter="Lua\Camera" />
     <ClInclude Include="Mocks\Lua\IScriptable.h" Filter="Mocks\Lua" />
     <ClInclude Include="Mocks\Elements\ISoundSource.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" Filter="Mocks\Sound" />
@@ -737,8 +749,6 @@
     <ClInclude Include="Mocks\Filters\IFilterStore.h" Filter="Mocks\Filters" />
     <ClInclude Include="Mocks\Filters\IFilterable.h" Filter="Mocks\Filters" />
     <ClInclude Include="UI\Modal.hpp" Filter="UI\Modal" />
-    <ClInclude Include="Lua\Mesh\Lua_Mesh.h" Filter="Lua\Mesh" />
-    <ClInclude Include="Lua\Triangle\Lua_Triangle.h" />
     <ClInclude Include="Mocks\Plugins\IPlugins.h">
       <Filter>Mocks\Plugins</Filter>
     </ClInclude>

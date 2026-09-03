@@ -1,15 +1,18 @@
-#include "SoundsWindow.h"
-#include "../RowCounter.h"
-#include "../../trview_imgui.h"
-#include "../../Elements/SoundSource/ISoundSource.h"
-#include "../../Sound/ISoundStorage.h"
-#include "../../Sound/ISound.h"
-#include <trlevel/trtypes.h>
-#include "../../Elements/ILevel.h"
-#include "../../Messages/Messages.h"
-#include "../../Elements/ElementFilters.h"
+module;
 
-#include <map>
+#define NOMINMAX
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+#include <SimpleMath.h>
+
+module trview.app:SoundsWindow;
+
+import std;
+
+import :ILevel;
+import :Messages;
+import :ElementFilters;
 
 namespace trview
 {

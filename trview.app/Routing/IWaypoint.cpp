@@ -1,4 +1,4 @@
-#include "IWaypoint.h"
+module trview.app:IWaypoint;
 
 namespace trview
 {
