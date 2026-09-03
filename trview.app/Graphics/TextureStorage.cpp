@@ -1,5 +1,6 @@
-#include "TextureStorage.h"
-#include <trview.common/Strings.h>
+module trview.app:TextureStorage;
+
+import trview.common;
 
 namespace trview
 {

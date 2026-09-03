@@ -1,6 +1,7 @@
-#include "Plugins.h"
-#include <trview.common/Messages/Message.h>
-#include "../Messages/Messages.h"
+module trview.app:Plugins;
+
+import std;
+import :Messages;
 
 namespace trview
 {

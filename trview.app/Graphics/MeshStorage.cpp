@@ -1,4 +1,4 @@
-#include "MeshStorage.h"
+module trview.app:MeshStorage;
 
 namespace trview
 {

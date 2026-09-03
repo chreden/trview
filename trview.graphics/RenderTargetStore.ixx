@@ -9,7 +9,7 @@ namespace trview
 {
     namespace graphics
     {
-        class RenderTargetStore final
+        export class RenderTargetStore final
         {
         public:
             explicit RenderTargetStore(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);

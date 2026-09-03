@@ -1,4 +1,8 @@
-#include "Matrix.h"
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:Matrix;
 
 using namespace DirectX::SimpleMath;
 

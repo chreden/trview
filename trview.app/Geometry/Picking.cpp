@@ -1,8 +1,10 @@
-#include "Picking.h"
-#include <trview.app/Camera/ICamera.h>
+module;
 
-#include <trview.common/Point.h>
-#include <trview.common/Window.h>
+#include <SimpleMath.h>
+
+module trview.app:Picking;
+
+import :ICamera;
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

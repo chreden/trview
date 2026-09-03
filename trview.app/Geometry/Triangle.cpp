@@ -1,4 +1,8 @@
-#include "Triangle.h"
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:Triangle;
 
 using namespace DirectX::SimpleMath;
 

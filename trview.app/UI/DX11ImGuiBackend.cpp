@@ -1,7 +1,10 @@
-#include "DX11ImGuiBackend.h"
+module;
 
+#include <Windows.h>
 #include <external/imgui/backends/imgui_impl_win32.h>
 #include <external/imgui/backends/imgui_impl_dx11.h>
+
+module trview.app:DX11ImGuiBackend;
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

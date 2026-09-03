@@ -1,5 +1,13 @@
-#include "Filters.h"
-#include "IFilterStore.h"
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+
+module trview.app:Filters;
+
+import std;
+import :IFilterStore;
 
 namespace trview
 {

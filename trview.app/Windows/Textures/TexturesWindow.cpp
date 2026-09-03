@@ -1,7 +1,16 @@
-#include "TexturesWindow.h"
-#include "../../Messages/Messages.h"
-#include "../../Elements/ILevel.h"
-#include <format>
+module;
+
+#define NOMINMAX
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+#include <wrl/client.h>
+
+module trview.app:TexturesWindow;
+
+import trview.graphics;
+import :Messages;
+import :ILevel;
 
 namespace trview
 {
