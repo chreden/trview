@@ -1,7 +1,13 @@
-#include "PackWindow.h"
-#include <trlevel/Level.h>
-#include "../../Messages/Messages.h"
-#include "../../Elements/ILevel.h"
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+
+module trview.app:PackWindow;
+
+import :Messages;
+import :ILevel;
 
 namespace trview
 {

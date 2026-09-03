@@ -19,19 +19,16 @@ import :UserSettings;
 
 namespace trview
 {
-    namespace
+    struct Tile
     {
-        struct Tile
-        {
-        public:
-            Tile(const std::shared_ptr<ISector>& p_sector, Point p_position, Size p_size)
-                : sector(p_sector), position(p_position), size(p_size) {}
+    public:
+        Tile(const std::shared_ptr<ISector>& p_sector, Point p_position, Size p_size)
+            : sector(p_sector), position(p_position), size(p_size) {}
 
-            std::shared_ptr<ISector> sector; 
-            Point position; 
-            Size size; 
-        };
-    }
+        std::shared_ptr<ISector> sector; 
+        Point position; 
+        Size size; 
+    };
 
     export class MapRenderer final : public IMapRenderer, public IRecipient, public std::enable_shared_from_this<IRecipient>
     {

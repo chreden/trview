@@ -278,7 +278,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Settings\PluginSetting.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Settings\UserSettingsPatches.h" />
+    <ClCompile Include="Settings\UserSettingsPatches.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Sound\ISound.ixx">
       <FileType>Document</FileType>
     </ClCompile>

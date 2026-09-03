@@ -667,6 +667,9 @@
     <ClCompile Include="Lua\BoundingBox.ixx">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="Settings\UserSettingsPatches.ixx">
+      <Filter>Settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\resource.h" Filter="Resources" />
@@ -731,7 +734,6 @@
     <ClInclude Include="Mocks\Elements\ILevelNameLookup.h" Filter="Mocks\Elements" />
     <ClInclude Include="Menus\LevelSortingMode.hpp" Filter="Menus" />
     <ClInclude Include="Mocks\Windows\IWindow.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Settings\UserSettingsPatches.h" Filter="Settings" />
     <ClInclude Include="Mocks\Filters\IFilterStore.h" Filter="Mocks\Filters" />
     <ClInclude Include="Mocks\Filters\IFilterable.h" Filter="Mocks\Filters" />
     <ClInclude Include="UI\Modal.hpp" Filter="UI\Modal" />

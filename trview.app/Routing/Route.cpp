@@ -1,10 +1,14 @@
-#include "Route.h"
-#include <trview.app/Camera/ICamera.h>
-#include <trview.common/Strings.h>
-#include <trview.common/Maths.h>
-#include <trview.common/Json.h>
-#include <trview.app/Elements/ILevel.h>
-#include <format>
+module;
+
+#include <Windows.h>
+#include <SimpleMath.h>
+#include <external/nlohmann/json.hpp>
+
+module trview.app:Route;
+
+import nlohmann.json;
+
+import :ILevel;
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

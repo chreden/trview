@@ -9,13 +9,13 @@ import trview.common;
 
 namespace trview
 {
-    template < typename T >
+    export template < typename T >
     void imgui_sort(std::vector<T>& container, std::vector<std::function<bool(const T&, const T&)>> callbacks, bool force_sort = false);
 
-    template < typename T >
+    export template < typename T >
     void imgui_sort_weak(std::vector<std::weak_ptr<T>>& container, std::vector<std::function<bool(const T&, const T&)>> callbacks, bool force_sort = false);
 
-    struct ImGuiHeader
+    export struct ImGuiHeader
     {
         std::string name;
         float width;
@@ -23,9 +23,9 @@ namespace trview
         bool checked;
     };
 
-    void imgui_header_row(std::vector<ImGuiHeader> headers);
+    export void imgui_header_row(std::vector<ImGuiHeader> headers);
 
-    struct ImGuiScroller
+    export struct ImGuiScroller
     {
     public:
         ImGuiScroller();
@@ -35,7 +35,7 @@ namespace trview
         ImVec2 _cursor_pos;
     };
 
-    struct ImGuiAnchor
+    export struct ImGuiAnchor
     {
         enum class Anchor
         {
@@ -59,7 +59,7 @@ namespace trview
         void record_size();
     };
 
-    void read_only_colour_button(const std::string& name, const ImVec4& colour, IClipboard& clipboard);
+    export void read_only_colour_button(const std::string& name, const ImVec4& colour, IClipboard& clipboard);
 }
 
 #include "trview_imgui.hpp"

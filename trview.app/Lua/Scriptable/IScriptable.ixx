@@ -1,3 +1,7 @@
+module;
+
+#include <external/lua/src/lua.h>
+
 export module trview.app:IScriptable;
 
 import std;
@@ -6,13 +10,10 @@ import std.compat;
 import trview.common;
 
 import :IMesh;
-
-struct lua_State;
+import :ICamera;
 
 namespace trview
 {
-    struct ICamera;
-
     export struct IScriptable
     {
         using Source = std::function<std::shared_ptr<IScriptable>(lua_State*)>;

@@ -1,13 +1,22 @@
-#include "RoomsWindow.h"
-#include <trview.app/Elements/IRoom.h>
-#include <trview.app/Elements/ITrigger.h>
-#include <trview.common/Strings.h>
-#include "../trview_imgui.h"
-#include "../Elements/Floordata.h"
-#include "RowCounter.h"
-#include "../Elements/ILevel.h"
-#include "../Messages/Messages.h"
-#include "../Elements/ElementFilters.h"
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+
+module trview.app:RoomsWindow;
+
+import std;
+import std.compat;
+
+import trlevel;
+import trview.common;
+
+import :IRoom;
+import :imgui;
+import :Messages;
+import :ILevel;
+import :ElementFilters;
 
 namespace trview
 {
@@ -814,7 +823,7 @@ namespace trview
             add_stat("X", room->info().x);
             add_stat("Y", room->info().yBottom);
             add_stat("Z", room->info().z);
-            if (room->alternate_mode() != Room::AlternateMode::None)
+            if (room->alternate_mode() != IRoom::AlternateMode::None)
             {
                 add_stat("Alternate", room->alternate_room(), [this, room]() 
                     { 

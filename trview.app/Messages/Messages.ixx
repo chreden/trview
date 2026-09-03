@@ -4,23 +4,19 @@ import std;
 
 import trview.common;
 
+import :ITrigger;
+import :IItem;
+import :ILight;
+import :ICameraSink;
+import :UserSettings;
+import :IRoute;
+import :IStaticMesh;
+import :IWaypoint;
+import :IFlybyNode;
+import :ISoundSource;
+
 namespace trview
 {
-    struct IItem;
-    struct ICameraSink;
-    struct IFlybyNode;
-    struct ILevel;
-    struct ILight;
-    struct IRecipient;
-    struct IRoom;
-    struct IRoute;
-    struct ISector;
-    struct ISoundSource;
-    struct IStaticMesh;
-    struct ITrigger;
-    struct IWaypoint;
-    struct UserSettings;
-
     namespace messages
     {
         export struct RouteMessage
