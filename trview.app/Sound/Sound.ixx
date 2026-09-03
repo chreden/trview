@@ -1,10 +1,10 @@
-#pragma once
+export module trview.app:Sound;
 
-#include "ISound.h"
+import :ISound;
 
 namespace trview
 {
-    class Sound final : public ISound
+    export class Sound final : public ISound
     {
     public:
         explicit Sound(const std::vector<uint8_t>& data);

@@ -1,7 +1,7 @@
-#pragma once
+export module trview.app:Actions;
 
-#include "IActions.h"
-#include "Action.h"
+import std;
+import :IActions;
 
 namespace trview
 {

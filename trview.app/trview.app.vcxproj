@@ -101,7 +101,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\Pack\PackWindow.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
-    <ClInclude Include="Elements\ElementFilters.h" />
+    <ClCompile Include="Elements\ElementFilters.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Elements\Level\ILevelNameLookup.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -150,7 +152,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="Lua\Camera\Lua_Camera.h" />
-    <ClInclude Include="Lua\Lua_Matrix.h" />
+    <ClCompile Include="Lua\Lua_Matrix.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Lua\Mesh\Lua_Mesh.h" />
     <ClCompile Include="Lua\Scriptable\IScriptable.ixx">
       <FileType>Document</FileType>
@@ -159,7 +163,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="Lua\Triangle\Lua_Triangle.h" />
-    <ClInclude Include="Lua\Vector2.h" />
+    <ClCompile Include="Lua\Vector2.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Menus\ImGuiFileMenu.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -212,21 +218,35 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\TypeInfo.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Lua\BoundingBox.h" />
-    <ClInclude Include="Lua\Colour.h" />
-    <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h" />
-    <ClInclude Include="Lua\Elements\Item\Lua_Item.h" />
-    <ClInclude Include="Lua\Elements\Light\Lua_Light.h" />
-    <ClInclude Include="Lua\Elements\Room\Lua_Room.h" />
-    <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h" />
-    <ClInclude Include="Lua\Elements\StaticMesh\Lua_StaticMesh.h" />
-    <ClInclude Include="Lua\Elements\Trigger\Lua_Trigger.h" />
+    <ClCompile Include="Lua\BoundingBox.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Lua\Colour.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\CameraSink\Lua_CameraSink.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Item\Lua_Item.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Light\Lua_Light.ixx" />
+    <ClCompile Include="Lua\Elements\Room\Lua_Room.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Sector\Lua_Sector.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\StaticMesh\Lua_StaticMesh.ixx" />
+    <ClCompile Include="Lua\Elements\Trigger\Lua_Trigger.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Lua\ILua.ixx">
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="Lua\Route\Lua_Route.h" />
     <ClInclude Include="Lua\Route\Lua_Waypoint.h" />
-    <ClInclude Include="Lua\Vector3.h" />
+    <ClCompile Include="Lua\Vector3.ixx" />
     <ClCompile Include="UI\Fonts\Fonts.cpp" />
     <ClCompile Include="Windows\Console\Console.cpp" />
     <ClInclude Include="Mocks\IApplication.h" />
@@ -265,7 +285,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Sound\ISoundStorage.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Sound\Sound.h" />
+    <ClCompile Include="Sound\Sound.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Sound\SoundStorage.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -497,7 +519,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Graphics\TextureStorage.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="Lua\Elements\Level\Lua_Level.h" />
+    <ClCompile Include="Lua\Elements\Level\Lua_Level.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Lua\Lua.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -567,9 +591,15 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ClCompile>
     <ClInclude Include="Resources\resource.h" />
     <ClInclude Include="Resources\targetver.h" />
-    <ClInclude Include="Routing\Action.h" />
-    <ClInclude Include="Routing\Actions.h" />
-    <ClInclude Include="Routing\IActions.h" />
+    <ClCompile Include="Routing\Action.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Routing\Actions.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Routing\IActions.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Routing\IRoute.ixx">
       <FileType>Document</FileType>
     </ClCompile>

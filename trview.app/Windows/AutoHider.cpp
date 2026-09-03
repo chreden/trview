@@ -1,4 +1,8 @@
-#include "AutoHider.h"
+module;
+
+#include <external/imgui/imgui.h>
+
+module trview.app:AutoHider;
 
 namespace trview
 {

@@ -1,5 +1,4 @@
-#include "Messages.h"
-#include "../Settings/UserSettings.h"
+module trview.app:Messages;
 
 namespace trview
 {

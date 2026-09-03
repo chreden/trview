@@ -1,4 +1,8 @@
-#include "MenuDetector.h"
+module;
+
+#include <Windows.h>
+
+module trview.app:MenuDetector;
 
 namespace trview
 {

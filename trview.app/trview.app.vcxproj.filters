@@ -613,6 +613,60 @@
     <ClCompile Include="Geometry\Matrix.ixx">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\ElementFilters.ixx">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\Sound.ixx">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Routing\Actions.ixx">
+      <Filter>Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="Routing\IActions.ixx">
+      <Filter>Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="Routing\Action.ixx">
+      <Filter>Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Vector3.ixx">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Colour.ixx">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Vector2.ixx">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Lua_Matrix.ixx">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Level\Lua_Level.ixx">
+      <Filter>Lua\Elements\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Item\Lua_Item.ixx">
+      <Filter>Lua\Elements\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Trigger\Lua_Trigger.ixx">
+      <Filter>Lua\Elements\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Room\Lua_Room.ixx">
+      <Filter>Lua\Elements\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Sector\Lua_Sector.ixx">
+      <Filter>Lua\Elements\Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\CameraSink\Lua_CameraSink.ixx">
+      <Filter>Lua\Elements\CameraSink</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\StaticMesh\Lua_StaticMesh.ixx">
+      <Filter>Lua\Elements\StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\Elements\Light\Lua_Light.ixx">
+      <Filter>Lua\Elements\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\BoundingBox.ixx">
+      <Filter>Lua</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\resource.h" Filter="Resources" />
@@ -641,9 +695,6 @@
     <ClInclude Include="Mocks\Elements\IStaticMesh.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Elements\ISector.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Camera\ICamera.h" Filter="Mocks\Camera" />
-    <ClInclude Include="Routing\Action.h" Filter="Routing" />
-    <ClInclude Include="Routing\IActions.h" Filter="Routing" />
-    <ClInclude Include="Routing\Actions.h" Filter="Routing" />
     <ClInclude Include="Mocks\UI\ISettingsWindow.h" Filter="Mocks\UI" />
     <ClInclude Include="Mocks\Routing\IWaypoint.h" Filter="Mocks\Routing" />
     <ClInclude Include="Mocks\UI\IViewOptions.h" Filter="Mocks\UI" />
@@ -656,22 +707,11 @@
     <ClInclude Include="Filters\Filters.hpp" Filter="Filters" />
     <ClInclude Include="Mocks\Menus\IFileMenu.h" Filter="Mocks\Menus" />
     <ClInclude Include="Mocks\Elements\ICameraSink.h" Filter="Mocks\Elements" />
-    <ClInclude Include="Lua\Elements\Level\Lua_Level.h" Filter="Lua\Elements\Level" />
     <ClInclude Include="Type.inl" />
-    <ClInclude Include="Lua\Elements\Item\Lua_Item.h" Filter="Lua\Elements\Item" />
-    <ClInclude Include="Lua\Elements\Room\Lua_Room.h" Filter="Lua\Elements\Room" />
-    <ClInclude Include="Lua\Elements\Trigger\Lua_Trigger.h" Filter="Lua\Elements\Trigger" />
-    <ClInclude Include="Lua\Vector3.h" Filter="Lua" />
-    <ClInclude Include="Lua\Elements\Sector\Lua_Sector.h" Filter="Lua\Elements\Sector" />
-    <ClInclude Include="Lua\Elements\CameraSink\Lua_CameraSink.h" Filter="Lua\Elements\CameraSink" />
-    <ClInclude Include="Lua\Elements\Light\Lua_Light.h" Filter="Lua\Elements\Light" />
-    <ClInclude Include="Lua\Colour.h" Filter="Lua" />
     <ClInclude Include="Mocks\IApplication.h" Filter="Mocks" />
     <ClInclude Include="Mocks\Lua\ILua.h" Filter="Mocks\Lua" />
     <ClInclude Include="Elements\ISector.hpp" Filter="Elements\Sector" />
     <ClInclude Include="Mocks\Plugins\IPlugin.h" Filter="Mocks\Plugins" />
-    <ClInclude Include="Lua\Elements\StaticMesh\Lua_StaticMesh.h" Filter="Lua\Elements\StaticMesh" />
-    <ClInclude Include="Lua\BoundingBox.h" Filter="Lua" />
     <ClInclude Include="Mocks\Tools\IToolbar.h" Filter="Mocks\Tools" />
     <ClInclude Include="Lua\Route\Lua_Route.h" Filter="Lua\Route" />
     <ClInclude Include="Lua\Route\Lua_Waypoint.h" Filter="Lua\Route" />
@@ -680,7 +720,6 @@
     <ClInclude Include="Mocks\Windows\IWindows.h" Filter="Mocks\Windows" />
     <ClInclude Include="Lua\Camera\Lua_Camera.h" Filter="Lua\Camera" />
     <ClInclude Include="Mocks\Lua\IScriptable.h" Filter="Mocks\Lua" />
-    <ClInclude Include="Sound\Sound.h" Filter="Sound" />
     <ClInclude Include="Mocks\Elements\ISoundSource.h" Filter="Mocks\Elements" />
     <ClInclude Include="Mocks\Sound\ISoundStorage.h" Filter="Mocks\Sound" />
     <ClInclude Include="Mocks\Sound\ISound.h" Filter="Mocks\Sound" />
@@ -692,15 +731,12 @@
     <ClInclude Include="Mocks\Elements\ILevelNameLookup.h" Filter="Mocks\Elements" />
     <ClInclude Include="Menus\LevelSortingMode.hpp" Filter="Menus" />
     <ClInclude Include="Mocks\Windows\IWindow.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Elements\ElementFilters.h" Filter="Elements" />
     <ClInclude Include="Settings\UserSettingsPatches.h" Filter="Settings" />
     <ClInclude Include="Mocks\Filters\IFilterStore.h" Filter="Mocks\Filters" />
     <ClInclude Include="Mocks\Filters\IFilterable.h" Filter="Mocks\Filters" />
     <ClInclude Include="UI\Modal.hpp" Filter="UI\Modal" />
     <ClInclude Include="Lua\Mesh\Lua_Mesh.h" Filter="Lua\Mesh" />
-    <ClInclude Include="Lua\Vector2.h" Filter="Lua" />
     <ClInclude Include="Lua\Triangle\Lua_Triangle.h" />
-    <ClInclude Include="Lua\Lua_Matrix.h" Filter="Lua" />
     <ClInclude Include="Mocks\Plugins\IPlugins.h">
       <Filter>Mocks\Plugins</Filter>
     </ClInclude>

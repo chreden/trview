@@ -1,16 +1,22 @@
-#include "Lua_Room.h"
-#include "../../../Elements/ILevel.h"
-#include "../Item/Lua_Item.h"
-#include "../Trigger/Lua_Trigger.h"
-#include "../Sector/Lua_Sector.h"
-#include "../CameraSink/Lua_CameraSink.h"
-#include "../Light/Lua_Light.h"
-#include "../../Lua.h"
-#include "../Level/Lua_Level.h"
-#include "../StaticMesh/Lua_StaticMesh.h"
-#include "../../Vector3.h"
+module;
 
-#include <ranges>
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+
+module trview.app:LuaRoom;
+
+import std;
+import std.compat;
+
+import :Lua;
+import :LuaSector;
+import :LuaItem;
+import :LuaLevel;
+import :LuaVector3;
+import :LuaLight;
+import :LuaStaticMesh;
+import :LuaTrigger;
+import :LuaCameraSink;
 
 namespace trview
 {

@@ -11,6 +11,7 @@ import std.compat;
 import :ILevel;
 import :Messages;
 import :Filters;
+import :ElementFilters;
 
 namespace trview
 {

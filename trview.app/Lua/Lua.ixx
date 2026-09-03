@@ -50,7 +50,7 @@ namespace trview
         std::string _directory;
     };
 
-    namespace lua
+    export namespace lua
     {
         int push_string(lua_State* L, const std::string& text);
 

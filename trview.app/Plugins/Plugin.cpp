@@ -1,6 +1,10 @@
-#include "Plugin.h"
-#include <algorithm>
-#include <format>
+module;
+
+#include <external/nlohmann/json.hpp>
+
+module trview.app:Plugin;
+
+import nlohmann.json;
 
 namespace trview
 {

@@ -1,15 +1,16 @@
-#pragma once
+export module trview.app:IActions;
 
-#include <vector>
-#include <trlevel/LevelVersion.h>
-#include "Action.h"
+import std;
+
+import trlevel;
+import :Action;
 
 namespace trview
 {
     /// <summary>
     /// Defines all actions that can performed in a route.
     /// </summary>
-    struct IActions
+    export struct IActions
     {
         virtual ~IActions() = 0;
 

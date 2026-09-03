@@ -1,12 +1,11 @@
-#pragma once
+export module trview.app:Action;
 
-#include <optional>
-#include <string>
-#include <trlevel/LevelVersion.h>
+import trlevel;
+import std;
 
 namespace trview
 {
-    class Action final
+    export class Action final
     {
     public:
         Action(const std::string& name, const std::string& display_name,

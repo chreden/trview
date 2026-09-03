@@ -11,7 +11,7 @@ namespace trview
 {
     namespace graphics
     {
-        class ViewportStore final
+        export class ViewportStore final
         {
         public:
             explicit ViewportStore(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);

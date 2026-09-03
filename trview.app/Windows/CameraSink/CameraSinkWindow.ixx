@@ -20,6 +20,7 @@ import :IFlyby;
 import :Track;
 import :AutoHider;
 import :UserSettings;
+import :ElementFilters;
 
 namespace trview
 {

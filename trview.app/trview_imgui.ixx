@@ -5,6 +5,7 @@ module;
 export module trview.app:imgui;
 
 import std;
+import trview.common;
 
 namespace trview
 {
@@ -58,7 +59,6 @@ namespace trview
         void record_size();
     };
 
-    struct IClipboard;
     void read_only_colour_button(const std::string& name, const ImVec4& colour, IClipboard& clipboard);
 }
 

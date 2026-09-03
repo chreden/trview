@@ -1,5 +1,7 @@
-#include "SoundStorage.h"
-#include <ranges>
+module trview.app:SoundStorage;
+
+import std;
+import std.compat;
 
 namespace trview
 {
