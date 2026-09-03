@@ -22,13 +22,12 @@ import :IPlugins;
 import :IFonts;
 import :ILevel;
 import :UserSettings;
+import :IWindows;
 
 struct ImFont;
 
 namespace trview
 {
-    struct IWindows;
-
     export struct IApplication
     {
         virtual ~IApplication() = 0;
@@ -164,6 +163,4 @@ namespace trview
 
         std::shared_ptr<IMessageSystem> _messaging;
     };
-
-    export std::shared_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line);
 }

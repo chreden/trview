@@ -13,10 +13,11 @@ import trview.graphics;
 import :Triangle;
 import :MeshVertex;
 import :ILevelTextureStorage;
-import :PickResult;
 
 namespace trview
 {
+    struct PickResult;
+
     export struct IMesh
     {
         using Source = std::function<std::shared_ptr<IMesh>(const std::vector<Triangle>&)>;

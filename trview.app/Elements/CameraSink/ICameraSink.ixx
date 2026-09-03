@@ -7,13 +7,14 @@ import trlevel;
 import trview.common;
 
 import :IRenderable;
-import :PickResult;
 import :IMesh;
 import :ITrigger;
 import :IFilterable;
 
 namespace trview
 {
+    struct PickResult;
+
     export struct ICameraSink : public IRenderable, public IFilterable
     {
         enum class Type

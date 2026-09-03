@@ -9,7 +9,6 @@ import std.compat;
 
 import trlevel;
 
-import :PickResult;
 import :ITransparencyBuffer;
 import :IMesh;
 

@@ -7,6 +7,7 @@ module trview.app:StaticMesh;
 import :Matrix;
 import :ITransparencyBuffer;
 import :IRoom;
+import :PickResult;
 
 namespace trview
 {

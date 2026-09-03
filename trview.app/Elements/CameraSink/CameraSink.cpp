@@ -5,6 +5,7 @@ module;
 module trview.app:CameraSink;
 
 import :ILevel;
+import :PickResult;
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

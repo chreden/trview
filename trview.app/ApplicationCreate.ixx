@@ -162,7 +162,7 @@ namespace trview
         }
     }
 
-    std::shared_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line)
+    export std::shared_ptr<IApplication> create_application(HINSTANCE hInstance, int command_show, const std::wstring& command_line)
     {
         auto messaging = std::make_shared<MessageSystem>();
         auto files = std::make_shared<Files>();
@@ -582,5 +582,10 @@ namespace trview
             messaging);
         messaging->add_recipient(application);
         return application;
+    }
+
+    export void poop()
+    {
+
     }
 }

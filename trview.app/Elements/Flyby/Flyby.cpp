@@ -6,6 +6,8 @@ module trview.app:Flyby;
 
 import std;
 
+import :PickResult;
+
 namespace trview
 {
     using namespace DirectX;

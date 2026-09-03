@@ -6,10 +6,10 @@ import std.compat;
 import trlevel;
 
 import :ILevelTextureStorage;
+import :IMesh;
 
 namespace trview
 {
-    struct IMesh;
     export struct IMeshStorage
     {
         using Source = std::function<std::unique_ptr<IMeshStorage>(const trlevel::ILevel&, const ILevelTextureStorage&)>;

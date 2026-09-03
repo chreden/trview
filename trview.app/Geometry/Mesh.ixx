@@ -13,6 +13,7 @@ import trview.graphics;
 
 import :IMesh;
 import :ITextureStorage;
+import :PickResult;
 
 namespace trview
 {

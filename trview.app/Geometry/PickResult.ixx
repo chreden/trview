@@ -5,23 +5,23 @@ module;
 export module trview.app:PickResult;
 
 import std;
+import trview.common;
+
 import :Triangle;
+import :IFlybyNode;
+import :IWaypoint;
+import :ISoundSource;
 
 namespace trview
 {
-    struct Colour;
     struct ICameraSink;
-    struct IFlybyNode;
     struct IItem;
     struct ILevel;
     struct ILight;
     struct IRoom;
-    struct IRoute;
     struct IScriptable;
-    struct ISoundSource;
     struct IStaticMesh;
     struct ITrigger;
-    struct IWaypoint;
 
     export struct PickResult
     {

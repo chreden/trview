@@ -3,6 +3,7 @@ module trview.app:Trigger;
 import std;
 import std.compat;
 import trview.common;
+import :PickResult;
 
 namespace trview
 {

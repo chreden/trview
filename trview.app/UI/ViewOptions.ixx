@@ -3,11 +3,10 @@ export module trview.app:ViewOptions;
 import std;
 
 import :IViewOptions;
+import :IWindows;
 
 namespace trview
 {
-    struct IWindows;
-
     export class ViewOptions final : public IViewOptions
     {
     public:

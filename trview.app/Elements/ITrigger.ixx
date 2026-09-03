@@ -8,15 +8,15 @@ import trlevel;
 
 import :IRenderable;
 import :Triangle;
-import :PickResult;
 import :Types;
 import :IFilterable;
+import :ISector;
 
 namespace trview
 {
     struct ILevel;
     struct IRoom;
-    struct ISector;
+    struct PickResult;
 
     export struct ITrigger : public IRenderable, public IFilterable
     {

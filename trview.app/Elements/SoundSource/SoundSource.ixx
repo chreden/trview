@@ -6,6 +6,7 @@ import trview.graphics;
 import :ISoundSource;
 import :IMesh;
 import :ITextureStorage;
+import :PickResult;
 
 namespace trview
 {

@@ -1,5 +1,8 @@
 module trview.app:Messages;
 
+import :UserSettings;
+import :IWaypoint;
+
 namespace trview
 {
     namespace messages

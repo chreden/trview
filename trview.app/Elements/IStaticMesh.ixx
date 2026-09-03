@@ -9,13 +9,13 @@ import trview.common;
 import :ICamera;
 import :IMesh;
 import :IFilterable;
-import :PickResult;
 
 namespace trview
 {
     struct ITransparencyBuffer;
     struct IRoom;
     struct ILevel;
+    struct PickResult;
 
     export struct IStaticMesh : public IFilterable
     {

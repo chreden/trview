@@ -11,12 +11,13 @@ import trview.common;
 import trlevel;
 
 import :IRenderable;
-import :PickResult;
 import :IFilterable;
 
 namespace trview
 {
     struct IRoom;
+    struct PickResult;
+    struct ILevel;
 
     export struct ILight : public IRenderable, public IFilterable
     {

@@ -7,7 +7,6 @@ import trlevel;
 import trview.common;
 
 import :IRenderable;
-import :PickResult;
 import :IFilterable;
 import :ICamera;
 
@@ -15,6 +14,7 @@ namespace trview
 {
     struct IFlybyNode;
     struct ILevel;
+    struct PickResult;
 
     export struct IFlyby : public IRenderable, public IFilterable
     {

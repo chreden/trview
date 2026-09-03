@@ -7,11 +7,10 @@ export module trview.app:IRenderable;
 import std;
 
 import :ITransparencyBuffer;
+import :ICamera;
 
 namespace trview
 {
-    struct ICamera;
-
     /// Interface for something that can be rendered by the viewer.
     export struct IRenderable
     {

@@ -5,6 +5,7 @@ import trview.graphics;
 import :IModel;
 import :IMesh;
 import :ITextureStorage;
+import :PickResult;
 
 namespace trview
 {

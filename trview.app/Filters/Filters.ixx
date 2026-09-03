@@ -48,6 +48,9 @@ namespace trview
         ReadWrite
     };
 
+    export constexpr std::string to_string(CompareOp op) noexcept;
+    export constexpr std::string to_string(Op op) noexcept;
+
     export class Filters
     {
     public:
@@ -201,7 +204,112 @@ namespace trview
         bool has_options(const std::string& type_key, const std::string& key) const;
         std::vector<CompareOp> compare_ops_for_key(const std::string& type_key, const std::string& key) const;
         std::vector<std::string> options_for_key(const std::string& type_key, const std::string& key) const;
-        Action render(Filter& filter, int32_t depth, int32_t index, Filter& parent, const std::string& type_key);
+        Action render(Filter& filter, int32_t depth, int32_t index, Filter& parent, const std::string& type_key)
+        {
+            const auto keys = this->keys(type_key);
+
+            // For the 0th element we always just draw children.
+            if (!filter.children.empty() || depth == 0 || filter.compare == CompareOp::Matches)
+            {
+                if (filter.compare == CompareOp::Matches)
+                {
+                    if (Action::Remove == render_leaf(filter, depth, index, type_key))
+                    {
+                        return Action::Remove;
+                    }
+                }
+
+                const std::string suffix = std::format("{}-{}", depth, index);
+
+                if (ImGui::BeginChild((std::string("FilterGroup##") + suffix).c_str(), ImVec2(), ImGuiChildFlags_Borders | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY))
+                {
+                    int32_t child_index = 0;
+                    for (auto& child : filter.children)
+                    {
+                        const std::string child_suffix = std::format("{}-{}-{}", depth, index, child_index);
+                        if (Action::Remove == render(child, depth + 1, child_index, filter, filter.type_key != "" ? filter.type_key : type_key))
+                        {
+                            filter.children.erase(filter.children.begin() + child_index);
+                            break;
+                        }
+
+                        if (depth > 0)
+                        {
+                            ImGui::SameLine();
+                            if (ImGui::Button((std::string("<##") + child_suffix).c_str()))
+                            {
+                                const auto filter_to_promote = child;
+                                filter.children.erase(filter.children.begin() + child_index);
+
+                                const auto filter_in_parent = std::ranges::find(parent.children, filter);
+                                const auto filter_in_parent_index = filter_in_parent - parent.children.begin();
+
+                                const bool last_filter_in_filter = filter.children.size() == 0;
+                                parent.children.insert(filter_in_parent, filter_to_promote);
+
+                                if (last_filter_in_filter)
+                                {
+                                    parent.children.erase(parent.children.begin() + filter_in_parent_index + 1);
+                                }
+
+                                break;
+                            }
+                            if (ImGui::IsItemHovered())
+                            {
+                                ImGui::SetTooltip("Move this condition into the parent condition");
+                            }
+                        }
+
+                        ImGui::SameLine();
+                        if (ImGui::Button((std::string(">##") + child_suffix).c_str()))
+                        {
+                            auto filter_to_group = child;
+                            child = {};
+                            child.children.push_back(filter_to_group);
+                            break;
+                        }
+                        if (ImGui::IsItemHovered())
+                        {
+                            ImGui::SetTooltip("Make this condition a child of the current condition");
+                        }
+
+                        if (child_index != filter.children.size() - 1)
+                        {
+                            std::vector<Op> ops{ Op::And, Op::Or };
+                            if (ImGui::BeginCombo((Names::FilterOp + child_suffix).c_str(), to_string(child.op).c_str()))
+                            {
+                                for (const auto& op : ops)
+                                {
+                                    if (ImGui::Selectable(to_string(op).c_str(), op == child.op))
+                                    {
+                                        child.op = op;
+                                        _changed = true;
+                                        ImGui::SetItemDefaultFocus();
+                                    }
+                                }
+                                ImGui::EndCombo();
+                            }
+                        }
+                        ++child_index;
+                    }
+
+                    if (ImGui::Button(std::format("{}##{}", Names::AddFilter, suffix).c_str()))
+                    {
+                        _changed = true;
+                        filter.children.push_back({});
+                    }
+                }
+
+                ImGui::EndChild();
+            }
+            else
+            {
+                return render_leaf(filter, depth, index, type_key);
+            }
+
+            return Action::None;
+        }
+
         Action render_leaf(Filter& filter, int32_t depth, int32_t index, const std::string& type_key);
         void render_menu_bar();
         void render_filter_name_modal();
@@ -226,9 +334,6 @@ namespace trview
         };
         Modal<ModalState> _save_modal;
     };
-
-    export constexpr std::string to_string(CompareOp op) noexcept;
-    export constexpr std::string to_string(Op op) noexcept;
 
     /// <summary>
     /// Get the <see cref="CompareOp" />s that a type supports.

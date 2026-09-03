@@ -7,8 +7,8 @@ import trlevel;
 import trview.common;
 
 import :IRenderable;
-import :PickResult;
 import :IFilterable;
+import :ILevel;
 
 namespace trlevel
 {
@@ -18,6 +18,8 @@ namespace trlevel
 
 namespace trview
 {
+    struct PickResult;
+
     export struct ISoundSource : public IRenderable, public IFilterable
     {
         using Source = std::function<std::shared_ptr<ISoundSource>(uint32_t, const trlevel::tr_sound_source&, const std::optional<trlevel::tr_x_sound_details>&, trlevel::LevelVersion, const std::weak_ptr<ILevel>&)>;

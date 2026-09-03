@@ -4,6 +4,7 @@ import std;
 
 import :IMesh;
 import :ILight;
+import :PickResult;
 
 namespace trview
 {

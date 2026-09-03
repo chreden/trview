@@ -10,14 +10,14 @@ import trlevel;
 import trview.common;
 
 import :IRenderable;
-import :PickResult;
 import :IFilterable;
+import :IModelStorage;
 
 namespace trview
 {
     struct ITrigger;
     struct IRoom;
-    struct IModelStorage;
+    struct ILevel;
 
     export struct IItem : public IRenderable, public IFilterable
     {

@@ -14,6 +14,7 @@ import :IStaticMesh;
 import :IWaypoint;
 import :IFlybyNode;
 import :ISoundSource;
+import :ISector;
 
 namespace trview
 {
@@ -21,7 +22,6 @@ namespace trview
     {
         export struct RouteMessage
         {
-            // TODO: Interfaces
             std::variant<std::weak_ptr<ITrigger>, std::weak_ptr<IItem>, std::weak_ptr<ILight>, std::weak_ptr<ICameraSink>> element;
         };
 

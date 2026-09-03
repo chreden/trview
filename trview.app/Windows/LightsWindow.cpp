@@ -10,6 +10,7 @@ module trview.app:LightsWindow;
 import :Messages;
 import :ILevel;
 import :imgui;
+import :ElementFilters;
 
 namespace trview
 {
