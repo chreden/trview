@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockPicking : public IPicking
+        export struct MockPicking : public IPicking
         {
             MockPicking();
             virtual ~MockPicking();

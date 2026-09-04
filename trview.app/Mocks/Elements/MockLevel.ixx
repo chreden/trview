@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockLevel : public ILevel, public std::enable_shared_from_this<MockLevel>
+        export struct MockLevel : public ILevel, public std::enable_shared_from_this<MockLevel>
         {
             MockLevel();
             virtual ~MockLevel();

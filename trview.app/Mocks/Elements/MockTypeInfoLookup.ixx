@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockTypeInfoLookup : public ITypeInfoLookup
+        export struct MockTypeInfoLookup : public ITypeInfoLookup
         {
             MockTypeInfoLookup();
             virtual ~MockTypeInfoLookup();

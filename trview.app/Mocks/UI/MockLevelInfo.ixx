@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockLevelInfo : public ILevelInfo
+        export struct MockLevelInfo : public ILevelInfo
         {
             MockLevelInfo();
             virtual ~MockLevelInfo();

@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockMapRenderer : public IMapRenderer
+        export struct MockMapRenderer : public IMapRenderer
         {
             MockMapRenderer();
             virtual ~MockMapRenderer();

@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockTransparencyBuffer : public ITransparencyBuffer
+        export struct MockTransparencyBuffer : public ITransparencyBuffer
         {
             MockTransparencyBuffer();
             virtual ~MockTransparencyBuffer();

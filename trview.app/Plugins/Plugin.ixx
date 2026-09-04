@@ -7,6 +7,7 @@ export module trview.app:Plugin;
 import std;
 import trview.common;
 
+import :Forward;
 import :IPlugin;
 import :ILua;
 

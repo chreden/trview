@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockPlugin : public IPlugin
+        export struct MockPlugin : public IPlugin
         {
             MockPlugin();
             virtual ~MockPlugin();

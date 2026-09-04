@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockSelectionRenderer : public ISelectionRenderer
+        export struct MockSelectionRenderer : public ISelectionRenderer
         {
             MockSelectionRenderer();
             virtual ~MockSelectionRenderer();

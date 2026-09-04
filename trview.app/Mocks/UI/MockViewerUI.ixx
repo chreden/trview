@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockViewerUI : public IViewerUI
+        export struct MockViewerUI : public IViewerUI
         {
             MockViewerUI();
             virtual ~MockViewerUI();

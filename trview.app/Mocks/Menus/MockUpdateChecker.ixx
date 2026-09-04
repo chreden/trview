@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockUpdateChecker : public IUpdateChecker
+        export struct MockUpdateChecker : public IUpdateChecker
         {
             MockUpdateChecker();
             virtual ~MockUpdateChecker();

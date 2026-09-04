@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockSettingsLoader : public ISettingsLoader
+        export struct MockSettingsLoader : public ISettingsLoader
         {
             MockSettingsLoader();
             virtual ~MockSettingsLoader();

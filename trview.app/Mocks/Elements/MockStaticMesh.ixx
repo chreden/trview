@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockStaticMesh : public IStaticMesh, public std::enable_shared_from_this<MockStaticMesh>
+        export struct MockStaticMesh : public IStaticMesh, public std::enable_shared_from_this<MockStaticMesh>
         {
             MockStaticMesh();
             virtual ~MockStaticMesh();

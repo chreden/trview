@@ -5,7 +5,7 @@ import :IActions;
 
 namespace trview
 {
-    class Actions final : public IActions
+    export class Actions final : public IActions
     {
     public:
         explicit Actions(const std::string& actions_json);

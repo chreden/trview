@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockFonts : public IFonts
+        export struct MockFonts : public IFonts
         {
             MockFonts();
             virtual ~MockFonts();

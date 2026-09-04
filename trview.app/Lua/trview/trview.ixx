@@ -11,11 +11,10 @@ import :IRoute;
 import :IRandomizerRoute;
 import :UserSettings;
 import :IScriptable;
+import :Forward;
 
 namespace trview
 {
-    struct IApplication;
-
     namespace lua
     {
         export void trview_register(lua_State* L,

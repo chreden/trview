@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockRandomizerRoute : public IRandomizerRoute
+        export struct MockRandomizerRoute : public IRandomizerRoute
         {
             MockRandomizerRoute();
             virtual ~MockRandomizerRoute();

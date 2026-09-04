@@ -13,7 +13,7 @@ namespace trview
 
     namespace mocks
     {
-        struct MockScriptable : public IScriptable
+        export struct MockScriptable : public IScriptable
         {
             MockScriptable();
             ~MockScriptable();

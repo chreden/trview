@@ -8,6 +8,7 @@ import std;
 
 import trview.common;
 
+import :Forward;
 import :ITypeInfoLookup;
 import :IFileMenu;
 import :IUpdateChecker;
@@ -23,7 +24,6 @@ import :IFonts;
 import :ILevel;
 import :UserSettings;
 import :IWindows;
-import :Forward;
 
 struct ImFont;
 

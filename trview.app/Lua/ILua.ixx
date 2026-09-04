@@ -2,11 +2,11 @@ export module trview.app:ILua;
 
 import std;
 
+import :Forward;
 import trview.common;
 
 namespace trview
 {
-    struct IApplication;
     export struct ILua
     {
         virtual ~ILua() = 0;

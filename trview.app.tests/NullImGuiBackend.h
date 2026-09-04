@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trview.app/UI/IImGuiBackend.h>
+import trview.app;
 
 namespace trview
 {

@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockToolbar : public IToolbar
+        export struct MockToolbar : public IToolbar
         {
             MockToolbar();
             ~MockToolbar();

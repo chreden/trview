@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockNgPlusSwitcher : public INgPlusSwitcher
+        export struct MockNgPlusSwitcher : public INgPlusSwitcher
         {
             MockNgPlusSwitcher();
             ~MockNgPlusSwitcher();

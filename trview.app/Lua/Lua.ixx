@@ -15,11 +15,10 @@ import :IRandomizerRoute;
 import :IWaypoint;
 import :IScriptable;
 import :IMesh;
+import :Forward;
 
 namespace trview
 {
-    struct IApplication;
-
     export class Lua final : public ILua
     {
     public:

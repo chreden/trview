@@ -3,10 +3,10 @@ export module trview.app:IPlugins;
 import std;
 
 import :IPlugin;
+import :Forward;
 
 namespace trview
 {
-    struct IApplication;
     export struct IPlugins
     {
         virtual ~IPlugins() = 0;

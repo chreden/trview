@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockItem : public IItem, public std::enable_shared_from_this<MockItem>
+        export struct MockItem : public IItem, public std::enable_shared_from_this<MockItem>
         {
             MockItem();
             virtual ~MockItem();

@@ -1,8 +1,6 @@
-#include <trview.app/Plugins/Plugin.h>
-#include <trview.common/Mocks/IFiles.h>
-#include <trview.tests.common/Mocks.hpp>
-#include <trview.app/Mocks/Lua/ILua.h>
-#include <trview.app/Mocks/IApplication.h>
+import trview.app;
+import trview.common;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

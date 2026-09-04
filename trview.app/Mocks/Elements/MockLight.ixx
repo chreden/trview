@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockLight : public ILight, public std::enable_shared_from_this<MockLight>
+        export struct MockLight : public ILight, public std::enable_shared_from_this<MockLight>
         {
             MockLight();
             virtual ~MockLight();

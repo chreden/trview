@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockModelStorage : public IModelStorage
+        export struct MockModelStorage : public IModelStorage
         {
             MockModelStorage();
             virtual ~MockModelStorage();

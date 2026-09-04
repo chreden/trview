@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockSound : public ISound
+        export struct MockSound : public ISound
         {
             MockSound();
             virtual ~MockSound();

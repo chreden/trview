@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockCameraControls : public ICameraControls
+        export struct MockCameraControls : public ICameraControls
         {
             MockCameraControls();
             virtual ~MockCameraControls();

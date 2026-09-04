@@ -3,10 +3,10 @@ export module trview.app:IPlugin;
 import std;
 import trview.common;
 
+import :Forward;
+
 namespace trview
 {
-    struct IApplication;
-
     export struct IPlugin
     {
         using Source = std::function<std::shared_ptr<IPlugin>(const std::string& directory)>;

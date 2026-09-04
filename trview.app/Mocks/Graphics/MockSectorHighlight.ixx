@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockSectorHighlight : public ISectorHighlight
+        export struct MockSectorHighlight : public ISectorHighlight
         {
             MockSectorHighlight();
             virtual ~MockSectorHighlight();

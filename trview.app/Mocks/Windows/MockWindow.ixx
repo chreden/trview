@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockWindow : public IWindow
+        export struct MockWindow : public IWindow
         {
             MockWindow();
             virtual ~MockWindow();

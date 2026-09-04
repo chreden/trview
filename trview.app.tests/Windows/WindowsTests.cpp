@@ -1,7 +1,11 @@
-#include <trview.app/Windows/Windows.h>
-#include <trview.common/Mocks/Windows/IShortcuts.h>
-#include <trview.app/Mocks/Windows/IWindow.h>
+#include <Windows.h>
 #include <trview.app/Resources/resource.h>
+
+#include <gtest/gtest.h>
+
+import trview.common;
+import trview.tests.common;
+import trview.app;
 
 using namespace trview;
 using namespace trview::tests;

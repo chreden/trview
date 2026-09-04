@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockTrigger : public ITrigger, public std::enable_shared_from_this<MockTrigger>
+        export struct MockTrigger : public ITrigger, public std::enable_shared_from_this<MockTrigger>
         {
             MockTrigger();
             virtual ~MockTrigger();

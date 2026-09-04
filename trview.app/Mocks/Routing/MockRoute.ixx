@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockRoute : public IRoute
+        export struct MockRoute : public IRoute
         {
             MockRoute();
             virtual ~MockRoute();

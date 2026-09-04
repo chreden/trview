@@ -7,5 +7,6 @@ namespace trview
     export struct IFlyby;
     export struct IFlybyNode;
     export struct IApplication;
+    export struct IRoute;
 }
 

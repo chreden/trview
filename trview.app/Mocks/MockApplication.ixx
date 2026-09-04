@@ -4,16 +4,17 @@ module;
 
 export module trview.app:MockApplication;
 
+import :Forward;
 import :Application;
 
 namespace trview
 {
     namespace mocks
     {
-        struct MockApplication : public IApplication
+        export struct MockApplication : public IApplication
         {
-            MockApplication();
-            ~MockApplication();
+            MockApplication() {}
+            ~MockApplication() {}
             MOCK_METHOD(int, run, (), (override));
             MOCK_METHOD(std::weak_ptr<ILevel>, current_level, (), (const, override));
             MOCK_METHOD(std::shared_ptr<ILevel>, load, (const std::string&), (override));

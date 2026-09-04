@@ -13,7 +13,7 @@ namespace trview
 
     namespace mocks
     {
-        struct MockCameraSink : public ICameraSink, public std::enable_shared_from_this<MockCameraSink>
+        export struct MockCameraSink : public ICameraSink, public std::enable_shared_from_this<MockCameraSink>
         {
             virtual ~MockCameraSink() = default;
             MOCK_METHOD(DirectX::BoundingBox, bounding_box, (), (const, override));

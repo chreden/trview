@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockMeasure : public IMeasure
+        export struct MockMeasure : public IMeasure
         {
             MockMeasure();
             virtual ~MockMeasure();

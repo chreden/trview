@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockStartupOptions : public IStartupOptions
+        export struct MockStartupOptions : public IStartupOptions
         {
             MockStartupOptions();
             virtual ~MockStartupOptions();

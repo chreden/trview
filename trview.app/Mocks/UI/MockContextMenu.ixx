@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockContextMenu : public IContextMenu
+        export struct MockContextMenu : public IContextMenu
         {
             MockContextMenu();
             virtual ~MockContextMenu();

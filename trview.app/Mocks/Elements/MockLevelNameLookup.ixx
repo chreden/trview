@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockLevelNameLookup : public ILevelNameLookup
+        export struct MockLevelNameLookup : public ILevelNameLookup
         {
             MockLevelNameLookup();
             virtual ~MockLevelNameLookup();

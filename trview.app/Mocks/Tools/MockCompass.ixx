@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockCompass : public ICompass
+        export struct MockCompass : public ICompass
         {
             MockCompass();
             virtual ~MockCompass();

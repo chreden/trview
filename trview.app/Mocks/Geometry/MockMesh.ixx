@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockMesh : public IMesh
+        export struct MockMesh : public IMesh
         {
             MockMesh();
             virtual ~MockMesh();

@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockFilterable : public IFilterable
+        export struct MockFilterable : public IFilterable
         {
             MockFilterable();
             virtual ~MockFilterable();

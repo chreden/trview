@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockFlybyNode : public IFlybyNode
+        export struct MockFlybyNode : public IFlybyNode
         {
             explicit MockFlybyNode();
             virtual ~MockFlybyNode();

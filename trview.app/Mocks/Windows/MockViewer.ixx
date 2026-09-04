@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockViewer : public IViewer
+        export struct MockViewer : public IViewer
         {
             MockViewer();
             virtual ~MockViewer();

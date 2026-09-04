@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockWaypoint : public IWaypoint
+        export struct MockWaypoint : public IWaypoint
         {
             MockWaypoint();
             virtual ~MockWaypoint();

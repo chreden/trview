@@ -11,7 +11,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockLevelTextureStorage : public ILevelTextureStorage
+        export struct MockLevelTextureStorage : public ILevelTextureStorage
         {
             MockLevelTextureStorage();
             virtual ~MockLevelTextureStorage();
