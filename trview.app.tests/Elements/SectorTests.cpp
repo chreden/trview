@@ -1,7 +1,6 @@
-#include <trview.app/Elements/Sector.h>
-#include <trlevel/Mocks/ILevel.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.tests.common/Mocks.h>
+import trlevel;
+import trview.app;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

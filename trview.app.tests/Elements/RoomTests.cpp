@@ -1,19 +1,8 @@
-#include <trview.app/Elements/Room.h>
-#include <trlevel/Mocks/ILevel.h>
-#include <trview.app/Mocks/Camera/ICamera.h>
-#include <trview.app/Mocks/Geometry/IMesh.h>
-#include <trview.app/Mocks/Geometry/ITransparencyBuffer.h>
-#include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
-#include <trview.app/Mocks/Graphics/IMeshStorage.h>
-#include <trview.app/Mocks/Elements/IItem.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
-#include <trview.app/Mocks/Elements/IStaticMesh.h>
-#include <trview.app/Mocks/Elements/ISector.h>
-#include <trview.app/Mocks/Elements/ITrigger.h>
-#include <trview.app/Mocks/Elements/ICameraSink.h>
-#include <trview.common/Algorithms.h>
-#include <trview.common/Mocks/Logs/ILog.h>
-#include <trview.graphics/Mocks/ISamplerState.h>
+import trlevel;
+import trview.app;
+import trview.common;
+import trview.tests.common;
+import trview.graphics;
 
 using namespace trview;
 using namespace trview::mocks;
@@ -359,7 +348,7 @@ TEST(Room, PickTestsEntities)
     auto room = register_test_module().build();
     auto entity = mock_shared<MockItem>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 0, .position = {}, .centroid = {}, .type = PickResult::Type::Entity, .item = entity }));
+    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 0, .position = {}, .centroid = {}, .type = PickResult::Type::Entity, .element = entity }));
     room->add_entity(entity);
 
     auto results = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::Entities);
@@ -367,7 +356,7 @@ TEST(Room, PickTestsEntities)
     auto result = results.front();
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::Entity);
-    ASSERT_EQ(result.item.lock(), entity);
+    ASSERT_EQ(std::static_pointer_cast<IItem>(result.element.lock()), entity);
 }
 
 /// <summary>
@@ -381,7 +370,7 @@ TEST(Room, PickTestsTriggers)
     auto room = register_test_module().build();
     auto trigger = mock_shared<MockTrigger>();
     ON_CALL(*trigger, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*trigger, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 0, .position = {}, .centroid = {}, .type = PickResult::Type::Trigger, .trigger = trigger }));
+    EXPECT_CALL(*trigger, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 0, .position = {}, .centroid = {}, .type = PickResult::Type::Trigger, .element = trigger }));
     room->add_trigger(trigger);
 
     auto results = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::Triggers);
@@ -389,7 +378,7 @@ TEST(Room, PickTestsTriggers)
     auto result = results.front();
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::Trigger);
-    ASSERT_EQ(result.trigger.lock(), trigger);
+    ASSERT_EQ(std::static_pointer_cast<ITrigger>(result.element.lock()), trigger);
 }
 
 /// <summary>
@@ -403,12 +392,12 @@ TEST(Room, PickChoosesClosest)
     auto room = register_test_module().build();
     auto entity = mock_shared<MockItem>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 0.5f, .position = {}, .centroid = {}, .type = PickResult::Type::Entity, .item = entity }));
+    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 0.5f, .position = {}, .centroid = {}, .type = PickResult::Type::Entity, .element = entity }));
     room->add_entity(entity);
 
     auto entity2 = mock_shared<MockItem>();
     ON_CALL(*entity2, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*entity2, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 1.0f, .position = {}, .centroid = {}, .type = PickResult::Type::Entity, .item = entity2 }));
+    EXPECT_CALL(*entity2, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 1.0f, .position = {}, .centroid = {}, .type = PickResult::Type::Entity, .element = entity2 }));
     room->add_entity(entity2);
 
     auto results = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::Entities | PickFilter::Triggers);
@@ -416,7 +405,7 @@ TEST(Room, PickChoosesClosest)
     auto result = results.front();
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::Entity);
-    ASSERT_EQ(result.item.lock(), entity);
+    ASSERT_EQ(std::static_pointer_cast<IItem>(result.element.lock()), entity);
     ASSERT_EQ(result.distance, 0.5f);
 }
 
@@ -431,7 +420,7 @@ TEST(Room, PickChoosesEntityOverTrigger)
     auto room = register_test_module().build();
     auto entity = mock_shared<MockItem>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 1.0f, .position = {}, .centroid = {}, .type = PickResult::Type::Entity, .item = entity }));
+    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 1.0f, .position = {}, .centroid = {}, .type = PickResult::Type::Entity, .element = entity }));
     room->add_entity(entity);
 
     auto trigger = mock_shared<MockTrigger>();
@@ -443,7 +432,7 @@ TEST(Room, PickChoosesEntityOverTrigger)
     auto result = results.front();
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::Entity);
-    ASSERT_EQ(result.item.lock(), entity);
+    ASSERT_EQ(std::static_pointer_cast<IItem>(result.element.lock()), entity);
     ASSERT_EQ(result.distance, 1.0f);
 }
 
@@ -710,7 +699,7 @@ TEST(Room, PickTestsStaticMesh)
     auto static_mesh = mock_shared<MockStaticMesh>();
     ON_CALL(*static_mesh, number).WillByDefault(Return(10));
     ON_CALL(*static_mesh, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*static_mesh, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 0, .position = {}, .centroid = {}, .type = PickResult::Type::StaticMesh, .static_mesh = static_mesh }));
+    EXPECT_CALL(*static_mesh, pick).Times(1).WillOnce(Return(PickResult{ .hit = true, .distance = 0, .position = {}, .centroid = {}, .type = PickResult::Type::StaticMesh, .element = static_mesh }));
 
     auto static_mesh_source = [&](auto&&...)
         {
@@ -728,7 +717,7 @@ TEST(Room, PickTestsStaticMesh)
     auto result = results.front();
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::StaticMesh);
-    ASSERT_EQ(result.static_mesh.lock(), static_mesh);
+    ASSERT_EQ(std::static_pointer_cast<IStaticMesh>(result.element.lock()), static_mesh);
 }
 
 

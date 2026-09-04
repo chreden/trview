@@ -1,10 +1,6 @@
-#include <trview.app/Elements/Item.h>
-#include <trview.app/Mocks/Elements/IItem.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Mocks/Geometry/IMesh.h>
-#include <trview.app/Mocks/Geometry/IModelStorage.h>
-#include <trlevel/Mocks/ILevel.h>
-#include <trview.tests.common/Mocks.h>
+import trlevel;
+import trview.app;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

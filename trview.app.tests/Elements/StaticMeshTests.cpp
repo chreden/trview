@@ -1,6 +1,7 @@
-#include <trview.app/Elements/StaticMesh.h>
-#include <trview.app/Mocks/Geometry/IMesh.h>
-#include <trview.app/Mocks/Camera/ICamera.h>
+import trlevel;
+import trview.app;
+import trview.common;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

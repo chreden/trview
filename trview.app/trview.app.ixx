@@ -53,6 +53,15 @@ export import :ISelectionRenderer;
 export import :ISoundStorage;
 export import :Level;
 export import :Messages;
+export import :Item;
+export import :IStaticMesh;
+export import :ISector;
+export import :PickResult;
+export import :Sector;
+export import :StaticMesh;
+export import :Trigger;
+export import :Types;
+export import :TypeInfoLookup;
 
 export import :MockWindow;
 export import :MockLua;
