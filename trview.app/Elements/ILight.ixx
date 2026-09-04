@@ -14,11 +14,11 @@ import :IRenderable;
 import :IFilterable;
 import :PickResult;
 import :IPickable;
+import :Forward;
 
 namespace trview
 {
     struct IRoom;
-    struct ILevel;
 
     export struct ILight : public IRenderable, public IFilterable, public IPickable
     {
@@ -77,7 +77,4 @@ namespace trview
     export float range(const ILight& light);
     export float density(const ILight& light);
     export float radius(const ILight& light);
-
-    export uint32_t light_room(const std::shared_ptr<ILight>& light);
-    export uint32_t light_room(const ILight& light);
 }

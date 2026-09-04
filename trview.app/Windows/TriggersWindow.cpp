@@ -12,6 +12,7 @@ import :ILevel;
 import :Messages;
 import :Filters;
 import :ElementFilters;
+import :IFlyby;
 
 namespace trview
 {

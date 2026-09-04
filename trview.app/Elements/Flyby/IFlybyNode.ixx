@@ -11,11 +11,11 @@ import trlevel;
 
 import :IFilterable;
 import :IPickable;
+import :ILevel;
+import :Forward;
 
 namespace trview
 {
-    struct ILevel;
-    struct IFlyby;
     export struct IFlybyNode : public IFilterable, public IPickable
     {
         using Source = std::function<std::shared_ptr<IFlybyNode>(const trlevel::tr4_flyby_camera&, const std::weak_ptr<IFlyby>&, const std::weak_ptr<ILevel>&)>;

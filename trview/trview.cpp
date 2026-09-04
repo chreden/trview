@@ -32,7 +32,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR,
     nCmdShow;
     hInstance;
     trview::poop();
-    // auto application = trview::create_application(hInstance, nCmdShow, GetCommandLine());
-    // return application->run();
+    auto application = trview::create_application(hInstance, nCmdShow, GetCommandLine());
+    return application->run();
     return 0;
 }

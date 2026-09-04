@@ -11,6 +11,7 @@ import :IItem;
 import :ITrigger;
 import :ICameraSink;
 import :ILight;
+import :ILightFunctions;
 import :ILevel;
 
 using namespace DirectX;

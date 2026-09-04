@@ -1,13 +1,34 @@
+module;
+
+#include <SimpleMath.h>
+
 export module trview.app:FlybyNode;
 
 import :IFlybyNode;
+
+using namespace DirectX::SimpleMath;
 
 namespace trview
 {
     export class FlybyNode final : public IFlybyNode
     {
     public:
-        explicit FlybyNode(const trlevel::tr4_flyby_camera& camera, const std::weak_ptr<IFlyby>& flyby, const std::weak_ptr<ILevel>& level);
+        FlybyNode(const trlevel::tr4_flyby_camera& node, const std::weak_ptr<IFlyby>& flyby, const std::weak_ptr<ILevel>& level)
+            : _flyby(flyby),
+            _level(level),
+            _direction(Vector3(static_cast<float>(node.dx), static_cast<float>(node.dy), static_cast<float>(node.dz)) / trlevel::Scale),
+            _flags(node.flags),
+            _fov(node.fov),
+            _number(node.index),
+            _position(Vector3(static_cast<float>(node.x), static_cast<float>(node.y), static_cast<float>(node.z)) / trlevel::Scale),
+            _roll(node.roll),
+            _room(node.room_id),
+            _speed(node.speed),
+            _timer(node.timer)
+        {
+
+        }
+
         virtual ~FlybyNode() = default;
         DirectX::SimpleMath::Vector3 direction() const override;
         uint16_t flags() const override;

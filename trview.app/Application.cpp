@@ -17,6 +17,7 @@ import :IWaypoint;
 import :UserCancelledException;
 import :Lua;
 import :trview;
+import :ILightFunctions;
 
 using namespace DirectX::SimpleMath;
 

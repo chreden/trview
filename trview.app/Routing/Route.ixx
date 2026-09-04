@@ -10,11 +10,10 @@ import :ISelectionRenderer;
 import :ILevelTextureStorage;
 import :ICamera;
 import :UserSettings;
+import :Forward;
 
 namespace trview
 {
-    struct ILevel;
-
     /// A series of waypoints.
     export class Route final : public IRoute, public std::enable_shared_from_this<Route>
     {

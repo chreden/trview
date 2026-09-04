@@ -11,13 +11,13 @@ import trview.common;
 import :IRenderable;
 import :IPickable;
 import :IItem;
+import :Forward;
 
 namespace trview
 {
     struct IRoute;
     struct ITrigger;
     struct ICameraSink;
-    struct ILight;
 
     /// <summary>
     /// A waypoint in a route.

@@ -23,6 +23,7 @@ import :IFonts;
 import :ILevel;
 import :UserSettings;
 import :IWindows;
+import :Forward;
 
 struct ImFont;
 

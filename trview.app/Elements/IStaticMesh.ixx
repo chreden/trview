@@ -11,12 +11,12 @@ import :IMesh;
 import :IFilterable;
 import :PickResult;
 import :IPickable;
+import :Forward;
 
 namespace trview
 {
     struct ITransparencyBuffer;
     struct IRoom;
-    struct ILevel;
 
     export struct IStaticMesh : public IFilterable, public IPickable
     {

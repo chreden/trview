@@ -10,12 +10,10 @@ import :IRenderable;
 import :IFilterable;
 import :ICamera;
 import :PickResult;
+import :Forward;
 
 namespace trview
 {
-    struct IFlybyNode;
-    struct ILevel;
-
     export struct IFlyby : public IRenderable, public IFilterable
     {
         using Source = std::function<std::shared_ptr<IFlyby>(const std::vector<trlevel::tr4_flyby_camera>&, const std::weak_ptr<ILevel>&)>;

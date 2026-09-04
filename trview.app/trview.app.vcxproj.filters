@@ -688,6 +688,10 @@
     <ClCompile Include="Geometry\IPickable.ixx">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\Light\ILightFunctions.ixx">
+      <Filter>Elements\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Forward.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\resource.h" Filter="Resources" />

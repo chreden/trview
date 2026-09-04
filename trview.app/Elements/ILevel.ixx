@@ -4,6 +4,7 @@ module;
 
 export module trview.app:ILevel;
 
+import trview.graphics;
 import trlevel;
 import trview.common;
 
@@ -14,8 +15,10 @@ import :IStaticMesh;
 import :IScriptable;
 import :ILight;
 import :ICameraSink;
-import :IFlyby;
 import :MapColours;
+import :PickResult;
+import :ICamera;
+import :Forward;
 
 namespace trview
 {

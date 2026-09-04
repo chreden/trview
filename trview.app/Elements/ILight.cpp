@@ -175,22 +175,4 @@ namespace trview
     {
         return light.radius();
     }
-
-    uint32_t light_room(const std::shared_ptr<ILight>& light)
-    {
-        if (!light)
-        {
-            return 0u;
-        }
-        return light_room(*light);
-    }
-
-    uint32_t light_room(const ILight& light)
-    {
-        if (auto room = light.room().lock())
-        {
-            return room->number();
-        }
-        return 0u;
-    }
 }

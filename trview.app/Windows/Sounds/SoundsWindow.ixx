@@ -13,11 +13,10 @@ import :ISoundStorage;
 import :Filters;
 import :AutoHider;
 import :UserSettings;
+import :Forward;
 
 namespace trview
 {
-    struct ILevel;
-
     export class SoundsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:

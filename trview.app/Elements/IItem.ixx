@@ -13,12 +13,12 @@ import :IRenderable;
 import :IFilterable;
 import :IModelStorage;
 import :IPickable;
+import :Forward;
 
 namespace trview
 {
     struct ITrigger;
     struct IRoom;
-    struct ILevel;
 
     export struct IItem : public IRenderable, public IFilterable, public IPickable
     {

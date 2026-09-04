@@ -14,6 +14,8 @@ import trview.common;
 import trview.graphics;
 import trview.input;
 
+import :Forward;
+
 import :Application;
 import :IRandomizerRoute;
 import :UserSettings;

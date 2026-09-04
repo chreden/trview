@@ -14,11 +14,10 @@ import trview.graphics;
 import :ILevelInfo;
 import :ILevelNameLookup;
 import :ITextureStorage;
+import :ILevel;
 
 namespace trview
 {
-    struct ILevel;
-
     /// The level info display shows the name of the current level as well
     /// as the game that the level was built for.
     export class LevelInfo final : public ILevelInfo

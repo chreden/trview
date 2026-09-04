@@ -20,6 +20,7 @@ import :IRoom;
 import :PickResult;
 import :ISoundSource;
 import :IFlybyNode;
+import :IFlyby;
 
 using namespace DirectX::SimpleMath;
 

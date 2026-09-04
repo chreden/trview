@@ -7,6 +7,7 @@ module trview.app:Flyby;
 import std;
 
 import :PickResult;
+import :ILevel;
 
 namespace trview
 {

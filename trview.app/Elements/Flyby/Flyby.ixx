@@ -3,6 +3,7 @@ export module trview.app:Flyby;
 import :IFlyby;
 import :IFlybyNode;
 import :IMesh;
+import :Forward;
 
 namespace trview
 {

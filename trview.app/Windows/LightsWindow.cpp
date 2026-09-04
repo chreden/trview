@@ -11,6 +11,7 @@ import :Messages;
 import :ILevel;
 import :imgui;
 import :ElementFilters;
+import :ILightFunctions;
 
 namespace trview
 {

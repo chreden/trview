@@ -24,11 +24,10 @@ import :ICameraSink;
 import :IStaticMesh;
 import :IFilterable;
 import :IPickable;
+import :Forward;
 
 namespace trview
 {
-    struct ILevel;
-
     /// <summary>
     /// Represents a room in a level.
     /// </summary>
