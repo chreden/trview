@@ -6,11 +6,10 @@ import trlevel;
 
 import :IMeshStorage;
 import :IMesh;
+import :ILevelTextureStorage;
 
 namespace trview
 {
-    struct ILevelTextureStorage;
-
     export class MeshStorage final : public IMeshStorage
     {
     public:

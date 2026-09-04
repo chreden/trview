@@ -1,9 +1,9 @@
-#include <trview.app/Lua/Camera/Lua_Camera.h>
-#include <trview.app/Lua/Vector3.h>
-#include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 #include "../Lua.h"
+
+import trview.app;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

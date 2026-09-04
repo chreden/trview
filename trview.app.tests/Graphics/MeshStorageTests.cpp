@@ -1,7 +1,7 @@
-#include <trview.app/Graphics/MeshStorage.h>
-#include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
-#include <trview.app/Mocks/Geometry/IMesh.h>
-#include <trlevel/Mocks/ILevel.h>
+import trlevel;
+import trview.app;
+import trview.graphics;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

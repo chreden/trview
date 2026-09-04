@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockDialogs : public IDialogs
+        export struct MockDialogs : public IDialogs
         {
             MockDialogs();
             virtual ~MockDialogs();

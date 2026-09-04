@@ -11,7 +11,7 @@ namespace trview
 {
     namespace lua
     {
-        int create_triangle(lua_State* L, const Triangle& triangle);
-        void triangle_register(lua_State* L);
+        export int create_triangle(lua_State* L, const Triangle& triangle);
+        export void triangle_register(lua_State* L);
     }
 }

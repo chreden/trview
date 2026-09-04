@@ -1,10 +1,9 @@
-#include <trview.app/Lua/Mesh/Lua_Mesh.h>
-#include <trview.app/Lua/Triangle/Lua_Triangle.h>
-#include <trview.app/Mocks/Geometry/IMesh.h>
-#include <trview.app/Lua/Lua.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 #include "../Lua.h"
+
+import trview.app;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

@@ -1,10 +1,11 @@
-#include <trview.app/Lua/Triangle/Lua_Triangle.h>
-#include <trview.app/Lua/Vector3.h>
-#include <trview.app/Lua/Lua.h>
-#include <trview.app/Lua/Colour.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 #include "../Lua.h"
+
+#include <SimpleMath.h>
+
+import trview.app;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

@@ -8,7 +8,7 @@ import :ITextureStorage;
 
 namespace trview
 {
-    class TextureStorage final : public ITextureStorage
+    export class TextureStorage final : public ITextureStorage
     {
     public:
         explicit TextureStorage(const std::shared_ptr<graphics::IDevice>& device);

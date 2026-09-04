@@ -1,7 +1,9 @@
-#include <trview.app/Lua/Colour.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 #include "Lua.h"
+
+import trview.app;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;
