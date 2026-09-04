@@ -5,18 +5,17 @@ module;
 
 export module trview.app:MockScriptable;
 
+import :Forward;
 import :IScriptable;
 
 namespace trview
 {
-    struct ICamera;
-
     namespace mocks
     {
         export struct MockScriptable : public IScriptable
         {
-            MockScriptable();
-            ~MockScriptable();
+            MockScriptable(){}
+            ~MockScriptable(){}
             MOCK_METHOD(void, click, (), (override));
             MOCK_METHOD(int, data, (), (const, override));
             MOCK_METHOD(std::shared_ptr<IMesh>, mesh, (), (const, override));

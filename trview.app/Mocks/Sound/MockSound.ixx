@@ -12,8 +12,8 @@ namespace trview
     {
         export struct MockSound : public ISound
         {
-            MockSound();
-            virtual ~MockSound();
+            MockSound(){}
+            virtual ~MockSound(){}
             MOCK_METHOD(void, play, (), (override));
         };
     }

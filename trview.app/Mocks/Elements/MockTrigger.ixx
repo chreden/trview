@@ -13,8 +13,8 @@ namespace trview
     {
         export struct MockTrigger : public ITrigger, public std::enable_shared_from_this<MockTrigger>
         {
-            MockTrigger();
-            virtual ~MockTrigger();
+            MockTrigger(){}
+            virtual ~MockTrigger(){}
             MOCK_METHOD(void, render, (const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(bool, visible, (), (const, override));

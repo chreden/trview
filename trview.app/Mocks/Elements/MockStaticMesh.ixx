@@ -13,8 +13,8 @@ namespace trview
     {
         export struct MockStaticMesh : public IStaticMesh, public std::enable_shared_from_this<MockStaticMesh>
         {
-            MockStaticMesh();
-            virtual ~MockStaticMesh();
+            MockStaticMesh(){}
+            virtual ~MockStaticMesh(){}
             MOCK_METHOD(DirectX::BoundingBox, collision, (), (const, override));
             MOCK_METHOD(void, render, (const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(void, render_bounding_box, (const ICamera&, const DirectX::SimpleMath::Color&), (override));

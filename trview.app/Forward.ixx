@@ -10,5 +10,8 @@ namespace trview
     export struct IRoute;
     export struct ITrigger;
     export struct IRoom;
+    export struct ISoundSource;
+    export struct ICamera;
+    export struct ISoundStorage;
 }
 

@@ -12,7 +12,7 @@ namespace trview
     {
         namespace mocks
         {
-            struct MockSamplerState : public ISamplerState
+            export struct MockSamplerState : public ISamplerState
             {
                 MockSamplerState();
                 virtual ~MockSamplerState();

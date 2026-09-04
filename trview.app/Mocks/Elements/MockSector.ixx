@@ -13,8 +13,8 @@ namespace trview
     {
         export struct MockSector : public ISector, public std::enable_shared_from_this<MockSector>
         {
-            MockSector();
-            virtual ~MockSector();
+            MockSector(){}
+            virtual ~MockSector(){}
             MOCK_METHOD(std::vector<std::uint16_t>, portals, (), (const, override));
             MOCK_METHOD(int, id, (), (const, override));
             MOCK_METHOD(std::set<std::uint16_t>, neighbours, (), (const, override));

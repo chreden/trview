@@ -22,9 +22,6 @@ import :Forward;
 
 namespace trview
 {
-    struct ISoundStorage;
-    struct ISoundSource;
-
     export struct ILevel : public IRecipient
     {
         using Source = std::function<std::shared_ptr<ILevel>(const std::string&, const std::shared_ptr<trlevel::IPack>&, trlevel::ILevel::LoadCallbacks)>;

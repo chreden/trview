@@ -8,6 +8,7 @@ import trview.common;
 
 import :ProjectionMode;
 import :UserSettings;
+import :Forward;
 
 namespace trview
 {

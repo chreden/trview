@@ -13,8 +13,8 @@ namespace trview
     {
         export struct MockLevelTextureStorage : public ILevelTextureStorage
         {
-            MockLevelTextureStorage();
-            virtual ~MockLevelTextureStorage();
+            MockLevelTextureStorage() {};
+            virtual ~MockLevelTextureStorage() {};
             MOCK_METHOD(void, add_texture, (const std::vector<uint32_t>&, uint32_t, uint32_t), (override));
             MOCK_METHOD(graphics::Texture, coloured, (uint32_t), (const, override));
             MOCK_METHOD(graphics::Texture, lookup, (const std::string&), (const, override));

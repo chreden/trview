@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockMessageSystem : public IMessageSystem
+        export struct MockMessageSystem : public IMessageSystem
         {
             MockMessageSystem();
             virtual ~MockMessageSystem();

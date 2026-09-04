@@ -13,8 +13,8 @@ namespace trview
     {
         export struct MockItem : public IItem, public std::enable_shared_from_this<MockItem>
         {
-            MockItem();
-            virtual ~MockItem();
+            MockItem(){}
+            virtual ~MockItem(){}
             MOCK_METHOD(void, render, (const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(bool, visible, (), (const, override));

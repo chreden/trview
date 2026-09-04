@@ -3,6 +3,7 @@ export module trview.app:ISoundStorage;
 import std;
 import std.compat;
 
+import :Forward;
 import :ISound;
 
 namespace trview

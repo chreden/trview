@@ -17,8 +17,6 @@ namespace trview
         {
             export struct MockShader : public IShader
             {
-                MockShader();
-                virtual ~MockShader();
                 MOCK_METHOD(void, apply, (const Microsoft::WRL::ComPtr<ID3D11DeviceContext>&), (override));
             };
         }

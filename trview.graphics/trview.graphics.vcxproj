@@ -67,11 +67,9 @@
       <FileType>Document</FileType>
     </ClCompile>
     <ClCompile Include="Mocks\MockSamplerState.cpp" />
-    <ClCompile Include="Mocks\MockShader.cpp" />
     <ClCompile Include="Mocks\MockShader.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClCompile Include="Mocks\MockShaderStorage.cpp" />
     <ClCompile Include="Mocks\MockShaderStorage.ixx">
       <FileType>Document</FileType>
     </ClCompile>

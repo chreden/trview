@@ -22,12 +22,10 @@ import :IFlyby;
 import :ILevelNameLookup;
 import :Messages;
 import :ILevelTextureStorage;
+import :Forward;
 
 namespace trview
 {
-    struct ICamera;
-    struct ISoundStorage;
-
     export class Level final : public ILevel, public std::enable_shared_from_this<ILevel>
     {
     public:

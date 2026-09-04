@@ -5,6 +5,7 @@ module;
 
 export module trview.app:MockCamera;
 
+import :Forward;
 import :ICamera;
 
 namespace trview
@@ -13,8 +14,8 @@ namespace trview
     {
         export struct MockCamera : public ICamera
         {
-            MockCamera();
-            virtual ~MockCamera();
+            MockCamera(){}
+            virtual ~MockCamera(){}
             MOCK_METHOD(DirectX::SimpleMath::Vector3, forward, (), (const, override));
             MOCK_METHOD(float, fov, (), (const, override));
             MOCK_METHOD(const DirectX::BoundingFrustum, frustum, (), (const, override));

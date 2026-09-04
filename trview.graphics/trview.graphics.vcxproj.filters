@@ -160,12 +160,6 @@
     <ClCompile Include="Sampler\ISamplerState.cpp">
       <Filter>Sampler</Filter>
     </ClCompile>
-    <ClCompile Include="Mocks\MockShader.cpp">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockShaderStorage.cpp">
-      <Filter>Mocks</Filter>
-    </ClCompile>
     <ClCompile Include="Mocks\MockSprite.cpp">
       <Filter>Mocks</Filter>
     </ClCompile>

@@ -4,11 +4,10 @@ import trview.common;
 
 import :PickInfo;
 import :PickResult;
+import :Forward;
 
 namespace trview
 {
-    struct ICamera;
-
     export struct IPicking
     {
         virtual ~IPicking() = 0;

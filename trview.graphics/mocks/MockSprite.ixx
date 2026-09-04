@@ -12,7 +12,7 @@ namespace trview
     {
         namespace mocks
         {
-            struct MockSprite : public ISprite
+            export struct MockSprite : public ISprite
             {
                 MockSprite();
                 virtual ~MockSprite();

@@ -12,8 +12,8 @@ namespace trview
     {
         export struct MockModelStorage : public IModelStorage
         {
-            MockModelStorage();
-            virtual ~MockModelStorage();
+            MockModelStorage(){}
+            virtual ~MockModelStorage(){}
             MOCK_METHOD(std::weak_ptr<IModel>, find_by_type_id, (uint16_t), (const, override));
         };
     }

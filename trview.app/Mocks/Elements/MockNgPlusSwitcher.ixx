@@ -13,8 +13,8 @@ namespace trview
     {
         export struct MockNgPlusSwitcher : public INgPlusSwitcher
         {
-            MockNgPlusSwitcher();
-            ~MockNgPlusSwitcher();
+            MockNgPlusSwitcher(){}
+            ~MockNgPlusSwitcher(){}
             MOCK_METHOD((std::unordered_map<uint16_t, std::shared_ptr<IItem>>), create_for_level, (const std::shared_ptr<ILevel>&, const trlevel::ILevel&, const IModelStorage&), (const, override));
             MOCK_METHOD((std::vector<std::shared_ptr<IItem>>), extras_for_level, (const std::shared_ptr<ILevel>&, const trlevel::ILevel&, const IModelStorage&), (const, override));
         };

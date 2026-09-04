@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockRecipient : public IRecipient
+        export struct MockRecipient : public IRecipient
         {
             MockRecipient();
             virtual ~MockRecipient();

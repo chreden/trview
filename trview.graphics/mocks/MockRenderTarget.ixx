@@ -12,7 +12,7 @@ namespace trview
     {
         namespace mocks
         {
-            struct MockRenderTarget : public IRenderTarget
+            export struct MockRenderTarget : public IRenderTarget
             {
                 MockRenderTarget();
                 virtual ~MockRenderTarget();

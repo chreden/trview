@@ -13,10 +13,8 @@ namespace trview
     {
         namespace mocks
         {
-            struct MockDevice : public IDevice
+            export struct MockDevice : public IDevice
             {
-                MockDevice();
-                virtual ~MockDevice();
                 MOCK_METHOD(void, begin, (), (override));
                 MOCK_METHOD(Microsoft::WRL::ComPtr<ID3D11Device>, device, (), (const, override));
                 MOCK_METHOD(Microsoft::WRL::ComPtr<ID3D11DeviceContext>, context, (), (const, override));

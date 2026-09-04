@@ -18,11 +18,11 @@ import trview.graphics;
 
 import :ITransparencyBuffer;
 import :ISelectionRenderer;
+import :Forward;
 
 namespace trview
 {
     struct IRenderable;
-    struct ICamera;
 
     /// Draws an outline around an object.
     export class SelectionRenderer final : public ISelectionRenderer

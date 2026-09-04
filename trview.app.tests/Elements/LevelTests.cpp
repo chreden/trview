@@ -1,41 +1,16 @@
-#include <trview.app/Elements/Level.h>
-#include <trlevel/Mocks/ILevel.h>
-#include <trview.graphics/mocks/IDevice.h>
-#include <trview.graphics/mocks/IShaderStorage.h>
-#include <trview.app/Mocks/Geometry/ITransparencyBuffer.h>
-#include <trview.app/Mocks/Geometry/IModelStorage.h>
-#include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
-#include <trview.app/Mocks/Graphics/IMeshStorage.h>
-#include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
-#include <trview.app/Mocks/Elements/IFlyby.h>
-#include <trview.app/Mocks/Elements/IItem.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Mocks/Elements/ITrigger.h>
-#include <trview.app/Mocks/Elements/ILight.h>
-#include <trview.app/Mocks/Elements/ICameraSink.h>
-#include <trview.app/Mocks/Elements/ISector.h>
-#include <trview.app/Mocks/Elements/ISoundSource.h>
-#include <trview.app/Mocks/Camera/ICamera.h>
-#include <trview.app/Mocks/Sound/ISoundStorage.h>
-#include <trview.app/Mocks/Lua/IScriptable.h>
-#include <trview.graphics/mocks/D3D/ID3D11DeviceContext.h>
-#include <trview.graphics/mocks/IShader.h>
-#include <trview.common/Algorithms.h>
-#include <trview.common/Mocks/Logs/ILog.h>
-#include <trview.graphics/mocks/IBuffer.h>
-#include <trview.tests.common/Event.h>
-#include <trview.app/Mocks/Elements/INgPlusSwitcher.h>
-#include <trview.graphics/mocks/ISamplerState.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
-#include <trview.common/Mocks/Messages/IRecipient.h>
-#include <trview.app/Messages/Messages.h>
-#include <trview.app/Mocks/Elements/ILevelNameLookup.h>
+#include <d3d11.h>
+#include <wrl/client.h>
+
+import trlevel;
+import trview.app;
+import trview.common;
+import trview.tests.common;
+import trview.graphics;
 
 using namespace trview;
 using namespace trview::mocks;
 using namespace trview::graphics;
 using namespace trview::graphics::mocks;
-using namespace trlevel;
 using namespace trlevel::mocks;
 using namespace trview::tests;
 using namespace testing;
@@ -155,14 +130,14 @@ namespace
 
 TEST(Level, LoadFromEntitySources)
 {
-    tr2_entity entity;
+    trlevel::tr2_entity entity;
     entity.Room = 0;
     entity.TypeID = 123;
 
-    tr4_ai_object ai_object{};
+    trlevel::tr4_ai_object ai_object{};
 
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
-    EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(LevelVersion::Tomb4));
+    EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(trlevel::LevelVersion::Tomb4));
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
     EXPECT_CALL(mock_level, num_entities()).WillRepeatedly(Return(1));
     EXPECT_CALL(mock_level, get_entity(0)).WillRepeatedly(Return(entity));
@@ -193,7 +168,7 @@ TEST(Level, LoadFromEntitySources)
 TEST(Level, LoadRooms)
 {
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
-    EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(LevelVersion::Tomb4));
+    EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(trlevel::LevelVersion::Tomb4));
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(3));
 
     int room_called = 0;
@@ -528,7 +503,7 @@ TEST(Level, SelectedItem)
 
 TEST(Level, SelectedLight)
 {
-    tr3_room room{ };
+    trlevel::tr3_room room{ };
     room.lights.resize(5);
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     ON_CALL(mock_level, num_rooms).WillByDefault(Return(1));
@@ -678,7 +653,7 @@ TEST(Level, TriggerNotFound)
 
 TEST(Level, Item)
 {
-    tr2_entity entity{};
+    trlevel::tr2_entity entity{};
     entity.Room = 0;
     entity.TypeID = 123;
 
@@ -709,7 +684,7 @@ TEST(Level, ItemNotFound)
 
 TEST(Level, Light)
 {
-    tr3_room room{ };
+    trlevel::tr3_room room{ };
     room.lights.resize(1);
 
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
@@ -818,13 +793,13 @@ TEST(Level, CameraSinksRenderedWhenEnabled)
 
 TEST(Level, SkidooGenerated)
 {
-    const tr2_entity driver { .TypeID = 52 };
+    const trlevel::tr2_entity driver { .TypeID = 52 };
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     ON_CALL(mock_level, num_entities).WillByDefault(Return(1));
     EXPECT_CALL(mock_level, get_entity(0)).WillRepeatedly(Return(driver));
-    ON_CALL(mock_level, platform_and_version).WillByDefault(Return(PlatformAndVersion { .version = trlevel::LevelVersion::Tomb2 }));
+    ON_CALL(mock_level, platform_and_version).WillByDefault(Return(trlevel::PlatformAndVersion { .version = trlevel::LevelVersion::Tomb2 }));
 
-    std::vector<tr2_entity> entities;
+    std::vector<trlevel::tr2_entity> entities;
 
     auto level = register_test_module()
         .with_level(std::move(mock_level_ptr))
@@ -844,7 +819,7 @@ TEST(Level, SkidooGenerated)
 TEST(Level, RoomNotUpdatedIfAnimationsDisabled)
 {
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
-    EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(LevelVersion::Tomb4));
+    EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(trlevel::LevelVersion::Tomb4));
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
 
     auto room = mock_shared<MockRoom>();
@@ -868,7 +843,7 @@ TEST(Level, RoomNotUpdatedIfAnimationsDisabled)
 TEST(Level, RoomUpdatedIfAnimationsEnabled)
 {
     auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
-    EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(LevelVersion::Tomb4));
+    EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(trlevel::LevelVersion::Tomb4));
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
 
     auto room = mock_shared<MockRoom>();
@@ -998,7 +973,7 @@ TEST(Level, SelectSoundSourceMessages)
 
 TEST(Level, UnhideAllMessage)
 {
-    tr3_room level_room{ };
+    trlevel::tr3_room level_room{ };
     level_room.lights.resize(1);
     level_room.static_meshes.resize(1);
 
@@ -1036,7 +1011,7 @@ TEST(Level, UnhideAllMessage)
 
     auto sound_source = mock_shared<MockSoundSource>();
     EXPECT_CALL(*sound_source, set_visible(true));
-    ON_CALL(mock_level, sound_sources).WillByDefault(Return(std::vector<tr_sound_source>(1)));
+    ON_CALL(mock_level, sound_sources).WillByDefault(Return(std::vector<trlevel::tr_sound_source>(1)));
 
     auto level = register_test_module()
         .with_level(std::move(mock_level_ptr))

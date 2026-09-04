@@ -36,4 +36,4 @@ export import :MockShader;
 export import :MockShaderStorage;
 export import :MockSprite;
 
-
+export import :Printers;
