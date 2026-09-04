@@ -220,7 +220,7 @@ namespace trview
             {
                 result.distance = distance;
                 result.hit = true;
-                result.waypoint = _waypoints[i];
+                result.element = _waypoints[i];
                 result.position = position + direction * distance;
                 result.type = PickResult::Type::Waypoint;
                 result.waypoint_index = i;

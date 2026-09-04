@@ -685,6 +685,9 @@
     <ClCompile Include="Lua\Triangle\Lua_Triangle.ixx">
       <Filter>Lua\Triangle</Filter>
     </ClCompile>
+    <ClCompile Include="Geometry\IPickable.ixx">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\resource.h" Filter="Resources" />

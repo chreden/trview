@@ -9,15 +9,16 @@ import trview.common;
 import :ICamera;
 import :IMesh;
 import :IFilterable;
+import :PickResult;
+import :IPickable;
 
 namespace trview
 {
     struct ITransparencyBuffer;
     struct IRoom;
     struct ILevel;
-    struct PickResult;
 
-    export struct IStaticMesh : public IFilterable
+    export struct IStaticMesh : public IFilterable, public IPickable
     {
         enum class Type
         {

@@ -282,7 +282,7 @@ namespace trview
                 if (static_mesh_result.hit)
                 {
                     static_mesh_result.type = PickResult::Type::StaticMesh;
-                    static_mesh_result.static_mesh = static_mesh;
+                    static_mesh_result.element = static_mesh;
                     pick_results.push_back(static_mesh_result);
                 }
             }
@@ -1015,7 +1015,7 @@ namespace trview
     {
         // Transform the position back in to world space. Also mark it as a room pick result.
         geometry_result.type = PickResult::Type::Room;
-        geometry_result.room = std::const_pointer_cast<IRoom>(shared_from_this());
+        geometry_result.element = std::const_pointer_cast<IRoom>(shared_from_this());
         geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
 
         const auto& tri = geometry_result.triangle;

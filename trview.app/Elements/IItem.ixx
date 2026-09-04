@@ -12,6 +12,7 @@ import trview.common;
 import :IRenderable;
 import :IFilterable;
 import :IModelStorage;
+import :IPickable;
 
 namespace trview
 {
@@ -19,7 +20,7 @@ namespace trview
     struct IRoom;
     struct ILevel;
 
-    export struct IItem : public IRenderable, public IFilterable
+    export struct IItem : public IRenderable, public IFilterable, public IPickable
     {
         using EntitySource =
             std::function<std::shared_ptr<IItem> (const trlevel::ILevel&, const trlevel::tr2_entity&, uint32_t, const std::vector<std::weak_ptr<ITrigger>>&, const IModelStorage&, const std::weak_ptr<ILevel>&, const std::weak_ptr<IRoom>&)>;

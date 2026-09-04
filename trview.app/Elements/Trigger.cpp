@@ -128,7 +128,7 @@ namespace trview
             if (result.hit)
             {
                 result.type = PickResult::Type::Trigger;
-                result.trigger = std::const_pointer_cast<ITrigger>(shared_from_this());
+                result.element = std::const_pointer_cast<ITrigger>(shared_from_this());
                 return result;
             }
         }

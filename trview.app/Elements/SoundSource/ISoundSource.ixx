@@ -9,18 +9,12 @@ import trview.common;
 import :IRenderable;
 import :IFilterable;
 import :ILevel;
-
-namespace trlevel
-{
-    struct tr_sound_source;
-    union tr_x_sound_details;
-}
+import :PickResult;
+import :IPickable;
 
 namespace trview
 {
-    struct PickResult;
-
-    export struct ISoundSource : public IRenderable, public IFilterable
+    export struct ISoundSource : public IRenderable, public IFilterable, public IPickable
     {
         using Source = std::function<std::shared_ptr<ISoundSource>(uint32_t, const trlevel::tr_sound_source&, const std::optional<trlevel::tr_x_sound_details>&, trlevel::LevelVersion, const std::weak_ptr<ILevel>&)>;
         virtual ~ISoundSource() = 0;

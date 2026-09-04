@@ -167,10 +167,9 @@ namespace trview
             PickResult result;
             result.hit = true;
             result.type = PickResult::Type::Entity;
-            result.item = std::const_pointer_cast<IItem>(shared_from_this());
             result.distance = box_distance;
             result.position = position + direction * box_distance;
-            result.item = std::const_pointer_cast<IItem>(shared_from_this());
+            result.element = std::const_pointer_cast<IItem>(shared_from_this());
             return result;
         }
 
@@ -179,7 +178,7 @@ namespace trview
             auto result = model->pick(_world, position, direction);
             if (result.hit)
             {
-                result.item = std::const_pointer_cast<IItem>(shared_from_this());
+                result.element = std::const_pointer_cast<IItem>(shared_from_this());
                 result.type = PickResult::Type::Entity;
                 return result;
             }

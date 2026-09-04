@@ -969,7 +969,7 @@ namespace trview
                     result.hit = true;
                     result.position = position + direction * distance;
                     result.type = PickResult::Type::Scriptable;
-                    result.scriptable = scriptable;
+                    result.element = scriptable;
                     results.push_back(result);
                 }
             }

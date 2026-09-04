@@ -14,11 +14,11 @@ import :FontSetting;
 import :PickResult;
 import :ILevel;
 import :IWindow;
+import :IRoute;
+import :IRoom;
 
 namespace trview
 {
-    struct IRoom;
-
     export enum class Tool
     {
         None,

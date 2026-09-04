@@ -9,11 +9,12 @@ import std;
 import trview.common;
 
 import :IRenderable;
+import :IPickable;
+import :IItem;
 
 namespace trview
 {
     struct IRoute;
-    struct IItem;
     struct ITrigger;
     struct ICameraSink;
     struct ILight;
@@ -21,7 +22,7 @@ namespace trview
     /// <summary>
     /// A waypoint in a route.
     /// </summary>
-    export struct IWaypoint : public IRenderable
+    export struct IWaypoint : public IRenderable, public IPickable
     {
         /// <summary>
         /// Defines the possible types of waypoint.

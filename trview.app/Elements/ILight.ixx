@@ -12,14 +12,15 @@ import trlevel;
 
 import :IRenderable;
 import :IFilterable;
+import :PickResult;
+import :IPickable;
 
 namespace trview
 {
     struct IRoom;
-    struct PickResult;
     struct ILevel;
 
-    export struct ILight : public IRenderable, public IFilterable
+    export struct ILight : public IRenderable, public IFilterable, public IPickable
     {
         Event<> on_changed;
 

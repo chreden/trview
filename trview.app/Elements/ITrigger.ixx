@@ -11,14 +11,15 @@ import :Triangle;
 import :Types;
 import :IFilterable;
 import :ISector;
+import :PickResult;
+import :IPickable;
 
 namespace trview
 {
     struct ILevel;
     struct IRoom;
-    struct PickResult;
 
-    export struct ITrigger : public IRenderable, public IFilterable
+    export struct ITrigger : public IRenderable, public IFilterable, public IPickable
     {
         const static inline Colour Trigger_Colour{ 0.5f, 1, 0, 1 };
 

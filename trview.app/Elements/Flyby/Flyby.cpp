@@ -315,7 +315,7 @@ namespace trview
                 result.hit = true;
                 result.position = position + direction * distance;
                 result.type = PickResult::Type::FlybyNode;
-                result.flyby_node = std::const_pointer_cast<IFlybyNode>(node);
+                result.element = std::const_pointer_cast<IFlybyNode>(node);
             }
         }
 

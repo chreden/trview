@@ -10,12 +10,13 @@ import std.compat;
 import trlevel;
 
 import :IFilterable;
+import :IPickable;
 
 namespace trview
 {
     struct ILevel;
     struct IFlyby;
-    export struct IFlybyNode : public IFilterable
+    export struct IFlybyNode : public IFilterable, public IPickable
     {
         using Source = std::function<std::shared_ptr<IFlybyNode>(const trlevel::tr4_flyby_camera&, const std::weak_ptr<IFlyby>&, const std::weak_ptr<ILevel>&)>;
 

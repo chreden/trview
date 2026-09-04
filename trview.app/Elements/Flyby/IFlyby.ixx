@@ -9,12 +9,12 @@ import trview.common;
 import :IRenderable;
 import :IFilterable;
 import :ICamera;
+import :PickResult;
 
 namespace trview
 {
     struct IFlybyNode;
     struct ILevel;
-    struct PickResult;
 
     export struct IFlyby : public IRenderable, public IFilterable
     {

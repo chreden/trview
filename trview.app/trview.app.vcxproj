@@ -47,6 +47,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Filters\Filters.cpp" />
     <ClCompile Include="Filters\FilterStore.cpp" />
     <ClCompile Include="Geometry\IMesh.cpp" />
+    <ClCompile Include="Geometry\IPickable.ixx" />
     <ClCompile Include="Geometry\IRenderable.cpp" />
     <ClCompile Include="Geometry\Matrix.cpp" />
     <ClCompile Include="Geometry\Mesh.cpp" />

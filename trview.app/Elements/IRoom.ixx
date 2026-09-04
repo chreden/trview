@@ -23,6 +23,7 @@ import :RenderFilter;
 import :ICameraSink;
 import :IStaticMesh;
 import :IFilterable;
+import :IPickable;
 
 namespace trview
 {
@@ -31,7 +32,7 @@ namespace trview
     /// <summary>
     /// Represents a room in a level.
     /// </summary>
-    export struct IRoom : public IFilterable
+    export struct IRoom : public IFilterable, public IPickable
     {
         /// <summary>
         /// The different types of alternate modes for a <see cref="IRoom"/>.

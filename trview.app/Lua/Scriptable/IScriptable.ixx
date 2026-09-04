@@ -11,10 +11,11 @@ import trview.common;
 
 import :IMesh;
 import :ICamera;
+import :IPickable;
 
 namespace trview
 {
-    export struct IScriptable
+    export struct IScriptable : public IPickable
     {
         using Source = std::function<std::shared_ptr<IScriptable>(lua_State*)>;
         virtual ~IScriptable() = 0;

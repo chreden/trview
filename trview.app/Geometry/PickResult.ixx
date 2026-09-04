@@ -8,21 +8,10 @@ import std;
 import trview.common;
 
 import :Triangle;
-import :IFlybyNode;
-import :IWaypoint;
-import :ISoundSource;
+import :IPickable;
 
 namespace trview
 {
-    struct ICameraSink;
-    struct IItem;
-    struct ILevel;
-    struct ILight;
-    struct IRoom;
-    struct IScriptable;
-    struct IStaticMesh;
-    struct ITrigger;
-
     export struct PickResult
     {
         enum class Type
@@ -51,17 +40,8 @@ namespace trview
         bool                         stop{ false };
         std::string                  text;
         bool                         override_centre{ false };
-        Triangle                  triangle;
-        std::weak_ptr<IScriptable>   scriptable;
-        std::weak_ptr<ISoundSource>  sound_source;
-        std::weak_ptr<IItem>         item;
-        std::weak_ptr<ICameraSink>   camera_sink;
-        std::weak_ptr<ILight>        light;
-        std::weak_ptr<IStaticMesh>   static_mesh;
-        std::weak_ptr<IRoom>         room;
-        std::weak_ptr<ITrigger>      trigger;
-        std::weak_ptr<IWaypoint>     waypoint;
-        std::weak_ptr<IFlybyNode>    flyby_node;
+        Triangle                     triangle;
+        std::weak_ptr<IPickable>     element;
     };
 
     /// Get the appropriate colour for a pick.
@@ -70,6 +50,4 @@ namespace trview
 
     /// If the next pick is nearer than the current and is a hit, choose that one.
     export PickResult nearest_result(const PickResult& current, const PickResult& next);
-
-    export std::string generate_pick_message(const PickResult& result, const ILevel& level);
 }

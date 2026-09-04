@@ -8,6 +8,7 @@ import trview.common;
 import :IWaypoint;
 import :PickResult;
 import :UserSettings;
+import :ILevel;
 
 namespace trview
 {

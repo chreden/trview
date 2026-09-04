@@ -155,7 +155,7 @@ namespace trview
         {
             result.distance = distance;
             result.hit = true;
-            result.light = std::const_pointer_cast<ILight>(shared_from_this());
+            result.element = std::const_pointer_cast<ILight>(shared_from_this());
             result.position = position + direction * distance;
             result.type = PickResult::Type::Light;
         }
