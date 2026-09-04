@@ -66,7 +66,6 @@
     <ClCompile Include="Elements\Level.cpp" Filter="Elements\Level" />
     <ClCompile Include="Menus\FileMenu.cpp" Filter="Menus" />
     <ClCompile Include="Windows\Log\LogWindow.cpp" Filter="Windows\Log" />
-    <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
     <ClCompile Include="Elements\CameraSink\CameraSink.cpp" Filter="Elements\CameraSink" />
     <ClCompile Include="Windows\Textures\TexturesWindow.cpp" Filter="Windows\Textures" />
     <ClCompile Include="Windows\CameraSink\CameraSinkWindow.cpp" Filter="Windows\CameraSink" />
