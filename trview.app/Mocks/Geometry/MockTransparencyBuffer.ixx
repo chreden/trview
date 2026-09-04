@@ -1,0 +1,24 @@
+module;
+
+#include <gmock/gmock.h>
+#include <SimpleMath.h>
+
+export module trview.app:MockTransparencyBuffer;
+
+import :ITransparencyBuffer;
+
+namespace trview
+{
+    namespace mocks
+    {
+        struct MockTransparencyBuffer : public ITransparencyBuffer
+        {
+            MockTransparencyBuffer();
+            virtual ~MockTransparencyBuffer();
+            MOCK_METHOD(void, add, (const Triangle&), (override));
+            MOCK_METHOD(void, sort, (const DirectX::SimpleMath::Vector3&), (override));
+            MOCK_METHOD(void, render, (const ICamera&, bool), (override));
+            MOCK_METHOD(void, reset, (), (override));
+        };
+    }
+}

@@ -1,0 +1,57 @@
+module;
+
+#include <gmock/gmock.h>
+
+export module trview.app:MockViewerUI;
+
+import :IViewerUI;
+
+namespace trview
+{
+    namespace mocks
+    {
+        struct MockViewerUI : public IViewerUI
+        {
+            MockViewerUI();
+            virtual ~MockViewerUI();
+            MOCK_METHOD(void, clear_minimap_highlight, (), (override));
+            MOCK_METHOD(bool, is_input_active, (), (const, override));
+            MOCK_METHOD(bool, is_cursor_over, (), (const, override));
+            MOCK_METHOD(void, render, (), (override));
+            MOCK_METHOD(void, set_alternate_group, (uint32_t, bool), (override));
+            MOCK_METHOD(void, set_alternate_groups, (const std::set<uint32_t>&), (override));
+            MOCK_METHOD(void, set_camera_position, (const DirectX::SimpleMath::Vector3&), (override));
+            MOCK_METHOD(void, set_camera_rotation, (float, float), (override));
+            MOCK_METHOD(void, set_camera_mode, (ICamera::Mode), (override));
+            MOCK_METHOD(void, set_camera_projection_mode, (ProjectionMode), (override));
+            MOCK_METHOD(void, set_flip_enabled, (bool), (override));
+            MOCK_METHOD(void, set_hide_enabled, (bool), (override));
+            MOCK_METHOD(void, set_host_size_changed, (), (override));
+            MOCK_METHOD(void, set_level, (const std::weak_ptr<ILevel>&), (override));
+            MOCK_METHOD(void, set_max_rooms, (uint32_t), (override));
+            MOCK_METHOD(void, set_measure_distance, (float), (override));
+            MOCK_METHOD(void, set_measure_position, (const Point&), (override));
+            MOCK_METHOD(void, set_minimap_highlight, (uint16_t, uint16_t), (override));
+            MOCK_METHOD(void, set_pick, (const PickResult&), (override));
+            MOCK_METHOD(void, set_remove_waypoint_enabled, (bool), (override));
+            MOCK_METHOD(void, set_selected_room, (const std::shared_ptr<IRoom>&), (override));
+            MOCK_METHOD(void, set_show_context_menu, (bool), (override));
+            MOCK_METHOD(void, set_show_measure, (bool), (override));
+            MOCK_METHOD(void, set_show_minimap, (bool), (override));
+            MOCK_METHOD(void, set_show_tooltip, (bool), (override));
+            MOCK_METHOD(void, set_use_alternate_groups, (bool), (override));
+            MOCK_METHOD(void, set_visible, (bool), (override));
+            MOCK_METHOD(bool, show_context_menu, (), (const, override));
+            MOCK_METHOD(void, toggle_settings_visibility, (), (override));
+            MOCK_METHOD(void, set_mid_waypoint_enabled, (bool), (override));
+            MOCK_METHOD(void, set_toggle, (const std::string&, bool), (override));
+            MOCK_METHOD(bool, toggle, (const std::string&), (const, override));
+            MOCK_METHOD(void, set_scalar, (const std::string&, int32_t), (override));
+            MOCK_METHOD(void, set_triggered_by, (const std::vector<std::weak_ptr<ITrigger>>&), (override));
+            MOCK_METHOD(void, set_route, (const std::weak_ptr<IRoute>&), (override));
+            MOCK_METHOD(void, set_show_camera_position, (bool), (override));
+            MOCK_METHOD(void, reset_layout, (), (override));
+            MOCK_METHOD(void, set_tile_filter_enabled, (bool), (override));
+        };
+    }
+}
