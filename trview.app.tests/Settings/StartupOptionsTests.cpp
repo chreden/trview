@@ -1,4 +1,4 @@
-#include <trview.app/Settings/StartupOptions.h>
+import trview.app;
 
 using namespace trview;
 

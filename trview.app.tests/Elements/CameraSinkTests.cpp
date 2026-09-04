@@ -1,6 +1,6 @@
-#include <trview.app/Elements/CameraSink/CameraSink.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
+import trlevel;
+import trview.app;
+import trview.tests.common;
 
 using namespace trlevel;
 using namespace trview;

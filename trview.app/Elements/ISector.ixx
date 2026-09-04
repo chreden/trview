@@ -10,12 +10,10 @@ import trlevel;
 import :Types;
 import :Floordata;
 import :IFilterable;
+import :Forward;
 
 namespace trview
 {
-    struct IRoom;
-    struct ITrigger;
-
     export struct ISector : public IFilterable
     {
         using Source = std::function<std::shared_ptr<ISector>(const trlevel::ILevel&, const trlevel::tr3_room&,

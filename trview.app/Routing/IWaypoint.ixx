@@ -15,7 +15,6 @@ import :Forward;
 
 namespace trview
 {
-    struct ITrigger;
     struct ICameraSink;
 
     /// <summary>

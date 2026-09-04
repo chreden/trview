@@ -16,7 +16,6 @@ import :Forward;
 namespace trview
 {
     struct ITransparencyBuffer;
-    struct IRoom;
 
     export struct IStaticMesh : public IFilterable, public IPickable
     {

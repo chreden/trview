@@ -12,8 +12,8 @@ namespace trview
     {
         export struct MockTextureStorage : public ITextureStorage
         {
-            MockTextureStorage();
-            virtual ~MockTextureStorage();
+            MockTextureStorage() {}
+            virtual ~MockTextureStorage() {}
             MOCK_METHOD(void, add_texture, (const std::vector<uint32_t>&, uint32_t, uint32_t), (override));
             MOCK_METHOD(graphics::Texture, coloured, (uint32_t), (const, override));
             MOCK_METHOD(graphics::Texture, geometry_texture, (), (const, override));

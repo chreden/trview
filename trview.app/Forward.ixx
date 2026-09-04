@@ -8,5 +8,7 @@ namespace trview
     export struct IFlybyNode;
     export struct IApplication;
     export struct IRoute;
+    export struct ITrigger;
+    export struct IRoom;
 }
 

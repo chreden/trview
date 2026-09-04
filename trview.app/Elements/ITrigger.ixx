@@ -17,8 +17,6 @@ import :Forward;
 
 namespace trview
 {
-    struct IRoom;
-
     export struct ITrigger : public IRenderable, public IFilterable, public IPickable
     {
         const static inline Colour Trigger_Colour{ 0.5f, 1, 0, 1 };

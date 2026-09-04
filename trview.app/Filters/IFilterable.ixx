@@ -4,7 +4,7 @@ import std.compat;
 
 namespace trview
 {
-    struct IFilterable
+    export struct IFilterable
     {
         virtual ~IFilterable() = 0;
         virtual int32_t filterable_index() const = 0;

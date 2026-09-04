@@ -13,8 +13,8 @@ namespace trview
     {
         export struct MockRoom : public IRoom, public std::enable_shared_from_this<MockRoom>
         {
-            MockRoom();
-            virtual ~MockRoom();
+            MockRoom() {}
+            virtual ~MockRoom() {}
             MOCK_METHOD(void, add_entity, (const std::weak_ptr<IItem>&), (override));
             MOCK_METHOD(void, add_light, (const std::weak_ptr<ILight>&), (override));
             MOCK_METHOD(void, add_trigger, (const std::weak_ptr<ITrigger>&), (override));

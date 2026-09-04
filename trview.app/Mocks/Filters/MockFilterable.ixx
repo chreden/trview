@@ -12,8 +12,8 @@ namespace trview
     {
         export struct MockFilterable : public IFilterable
         {
-            MockFilterable();
-            virtual ~MockFilterable();
+            MockFilterable() {}
+            virtual ~MockFilterable() {}
             MOCK_METHOD(int32_t, filterable_index, (), (const, override));
         };
     }

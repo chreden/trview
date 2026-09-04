@@ -13,8 +13,8 @@ namespace trview
     {
         export struct MockFlyby : public IFlyby
         {
-            explicit MockFlyby();
-            virtual ~MockFlyby();
+            explicit MockFlyby() {}
+            virtual ~MockFlyby() {}
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(std::vector<std::weak_ptr<IFlybyNode>>, nodes, (), (const, override));
             MOCK_METHOD(std::weak_ptr<ILevel>, level, (), (const, override));

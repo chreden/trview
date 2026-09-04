@@ -17,9 +17,6 @@ import :Forward;
 
 namespace trview
 {
-    struct ITrigger;
-    struct IRoom;
-
     export struct IItem : public IRenderable, public IFilterable, public IPickable
     {
         using EntitySource =

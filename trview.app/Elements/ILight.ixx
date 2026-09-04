@@ -18,8 +18,6 @@ import :Forward;
 
 namespace trview
 {
-    struct IRoom;
-
     export struct ILight : public IRenderable, public IFilterable, public IPickable
     {
         Event<> on_changed;

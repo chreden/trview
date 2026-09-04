@@ -5,12 +5,11 @@ module;
 
 export module trview.app:MockCameraSink;
 
+import :Forward;
 import :ICameraSink;
 
 namespace trview
 {
-    struct IRoom;
-
     namespace mocks
     {
         export struct MockCameraSink : public ICameraSink, public std::enable_shared_from_this<MockCameraSink>
