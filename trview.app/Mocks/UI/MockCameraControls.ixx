@@ -12,8 +12,6 @@ namespace trview
     {
         export struct MockCameraControls : public ICameraControls
         {
-            MockCameraControls();
-            virtual ~MockCameraControls();
             MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_mode, (ICamera::Mode), (override));
             MOCK_METHOD(void, set_projection_mode, (ProjectionMode), (override));

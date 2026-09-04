@@ -13,8 +13,6 @@ namespace trview
     {
         export struct MockViewer : public IViewer
         {
-            MockViewer();
-            virtual ~MockViewer();
             MOCK_METHOD(std::weak_ptr<ICamera>, camera, (), (const, override));
             MOCK_METHOD(ICamera::Mode, camera_mode, (), (const, override));
             MOCK_METHOD(void, render, (), (override));

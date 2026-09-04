@@ -4,7 +4,7 @@ import :UserSettings;
 
 namespace trview
 {
-    struct ISettingsLoader
+    export struct ISettingsLoader
     {
         virtual ~ISettingsLoader() = 0;
         virtual UserSettings load_user_settings() const = 0;

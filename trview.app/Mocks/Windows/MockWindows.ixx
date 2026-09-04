@@ -12,9 +12,6 @@ namespace trview
     {
         export struct MockWindows : public IWindows
         {
-            MockWindows();
-            virtual ~MockWindows();
-
             MOCK_METHOD(std::weak_ptr<IWindow>, create, (const std::string&), (override));
             MOCK_METHOD(void, update, (float), (override));
             MOCK_METHOD(void, register_window, (const std::string&, const Creator&), (override));

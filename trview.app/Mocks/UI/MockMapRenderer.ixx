@@ -12,8 +12,6 @@ namespace trview
     {
         export struct MockMapRenderer : public IMapRenderer
         {
-            MockMapRenderer();
-            virtual ~MockMapRenderer();
             MOCK_METHOD(void, render, (bool), (override));
             MOCK_METHOD(void, load, (const std::shared_ptr<trview::IRoom>&), (override));
             MOCK_METHOD(bool, cursor_is_over_control, (), (const, override));

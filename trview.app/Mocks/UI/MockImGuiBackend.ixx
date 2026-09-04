@@ -12,8 +12,6 @@ namespace trview
     {
         export struct MockImGuiBackend : public IImGuiBackend
         {
-            MockImGuiBackend();
-            virtual ~MockImGuiBackend();
             MOCK_METHOD(void, initialise, (), (override));
             MOCK_METHOD(bool, is_setup, (), (const, override));
             MOCK_METHOD(void, new_frame, (), (override));

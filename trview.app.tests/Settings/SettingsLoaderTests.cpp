@@ -1,5 +1,6 @@
-#include <trview.app/Settings/SettingsLoader.h>
-#include <trview.common/Mocks/IFiles.h>
+import trview.app;
+import trview.common;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

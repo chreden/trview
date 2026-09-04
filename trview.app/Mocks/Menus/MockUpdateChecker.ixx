@@ -12,8 +12,6 @@ namespace trview
     {
         export struct MockUpdateChecker : public IUpdateChecker
         {
-            MockUpdateChecker();
-            virtual ~MockUpdateChecker();
             MOCK_METHOD(void, check_for_updates, (), (override));
         };
     }

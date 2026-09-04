@@ -12,8 +12,6 @@ namespace trview
     {
         export struct MockWindow : public IWindow
         {
-            MockWindow();
-            virtual ~MockWindow();
             MOCK_METHOD(void, update, (float), (override));
             MOCK_METHOD(void, receive_message, (const Message&), (override));
             MOCK_METHOD(void, render, (), (override));

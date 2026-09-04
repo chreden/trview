@@ -12,8 +12,6 @@ namespace trview
     {
         export struct MockFonts : public IFonts
         {
-            MockFonts();
-            virtual ~MockFonts();
             MOCK_METHOD(std::vector<FontSetting>, list_fonts, (), (const, override));
             MOCK_METHOD(std::optional<Font>, add_font, (const std::string&, const FontSetting&), (override));
             MOCK_METHOD(std::optional<Font>, font, (const std::string&), (const, override));

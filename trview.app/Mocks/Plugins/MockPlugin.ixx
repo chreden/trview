@@ -12,8 +12,6 @@ namespace trview
     {
         export struct MockPlugin : public IPlugin
         {
-            MockPlugin() {}
-            virtual ~MockPlugin() {}
             MOCK_METHOD(bool, built_in, (), (const, override));
             MOCK_METHOD(std::string, name, (), (const, override));
             MOCK_METHOD(std::string, author, (), (const, override));

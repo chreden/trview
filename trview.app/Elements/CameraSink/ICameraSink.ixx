@@ -12,6 +12,7 @@ import :ITrigger;
 import :IFilterable;
 import :PickResult;
 import :IPickable;
+import :Forward;
 
 namespace trview
 {

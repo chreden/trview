@@ -15,8 +15,6 @@ import :Forward;
 
 namespace trview
 {
-    struct ICameraSink;
-
     /// <summary>
     /// A waypoint in a route.
     /// </summary>

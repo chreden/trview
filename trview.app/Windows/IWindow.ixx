@@ -7,7 +7,7 @@ import trview.common;
 
 namespace trview
 {
-    struct IWindow : public IRecipient
+    export struct IWindow : public IRecipient
     {
         using Source = std::function<std::shared_ptr<IWindow>()>;
 

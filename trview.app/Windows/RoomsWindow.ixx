@@ -21,7 +21,7 @@ import :AutoHider;
 
 namespace trview
 {
-    class RoomsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
+    export class RoomsWindow final : public IWindow, public std::enable_shared_from_this<IRecipient>
     {
     public:
         struct Names

@@ -12,8 +12,6 @@ namespace trview
     {
         export struct MockPicking : public IPicking
         {
-            MockPicking();
-            virtual ~MockPicking();
             MOCK_METHOD(void, pick, (const ICamera&), (override));
         };
     }

@@ -12,8 +12,6 @@ namespace trview
     {
         export struct MockViewerUI : public IViewerUI
         {
-            MockViewerUI();
-            virtual ~MockViewerUI();
             MOCK_METHOD(void, clear_minimap_highlight, (), (override));
             MOCK_METHOD(bool, is_input_active, (), (const, override));
             MOCK_METHOD(bool, is_cursor_over, (), (const, override));

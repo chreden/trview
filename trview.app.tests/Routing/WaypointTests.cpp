@@ -1,12 +1,6 @@
-#include <trview.app/Routing/Waypoint.h>
-#include <trview.app/Mocks/Geometry/IMesh.h>
-#include <trview.tests.common/Mocks.h>
-#include <trview.app/Mocks/Routing/IRoute.h>
-#include <trview.app/Mocks/Elements/IItem.h>
-#include <trview.app/Mocks/Elements/ITrigger.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
-#include <trview.app/Mocks/Elements/ICameraSink.h>
-#include <trview.app/Mocks/Elements/ILight.h>
+import trview.app;
+import trview.common;
+import trview.tests.common;
 
 using namespace testing;
 using namespace trview;

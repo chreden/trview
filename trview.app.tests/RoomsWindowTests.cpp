@@ -1,11 +1,6 @@
-#include <trview.app/Windows/RoomsWindow.h>
-#include <trview.app/Elements/Types.h>
-#include <trview.app/Mocks/UI/IMapRenderer.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Mocks/Elements/ITrigger.h>
-#include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
-#include <trview.app/Mocks/Filters/IFilterStore.h>
+import trview.app;
+import trview.common;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;

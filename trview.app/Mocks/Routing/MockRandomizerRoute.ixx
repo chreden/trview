@@ -13,8 +13,6 @@ namespace trview
     {
         export struct MockRandomizerRoute : public IRandomizerRoute
         {
-            MockRandomizerRoute();
-            virtual ~MockRandomizerRoute();
             MOCK_METHOD(std::shared_ptr<IWaypoint>, add, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t), (override));
             MOCK_METHOD(std::shared_ptr<IWaypoint>, add, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, IWaypoint::Type, uint32_t), (override));
             MOCK_METHOD(std::shared_ptr<IWaypoint>, add, (const std::shared_ptr<IWaypoint>&), (override));
