@@ -10,7 +10,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockShell : public IShell
+        export struct MockShell : public IShell
         {
             MockShell();
             virtual ~MockShell();

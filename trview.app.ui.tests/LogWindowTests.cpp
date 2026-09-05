@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "LogWindowTests.h"
-#include <trview.app/Windows/Log/LogWindow.h>
-#include <trview.common/Mocks/Logs/ILog.h>
-#include <trview.common/Mocks/Windows/IDialogs.h>
-#include <trview.common/Mocks/IFiles.h>
+
+import trview.common;
+import trview.app;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;

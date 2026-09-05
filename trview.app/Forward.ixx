@@ -14,5 +14,6 @@ namespace trview
     export struct ICamera;
     export struct ISoundStorage;
     export struct ICameraSink;
+    export struct IFilterStore;
 }
 

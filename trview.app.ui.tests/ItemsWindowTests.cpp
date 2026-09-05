@@ -1,18 +1,9 @@
 #include "pch.h"
 #include "ItemsWindowTests.h"
-#include <trview.app/Windows/ItemsWindow.h>
-#include <trview.app/Elements/Types.h>
-#include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.app/Mocks/Elements/ITrigger.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Mocks/Elements/IItem.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
-#include <trview.tests.common/Messages.h>
-#include <trview.app/Messages/Messages.h>
-#include <trview.app/Mocks/Filters/IFilterStore.h>
 
-#include <ranges>
-#include <format>
+import trview.common;
+import trview.app;
+import trview.tests.common;
 
 using namespace testing;
 using namespace trview;

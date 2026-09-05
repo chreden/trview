@@ -1,13 +1,9 @@
 #include "pch.h"
 #include "LightsWindowTests.h"
-#include <trview.app/Mocks/Elements/ILight.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Windows/LightsWindow.h>
-#include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
-#include <trview.tests.common/Messages.h>
-#include <trview.app/Messages/Messages.h>
-#include <trview.app/Mocks/Filters/IFilterStore.h>
+
+import trview.common;
+import trview.app;
+import trview.tests.common;
 
 using namespace testing;
 using namespace trview;

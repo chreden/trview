@@ -3,6 +3,7 @@ export module trview.app:IFilterStore;
 import std;
 
 import :Filters;
+import :Forward;
 
 namespace trview
 {

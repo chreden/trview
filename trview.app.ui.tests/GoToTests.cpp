@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "GoToTests.h"
 
-#include <trview.app/UI/GoTo.h>
+import trview.app;
+import trview.tests.common;
 
 using namespace trview;
 

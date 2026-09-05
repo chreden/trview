@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "FiltersTests.h"
-#include <trview.app/Filters/Filters.h>
+
+import trview.app;
 
 using namespace trview;
 

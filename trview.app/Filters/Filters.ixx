@@ -14,11 +14,10 @@ import :IFilterable;
 import :RowCounter;
 import :Modal;
 import :imgui;
+import :Forward;
 
 namespace trview
 {
-    struct IFilterStore;
-
     export enum class CompareOp
     {
         Equal,
@@ -80,6 +79,7 @@ namespace trview
             bool invert{ false };
             std::string type_key;
 
+            bool operator == (const Filter&) const = default;
             auto operator <=> (const Filter&) const = default;
 
             bool empty() const;

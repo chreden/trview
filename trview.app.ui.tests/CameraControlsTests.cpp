@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CameraControlsTests.h"
 
-#include <trview.app/UI/CameraControls.h>
+import trview.app;
 
 using namespace trview;
 

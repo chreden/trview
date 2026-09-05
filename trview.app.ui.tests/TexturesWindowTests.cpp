@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "TexturesWindowTests.h"
-#include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
-#include <trview.app/Windows/Textures/TexturesWindow.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
+
+import trview.common;
+import trview.app;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;

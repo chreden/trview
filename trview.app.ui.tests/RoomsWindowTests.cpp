@@ -1,13 +1,8 @@
 #include "pch.h"
-#include <trview.app/Windows/RoomsWindow.h>
-#include <trview.app/Mocks/UI/IMapRenderer.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Mocks/Elements/ISector.h>
-#include <trview.app/Mocks/Elements/ITrigger.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
-#include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
-#include <trview.app/Mocks/Filters/IFilterStore.h>
+
+import trview.common;
+import trview.app;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;

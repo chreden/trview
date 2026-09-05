@@ -1,22 +1,9 @@
 #include "pch.h"
 #include "RouteWindowTests.h"
 
-#include <trview.common/Mocks/IFiles.h>
-#include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.common/Mocks/Windows/IDialogs.h>
-#include <trview.tests.common/Mocks.h>
-
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Mocks/Routing/IRoute.h>
-#include <trview.app/Mocks/Routing/IRandomizerRoute.h>
-#include <trview.app/Windows/RouteWindow.h>
-#include <trview.app/Mocks/Routing/IWaypoint.h>
-
-#include <trview.app/Settings/UserSettings.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
-
-#include <trview.tests.common/Messages.h>
-#include <trview.app/Messages/Messages.h>
+import trview.common;
+import trview.app;
+import trview.tests.common;
 
 using namespace testing;
 using namespace trview;

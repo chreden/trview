@@ -13,9 +13,9 @@
 #include <imgui_te_internal.h>
 #include <imgui_te_ui.h>
 
-#include <trview.tests.common/Mocks.h>
-
 #include "TestHelpers.h"
+
+#include <memory>
 
 template <typename T>
 struct MockWrapper
@@ -33,4 +33,6 @@ void render(const MockWrapper<T>& wrapper)
 }
 
 #include <external/DirectXTK/Inc/SimpleMath.h>
-#include <trview.app/Routing/Waypoint.h>
+
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
