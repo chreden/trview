@@ -14,8 +14,6 @@ namespace trview
         {
             export struct MockDeviceWindow : public IDeviceWindow
             {
-                MockDeviceWindow();
-                virtual ~MockDeviceWindow();
                 MOCK_METHOD(void, begin, (), (override));
                 MOCK_METHOD(void, clear, (const DirectX::SimpleMath::Color&), (override));
                 MOCK_METHOD(void, present, (bool), (override));

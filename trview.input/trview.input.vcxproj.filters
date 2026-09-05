@@ -15,9 +15,6 @@
     <ClCompile Include="WindowTester.ixx" />
     <ClCompile Include="IMouse.cpp" />
     <ClCompile Include="IWindowTester.cpp" />
-    <ClCompile Include="Mocks\MockMouse.cpp">
-      <Filter>Mocks</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">

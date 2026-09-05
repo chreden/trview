@@ -61,11 +61,6 @@
     <ClCompile Include="Messages\MessageSystem.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClCompile Include="Mocks\Logs\MockLog.cpp" />
-    <ClCompile Include="Mocks\Messages\MockDialogs.cpp" />
-    <ClCompile Include="Mocks\Messages\MockMessageSystem.cpp" />
-    <ClCompile Include="Mocks\Messages\MockRecipient.cpp" />
-    <ClCompile Include="Mocks\Messages\MockShell.cpp" />
     <ClCompile Include="Mocks\MockFiles.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -79,7 +74,6 @@
       <FileType>Document</FileType>
     </ClCompile>
     <ClCompile Include="Messages\IRecipient.cpp" />
-    <ClCompile Include="Mocks\Windows\MockClipboard.cpp" />
     <ClCompile Include="Mocks\Windows\MockClipboard.ixx">
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -93,8 +87,6 @@
     <ClCompile Include="Mocks\Windows\MockShell.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClCompile Include="Mocks\Windows\MockFiles.cpp" />
-    <ClCompile Include="Mocks\Windows\MockShortcuts.cpp" />
     <ClCompile Include="Mocks\Windows\MockShortcuts.ixx">
       <FileType>Document</FileType>
     </ClCompile>

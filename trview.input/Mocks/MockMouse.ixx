@@ -14,8 +14,6 @@ namespace trview
         {
             export struct MockMouse : public IMouse
             {
-                MockMouse();
-                virtual ~MockMouse();
                 MOCK_METHOD(long, x, (), (const, override));
                 MOCK_METHOD(long, y, (), (const, override));
             };

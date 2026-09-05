@@ -12,8 +12,6 @@ namespace trview
     {
         export struct MockRecipient : public IRecipient
         {
-            MockRecipient();
-            virtual ~MockRecipient();
             MOCK_METHOD(void, receive_message, (const Message&), (override));
         };
     }

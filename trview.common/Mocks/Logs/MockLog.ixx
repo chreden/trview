@@ -13,8 +13,6 @@ namespace trview
     {
         export struct MockLog : public ILog
         {
-            MockLog();
-            virtual ~MockLog();
             MOCK_METHOD(void, log, (LogMessage::Status, const std::string&, const std::string&, const std::string&), (override));
             MOCK_METHOD(void, log, (LogMessage::Status, const std::string&, const std::vector<std::string>&, const std::string&), (override));
             MOCK_METHOD(std::vector<LogMessage>, messages, (), (const, override));

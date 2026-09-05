@@ -130,14 +130,8 @@
     <ClCompile Include="RenderTarget\IRenderTarget.cpp">
       <Filter>RenderTarget</Filter>
     </ClCompile>
-    <ClCompile Include="Mocks\D3D\MockD3D11DeviceContext.cpp">
-      <Filter>Mocks\D3D</Filter>
-    </ClCompile>
     <ClCompile Include="Sprite\ISprite.cpp">
       <Filter>Sprite</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockBuffer.cpp">
-      <Filter>Mocks</Filter>
     </ClCompile>
     <ClCompile Include="Buffer\IBuffer.cpp">
       <Filter>Buffer</Filter>
@@ -148,20 +142,8 @@
     <ClCompile Include="Shaders\IShader.cpp">
       <Filter>Shaders</Filter>
     </ClCompile>
-    <ClCompile Include="Mocks\MockDeviceWindow.cpp">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockRenderTarget.cpp">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockSamplerState.cpp">
-      <Filter>Mocks</Filter>
-    </ClCompile>
     <ClCompile Include="Sampler\ISamplerState.cpp">
       <Filter>Sampler</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockSprite.cpp">
-      <Filter>Mocks</Filter>
     </ClCompile>
     <ClCompile Include="Mocks\Printers.ixx">
       <Filter>Mocks</Filter>

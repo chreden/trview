@@ -12,8 +12,6 @@ namespace trview
     {
         export struct MockShell : public IShell
         {
-            MockShell();
-            virtual ~MockShell();
             MOCK_METHOD(void, open, (const std::wstring&), (override));
         };
     }

@@ -14,7 +14,6 @@
     <ClCompile Include="IMouse.cpp" />
     <ClCompile Include="IWindowTester.cpp" />
     <ClCompile Include="Keyboard.cpp" />
-    <ClCompile Include="Mocks\MockMouse.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="trview.input.ixx" />
     <ClCompile Include="WindowTester.cpp" />

@@ -136,43 +136,19 @@
     <ClCompile Include="Mocks\Windows\MockShortcuts.ixx">
       <Filter>Mocks\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Mocks\Windows\MockClipboard.cpp">
-      <Filter>Mocks\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\Windows\MockShortcuts.cpp">
-      <Filter>Mocks\Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Mocks\MockFiles.ixx">
       <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\Windows\MockFiles.cpp">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\Logs\MockLog.cpp">
-      <Filter>Mocks\Logs</Filter>
     </ClCompile>
     <ClCompile Include="Mocks\Logs\MockLog.ixx">
       <Filter>Mocks\Logs</Filter>
     </ClCompile>
-    <ClCompile Include="Mocks\Messages\MockMessageSystem.cpp">
-      <Filter>Mocks\Messages</Filter>
-    </ClCompile>
     <ClCompile Include="Mocks\Messages\MockMessageSystem.ixx">
-      <Filter>Mocks\Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\Messages\MockRecipient.cpp">
       <Filter>Mocks\Messages</Filter>
     </ClCompile>
     <ClCompile Include="Mocks\Windows\MockDialogs.ixx">
       <Filter>Mocks\Windows</Filter>
     </ClCompile>
     <ClCompile Include="Mocks\Windows\MockShell.ixx">
-      <Filter>Mocks\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\Messages\MockDialogs.cpp">
-      <Filter>Mocks\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\Messages\MockShell.cpp">
       <Filter>Mocks\Windows</Filter>
     </ClCompile>
     <ClCompile Include="Mocks\Messages\MockRecipient.ixx">
