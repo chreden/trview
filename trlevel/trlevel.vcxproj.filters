@@ -1,56 +1,79 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="trtypes.h" />
-    <ClInclude Include="LevelVersion.h" />
-    <ClInclude Include="LevelLoadException.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Mocks\ILevel.h" Filter="Mocks" />
-    <ClInclude Include="tr_lights.h" />
-    <ClInclude Include="tr_rooms.h" />
-    <ClInclude Include="LevelEncryptedException.h" />
     <ClInclude Include="LevelVersion.hpp" />
-    <ClInclude Include="IDecrypter.h" />
-    <ClInclude Include="Decrypter.h" />
-    <ClInclude Include="ILevel.h" Filter="Level" />
-    <ClInclude Include="Level.h" Filter="Level" />
-    <ClInclude Include="Level_tr1.h" Filter="Level" />
-    <ClInclude Include="Level_tr2.h" Filter="Level" />
-    <ClInclude Include="Level_tr3.h" Filter="Level" />
-    <ClInclude Include="Level_common.h" Filter="Level\Common" />
-    <ClInclude Include="Level_psx.h" Filter="Level\PSX" />
-    <ClInclude Include="IPack.h" />
-    <ClInclude Include="Pack.h" />
-    <ClInclude Include="TileMapper.h" Filter="Level\Saturn" />
-    <ClInclude Include="IHasher.h" />
-    <ClInclude Include="Hasher.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="trtypes.cpp" />
     <ClCompile Include="LevelVersion.cpp" />
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="tr_lights.cpp" />
     <ClCompile Include="Decrypter.cpp" />
     <ClCompile Include="Mocks\MockLevel.cpp" Filter="Mocks" />
     <ClCompile Include="tr_rooms.cpp" />
     <ClCompile Include="Level.cpp" Filter="Level" />
     <ClCompile Include="Level_common.cpp" Filter="Level\Common" />
-    <ClCompile Include="Level_tr1_pc.cpp" Filter="Level\PC" />
-    <ClCompile Include="Level_tr2_pc.cpp" Filter="Level\PC" />
-    <ClCompile Include="Level_tr3_pc.cpp" Filter="Level\PC" />
-    <ClCompile Include="Level_tr1_psx.cpp" Filter="Level\PSX" />
-    <ClCompile Include="Level_tr2_psx.cpp" Filter="Level\PSX" />
-    <ClCompile Include="Level_tr3_psx.cpp" Filter="Level\PSX" />
+    <ClCompile Include="Level_tr1_pc.ixx" Filter="Level\PC" />
+    <ClCompile Include="Level_tr2_pc.ixx" Filter="Level\PC" />
+    <ClCompile Include="Level_tr3_pc.ixx" Filter="Level\PC" />
+    <ClCompile Include="Level_tr1_psx.ixx" Filter="Level\PSX" />
+    <ClCompile Include="Level_tr2_psx.ixx" Filter="Level\PSX" />
+    <ClCompile Include="Level_tr3_psx.ixx" Filter="Level\PSX" />
     <ClCompile Include="Level_psx.cpp" Filter="Level\PSX" />
-    <ClCompile Include="Level_tr4_pc.cpp" Filter="Level\PC" />
-    <ClCompile Include="Level_tr5_pc.cpp" Filter="Level\PC" />
-    <ClCompile Include="Level_tr4_psx.cpp" Filter="Level\PSX" />
+    <ClCompile Include="Level_tr4_pc.ixx" Filter="Level\PC" />
+    <ClCompile Include="Level_tr5_pc.ixx" Filter="Level\PC" />
+    <ClCompile Include="Level_tr4_psx.ixx" Filter="Level\PSX" />
     <ClCompile Include="Pack.cpp" />
-    <ClCompile Include="Level_tr5_psx.cpp" Filter="Level\PSX" />
-    <ClCompile Include="Level_tr5_dc.cpp" Filter="Level\DC" />
-    <ClCompile Include="Level_tr1_saturn.cpp" Filter="Level\Saturn" />
+    <ClCompile Include="Level_tr5_psx.ixx" Filter="Level\PSX" />
+    <ClCompile Include="Level_tr5_dc.ixx" Filter="Level\DC" />
+    <ClCompile Include="Level_tr1_saturn.ixx" Filter="Level\Saturn" />
     <ClCompile Include="TileMapper.cpp" Filter="Level\Saturn" />
     <ClCompile Include="Hasher.cpp" />
+    <ClCompile Include="ILevel.ixx">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="IPack.ixx" />
+    <ClCompile Include="IPack.cpp" />
+    <ClCompile Include="LevelVersion.ixx" />
+    <ClCompile Include="trlevel.ixx" />
+    <ClCompile Include="tr_lights.ixx" />
+    <ClCompile Include="IDecrypter.ixx" />
+    <ClCompile Include="IDecrypter.cpp" />
+    <ClCompile Include="trtypes.ixx" />
+    <ClCompile Include="tr_rooms.ixx" />
+    <ClCompile Include="Level.ixx">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="IHasher.cpp" />
+    <ClCompile Include="IHasher.ixx" />
+    <ClCompile Include="Mocks\MockLevel.ixx">
+      <Filter>Mocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Hasher.ixx" />
+    <ClCompile Include="LevelLoadException.ixx" />
+    <ClCompile Include="LevelEncryptedException.ixx" />
+    <ClCompile Include="Level_common.ixx">
+      <Filter>Level\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_psx.ixx">
+      <Filter>Level\PSX</Filter>
+    </ClCompile>
+    <ClCompile Include="Level\ILevel.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_tr3.ixx">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_tr1.ixx">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Pack.ixx" />
+    <ClCompile Include="Level_tr2.ixx">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="TileMapper.ixx">
+      <Filter>Level\Saturn</Filter>
+    </ClCompile>
+    <ClCompile Include="Decrypter.ixx" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mocks">

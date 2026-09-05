@@ -1,5 +1,12 @@
-#include "UpdateChecker.h"
-#include <trview.common/Strings.h>
+module;
+
+#include <Windows.h>
+#include <winhttp.h>
+#include <external/nlohmann/json.hpp>
+
+module trview.app:UpdateChecker;
+
+import nlohmann.json;
 
 namespace trview
 {

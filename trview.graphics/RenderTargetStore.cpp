@@ -1,4 +1,4 @@
-#include "RenderTargetStore.h"
+module trview.graphics:RenderTargetStore;
 
 namespace trview
 {

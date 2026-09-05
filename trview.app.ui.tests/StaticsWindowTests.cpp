@@ -1,16 +1,10 @@
 #include "pch.h"
 #include "StaticsWindowTests.h"
-#include <trview.app/Mocks/Elements/IStaticMesh.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Windows/Statics/StaticsWindow.h>
-#include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
-#include <trview.tests.common/Messages.h>
-#include <trview.app/Messages/Messages.h>
-#include <trview.app/Mocks/Filters/IFilterStore.h>
 
-#include <format>
-#include <ranges>
+import trview.common;
+import trview.app;
+import trview.app.mocks;
+import trview.tests.common;
 
 using namespace testing;
 using namespace trview;

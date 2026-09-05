@@ -1,4 +1,4 @@
-#include "RasterizerStateStore.h"
+module trview.graphics:RasterizerStateStore;
 
 namespace trview
 {

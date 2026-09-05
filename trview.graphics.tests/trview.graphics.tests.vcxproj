@@ -23,6 +23,9 @@
     <ProjectReference Include="..\external\googletest\googletest.vcxproj">
       <Project>{eafd7489-57e3-4b6d-a704-f7c5ef640434}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\trview.common\trview.common.vcxproj">
+      <Project>{d0633291-23a6-4b3f-9a5e-e94d20f66a07}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\trview.graphics\trview.graphics.vcxproj">
       <Project>{3270fd29-edab-40be-8ca1-dabc5e261e4c}</Project>
     </ProjectReference>
@@ -81,6 +84,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BuildStlModules>false</BuildStlModules>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -103,6 +107,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BuildStlModules>false</BuildStlModules>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

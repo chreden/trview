@@ -1,9 +1,5 @@
 #pragma once
 
-#include <ranges>
-
-#include <trview.common/Algorithms.h>
-
 namespace trview
 {
     template <Type... Args>

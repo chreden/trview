@@ -1,5 +1,6 @@
-#include <trview.app/Filters/Filters.h>
-#include <trview.app/Mocks/Filters/IFilterable.h>
+import trview.app;
+import trview.app.mocks;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;

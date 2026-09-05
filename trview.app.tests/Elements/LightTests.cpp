@@ -1,5 +1,7 @@
-#include <trview.app/Elements/Light.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
+import trview.app;
+import trview.app.mocks;
+import trview.tests.common;
+import trlevel;
 
 using namespace trlevel;
 using namespace trview;

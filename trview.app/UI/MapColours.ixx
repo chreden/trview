@@ -1,0 +1,40 @@
+export module trview.app:MapColours;
+
+import std;
+import nlohmann.json;
+
+import trview.common;
+
+import :Types;
+
+namespace trview
+{
+    export class MapColours final
+    {
+    public:
+        enum class Special
+        {
+            Default,
+            NoSpace,
+            RoomAbove,
+            RoomBelow,
+            GeometryWall
+        };
+
+        std::unordered_map<SectorFlag, Colour> override_colours() const;
+        std::unordered_map<Special, Colour> special_colours() const;
+        void clear_colour(SectorFlag flag);
+        void clear_colour(Special flag);
+        Colour colour(SectorFlag flag) const;
+        Colour colour_from_flags_field(SectorFlag flags) const;
+        Colour colour(Special type) const;
+        void set_colour(SectorFlag flag, const Colour& colour);
+        void set_colour(Special type, const Colour& colour);
+    private:
+        std::unordered_map<SectorFlag, Colour> _override_colours;
+        std::unordered_map<Special, Colour> _override_special_colours;
+    };
+
+    export void to_json(nlohmann::json& json, const MapColours& colours);
+    export void from_json(const nlohmann::json& json, MapColours& colours);
+}

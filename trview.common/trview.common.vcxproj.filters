@@ -1,51 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="Size.h" />
-    <ClInclude Include="Timer.h" />
-    <ClInclude Include="Window.h" />
-    <ClInclude Include="Point.h" />
-    <ClInclude Include="Colour.h" />
-    <ClInclude Include="MessageHandler.h" Filter="Windows" />
-    <ClInclude Include="Event.h" Filter="Events" />
-    <ClInclude Include="TokenStore.h" Filter="Events" />
-    <ClInclude Include="Strings.h" />
-    <ClInclude Include="Windows\Clipboard.h" Filter="Windows" />
-    <ClInclude Include="Windows\Shortcuts.h" Filter="Windows" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Maths.h" />
-    <ClInclude Include="Algorithms.h" />
     <ClInclude Include="Algorithms.hpp" />
-    <ClInclude Include="Mocks\Windows\IShortcuts.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Windows\IShortcuts.h" Filter="Windows" />
-    <ClInclude Include="Windows\IClipboard.h" Filter="Windows" />
-    <ClInclude Include="Mocks\Windows\IClipboard.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Json.h" />
     <ClInclude Include="Json.hpp" />
-    <ClInclude Include="Windows\IDialogs.h" Filter="Windows" />
-    <ClInclude Include="Windows\Dialogs.h" Filter="Windows" />
-    <ClInclude Include="Mocks\Windows\IDialogs.h" Filter="Mocks\Windows" />
-    <ClInclude Include="IFiles.h" />
-    <ClInclude Include="Files.h" />
-    <ClInclude Include="Mocks\IFiles.h" Filter="Mocks" />
-    <ClInclude Include="Resources.h" />
-    <ClInclude Include="JsonSerializers.h" />
-    <ClInclude Include="Windows\IShell.h" Filter="Windows" />
-    <ClInclude Include="Windows\Shell.h" Filter="Windows" />
-    <ClInclude Include="Mocks\Windows\IShell.h" Filter="Mocks\Windows" />
-    <ClInclude Include="Logs\ILog.h" Filter="Logs" />
-    <ClInclude Include="Logs\Log.h" Filter="Logs" />
-    <ClInclude Include="Mocks\Logs\ILog.h" Filter="Mocks\Logs" />
-    <ClInclude Include="Logs\Activity.h" Filter="Logs" />
-    <ClInclude Include="Logs\LogMessage.h" Filter="Logs" />
-    <ClInclude Include="Version.h" />
-    <ClInclude Include="Version.hpp" />
-    <ClInclude Include="Messages\IMessageSystem.h" Filter="Messages" />
-    <ClInclude Include="Messages\MessageSystem.h" Filter="Messages" />
-    <ClInclude Include="Messages\IRecipient.h" Filter="Messages" />
-    <ClInclude Include="Mocks\Messages\IMessageSystem.h" Filter="Messages" />
-    <ClInclude Include="Messages\Message.h" Filter="Messages" />
-    <ClInclude Include="Mocks\Messages\IRecipient.h" Filter="Mocks\Messages" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Size.cpp" />
@@ -61,14 +19,143 @@
     <ClCompile Include="Windows\Shortcuts.cpp" Filter="Windows" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Windows\Dialogs.cpp" Filter="Windows" />
-    <ClCompile Include="Files.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="Windows\Shell.cpp" Filter="Windows" />
     <ClCompile Include="Logs\Log.cpp" Filter="Logs" />
     <ClCompile Include="Logs\Activity.cpp" Filter="Logs" />
-    <ClCompile Include="Mocks\Mocks.cpp" Filter="Mocks" />
     <ClCompile Include="Messages\MessageSystem.cpp" Filter="Messages" />
+    <ClCompile Include="trview.common.ixx" />
+    <ClCompile Include="Point.ixx" />
+    <ClCompile Include="Window.ixx" />
+    <ClCompile Include="JsonSerializers.ixx" />
+    <ClCompile Include="Json.ixx" />
+    <ClCompile Include="Windows\Clipboard.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IClipboard.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IClipboard.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IDialogs.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Dialogs.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IDialogs.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandler.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Colour.ixx" />
+    <ClCompile Include="Strings.ixx" />
+    <ClCompile Include="Windows\IFiles.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockClipboard.ixx">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IShortcuts.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Shortcuts.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IShortcuts.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.ixx">
+      <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="TokenStore.ixx">
+      <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Size.ixx" />
+    <ClCompile Include="Messages\IRecipient.cpp">
+      <Filter>Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Messages\IRecipient.ixx">
+      <Filter>Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Messages\IMessageSystem.ixx">
+      <Filter>Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Messages\IMessageSystem.cpp">
+      <Filter>Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Messages\Message.ixx">
+      <Filter>Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Messages\Message.cpp">
+      <Filter>Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Messages\MessageSystem.ixx">
+      <Filter>Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.ixx" />
+    <ClCompile Include="Windows\IShell.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Shell.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IShell.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Files.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Files.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IFiles.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithms.ixx" />
+    <ClCompile Include="Logs\ILog.ixx">
+      <Filter>Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Logs\ILog.cpp">
+      <Filter>Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Logs\LogMessage.ixx">
+      <Filter>Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Logs\Log.ixx">
+      <Filter>Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Logs\Activity.ixx">
+      <Filter>Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources.ixx" />
+    <ClCompile Include="Resource.ixx" />
+    <ClCompile Include="Mocks\Windows\MockShortcuts.ixx">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\MockFiles.ixx">
+      <Filter>Mocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Logs\MockLog.ixx">
+      <Filter>Mocks\Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Messages\MockMessageSystem.ixx">
+      <Filter>Mocks\Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockDialogs.ixx">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockShell.ixx">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Mocks\Messages\MockRecipient.ixx">
+      <Filter>Mocks\Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Version.ixx" />
+    <ClCompile Include="Maths.ixx" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

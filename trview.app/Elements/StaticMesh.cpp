@@ -1,7 +1,13 @@
-#include "StaticMesh.h"
-#include <trview.app/Geometry/Matrix.h>
-#include <trview.app/Geometry/ITransparencyBuffer.h>
-#include "IRoom.h"
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:StaticMesh;
+
+import :Matrix;
+import :ITransparencyBuffer;
+import :IRoom;
+import :PickResult;
 
 namespace trview
 {

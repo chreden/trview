@@ -1,9 +1,15 @@
-#include "Lua_CameraSink.h"
-#include "../../../Elements/ILevel.h"
-#include "../../Lua.h"
-#include "../../Vector3.h"
-#include "../Room/Lua_Room.h"
-#include "../Trigger/Lua_Trigger.h"
+module;
+
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+#include <SimpleMath.h>
+
+module trview.app:LuaCameraSink;
+
+import :Lua;
+import :LuaRoom;
+import :LuaVector3;
+import :LuaTrigger;
 
 namespace trview
 {

@@ -1,11 +1,20 @@
-#include "CameraSinkWindow.h"
-#include "../../trview_imgui.h"
-#include "../../Elements/IRoom.h"
-#include "../RowCounter.h"
-#include "../../Elements/Flyby/IFlybyNode.h"
-#include "../../Messages/Messages.h"
-#include "../../Elements/ILevel.h"
-#include "../../Elements/ElementFilters.h"
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <SimpleMath.h>
+
+module trview.app:CameraSinkWindow;
+
+import std;
+import std.compat;
+
+import :IFlybyNode;
+import :Filters;
+import :ICameraSink;
+import :ILevel;
+import :Messages;
+import :ICamera;
 
 namespace trview
 {

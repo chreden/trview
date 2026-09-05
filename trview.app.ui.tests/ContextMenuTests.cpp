@@ -1,7 +1,9 @@
 #include "pch.h"
-#include <trview.app/Mocks/Elements/ITrigger.h>
-#include <trview.app/UI/ContextMenu.h>
-#include <trview.tests.common/Mocks.h>
+
+import trview.common;
+import trview.app;
+import trview.app.mocks;
+import trview.tests.common;
 
 #include "ContextMenuTests.h"
 

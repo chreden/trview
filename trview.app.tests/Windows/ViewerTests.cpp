@@ -1,32 +1,10 @@
-#include <trview.app/Windows/Viewer.h>
-#include <trview.common/Mocks/Windows/IShortcuts.h>
-#include <trview.graphics/mocks/IDevice.h>
-#include <trview.tests.common/Window.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Mocks/Elements/ITrigger.h>
-#include <trview.app/Mocks/Elements/ICameraSink.h>
-#include <trview.app/Mocks/Geometry/IPicking.h>
-#include <trview.app/Mocks/UI/IViewerUI.h>
-#include <trview.app/Mocks/Routing/IRoute.h>
-#include <trview.input/Mocks/IMouse.h>
-#include <trview.app/Mocks/Tools/ICompass.h>
-#include <trview.app/Mocks/Tools/IMeasure.h>
-#include <trview.graphics/mocks/IDeviceWindow.h>
-#include <trview.app/Mocks/Geometry/IMesh.h>
-#include <trview.app/Mocks/Graphics/ISectorHighlight.h>
-#include <trlevel/Mocks/ILevel.h>
-#include <trview.app/Mocks/Routing/IWaypoint.h>
-#include <trview.app/Mocks/Elements/ILight.h>
-#include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.app/Mocks/Elements/ISector.h>
-#include <trview.app/Mocks/Elements/ISoundSource.h>
-#include <trview.graphics/Mocks/ISamplerState.h>
-#include <trview.tests.common/Event.h>
-#include <trview.tests.common/Messages.h>
-#include <trview.common/Messages/Message.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
-#include <trview.app/Messages/Messages.h>
+import trlevel;
+import trview.app;
+import trview.app.mocks;
+import trview.common;
+import trview.graphics;
+import trview.input;
+import trview.tests.common;
 
 using testing::A;
 using testing::Return;
@@ -49,7 +27,7 @@ namespace
         pick_result.type = PickResult::Type::CameraSink;
         pick_result.position = Vector3::Zero;
         pick_result.centroid = Vector3::Zero;
-        pick_result.camera_sink = camera_sink;
+        pick_result.element = camera_sink;
         picking.on_pick({}, pick_result);
         mouse.mouse_click(IMouse::Button::Right);
     }
@@ -61,7 +39,7 @@ namespace
         pick_result.type = PickResult::Type::SoundSource;
         pick_result.position = Vector3::Zero;
         pick_result.centroid = Vector3::Zero;
-        pick_result.sound_source = sound_source;
+        pick_result.element = sound_source;
         picking.on_pick({}, pick_result);
         mouse.mouse_click(IMouse::Button::Right);
     }
@@ -74,7 +52,7 @@ namespace
         pick_result.type = PickResult::Type::Entity;
         pick_result.position = Vector3::Zero;
         pick_result.centroid = Vector3::Zero;
-        pick_result.item = item;
+        pick_result.element = item;
         picking.on_pick({}, pick_result);
         mouse.mouse_click(IMouse::Button::Right);
     }
@@ -86,7 +64,7 @@ namespace
         pick_result.type = PickResult::Type::Light;
         pick_result.position = Vector3::Zero;
         pick_result.centroid = Vector3::Zero;
-        pick_result.light = light;
+        pick_result.element = light;
         picking.on_pick({}, pick_result);
         mouse.mouse_click(IMouse::Button::Right);
     }
@@ -98,7 +76,7 @@ namespace
         pick_result.type = PickResult::Type::Room;
         pick_result.position = position;
         pick_result.centroid = centroid;
-        pick_result.room = room;
+        pick_result.element = room;
         picking.on_pick({}, pick_result);
         mouse.mouse_click(IMouse::Button::Right);
     }
@@ -110,7 +88,7 @@ namespace
         pick_result.type = PickResult::Type::Trigger;
         pick_result.position = Vector3::Zero;
         pick_result.centroid = Vector3::Zero;
-        pick_result.trigger = trigger;
+        pick_result.element = trigger;
         picking.on_pick({}, pick_result);
         mouse.mouse_click(IMouse::Button::Right);
     }
@@ -122,7 +100,7 @@ namespace
         pick_result.type = PickResult::Type::Waypoint;
         pick_result.position = Vector3::Zero;
         pick_result.centroid = Vector3::Zero;
-        pick_result.waypoint = waypoint;
+        pick_result.element = waypoint;
         pick_result.waypoint_index = index;
         picking.on_pick({}, pick_result);
         mouse.mouse_click(IMouse::Button::Right);

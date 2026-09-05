@@ -1,7 +1,13 @@
-#include "ImGuiFileMenu.h"
-#include <trview.common/Strings.h>
-#include "../Messages/Messages.h"
-#include "../Settings/UserSettings.h"
+module;
+
+#include <Windows.h>
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+
+module trview.app:ImGuiFileMenu;
+
+import :Messages;
 
 namespace trview
 {

@@ -1,4 +1,4 @@
-#include "VertexShader.h"
+module trview.graphics:VertexShader;
 
 namespace trview
 {

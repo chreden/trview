@@ -11,22 +11,50 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AlgorithmsTests.cpp" />
-    <ClCompile Include="ColourTests.cpp" />
-    <ClCompile Include="EventTests.cpp" />
+    <ClCompile Include="AlgorithmsTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="ColourTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="EventTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Logs\LogTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PointTests.cpp" />
-    <ClCompile Include="SizeTests.cpp" />
+    <ClCompile Include="SizeTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TimerTests.cpp" />
+    <ClCompile Include="TimerTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\googletest\googletest.vcxproj">
       <Project>{eafd7489-57e3-4b6d-a704-f7c5ef640434}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\external\nlohmann.json\nlohmann.json.vcxproj">
+      <Project>{c37610ad-63e4-45a9-b9bd-417a9ed4fade}</Project>
     </ProjectReference>
     <ProjectReference Include="..\trview.common\trview.common.vcxproj">
       <Project>{d0633291-23a6-4b3f-9a5e-e94d20f66a07}</Project>
@@ -90,6 +118,7 @@
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BuildStlModules>false</BuildStlModules>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -112,6 +141,7 @@
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BuildStlModules>false</BuildStlModules>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

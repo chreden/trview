@@ -1,12 +1,10 @@
 #include "pch.h"
 #include "ConsoleTests.h"
 
-#include <trview.tests.common/Mocks.h>
-#include <trview.app/Windows/Console/Console.h>
-#include <trview.app/Mocks/Plugins/IPlugins.h>
-#include <trview.app/Mocks/Plugins/IPlugin.h>
-#include <trview.app/Mocks/UI/IFonts.h>
-#include <trview.common/Mocks/Windows/IDialogs.h>
+import trview.common;
+import trview.app;
+import trview.app.mocks;
+import trview.tests.common;
 
 using namespace testing;
 using namespace trview;

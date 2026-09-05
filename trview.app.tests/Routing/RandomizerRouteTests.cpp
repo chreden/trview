@@ -1,8 +1,7 @@
-#include <trview.app/Routing/RandomizerRoute.h>
-#include <trview.app/Mocks/Routing/IRoute.h>
-#include <trview.app/Mocks/Routing/IWaypoint.h>
-#include <trview.tests.common/Mocks.h>
-#include <ranges>
+import trview.app;
+import trview.app.mocks;
+import trview.common;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

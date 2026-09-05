@@ -1,4 +1,4 @@
-#include "PixelShaderStore.h"
+module trview.graphics:PixelShaderStore;
 
 using namespace Microsoft::WRL;
 

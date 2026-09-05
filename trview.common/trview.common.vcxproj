@@ -11,63 +11,151 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Algorithms.h" />
+    <ClCompile Include="Algorithms.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Algorithms.hpp" />
-    <ClInclude Include="Colour.h" />
-    <ClInclude Include="Event.h" />
-    <ClInclude Include="Files.h" />
-    <ClInclude Include="JsonSerializers.h" />
-    <ClInclude Include="Logs\Activity.h" />
-    <ClInclude Include="Logs\ILog.h" />
-    <ClInclude Include="Logs\Log.h" />
-    <ClInclude Include="Logs\LogMessage.h" />
-    <ClInclude Include="Maths.h" />
-    <ClInclude Include="IFiles.h" />
-    <ClInclude Include="Json.h" />
+    <ClCompile Include="Colour.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Event.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="JsonSerializers.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Logs\Activity.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Logs\ILog.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Logs\Log.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Logs\LogMessage.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Maths.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Json.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="Json.hpp" />
-    <ClInclude Include="MessageHandler.h" />
-    <ClInclude Include="Messages\IMessageSystem.h" />
-    <ClInclude Include="Messages\IRecipient.h" />
-    <ClInclude Include="Messages\Message.h" />
-    <ClInclude Include="Messages\MessageSystem.h" />
-    <ClInclude Include="Mocks\IFiles.h" />
-    <ClInclude Include="Mocks\Logs\ILog.h" />
-    <ClInclude Include="Mocks\Messages\IMessageSystem.h" />
-    <ClInclude Include="Mocks\Messages\IRecipient.h" />
-    <ClInclude Include="Mocks\Windows\IClipboard.h" />
-    <ClInclude Include="Mocks\Windows\IDialogs.h" />
-    <ClInclude Include="Mocks\Windows\IShell.h" />
-    <ClInclude Include="Mocks\Windows\IShortcuts.h" />
-    <ClInclude Include="Point.h" />
-    <ClInclude Include="Resources.h" />
-    <ClInclude Include="Size.h" />
+    <ClCompile Include="Logs\ILog.cpp" />
+    <ClCompile Include="MessageHandler.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Messages\IMessageSystem.cpp" />
+    <ClCompile Include="Messages\IMessageSystem.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Messages\IRecipient.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Messages\Message.cpp" />
+    <ClCompile Include="Messages\Message.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Messages\MessageSystem.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\MockFiles.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\Logs\MockLog.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\Messages\MockMessageSystem.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\Messages\MockRecipient.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Messages\IRecipient.cpp" />
+    <ClCompile Include="Mocks\Windows\MockClipboard.ixx">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockDialogs.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockShell.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\Windows\MockShortcuts.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Resources.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Size.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Resource.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Strings.h" />
-    <ClInclude Include="Timer.h" />
-    <ClInclude Include="TokenStore.h" />
-    <ClInclude Include="Version.h" />
-    <ClInclude Include="Version.hpp" />
-    <ClInclude Include="Window.h" />
-    <ClInclude Include="Windows\Clipboard.h" />
-    <ClInclude Include="Windows\Dialogs.h" />
-    <ClInclude Include="Windows\IClipboard.h" />
-    <ClInclude Include="Windows\IDialogs.h" />
-    <ClInclude Include="Windows\IShell.h" />
-    <ClInclude Include="Windows\IShortcuts.h" />
-    <ClInclude Include="Windows\Shell.h" />
-    <ClInclude Include="Windows\Shortcuts.h" />
+    <ClCompile Include="Strings.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Timer.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="TokenStore.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Version.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Window.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Windows\Clipboard.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Windows\Dialogs.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Windows\Files.cpp" />
+    <ClCompile Include="Windows\Files.ixx" />
+    <ClCompile Include="Windows\IClipboard.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Windows\IDialogs.cpp" />
+    <ClCompile Include="Windows\IDialogs.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Windows\IFiles.ixx" />
+    <ClCompile Include="Windows\IShell.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Windows\IShell.cpp" />
+    <ClCompile Include="Windows\IShortcuts.cpp" />
+    <ClCompile Include="Windows\IShortcuts.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Windows\Shell.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Windows\Shortcuts.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Colour.cpp" />
     <ClCompile Include="EventToken.cpp" />
-    <ClCompile Include="Files.cpp" />
     <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="Logs\Activity.cpp" />
     <ClCompile Include="Logs\Log.cpp" />
     <ClCompile Include="MessageHandler.cpp" />
     <ClCompile Include="Messages\MessageSystem.cpp" />
-    <ClCompile Include="Mocks\Mocks.cpp" />
     <ClCompile Include="Point.cpp" />
+    <ClCompile Include="Point.ixx" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="Size.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -77,15 +165,23 @@
     <ClCompile Include="Strings.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TokenStore.cpp" />
+    <ClCompile Include="trview.common.ixx" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Windows\Clipboard.cpp" />
     <ClCompile Include="Windows\Dialogs.cpp" />
+    <ClCompile Include="Windows\IClipboard.cpp" />
+    <ClCompile Include="Windows\IFiles.cpp" />
     <ClCompile Include="Windows\Shell.cpp" />
     <ClCompile Include="Windows\Shortcuts.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Event.inl" />
     <None Include="Strings.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\external\nlohmann.json\nlohmann.json.vcxproj">
+      <Project>{c37610ad-63e4-45a9-b9bd-417a9ed4fade}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -1,18 +1,15 @@
-#include "Item.h"
+module;
 
-#include <trview.common/Algorithms.h>
-#include <trlevel/ILevel.h>
-#include <trlevel/trtypes.h>
+#include <SimpleMath.h>
 
-#include "../Camera/ICamera.h"
-#include "../Geometry/Matrix.h"
-#include "../Geometry/IMesh.h"
-#include "../Geometry/TransparencyBuffer.h"
-#include "../Geometry/Model/IModel.h"
-#include "../Geometry/Model/IModelStorage.h"
-#include "IRoom.h"
+module trview.app:Item;
 
-using namespace Microsoft::WRL;
+import trview.common;
+
+import :IModelStorage;
+import :Matrix;
+import :IRoom;
+
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
@@ -170,10 +167,9 @@ namespace trview
             PickResult result;
             result.hit = true;
             result.type = PickResult::Type::Entity;
-            result.item = std::const_pointer_cast<IItem>(shared_from_this());
             result.distance = box_distance;
             result.position = position + direction * box_distance;
-            result.item = std::const_pointer_cast<IItem>(shared_from_this());
+            result.element = std::const_pointer_cast<IItem>(shared_from_this());
             return result;
         }
 
@@ -182,7 +178,7 @@ namespace trview
             auto result = model->pick(_world, position, direction);
             if (result.hit)
             {
-                result.item = std::const_pointer_cast<IItem>(shared_from_this());
+                result.element = std::const_pointer_cast<IItem>(shared_from_this());
                 result.type = PickResult::Type::Entity;
                 return result;
             }

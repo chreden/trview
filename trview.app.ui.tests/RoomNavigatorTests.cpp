@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "RoomNavigatorTests.h"
-#include <format>
-#include <optional>
-#include <trview.app/UI/RoomNavigator.h>
+
+import trview.common;
+import trview.app;
 
 using namespace trview;
 

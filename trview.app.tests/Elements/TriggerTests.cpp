@@ -1,7 +1,8 @@
-#include <trview.app/Elements/Trigger.h>
-#include <trview.tests.common/Mocks.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Mocks/Elements/ISector.h>
+import trlevel;
+import trview.app;
+import trview.app.mocks;
+import trview.common;
+import trview.tests.common;
 
 using namespace trlevel;
 using namespace trview;

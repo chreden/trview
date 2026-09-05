@@ -1,9 +1,16 @@
-#include "Lua_Camera.h"
-#include "../Lua.h"
-#include "../Vector3.h"
+module;
 
-#include "../../Elements/IItem.h"
-#include "../Elements/Item/Lua_Item.h"
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+#include <SimpleMath.h>
+
+module trview.app:LuaCamera;
+
+import trlevel;
+import trview.common;
+
+import :Lua;
+import :LuaVector3;
 
 namespace trview
 {

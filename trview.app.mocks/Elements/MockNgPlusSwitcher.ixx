@@ -1,0 +1,22 @@
+module;
+
+#include <gmock/gmock.h>
+#include <SimpleMath.h>
+
+export module trview.app.mocks:MockNgPlusSwitcher;
+
+import trview.app;
+
+namespace trview
+{
+    namespace mocks
+    {
+        export struct MockNgPlusSwitcher : public INgPlusSwitcher
+        {
+            MockNgPlusSwitcher(){}
+            ~MockNgPlusSwitcher(){}
+            MOCK_METHOD((std::unordered_map<uint16_t, std::shared_ptr<IItem>>), create_for_level, (const std::shared_ptr<ILevel>&, const trlevel::ILevel&, const IModelStorage&), (const, override));
+            MOCK_METHOD((std::vector<std::shared_ptr<IItem>>), extras_for_level, (const std::shared_ptr<ILevel>&, const trlevel::ILevel&, const IModelStorage&), (const, override));
+        };
+    }
+}

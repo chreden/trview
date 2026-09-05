@@ -1,6 +1,8 @@
-#include "Measure.h"
-#include <trview.graphics/IDevice.h>
-#include <trview.app/Camera/ICamera.h>
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:Measure;
 
 using namespace trview::graphics;
 using namespace DirectX::SimpleMath;

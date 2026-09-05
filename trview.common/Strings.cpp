@@ -1,7 +1,10 @@
-#include "Strings.h"
-#include <algorithm>
-#include <format>
-#include <filesystem>
+module;
+
+#include <Windows.h>
+
+module trview.common:Strings;
+
+import std;
 
 namespace trview
 {

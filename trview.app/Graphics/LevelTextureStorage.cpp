@@ -1,5 +1,6 @@
-#include "LevelTextureStorage.h"
-#include <ranges>
+module trview.app:LevelTextureStorage;
+
+import trview.common;
 
 namespace trview
 {

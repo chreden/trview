@@ -1,0 +1,19 @@
+module;
+
+#include <gmock/gmock.h>
+
+export module trview.app.mocks:MockSettingsWindow;
+
+import trview.app;
+
+namespace trview
+{
+    namespace mocks
+    {
+        export struct MockSettingsWindow : public ISettingsWindow
+        {
+            MOCK_METHOD(void, render, (), (override));
+            MOCK_METHOD(void, toggle_visibility, (), (override));
+        };
+    }
+}

@@ -1,5 +1,12 @@
-#include "PluginsWindow.h"
-#include "../../Messages/Messages.h"
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+
+module trview.app:PluginsWindow;
+
+import :Messages;
 
 namespace trview
 {

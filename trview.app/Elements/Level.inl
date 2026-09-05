@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../Messages/Messages.h"
-
 namespace trview
 {
     template <typename T>

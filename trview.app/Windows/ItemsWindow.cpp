@@ -1,14 +1,18 @@
-#include "ItemsWindow.h"
-#include <trview.common/Strings.h>
-#include <trview.common/Windows/Clipboard.h>
-#include "../trview_imgui.h"
-#include "RowCounter.h"
-#include "../Elements/IRoom.h"
-#include "../Elements/ISector.h"
-#include "../Messages/Messages.h"
-#include "../Elements/ILevel.h"
-#include "../Elements/ElementFilters.h"
-#include "../Elements/ITrigger.h"
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+#include <SimpleMath.h>
+
+module trview.app:ItemsWindow;
+
+import trlevel;
+
+import :imgui;
+import :Messages;
+import :ILevel;
+import :ElementFilters;
 
 namespace trview
 {

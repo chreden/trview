@@ -1,15 +1,10 @@
-#include <trview.app/Lua/Elements/Level/Lua_Level.h>
-#include <trview.app/Lua/Elements/Room/Lua_Room.h>
-#include <trview.app/Lua/Elements/Trigger/Lua_Trigger.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
-#include <trview.app/Mocks/Elements/ICameraSink.h>
-#include <trview.app/Mocks/Elements/ILight.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Mocks/Lua/IScriptable.h>
-#include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 #include "../Lua.h"
+
+import trview.app;
+import trview.app.mocks;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;

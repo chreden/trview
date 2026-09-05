@@ -1,4 +1,10 @@
-#include <trview.app/Windows/WindowResizer.h>
+#include <Windows.h>
+#include <commctrl.h>
+
+import trlevel;
+import trview.app;
+import trview.common;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;

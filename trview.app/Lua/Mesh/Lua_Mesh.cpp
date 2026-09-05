@@ -1,6 +1,12 @@
-#include "Lua_Mesh.h"
-#include "../Lua.h"
-#include <trview.lua/inc/tables.h>
+module;
+
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+
+module trview.app:LuaMesh;
+
+import trview.lua;
+import :Lua;
 
 namespace trview
 {

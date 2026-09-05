@@ -1,5 +1,9 @@
 #include "gtest/gtest.h"
-#include <trview.graphics/VertexShader.h>
+#include <d3d11.h>
+
+import trview.graphics;
+import std;
+import std.compat;
 
 using namespace trview::graphics;
 

@@ -1,8 +1,16 @@
-#include "MapRenderer.h"
-#include "../Elements/ILevel.h"
-#include <ranges>
-#include <trview.common/Messages/Message.h>
-#include "../Messages/Messages.h"
+module;
+
+#define NOMINMAX
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+#include <d3d11.h>
+#include <wrl/client.h>
+
+module trview.app:MapRenderer;
+
+import :Messages;
+import :ILevel;
 
 using namespace DirectX::SimpleMath;
 using namespace Microsoft::WRL;

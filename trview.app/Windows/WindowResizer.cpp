@@ -1,5 +1,9 @@
-#include "WindowResizer.h"
-#include <trview.common/Window.h>
+module;
+
+#include <Windows.h>
+#include "../Resources/resource.h"
+
+module trview.app:WindowResizer;
 
 namespace trview
 {

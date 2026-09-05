@@ -1,32 +1,14 @@
-#include <trview.app/Application.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
-#include <trview.app/Mocks/Elements/ILight.h>
-#include <trview.app/Mocks/Elements/ISector.h>
-#include <trview.app/Mocks/Elements/ICameraSink.h>
-#include <trview.app/Mocks/Menus/IUpdateChecker.h>
-#include <trview.app/Mocks/Menus/IFileMenu.h>
-#include <trview.app/Mocks/Routing/IRoute.h>
-#include <trview.app/Mocks/Routing/IRandomizerRoute.h>
-#include <trview.app/Mocks/Settings/ISettingsLoader.h>
-#include <trview.app/Mocks/Settings/IStartupOptions.h>
-#include <trview.app/Mocks/UI/IImGuiBackend.h>
-#include <trview.app/Mocks/Windows/IViewer.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.common/Mocks/Windows/IShortcuts.h>
-#include <trview.common/Mocks/Windows/IDialogs.h>
-#include <trview.common/Mocks/IFiles.h>
+#include <shlobj.h>
 #include <trview.app/Resources/resource.h>
 #include "NullImGuiBackend.h"
-#include <trview.common/Strings.h>
-#include <ranges>
-#include <trview.app/Mocks/Lua/ILua.h>
-#include <trview.app/Mocks/Plugins/IPlugins.h>
-#include <trview.app/Mocks/UI/IFonts.h>
-#include <trview.app/Mocks/Windows/IWindows.h>
-#include <trview.app/Mocks/Windows/IWindow.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
-#include <trview.tests.common/Messages.h>
-#include <trview.app/Messages/Messages.h>
+
+import trlevel;
+import trview.app;
+import trview.app.mocks;
+import trview.common;
+import trview.graphics;
+import trview.input;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;

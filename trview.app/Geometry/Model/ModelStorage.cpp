@@ -1,5 +1,10 @@
-#include "ModelStorage.h"
-#include "../../Graphics/IMeshStorage.h"
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:ModelStorage;
+
+import trview.common;
 
 namespace trview
 {

@@ -1,8 +1,19 @@
-#include "Lua_StaticMesh.h"
-#include "../../Lua.h"
-#include "../../Vector3.h"
-#include "../../BoundingBox.h"
-#include "../Room/Lua_Room.h"
+module;
+
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+#include <SimpleMath.h>
+
+module trview.app:LuaStaticMesh;
+
+import trlevel;
+import :Lua;
+import :LuaRoom;
+import :LuaVector3;
+import :LuaColour;
+import :LuaBoundingBox;
+
+using namespace DirectX::SimpleMath;
 
 namespace trview
 {

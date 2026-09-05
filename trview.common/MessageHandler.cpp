@@ -1,4 +1,9 @@
-#include "MessageHandler.h"
+module;
+
+#include <Windows.h>
+#include <CommCtrl.h>
+
+module trview.common:MessageHandler;
 
 namespace trview
 {

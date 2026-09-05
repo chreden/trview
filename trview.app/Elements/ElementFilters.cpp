@@ -1,4 +1,4 @@
-#include "ElementFilters.h"
+module trview.app:ElementFilters;
 
 namespace trview
 {

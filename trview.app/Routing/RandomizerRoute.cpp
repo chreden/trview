@@ -1,9 +1,15 @@
-#include "RandomizerRoute.h"
-#include "../Elements/ILevel.h"
-#include "../Settings/UserSettings.h"
+module;
 
-#include <algorithm>
-#include <ranges>
+#define NOMINMAX
+#include <Windows.h>
+#include <external/nlohmann/json.hpp>
+#include <SimpleMath.h>
+
+module trview.app:RandomizerRoute;
+
+import nlohmann.json;
+
+import :ILevel;
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

@@ -1,9 +1,11 @@
-#include "SettingsLoader.h"
-#include <trview.common/Json.h>
-#include <trview.common/Strings.h>
-#include <trview.common/JsonSerializers.h>
-#include <trview.common/Version.h>
-#include "UserSettingsPatches.h"
+module;
+
+module trview.app:SettingsLoader;
+
+import nlohmann.json;
+
+import trview.common;
+import :UserSettingsPatches;
 
 namespace trview
 {

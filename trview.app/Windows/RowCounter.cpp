@@ -1,5 +1,8 @@
-#include "RowCounter.h"
-#include <format>
+module;
+
+#include <external/imgui/imgui.h>
+
+module trview.app:RowCounter;
 
 namespace trview
 {

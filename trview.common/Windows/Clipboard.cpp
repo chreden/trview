@@ -1,11 +1,11 @@
-#include "Clipboard.h"
+module;
+
+#include <Windows.h>
+
+module trview.common:Clipboard;
 
 namespace trview
 {
-    IClipboard::~IClipboard()
-    {
-    }
-
     Clipboard::Clipboard(const Window& window)
         : _window(window)
     {

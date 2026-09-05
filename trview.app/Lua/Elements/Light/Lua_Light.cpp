@@ -1,10 +1,18 @@
-#include "Lua_Light.h"
-#include "../../Lua.h"
-#include "../../../Elements/ILevel.h"
-#include "../Level/Lua_Level.h"
-#include "../Room/Lua_Room.h"
-#include "../../Vector3.h"
-#include "../../Colour.h"
+module;
+
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+#include <SimpleMath.h>
+
+module trview.app:LuaLight;
+
+import trlevel;
+import :Lua;
+import :LuaRoom;
+import :LuaVector3;
+import :LuaColour;
+
+using namespace DirectX::SimpleMath;
 
 namespace trview
 {

@@ -1,7 +1,9 @@
-#include "MapColours.h"
-#include "../Elements/Types.h"
-#include <trview.common/JsonSerializers.h>
-#include "../Elements/ISector.h"
+module trview.app:MapColours;
+
+import trview.common;
+
+import :Types;
+import :ISector;
 
 namespace trview
 {

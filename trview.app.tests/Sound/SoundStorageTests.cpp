@@ -1,6 +1,7 @@
-#include <trview.app/Sound/SoundStorage.h>
-#include <trview.app/Mocks/Sound/ISound.h>
-#include <trview.tests.common/Mocks.h>
+import trview.app;
+import trview.app.mocks;
+import trview.common;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

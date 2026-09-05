@@ -1,11 +1,10 @@
 #include "pch.h"
 #include "LevelInfoTests.h"
 
-#include <trview.app/UI/LevelInfo.h>
-#include <trview.app/Mocks/Graphics/ITextureStorage.h>
-#include <trview.app/Mocks/Elements/ILevelNameLookup.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
-#include <trview.tests.common/Mocks.h>
+import trview.common;
+import trview.app;
+import trview.app.mocks;
+import trview.tests.common;
 
 using namespace testing;
 using namespace trview;

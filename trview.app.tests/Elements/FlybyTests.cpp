@@ -1,7 +1,7 @@
-#include <trview.app/Elements/Flyby/Flyby.h>
-#include <trview.tests.common/Event.h>
-#include <trview.app/Mocks/Elements/IFlybyNode.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
+import trlevel;
+import trview.app;
+import trview.app.mocks;
+import trview.tests.common;
 
 using namespace trlevel;
 using namespace trview;

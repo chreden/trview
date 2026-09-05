@@ -1,20 +1,8 @@
-#include "MessageSystem.h"
-#include "IRecipient.h"
+module;
+module trview.common:MessageSystem;
 
 namespace trview
 {
-    IMessageData::~IMessageData()
-    {
-    }
-
-    IMessageSystem::~IMessageSystem()
-    {
-    }
-
-    IRecipient::~IRecipient()
-    {
-    }
-
     void MessageSystem::send_message(const Message& message)
     {
         for (const auto& recipient : _recipients)

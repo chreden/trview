@@ -1,6 +1,12 @@
-#include "GoTo.h"
-#include <charconv>
-#include <ranges>
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+
+module trview.app:GoTo;
+
+import std;
 
 namespace trview
 {

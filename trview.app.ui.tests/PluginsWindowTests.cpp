@@ -1,11 +1,10 @@
 #include "pch.h"
 #include "PluginsWindowTests.h"
-#include <trview.app/Windows/Plugins/PluginsWindow.h>
-#include <trview.app/Mocks/Plugins/IPlugin.h>
-#include <trview.app/Mocks/Plugins/IPlugins.h>
-#include <trview.common/Mocks/Windows/IShell.h>
-#include <trview.common/Mocks/Windows/IDialogs.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
+
+import trview.common;
+import trview.app;
+import trview.app.mocks;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;

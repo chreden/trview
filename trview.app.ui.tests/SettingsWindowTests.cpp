@@ -1,15 +1,10 @@
 #include "pch.h"
 #include "SettingsWindowTests.h"
 
-#include <format>
-
-#include <trview.app/UI/SettingsWindow.h>
-#include <trview.common/Mocks/Windows/IShell.h>
-#include <trview.common/Mocks/Windows/IDialogs.h>
-#include <trview.app/Mocks/UI/IFonts.h>
-#include <trview.app/Mocks/Graphics/ITextureStorage.h>
-#include <trview.tests.common/Event.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
+import trview.common;
+import trview.app;
+import trview.app.mocks;
+import trview.tests.common;
 
 using namespace testing;
 using namespace trview;

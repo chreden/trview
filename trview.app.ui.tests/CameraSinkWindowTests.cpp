@@ -1,16 +1,10 @@
 #include "pch.h"
 #include "CameraSinkWindowTests.h"
-#include <trview.app/Mocks/Elements/ICameraSink.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.app/Mocks/Elements/ITrigger.h>
-#include <trview.app/Windows/CameraSink/CameraSinkWindow.h>
-#include <trview.common/Mocks/Windows/IClipboard.h>
-#include <trview.tests.common/Mocks.h>
-#include <trview.app/Mocks/Camera/ICamera.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
-#include <trview.app/Messages/Messages.h>
-#include <trview.tests.common/Messages.h>
-#include <trview.app/Mocks/Filters/IFilterStore.h>
+
+import trview.common;
+import trview.app;
+import trview.app.mocks;
+import trview.tests.common;
 
 using namespace testing;
 using namespace trview;

@@ -1,17 +1,7 @@
-#include <trview.app/UI/ViewerUI.h>
-#include <trview.app/Windows/IViewer.h>
-#include <trview.app/Mocks/Graphics/ITextureStorage.h>
-#include <trview.common/Mocks/Windows/IShortcuts.h>
-#include <trview.app/Mocks/UI/IMapRenderer.h>
-#include <trview.tests.common/Window.h>
-#include <trview.app/Mocks/UI/ISettingsWindow.h>
-#include <trview.app/Mocks/UI/IViewOptions.h>
-#include <trview.app/Mocks/UI/IContextMenu.h>
-#include <trview.app/Mocks/UI/ICameraControls.h>
-#include <trview.common/Mocks/Windows/IShell.h>
-#include <trview.app/Mocks/Tools/IToolbar.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
-#include <trview.app/Mocks/UI/ILevelInfo.h>
+import trview.app;
+import trview.app.mocks;
+import trview.common;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;

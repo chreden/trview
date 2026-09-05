@@ -1,10 +1,14 @@
-#include "Route.h"
-#include <trview.app/Camera/ICamera.h>
-#include <trview.common/Strings.h>
-#include <trview.common/Maths.h>
-#include <trview.common/Json.h>
-#include <trview.app/Elements/ILevel.h>
-#include <format>
+module;
+
+#include <Windows.h>
+#include <SimpleMath.h>
+#include <external/nlohmann/json.hpp>
+
+module trview.app:Route;
+
+import nlohmann.json;
+
+import :ILevel;
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -216,7 +220,7 @@ namespace trview
             {
                 result.distance = distance;
                 result.hit = true;
-                result.waypoint = _waypoints[i];
+                result.element = _waypoints[i];
                 result.position = position + direction * distance;
                 result.type = PickResult::Type::Waypoint;
                 result.waypoint_index = i;

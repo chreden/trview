@@ -1,4 +1,5 @@
-#include "Event.h"
+module;
+module trview.common:Event;
 
 namespace trview
 {

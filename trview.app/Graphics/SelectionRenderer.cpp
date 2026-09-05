@@ -1,14 +1,13 @@
-#include "SelectionRenderer.h"
-#include <trview.graphics/IShaderStorage.h>
-#include <trview.graphics/IShader.h>
-#include <trview.graphics/IRenderTarget.h>
-#include <trview.graphics/RenderTargetStore.h>
-#include <trview.graphics/VertexShaderStore.h>
-#include <trview.graphics/PixelShaderStore.h>
-#include <trview.app/Elements/Trigger.h>
+module;
 
-#include <trview.app/Geometry/IRenderable.h>
-#include <trview.app/Camera/ICamera.h>
+#include <d3d11.h>
+#include <wrl/client.h>
+
+module trview.app:SelectionRenderer;
+
+import trview.graphics;
+import :IRenderable;
+import :IMesh;
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;

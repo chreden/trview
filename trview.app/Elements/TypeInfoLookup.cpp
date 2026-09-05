@@ -1,6 +1,13 @@
-#include "TypeInfoLookup.h"
-#include <trview.common/Json.h>
-#include "IItem.h"
+module;
+
+#include <external/nlohmann/json.hpp>
+
+module trview.app:TypeInfoLookup;
+
+import std.compat;
+import trlevel;
+
+import :IItem;
 
 using namespace trlevel;
 
@@ -63,10 +70,6 @@ namespace trview
                 return {};
             }
         }
-    }
-
-    ITypeInfoLookup::~ITypeInfoLookup()
-    {
     }
 
     TypeInfoLookup::TypeInfoLookup(const std::string& type_name_json, const std::optional<std::string>& extra_type_name_json)

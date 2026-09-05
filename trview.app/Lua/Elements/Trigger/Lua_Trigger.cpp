@@ -1,11 +1,16 @@
-#include "Lua_Trigger.h"
-#include "../../Lua.h"
-#include "../../../Elements/ITrigger.h"
-#include "../../../Elements/ILevel.h"
-#include "../../Vector3.h"
-#include "../Room/Lua_Room.h"
-#include "../Sector/Lua_Sector.h"
-#include "../../Colour.h"
+module;
+
+#include <external/lua/src/lua.h>
+#include <SimpleMath.h>
+
+module trview.app:LuaTrigger;
+
+import trlevel;
+import :Lua;
+import :LuaColour;
+import :LuaVector3;
+import :LuaRoom;
+import :LuaSector;
 
 namespace trview
 {

@@ -1,13 +1,11 @@
-#include <trview.app/Lua/trview/trview.h>
-#include <trview.app/Lua/Elements/Level/Lua_Level.h>
-#include <trview.app/Mocks/IApplication.h>
-#include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
-#include <trview.app/Mocks/Routing/IRoute.h>
-#include <trview.app/Mocks/Routing/IRandomizerRoute.h>
-#include <trview.app/Mocks/Lua/IScriptable.h>
 #include "Lua.h"
+
+import trview.app;
+import trview.app.mocks;
+import trview.common;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

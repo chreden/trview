@@ -1,12 +1,15 @@
-#include "../stdafx.h"
-#include <gmock/gmock.h>
-#include "ILevel.h"
+module trlevel:MockLevel;
 
 namespace trlevel
 {
     namespace mocks
     {
-        MockLevel::MockLevel() {}
-        MockLevel::~MockLevel() {}
+        MockLevel::MockLevel()
+        {
+        }
+
+        MockLevel::~MockLevel()
+        {
+        }
     }
 }

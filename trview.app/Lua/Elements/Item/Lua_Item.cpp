@@ -1,10 +1,15 @@
-#include "Lua_Item.h"
-#include "../../Lua.h"
-#include "../../../Elements/ILevel.h"
-#include "../Level/Lua_Level.h"
-#include "../Room/Lua_Room.h"
-#include "../Trigger/Lua_Trigger.h"
-#include "../../Vector3.h"
+module;
+
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+#include <SimpleMath.h>
+
+module trview.app:LuaItem;
+
+import :Lua;
+import :LuaVector3;
+import :LuaTrigger;
+import :LuaRoom;
 
 namespace trview
 {

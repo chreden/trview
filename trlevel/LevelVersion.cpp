@@ -1,6 +1,8 @@
-#include "LevelVersion.h"
-#include <trview.common/Algorithms.h>
-#include "Level_psx.h"
+module trlevel:LevelVersion;
+
+import trview.common;
+
+import :PSX;
 
 namespace trlevel
 {

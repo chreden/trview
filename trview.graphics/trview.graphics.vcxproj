@@ -11,66 +11,136 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Buffer.h" />
-    <ClInclude Include="DepthStencil.h" />
-    <ClInclude Include="Device.h" />
-    <ClInclude Include="DeviceWindow.h" />
-    <ClInclude Include="IBuffer.h" />
-    <ClInclude Include="IDevice.h" />
-    <ClInclude Include="IDeviceWindow.h" />
-    <ClInclude Include="IRenderTarget.h" />
-    <ClInclude Include="IShader.h" />
-    <ClInclude Include="IShaderStorage.h" />
-    <ClInclude Include="ISprite.h" />
-    <ClInclude Include="Mocks\D3D\ID3D11DeviceContext.h" />
-    <ClInclude Include="mocks\IBuffer.h" />
-    <ClInclude Include="Mocks\IDevice.h" />
-    <ClInclude Include="mocks\IDeviceWindow.h" />
-    <ClInclude Include="mocks\IRenderTarget.h" />
-    <ClInclude Include="Mocks\IShader.h" />
-    <ClInclude Include="Mocks\IShaderStorage.h" />
-    <ClInclude Include="Mocks\ISprite.h" />
-    <ClInclude Include="Mocks\ISamplerState.h" />
-    <ClInclude Include="PixelShader.h" />
-    <ClInclude Include="PixelShaderStore.h" />
-    <ClInclude Include="RasterizerStateStore.h" />
-    <ClInclude Include="RenderTarget.h" />
-    <ClInclude Include="RenderTargetStore.h" />
-    <ClInclude Include="Sampler\ISamplerState.h" />
-    <ClInclude Include="Sampler\SamplerState.h" />
-    <ClInclude Include="ShaderStorage.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="SpriteSizeStore.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="VertexShader.h" />
-    <ClInclude Include="VertexShaderStore.h" />
-    <ClInclude Include="ViewportStore.h" />
+    <ClCompile Include="Buffer.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Buffer\IBuffer.cpp" />
+    <ClCompile Include="DepthStencil.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Device.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="DeviceWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Device\IDevice.cpp" />
+    <ClCompile Include="Device\IDeviceWindow.cpp" />
+    <ClCompile Include="IBuffer.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="IDevice.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="IDeviceWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="IRenderTarget.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="IShader.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="IShaderStorage.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="ISprite.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\D3D\MockD3D11DeviceContext.ixx">
+      <FileType>Document</FileType>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="mocks\MockBuffer.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\MockDevice.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="mocks\MockDeviceWindow.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="mocks\MockRenderTarget.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\MockShader.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\MockShaderStorage.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\MockSprite.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\MockSamplerState.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Mocks\Printers.ixx" />
+    <ClCompile Include="PixelShader.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="PixelShaderStore.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="RasterizerStateStore.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="RenderTarget.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="RenderTargetStore.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="RenderTarget\IRenderTarget.cpp" />
+    <ClCompile Include="Sampler\ISamplerState.cpp" />
+    <ClCompile Include="Sampler\ISamplerState.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Sampler\SamplerState.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="ShaderStorage.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Shaders\IShader.cpp" />
+    <ClCompile Include="Shaders\IShaderStorage.cpp" />
+    <ClCompile Include="Sprite.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="SpriteSizeStore.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="Sprite\ISprite.cpp" />
+    <ClCompile Include="Texture.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="VertexShader.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="VertexShaderStore.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="ViewportStore.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="DepthStencil.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="DeviceWindow.cpp" />
-    <ClCompile Include="Mocks\Mocks.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PixelShaderStore.cpp" />
     <ClCompile Include="RasterizerStateStore.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="RenderTargetStore.cpp" />
     <ClCompile Include="Sampler\SamplerState.cpp" />
-    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderStorage.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteSizeStore.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="trview.graphics.ixx" />
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="VertexShaderStore.cpp" />
     <ClCompile Include="ViewportStore.cpp" />
@@ -127,16 +197,18 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BuildStlModules>false</BuildStlModules>
@@ -148,7 +220,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -156,10 +228,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BuildStlModules>false</BuildStlModules>

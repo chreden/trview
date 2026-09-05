@@ -1,4 +1,5 @@
-#include <trview.app/Elements/TypeInfoLookup.h>
+import trlevel;
+import trview.app;
 
 using namespace trview;
 using namespace trlevel;

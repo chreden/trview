@@ -1,10 +1,7 @@
-#include <trview.app/Routing/Route.h>
-#include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
-#include <trview.app/Mocks/Routing/IWaypoint.h>
-#include <trview.app/Mocks/Camera/ICamera.h>
-#include <trview.app/Mocks/Elements/ILight.h>
-#include <trview.app/Mocks/Elements/ICameraSink.h>
-#include <trview.tests.common/Mocks.h>
+import trview.app;
+import trview.app.mocks;
+import trview.common;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

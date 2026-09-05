@@ -1,4 +1,4 @@
-#include <trview.app/Camera/CameraInput.h>
+import trview.app;
 
 using namespace trview;
 
