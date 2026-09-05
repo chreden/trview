@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{2a8cb51c-d210-4179-a10b-e1e6304b74a7}</ProjectGuid>
+    <RootNamespace>trviewappmocks</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include;$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include;$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Camera\MockCamera.ixx" />
+    <ClCompile Include="Elements\MockCameraSink.ixx" />
+    <ClCompile Include="Elements\MockFlyby.ixx" />
+    <ClCompile Include="Elements\MockFlybyNode.ixx" />
+    <ClCompile Include="Elements\MockItem.ixx" />
+    <ClCompile Include="Elements\MockLevel.ixx" />
+    <ClCompile Include="Elements\MockLevelNameLookup.ixx" />
+    <ClCompile Include="Elements\MockLight.ixx" />
+    <ClCompile Include="Elements\MockNgPlusSwitcher.ixx" />
+    <ClCompile Include="Elements\MockRoom.ixx" />
+    <ClCompile Include="Elements\MockSector.ixx" />
+    <ClCompile Include="Elements\MockSoundSource.ixx" />
+    <ClCompile Include="Elements\MockStaticMesh.ixx" />
+    <ClCompile Include="Elements\MockTrigger.ixx" />
+    <ClCompile Include="Elements\MockTypeInfoLookup.ixx" />
+    <ClCompile Include="Filters\MockFilterable.ixx" />
+    <ClCompile Include="Filters\MockFilterStore.ixx" />
+    <ClCompile Include="Geometry\MockMesh.ixx" />
+    <ClCompile Include="Geometry\MockModelStorage.ixx" />
+    <ClCompile Include="Geometry\MockPicking.ixx" />
+    <ClCompile Include="Geometry\MockTransparencyBuffer.ixx" />
+    <ClCompile Include="Graphics\MockLevelTextureStorage.ixx" />
+    <ClCompile Include="Graphics\MockMeshStorage.ixx" />
+    <ClCompile Include="Graphics\MockSectorHighlight.ixx" />
+    <ClCompile Include="Graphics\MockSelectionRenderer.ixx" />
+    <ClCompile Include="Graphics\MockTextureStorage.ixx" />
+    <ClCompile Include="Lua\MockLua.ixx" />
+    <ClCompile Include="Lua\MockScriptable.ixx" />
+    <ClCompile Include="Menus\MockFileMenu.ixx" />
+    <ClCompile Include="Menus\MockUpdateChecker.ixx" />
+    <ClCompile Include="MockApplication.ixx" />
+    <ClCompile Include="Plugins\MockPlugin.ixx" />
+    <ClCompile Include="Plugins\MockPlugins.ixx" />
+    <ClCompile Include="Routing\MockRandomizerRoute.ixx" />
+    <ClCompile Include="Routing\MockRoute.ixx" />
+    <ClCompile Include="Routing\MockWaypoint.ixx" />
+    <ClCompile Include="Settings\MockSettingsLoader.ixx" />
+    <ClCompile Include="Settings\MockStartupOptions.ixx" />
+    <ClCompile Include="Sound\MockSound.ixx" />
+    <ClCompile Include="Sound\MockSoundStorage.ixx" />
+    <ClCompile Include="Tools\MockCompass.ixx" />
+    <ClCompile Include="Tools\MockMeasure.ixx" />
+    <ClCompile Include="Tools\MockToolbar.ixx" />
+    <ClCompile Include="trview.app.mocks.ixx" />
+    <ClCompile Include="UI\MockCameraControls.ixx" />
+    <ClCompile Include="UI\MockContextMenu.ixx" />
+    <ClCompile Include="UI\MockFonts.ixx" />
+    <ClCompile Include="UI\MockImGuiBackend.ixx" />
+    <ClCompile Include="UI\MockLevelInfo.ixx" />
+    <ClCompile Include="UI\MockMapRenderer.ixx" />
+    <ClCompile Include="UI\MockSettingsWindow.ixx" />
+    <ClCompile Include="UI\MockViewerUI.ixx" />
+    <ClCompile Include="UI\MockViewOptions.ixx" />
+    <ClCompile Include="Windows\MockViewer.ixx" />
+    <ClCompile Include="Windows\MockWindow.ixx" />
+    <ClCompile Include="Windows\MockWindows.ixx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\external\googlemock\googlemock.vcxproj">
+      <Project>{6e37091e-954c-4654-9b42-5980410791f4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\external\googletest\googletest.vcxproj">
+      <Project>{eafd7489-57e3-4b6d-a704-f7c5ef640434}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\trview.app\trview.app.vcxproj">
+      <Project>{a087af08-5371-47de-a896-afa21dd9d383}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -3,6 +3,7 @@
 
 import trview.common;
 import trview.app;
+import trview.app.mocks;
 import trview.tests.common;
 
 using namespace testing;

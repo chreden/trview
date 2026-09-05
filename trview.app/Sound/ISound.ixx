@@ -5,7 +5,7 @@ import std.compat;
 
 namespace trview
 {
-    struct ISound
+    export struct ISound
     {
         using Source = std::function<std::shared_ptr<ISound>(const std::vector<uint8_t>&)>;
         virtual ~ISound() = 0;

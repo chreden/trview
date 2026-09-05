@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Mocks">
+      <UniqueIdentifier>{b27800b0-7481-43f0-bd0e-dc11a6fe00ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\UI">
+      <UniqueIdentifier>{f06ba567-e679-4995-9001-d46da195377e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Elements">
+      <UniqueIdentifier>{40446575-6760-444e-9a05-c23f69bdaf43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Geometry">
+      <UniqueIdentifier>{44c09c73-2680-46a6-81d8-38b8239fbb7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Menus">
+      <UniqueIdentifier>{12409e22-0b18-4826-9330-b751cbdc54c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Graphics">
+      <UniqueIdentifier>{6ec6b178-5f8d-445a-b190-007b12884634}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Routing">
+      <UniqueIdentifier>{8e1799f9-c84c-499e-a38a-28f7a919f37d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Tools">
+      <UniqueIdentifier>{070dfab7-ee46-4f16-83b0-91c47e8277b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Windows">
+      <UniqueIdentifier>{b797e9f6-bba1-4bb9-9043-a9f46e5bae29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Camera">
+      <UniqueIdentifier>{420a2980-cb4a-41a9-a142-fa67b7c6cb88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Settings">
+      <UniqueIdentifier>{ae7728e3-a800-4fbb-bfa5-2a042b80dda3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Lua">
+      <UniqueIdentifier>{690c1524-b10e-4a3b-a7ef-ceb168c46980}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Plugins">
+      <UniqueIdentifier>{7e17d0bc-8d1b-443d-a836-49d8a0a7c90c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Sound">
+      <UniqueIdentifier>{3bdbba33-5c99-4d51-81d7-c4ed41244835}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Filters">
+      <UniqueIdentifier>{c13efe43-ba71-4043-b24a-1fb47a8a371b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Camera\MockCamera.ixx">
+      <Filter>Mocks\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockCameraSink.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockFlyby.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockFlybyNode.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockItem.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockLevel.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockLevelNameLookup.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockLight.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockNgPlusSwitcher.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockRoom.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockSector.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockSoundSource.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockStaticMesh.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockTrigger.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\MockTypeInfoLookup.ixx">
+      <Filter>Mocks\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Filters\MockFilterable.ixx">
+      <Filter>Mocks\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="Filters\MockFilterStore.ixx">
+      <Filter>Mocks\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\MockMesh.ixx">
+      <Filter>Mocks\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\MockModelStorage.ixx">
+      <Filter>Mocks\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\MockPicking.ixx">
+      <Filter>Mocks\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\MockTransparencyBuffer.ixx">
+      <Filter>Mocks\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\MockLevelTextureStorage.ixx">
+      <Filter>Mocks\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\MockMeshStorage.ixx">
+      <Filter>Mocks\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\MockSectorHighlight.ixx">
+      <Filter>Mocks\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\MockSelectionRenderer.ixx">
+      <Filter>Mocks\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\MockTextureStorage.ixx">
+      <Filter>Mocks\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\MockLua.ixx">
+      <Filter>Mocks\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\MockScriptable.ixx">
+      <Filter>Mocks\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\MockFileMenu.ixx">
+      <Filter>Mocks\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\MockUpdateChecker.ixx">
+      <Filter>Mocks\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\MockPlugin.ixx">
+      <Filter>Mocks\Plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\MockPlugins.ixx">
+      <Filter>Mocks\Plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="Routing\MockRandomizerRoute.ixx">
+      <Filter>Mocks\Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="Routing\MockRoute.ixx">
+      <Filter>Mocks\Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="Routing\MockWaypoint.ixx">
+      <Filter>Mocks\Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings\MockSettingsLoader.ixx">
+      <Filter>Mocks\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings\MockStartupOptions.ixx">
+      <Filter>Mocks\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\MockSound.ixx">
+      <Filter>Mocks\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\MockSoundStorage.ixx">
+      <Filter>Mocks\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\MockCompass.ixx">
+      <Filter>Mocks\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\MockMeasure.ixx">
+      <Filter>Mocks\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\MockToolbar.ixx">
+      <Filter>Mocks\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MockCameraControls.ixx">
+      <Filter>Mocks\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MockContextMenu.ixx">
+      <Filter>Mocks\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MockFonts.ixx">
+      <Filter>Mocks\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MockImGuiBackend.ixx">
+      <Filter>Mocks\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MockLevelInfo.ixx">
+      <Filter>Mocks\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MockMapRenderer.ixx">
+      <Filter>Mocks\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MockSettingsWindow.ixx">
+      <Filter>Mocks\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MockViewerUI.ixx">
+      <Filter>Mocks\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MockViewOptions.ixx">
+      <Filter>Mocks\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\MockViewer.ixx">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\MockWindow.ixx">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\MockWindows.ixx">
+      <Filter>Mocks\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="MockApplication.ixx" />
+    <ClCompile Include="trview.app.mocks.ixx" />
+  </ItemGroup>
+</Project>

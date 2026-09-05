@@ -181,51 +181,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="Menus\LevelSortingMode.hpp" />
-    <ClCompile Include="Mocks\Elements\MockFlyby.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Elements\MockFlybyNode.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Elements\MockLevelNameLookup.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Elements\MockNgPlusSwitcher.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Elements\MockSoundSource.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Filters\MockFilterable.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Filters\MockFilterStore.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Geometry\MockModelStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Lua\MockScriptable.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Sound\MockSound.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Sound\MockSoundStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\UI\MockFonts.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\UI\MockLevelInfo.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Windows\MockWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Windows\MockWindows.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
     <ClCompile Include="Settings\FontSetting.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -288,24 +243,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Lua\Vector3.ixx" />
     <ClCompile Include="UI\Fonts\Fonts.cpp" />
     <ClCompile Include="Windows\Console\Console.cpp" />
-    <ClCompile Include="Mocks\MockApplication.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Lua\MockLua.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Plugins\MockPlugin.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Plugins\MockPlugins.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Routing\MockRandomizerRoute.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Tools\MockToolbar.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
     <ClCompile Include="Plugins\IPlugin.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -598,112 +535,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <FileType>Document</FileType>
     </ClCompile>
     <ClCompile Include="Menus\ViewMenu.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Camera\MockCamera.ixx">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Mocks\Elements\MockCameraSink.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Elements\MockItem.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Elements\MockLevel.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Elements\MockLight.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Elements\MockRoom.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Elements\MockSector.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Elements\MockStaticMesh.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Elements\MockTrigger.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Elements\MockTypeInfoLookup.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Geometry\MockMesh.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Geometry\MockPicking.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Geometry\MockTransparencyBuffer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Graphics\MockLevelTextureStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Graphics\MockMeshStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Graphics\MockSectorHighlight.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Graphics\MockSelectionRenderer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Graphics\MockTextureStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Menus\MockFileMenu.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Menus\MockUpdateChecker.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Routing\MockRoute.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Routing\MockWaypoint.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Settings\MockSettingsLoader.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Settings\MockStartupOptions.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Tools\MockCompass.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Tools\MockMeasure.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\UI\MockCameraControls.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\UI\MockContextMenu.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\UI\MockImGuiBackend.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\UI\MockMapRenderer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\UI\MockSettingsWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\UI\MockViewerUI.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\UI\MockViewOptions.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Windows\MockViewer.ixx">
       <FileType>Document</FileType>
     </ClCompile>
     <ClCompile Include="Resources\DefaultShaders.ixx">

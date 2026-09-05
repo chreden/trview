@@ -14,7 +14,7 @@ import :IMesh;
 
 namespace trview
 {
-    struct IModel
+    export struct IModel
     {
         using Source = std::function<std::shared_ptr<IModel>(const trlevel::tr_model&, const std::vector<std::shared_ptr<IMesh>>&, const std::vector<DirectX::SimpleMath::Matrix>&)>;
 

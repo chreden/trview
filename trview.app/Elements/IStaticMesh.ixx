@@ -15,8 +15,6 @@ import :Forward;
 
 namespace trview
 {
-    struct ITransparencyBuffer;
-
     export struct IStaticMesh : public IFilterable, public IPickable
     {
         enum class Type

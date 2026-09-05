@@ -6,6 +6,7 @@ export module trview.app:ITransparencyBuffer;
 
 import std;
 
+import :Forward;
 import :ICamera;
 import :Triangle;
 

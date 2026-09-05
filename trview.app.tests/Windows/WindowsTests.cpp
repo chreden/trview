@@ -6,6 +6,7 @@
 import trview.common;
 import trview.tests.common;
 import trview.app;
+import trview.app.mocks;
 
 using namespace trview;
 using namespace trview::tests;

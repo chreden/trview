@@ -390,6 +390,9 @@
     <ProjectReference Include="..\trlevel\trlevel.vcxproj">
       <Project>{8ffb19fa-1c9d-4d9c-ab96-844bf695e79c}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\trview.app.mocks\trview.app.mocks.vcxproj">
+      <Project>{2a8cb51c-d210-4179-a10b-e1e6304b74a7}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\trview.app\trview.app.vcxproj">
       <Project>{a087af08-5371-47de-a896-afa21dd9d383}</Project>
     </ProjectReference>
