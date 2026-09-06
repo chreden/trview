@@ -144,6 +144,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nlohmann.json", "external\n
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.app.mocks", "trview.app.mocks\trview.app.mocks.vcxproj", "{2A8CB51C-D210-4179-A10B-E1E6304B74A7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trlevel.mocks", "trlevel.mocks\trlevel.mocks.vcxproj", "{D9D76F17-70AD-41A7-B074-975FA4E8B08F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.common.mocks", "trview.common.mocks\trview.common.mocks.vcxproj", "{D56CF083-8786-40F8-9C19-D0BB3507DBDF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.graphics.mocks", "trview.graphics.mocks\trview.graphics.mocks.vcxproj", "{B723E2B7-A715-40D7-B33C-2888578897B2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.input.mocks", "trview.input.mocks\trview.input.mocks.vcxproj", "{C8EEFFF2-E908-4E7F-8990-1E7D786448D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -258,6 +266,22 @@ Global
 		{2A8CB51C-D210-4179-A10B-E1E6304B74A7}.Debug|x64.Build.0 = Debug|x64
 		{2A8CB51C-D210-4179-A10B-E1E6304B74A7}.Release|x64.ActiveCfg = Release|x64
 		{2A8CB51C-D210-4179-A10B-E1E6304B74A7}.Release|x64.Build.0 = Release|x64
+		{D9D76F17-70AD-41A7-B074-975FA4E8B08F}.Debug|x64.ActiveCfg = Debug|x64
+		{D9D76F17-70AD-41A7-B074-975FA4E8B08F}.Debug|x64.Build.0 = Debug|x64
+		{D9D76F17-70AD-41A7-B074-975FA4E8B08F}.Release|x64.ActiveCfg = Release|x64
+		{D9D76F17-70AD-41A7-B074-975FA4E8B08F}.Release|x64.Build.0 = Release|x64
+		{D56CF083-8786-40F8-9C19-D0BB3507DBDF}.Debug|x64.ActiveCfg = Debug|x64
+		{D56CF083-8786-40F8-9C19-D0BB3507DBDF}.Debug|x64.Build.0 = Debug|x64
+		{D56CF083-8786-40F8-9C19-D0BB3507DBDF}.Release|x64.ActiveCfg = Release|x64
+		{D56CF083-8786-40F8-9C19-D0BB3507DBDF}.Release|x64.Build.0 = Release|x64
+		{B723E2B7-A715-40D7-B33C-2888578897B2}.Debug|x64.ActiveCfg = Debug|x64
+		{B723E2B7-A715-40D7-B33C-2888578897B2}.Debug|x64.Build.0 = Debug|x64
+		{B723E2B7-A715-40D7-B33C-2888578897B2}.Release|x64.ActiveCfg = Release|x64
+		{B723E2B7-A715-40D7-B33C-2888578897B2}.Release|x64.Build.0 = Release|x64
+		{C8EEFFF2-E908-4E7F-8990-1E7D786448D6}.Debug|x64.ActiveCfg = Debug|x64
+		{C8EEFFF2-E908-4E7F-8990-1E7D786448D6}.Debug|x64.Build.0 = Debug|x64
+		{C8EEFFF2-E908-4E7F-8990-1E7D786448D6}.Release|x64.ActiveCfg = Release|x64
+		{C8EEFFF2-E908-4E7F-8990-1E7D786448D6}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

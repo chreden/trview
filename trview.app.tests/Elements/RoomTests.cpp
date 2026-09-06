@@ -1,9 +1,12 @@
 import trlevel;
+import trlevel.mocks;
 import trview.app;
 import trview.app.mocks;
 import trview.common;
+import trview.common.mocks;
 import trview.tests.common;
 import trview.graphics;
+import trview.graphics.mocks;
 
 using namespace trview;
 using namespace trview::mocks;

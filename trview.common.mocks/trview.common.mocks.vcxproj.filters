@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="MockFiles.ixx" />
+    <ClCompile Include="Logs\MockLog.ixx">
+      <Filter>Logs</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\MockClipboard.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\MockDialogs.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\MockShell.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\MockShortcuts.ixx">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Messages\MockMessageSystem.ixx">
+      <Filter>Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Messages\MockRecipient.ixx">
+      <Filter>Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="trview.common.mocks.ixx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Logs">
+      <UniqueIdentifier>{02f6f77a-0408-412b-b0df-66cc9a799ca5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{32e4dfe4-a17d-42e1-8e8a-ee9cb6f063e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Messages">
+      <UniqueIdentifier>{58d2511e-ce22-4b1d-99eb-1a4d3205ff2c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

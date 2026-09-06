@@ -2,8 +2,11 @@ import trlevel;
 import trview.app;
 import trview.app.mocks;
 import trview.common;
+import trview.common.mocks;
 import trview.graphics;
+import trview.graphics.mocks;
 import trview.input;
+import trview.input.mocks;
 import trview.tests.common;
 
 using testing::A;

@@ -28,9 +28,6 @@
     <ClCompile Include="Keyboard.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClCompile Include="Mocks\MockMouse.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
     <ClCompile Include="Mouse.ixx">
       <FileType>Document</FileType>
     </ClCompile>

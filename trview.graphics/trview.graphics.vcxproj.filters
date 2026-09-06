@@ -73,33 +73,6 @@
     <ClCompile Include="RasterizerStateStore.ixx">
       <Filter>Rasterizer</Filter>
     </ClCompile>
-    <ClCompile Include="Mocks\MockSprite.ixx">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockShaderStorage.ixx">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockShader.ixx">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockSamplerState.ixx">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="mocks\MockRenderTarget.ixx">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="mocks\MockDeviceWindow.ixx">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockDevice.ixx">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="mocks\MockBuffer.ixx">
-      <Filter>Mocks</Filter>
-    </ClCompile>
-    <ClCompile Include="Mocks\D3D\MockD3D11DeviceContext.ixx">
-      <Filter>Mocks\D3D</Filter>
-    </ClCompile>
     <ClCompile Include="IDeviceWindow.ixx">
       <Filter>Device</Filter>
     </ClCompile>
@@ -145,9 +118,6 @@
     <ClCompile Include="Sampler\ISamplerState.cpp">
       <Filter>Sampler</Filter>
     </ClCompile>
-    <ClCompile Include="Mocks\Printers.ixx">
-      <Filter>Mocks</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -168,14 +138,8 @@
     <Filter Include="Device">
       <UniqueIdentifier>{45b46918-ce4b-4159-9455-6026761d8fc5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Mocks">
-      <UniqueIdentifier>{ef2c9a26-a91d-4c79-9a95-ed6a10479adc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Rasterizer">
       <UniqueIdentifier>{4bfba0e9-fb4c-4f56-b8a2-64a51daa20ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Mocks\D3D">
-      <UniqueIdentifier>{5a5fdaf9-9583-4d9a-8809-e38269df4bfd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Buffer">
       <UniqueIdentifier>{b68f0cbd-a3d1-4736-bb51-2a72974a2394}</UniqueIdentifier>

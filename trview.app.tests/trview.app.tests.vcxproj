@@ -387,6 +387,9 @@
     <ProjectReference Include="..\external\googletest\googletest.vcxproj">
       <Project>{eafd7489-57e3-4b6d-a704-f7c5ef640434}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\trlevel.mocks\trlevel.mocks.vcxproj">
+      <Project>{d9d76f17-70ad-41a7-b074-975fa4e8b08f}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\trlevel\trlevel.vcxproj">
       <Project>{8ffb19fa-1c9d-4d9c-ab96-844bf695e79c}</Project>
     </ProjectReference>
@@ -396,11 +399,23 @@
     <ProjectReference Include="..\trview.app\trview.app.vcxproj">
       <Project>{a087af08-5371-47de-a896-afa21dd9d383}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\trview.common.mocks\trview.common.mocks.vcxproj">
+      <Project>{d56cf083-8786-40f8-9c19-d0bb3507dbdf}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\trview.common\trview.common.vcxproj">
       <Project>{d0633291-23a6-4b3f-9a5e-e94d20f66a07}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\trview.graphics.mocks\trview.graphics.mocks.vcxproj">
+      <Project>{b723e2b7-a715-40d7-b33c-2888578897b2}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\trview.graphics\trview.graphics.vcxproj">
       <Project>{3270fd29-edab-40be-8ca1-dabc5e261e4c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\trview.input.mocks\trview.input.mocks.vcxproj">
+      <Project>{c8eefff2-e908-4e7f-8990-1e7d786448d6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\trview.input.tests\trview.input.tests.vcxproj">
+      <Project>{1d81cef5-5705-4af8-a76a-b63d6ea53454}</Project>
     </ProjectReference>
     <ProjectReference Include="..\trview.input\trview.input.vcxproj">
       <Project>{0b28c3cd-d28a-4923-9577-50eb1ee29212}</Project>

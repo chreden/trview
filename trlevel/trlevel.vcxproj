@@ -150,9 +150,6 @@
     <ClCompile Include="Level_tr3.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClCompile Include="Mocks\MockLevel.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
     <ClCompile Include="Pack.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -191,7 +188,6 @@
     <ClCompile Include="Level_tr5_dc.ixx" />
     <ClCompile Include="Level_tr5_pc.ixx" />
     <ClCompile Include="Level_tr5_psx.ixx" />
-    <ClCompile Include="Mocks\MockLevel.cpp" />
     <ClCompile Include="Pack.cpp" />
     <ClCompile Include="TileMapper.cpp" />
     <ClCompile Include="trlevel.ixx" />

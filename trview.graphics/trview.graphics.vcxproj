@@ -47,36 +47,6 @@
     <ClCompile Include="ISprite.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClCompile Include="Mocks\D3D\MockD3D11DeviceContext.ixx">
-      <FileType>Document</FileType>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="mocks\MockBuffer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockDevice.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="mocks\MockDeviceWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="mocks\MockRenderTarget.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockShader.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockShaderStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockSprite.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\MockSamplerState.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks\Printers.ixx" />
     <ClCompile Include="PixelShader.ixx">
       <FileType>Document</FileType>
     </ClCompile>

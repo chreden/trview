@@ -1,5 +1,11 @@
+module;
+
+#include <wrl/client.h>
+#include <d3d11.h>
+
 export module trview.graphics:Device;
 
+import std;
 import :IDevice;
 
 namespace trview
