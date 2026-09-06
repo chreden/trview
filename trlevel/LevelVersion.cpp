@@ -1,7 +1,3 @@
-module;
-
-#include "pch.h"
-
 module trlevel:LevelVersion;
 
 import trview.common;

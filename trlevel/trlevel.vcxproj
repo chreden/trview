@@ -51,7 +51,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -65,7 +65,7 @@
       </AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BuildStlModules>false</BuildStlModules>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile />
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -74,7 +74,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -90,7 +90,7 @@
       </AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BuildStlModules>false</BuildStlModules>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile />
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -150,12 +150,11 @@
     <ClCompile Include="Level_tr3.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClCompile Include="Pack.ixx">
+    <ClCompile Include="Mocks\MockLevel.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    <ClCompile Include="Pack.ixx">
+      <FileType>Document</FileType>
     </ClCompile>
     <ClCompile Include="TileMapper.ixx">
       <FileType>Document</FileType>
@@ -169,7 +168,6 @@
     <ClCompile Include="tr_rooms.ixx">
       <FileType>Document</FileType>
     </ClCompile>
-    <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Decrypter.cpp">
@@ -193,6 +191,7 @@
     <ClCompile Include="Level_tr5_dc.ixx" />
     <ClCompile Include="Level_tr5_pc.ixx" />
     <ClCompile Include="Level_tr5_psx.ixx" />
+    <ClCompile Include="Mocks\MockLevel.cpp" />
     <ClCompile Include="Pack.cpp" />
     <ClCompile Include="TileMapper.cpp" />
     <ClCompile Include="trlevel.ixx" />

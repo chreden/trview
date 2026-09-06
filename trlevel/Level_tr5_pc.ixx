@@ -1,7 +1,3 @@
-module;
-
-#include "pch.h"
-
 export module trlevel:TR5PC;
 
 import std;

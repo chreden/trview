@@ -1,7 +1,3 @@
-module;
-
-#include "pch.h"
-
 module trlevel:TileMapper;
 
 import std;

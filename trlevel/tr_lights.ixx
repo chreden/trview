@@ -1,7 +1,3 @@
-module;
-
-#include "pch.h"
-
 export module trlevel:Lights;
 
 import trview.common;

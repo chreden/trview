@@ -3,7 +3,6 @@
 #include <trview.app/Resources/resource.h>
 
 import trlevel;
-import trlevel.mocks;
 import trview.app;
 import trview.common;
 import trview.common.mocks;

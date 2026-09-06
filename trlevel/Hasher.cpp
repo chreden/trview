@@ -1,6 +1,8 @@
 module;
 
-#include "pch.h"
+#include <Windows.h>
+#include <bcrypt.h>
+#include <versionhelpers.h>
 
 module trlevel:Hasher;
 
