@@ -13,8 +13,6 @@ namespace trview
     {
         export struct MockFlybyNode : public IFlybyNode
         {
-            explicit MockFlybyNode() {}
-            virtual ~MockFlybyNode() {}
             MOCK_METHOD(DirectX::SimpleMath::Vector3, direction, (), (const, override));
             MOCK_METHOD(uint16_t, flags, (), (const, override));
             MOCK_METHOD(std::weak_ptr<IFlyby>, flyby, (), (const, override));

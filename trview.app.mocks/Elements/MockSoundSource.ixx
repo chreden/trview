@@ -13,8 +13,6 @@ namespace trview
     {
         export struct MockSoundSource : public ISoundSource, public std::enable_shared_from_this<MockSoundSource>
         {
-            MockSoundSource(){}
-            ~MockSoundSource(){}
             MOCK_METHOD(uint16_t, chance, (), (const, override));
             MOCK_METHOD(uint16_t, characteristics, (), (const, override));
             MOCK_METHOD(uint16_t, flags, (), (const, override));

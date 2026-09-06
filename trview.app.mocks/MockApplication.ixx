@@ -12,8 +12,6 @@ namespace trview
     {
         export struct MockApplication : public IApplication
         {
-            MockApplication() {}
-            ~MockApplication() {}
             MOCK_METHOD(int, run, (), (override));
             MOCK_METHOD(std::weak_ptr<ILevel>, current_level, (), (const, override));
             MOCK_METHOD(std::shared_ptr<ILevel>, load, (const std::string&), (override));
