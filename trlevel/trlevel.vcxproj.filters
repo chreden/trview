@@ -2,13 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="LevelVersion.hpp" />
+    <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="trtypes.cpp" />
     <ClCompile Include="LevelVersion.cpp" />
     <ClCompile Include="tr_lights.cpp" />
     <ClCompile Include="Decrypter.cpp" />
-    <ClCompile Include="Mocks\MockLevel.cpp" Filter="Mocks" />
     <ClCompile Include="tr_rooms.cpp" />
     <ClCompile Include="Level.cpp" Filter="Level" />
     <ClCompile Include="Level_common.cpp" Filter="Level\Common" />
@@ -45,9 +45,6 @@
     </ClCompile>
     <ClCompile Include="IHasher.cpp" />
     <ClCompile Include="IHasher.ixx" />
-    <ClCompile Include="Mocks\MockLevel.ixx">
-      <Filter>Mocks</Filter>
-    </ClCompile>
     <ClCompile Include="Hasher.ixx" />
     <ClCompile Include="LevelLoadException.ixx" />
     <ClCompile Include="LevelEncryptedException.ixx" />
@@ -74,11 +71,9 @@
       <Filter>Level\Saturn</Filter>
     </ClCompile>
     <ClCompile Include="Decrypter.ixx" />
+    <ClCompile Include="pch.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Mocks">
-      <UniqueIdentifier>{761f107e-00af-4697-ba3e-3653c2e29391}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Level">
       <UniqueIdentifier>{5ba6b4bb-ca8e-4bac-baf1-f4c53f93d46c}</UniqueIdentifier>
     </Filter>

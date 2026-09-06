@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{d5861e08-c11f-45fb-bff6-80f49916d317}</ProjectGuid>
-    <RootNamespace>trviewcommonmocks</RootNamespace>
+    <ProjectGuid>{f8053309-15d6-45cd-bf11-cf89b52cd5ea}</ProjectGuid>
+    <RootNamespace>trlevelmocks</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -106,14 +106,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include;$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include;$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,16 +124,15 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include;$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include;$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,20 +143,13 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Logs\MockLog.ixx" />
-    <ClCompile Include="Messages\MockMessageSystem.ixx" />
-    <ClCompile Include="Messages\MockRecipient.ixx" />
-    <ClCompile Include="MockFiles.ixx" />
-    <ClCompile Include="trview.common.mocks.ixx" />
-    <ClCompile Include="Windows\MockClipboard.ixx" />
-    <ClCompile Include="Windows\MockDialogs.ixx" />
-    <ClCompile Include="Windows\MockShell.ixx" />
-    <ClCompile Include="Windows\MockShortcuts.ixx" />
+    <ProjectReference Include="..\trlevel\trlevel.vcxproj">
+      <Project>{8ffb19fa-1c9d-4d9c-ab96-844bf695e79c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\trview.common\trview.common.vcxproj">
-      <Project>{d0633291-23a6-4b3f-9a5e-e94d20f66a07}</Project>
-    </ProjectReference>
+    <ClCompile Include="MockLevel.ixx" />
+    <ClCompile Include="trlevel.mocks.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

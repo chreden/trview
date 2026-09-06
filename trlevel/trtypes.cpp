@@ -1,3 +1,7 @@
+module;
+
+#include "pch.h"
+
 module trlevel:Types;
 
 import std;

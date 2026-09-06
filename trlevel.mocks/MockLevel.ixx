@@ -2,13 +2,12 @@ module;
 
 #include <gmock/gmock.h>
 
-export module trlevel:MockLevel;
+export module trlevel.mocks:MockLevel;
 
 import std;
 import std.compat;
 
-import :ILevel;
-import :Types;
+import trlevel;
 
 namespace trlevel
 {
@@ -17,8 +16,6 @@ namespace trlevel
         export class MockLevel : public trlevel::ILevel
         {
         public:
-            MockLevel();
-            virtual ~MockLevel();
             MOCK_METHOD(tr_colour, get_palette_entry8, (uint32_t), (const, override));
             MOCK_METHOD(tr_colour4, get_palette_entry_16, (uint32_t), (const, override));
             MOCK_METHOD(tr_colour4, get_palette_entry, (uint32_t), (const, override));

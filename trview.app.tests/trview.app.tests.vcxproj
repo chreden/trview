@@ -387,6 +387,9 @@
     <ProjectReference Include="..\external\googletest\googletest.vcxproj">
       <Project>{eafd7489-57e3-4b6d-a704-f7c5ef640434}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\trlevel.mocks\trlevel.mocks.vcxproj">
+      <Project>{f8053309-15d6-45cd-bf11-cf89b52cd5ea}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\trlevel\trlevel.vcxproj">
       <Project>{8ffb19fa-1c9d-4d9c-ab96-844bf695e79c}</Project>
     </ProjectReference>

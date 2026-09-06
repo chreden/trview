@@ -1,4 +1,5 @@
 import trlevel;
+import trlevel.mocks;
 import trview.app;
 import trview.app.mocks;
 import trview.graphics;

@@ -1,3 +1,7 @@
+module;
+
+#include "pch.h"
+
 export module trlevel;
 
 export import :Common;
@@ -26,5 +30,3 @@ export import :Rooms;
 export import :LevelEncryptedException;
 export import :Hasher;
 export import :Pack;
-
-export import :MockLevel;

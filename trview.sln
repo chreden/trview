@@ -146,6 +146,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.app.mocks", "trview.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.common.mocks", "trview.common.mocks\trview.common.mocks.vcxproj", "{D5861E08-C11F-45FB-BFF6-80F49916D317}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trlevel.mocks", "trlevel.mocks\trlevel.mocks.vcxproj", "{F8053309-15D6-45CD-BF11-CF89B52CD5EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -264,6 +266,10 @@ Global
 		{D5861E08-C11F-45FB-BFF6-80F49916D317}.Debug|x64.Build.0 = Debug|x64
 		{D5861E08-C11F-45FB-BFF6-80F49916D317}.Release|x64.ActiveCfg = Release|x64
 		{D5861E08-C11F-45FB-BFF6-80F49916D317}.Release|x64.Build.0 = Release|x64
+		{F8053309-15D6-45CD-BF11-CF89B52CD5EA}.Debug|x64.ActiveCfg = Debug|x64
+		{F8053309-15D6-45CD-BF11-CF89B52CD5EA}.Debug|x64.Build.0 = Debug|x64
+		{F8053309-15D6-45CD-BF11-CF89B52CD5EA}.Release|x64.ActiveCfg = Release|x64
+		{F8053309-15D6-45CD-BF11-CF89B52CD5EA}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
