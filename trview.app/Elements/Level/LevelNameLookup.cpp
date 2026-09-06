@@ -1,6 +1,7 @@
 module;
 
-#include "pch.h"
+#include <Windows.h>
+#include <external/nlohmann/json.hpp>
 
 module trview.app:LevelNameLookup;
 

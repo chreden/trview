@@ -1,6 +1,6 @@
 module;
 
-#include "pch.h"
+#include <Windows.h>
 
 module trview.app:AlternateGroupToggler;
 

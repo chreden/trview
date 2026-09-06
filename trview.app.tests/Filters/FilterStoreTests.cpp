@@ -1,6 +1,5 @@
 import trview.app;
 import trview.common;
-import trview.common.mocks;
 import trview.tests.common;
 
 using namespace trview;

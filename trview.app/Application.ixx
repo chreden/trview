@@ -1,6 +1,6 @@
 module;
 
-#include "pch.h"
+#include <Windows.h>
 
 export module trview.app:Application;
 
@@ -24,6 +24,8 @@ import :IFonts;
 import :ILevel;
 import :UserSettings;
 import :IWindows;
+
+struct ImFont;
 
 namespace trview
 {

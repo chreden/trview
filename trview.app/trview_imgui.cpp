@@ -1,6 +1,7 @@
 module;
 
-#include "pch.h"
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
 
 module trview.app:imgui;
 

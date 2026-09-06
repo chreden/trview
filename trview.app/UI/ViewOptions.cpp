@@ -1,6 +1,7 @@
 module;
 
-#include "pch.h"
+#include <external/imgui/imgui.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
 
 module trview.app:ViewOptions;
 

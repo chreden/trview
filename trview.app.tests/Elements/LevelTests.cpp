@@ -5,7 +5,6 @@ import trlevel;
 import trview.app;
 import trview.app.mocks;
 import trview.common;
-import trview.common.mocks;
 import trview.tests.common;
 import trview.graphics;
 

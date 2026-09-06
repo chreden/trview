@@ -1,9 +1,5 @@
 module;
 
-#include "pch.h"
-
-module;
-
 module trview.app:SettingsLoader;
 
 import nlohmann.json;

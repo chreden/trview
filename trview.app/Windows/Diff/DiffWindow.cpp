@@ -1,6 +1,9 @@
 module;
 
-#include "pch.h"
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+#include <SimpleMath.h>
 
 module trview.app:DiffWindow;
 

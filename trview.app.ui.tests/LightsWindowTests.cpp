@@ -2,7 +2,6 @@
 #include "LightsWindowTests.h"
 
 import trview.common;
-import trview.common.mocks;
 import trview.app;
 import trview.app.mocks;
 import trview.tests.common;

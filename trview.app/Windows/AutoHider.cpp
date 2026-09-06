@@ -1,6 +1,6 @@
 module;
 
-#include "pch.h"
+#include <external/imgui/imgui.h>
 
 module trview.app:AutoHider;
 

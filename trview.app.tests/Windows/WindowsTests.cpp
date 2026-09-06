@@ -4,7 +4,6 @@
 #include <gtest/gtest.h>
 
 import trview.common;
-import trview.common.mocks;
 import trview.tests.common;
 import trview.app;
 import trview.app.mocks;

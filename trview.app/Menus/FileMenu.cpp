@@ -1,7 +1,7 @@
 module;
 
-#include "pch.h"
 #include "../Resources/resource.h"
+#include <Windows.h>
 
 module trview.app:FileMenu;
 

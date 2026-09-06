@@ -2,9 +2,10 @@ module;
 
 #include <gmock/gmock.h>
 
-export module trview.common.mocks:MockShortcuts;
+export module trview.common:MockShortcuts;
 
-import trview.common;
+import :IShortcuts;
+import :Event;
 import std;
 
 namespace trview

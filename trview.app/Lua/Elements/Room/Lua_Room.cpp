@@ -1,6 +1,7 @@
 module;
 
-#include "pch.h"
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
 
 module trview.app:LuaRoom;
 

@@ -1,6 +1,8 @@
 module;
 
-#include "pch.h"
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <SimpleMath.h>
 
 module trview.app:StaticsWindow;
 

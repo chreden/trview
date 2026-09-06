@@ -1,6 +1,6 @@
 module;
 
-#include "pch.h"
+#include <SimpleMath.h>
 
 module trview.app:Light;
 

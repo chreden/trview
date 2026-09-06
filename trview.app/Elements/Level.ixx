@@ -1,6 +1,7 @@
 module;
 
-#include "pch.h"
+#include <wrl/client.h>
+#include <d3d11.h>
 
 export module trview.app:Level;
 

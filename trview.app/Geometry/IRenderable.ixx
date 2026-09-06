@@ -1,6 +1,6 @@
 module;
 
-#include "pch.h"
+#include <SimpleMath.h>
 
 export module trview.app:IRenderable;
 
@@ -34,6 +34,6 @@ namespace trview
         /// Set whether the object is visible.
         virtual void set_visible(bool value) = 0;
 
-        static constexpr DirectX::SimpleMath::Color SelectionFill{ 0.0f, 0.0f, 0.0f, 0.999f };
+        static const inline DirectX::SimpleMath::Color SelectionFill{ 0.0f, 0.0f, 0.0f, 0.999f };
     };
 }

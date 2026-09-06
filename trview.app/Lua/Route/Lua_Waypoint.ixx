@@ -1,6 +1,6 @@
 module;
 
-#include "pch.h"
+#include <external/lua/src/lua.h>
 
 export module trview.app:LuaWaypoint;
 

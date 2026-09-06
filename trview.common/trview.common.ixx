@@ -34,3 +34,12 @@ export import :Shell;
 export import :IClipboard;
 export import :LogMessage;
 export import :Maths;
+
+export import :MockClipboard;
+export import :MockDialogs;
+export import :MockShell;
+export import :MockShortcuts;
+export import :MockRecipient;
+export import :MockMessageSystem;
+export import :MockLog;
+export import :MockFiles;

@@ -1,6 +1,7 @@
 module;
 
-#include "pch.h"
+#include <DirectXCollision.h>
+#include <SimpleMath.h>
 
 export module trview.app:Room;
 

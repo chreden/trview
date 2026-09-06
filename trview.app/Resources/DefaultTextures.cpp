@@ -1,7 +1,3 @@
-module;
-
-#include "pch.h"
-
 module trview.app:DefaultTextures;
 
 import trview.common;

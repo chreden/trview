@@ -1,6 +1,6 @@
 module;
 
-#include "pch.h"
+#include <external/DirectXTK/Inc/SimpleMath.h>
 
 export module trview.app:IItem;
 

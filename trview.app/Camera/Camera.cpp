@@ -1,6 +1,8 @@
 module;
 
-#include "pch.h"
+#define NOMINMAX
+#include <Windows.h>
+#include <SimpleMath.h>
 
 module trview.app:Camera;
 

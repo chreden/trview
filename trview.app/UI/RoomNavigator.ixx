@@ -1,7 +1,3 @@
-module;
-
-#include "pch.h"
-
 export module trview.app:RoomNavigator;
 
 /// @file RoomNavigator.h

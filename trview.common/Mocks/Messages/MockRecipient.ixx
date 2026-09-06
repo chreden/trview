@@ -2,9 +2,9 @@ module;
 
 #include <gmock/gmock.h>
 
-export module trview.common.mocks:MockRecipient;
+export module trview.common:MockRecipient;
 
-import trview.common;
+import :IRecipient;
 
 namespace trview
 {

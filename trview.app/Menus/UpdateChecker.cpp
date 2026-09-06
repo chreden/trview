@@ -1,6 +1,8 @@
 module;
 
-#include "pch.h"
+#include <Windows.h>
+#include <winhttp.h>
+#include <external/nlohmann/json.hpp>
 
 module trview.app:UpdateChecker;
 

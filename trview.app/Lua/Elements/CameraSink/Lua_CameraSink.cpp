@@ -1,6 +1,8 @@
 module;
 
-#include "pch.h"
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+#include <SimpleMath.h>
 
 module trview.app:LuaCameraSink;
 

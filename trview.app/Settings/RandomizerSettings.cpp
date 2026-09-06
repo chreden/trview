@@ -1,6 +1,9 @@
 module;
 
-#include "pch.h"
+#define NOMINMAX
+#include <Windows.h>
+#include <external/nlohmann/json.hpp>
+#include <SimpleMath.h>
 
 module trview.app:RandomizerSettings;
 

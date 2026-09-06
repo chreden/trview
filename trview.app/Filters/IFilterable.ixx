@@ -1,7 +1,3 @@
-module;
-
-#include "pch.h"
-
 export module trview.app:IFilterable;
 
 import std.compat;

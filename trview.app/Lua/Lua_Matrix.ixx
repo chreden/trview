@@ -1,6 +1,7 @@
 module;
 
-#include "pch.h"
+#include <SimpleMath.h>
+#include <external/lua/src/lua.h>
 
 export module trview.app:LuaMatrix;
 

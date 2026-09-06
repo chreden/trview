@@ -1,6 +1,7 @@
 module;
 
-#include "pch.h"
+#include <d3d11.h>
+#include <wrl/client.h>
 
 export module trview.app:Mesh;
 

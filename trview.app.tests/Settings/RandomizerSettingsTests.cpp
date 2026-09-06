@@ -1,5 +1,3 @@
-#include <external/nlohmann/json.hpp>
-
 import trview.app;
 import trview.common;
 import trview.tests.common;

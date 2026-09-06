@@ -1,6 +1,7 @@
 module;
 
-#include "pch.h"
+#include <external/lua/src/lua.h>
+#include <SimpleMath.h>
 
 module trview.app:LuaTrigger;
 

@@ -691,7 +691,6 @@
       <Filter>Elements\Light</Filter>
     </ClCompile>
     <ClCompile Include="Forward.ixx" />
-    <ClCompile Include="pch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\resource.h" Filter="Resources" />
@@ -702,7 +701,6 @@
     <ClInclude Include="Elements\ISector.hpp" Filter="Elements\Sector" />
     <ClInclude Include="Menus\LevelSortingMode.hpp" Filter="Menus" />
     <ClInclude Include="UI\Modal.hpp" Filter="UI\Modal" />
-    <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

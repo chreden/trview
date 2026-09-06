@@ -2,9 +2,9 @@ module;
 
 #include <gmock/gmock.h>
 
-export module trview.common.mocks:MockDialogs;
+export module trview.common:MockDialogs;
 
-import trview.common;
+import :IDialogs;
 
 namespace trview
 {

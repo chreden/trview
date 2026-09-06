@@ -1,6 +1,6 @@
 module;
 
-#include "pch.h"
+#include <external/imgui/imgui.h>
 
 export module trview.app:Track;
 
