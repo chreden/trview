@@ -1,9 +1,6 @@
 module;
 
-#define NOMINMAX
-#include <Windows.h>
-#include <external/nlohmann/json.hpp>
-#include <SimpleMath.h>
+#include "pch.h"
 
 module trview.app:RandomizerRoute;
 

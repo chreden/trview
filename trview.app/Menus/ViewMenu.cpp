@@ -1,6 +1,6 @@
 module;
 
-#include <Windows.h>
+#include "pch.h"
 #include "../Resources/resource.h"
 
 module trview.app:ViewMenu;

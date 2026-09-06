@@ -1,11 +1,6 @@
 module;
 
-#define NOMINMAX
-#include <d3d11.h>
-#include <wrl/client.h>
-#include <external/imgui/imgui.h>
-#include <external/imgui/imgui_internal.h>
-#include <external/imgui/misc/cpp/imgui_stdlib.h>
+#include "pch.h"
 
 module trview.app:SettingsWindow;
 

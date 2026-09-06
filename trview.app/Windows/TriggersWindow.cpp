@@ -1,7 +1,6 @@
 module;
 
-#include <external/imgui/imgui.h>
-#include <SimpleMath.h>
+#include "pch.h"
 
 module trview.app:TriggersWindow;
 

@@ -1,7 +1,6 @@
 module;
 
-#include <SimpleMath.h>
-#include <external/imgui/imgui.h>
+#include "pch.h"
 
 export module trview.app:CameraPosition;
 

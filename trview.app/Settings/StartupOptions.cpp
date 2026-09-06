@@ -1,6 +1,6 @@
 module;
 
-#include <Windows.h>
+#include "pch.h"
 
 module trview.app:StartupOptions;
 

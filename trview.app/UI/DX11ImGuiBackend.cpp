@@ -1,8 +1,6 @@
 module;
 
-#include <Windows.h>
-#include <external/imgui/backends/imgui_impl_win32.h>
-#include <external/imgui/backends/imgui_impl_dx11.h>
+#include "pch.h"
 
 module trview.app:DX11ImGuiBackend;
 

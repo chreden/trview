@@ -1,8 +1,6 @@
 module;
 
-#include <d3d11.h>
-#include <wrl/client.h>
-#include <SimpleMath.h>
+#include "pch.h"
 
 export module trview.app:SelectionRenderer;
 

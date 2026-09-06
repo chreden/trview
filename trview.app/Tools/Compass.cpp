@@ -1,6 +1,6 @@
 module;
 
-#include <SimpleMath.h>
+#include "pch.h"
 
 module trview.app:Compass;
 

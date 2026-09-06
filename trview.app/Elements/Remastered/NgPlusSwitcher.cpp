@@ -1,6 +1,6 @@
 module;
 
-#include <external/nlohmann/json.hpp>
+#include "pch.h"
 #include "Resources/resource.h"
 
 module trview.app:NgPlusSwitcher;

@@ -1,3 +1,5 @@
+#include <SimpleMath.h>
+
 import trview.app;
 import trview.tests.common;
 

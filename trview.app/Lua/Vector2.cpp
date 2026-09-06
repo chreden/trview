@@ -1,8 +1,6 @@
 module;
 
-#include <SimpleMath.h>
-#include <external/lua/src/lua.h>
-#include <external/lua/src/lauxlib.h>
+#include "pch.h"
 
 module trview.app:LuaVector2;
 

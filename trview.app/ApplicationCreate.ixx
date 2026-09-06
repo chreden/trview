@@ -1,7 +1,6 @@
 module;
 
-#include <Windows.h>
-#include <d3d11.h>
+#include "pch.h"
 #include "Resources/resource.h"
 
 export module trview.app:ApplicationCreate;
@@ -584,10 +583,5 @@ namespace trview
             messaging);
         messaging->add_recipient(application);
         return application;
-    }
-
-    export void poop()
-    {
-
     }
 }

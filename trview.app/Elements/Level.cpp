@@ -1,7 +1,6 @@
 module;
 
-#include <d3d11.h>
-#include <SimpleMath.h>
+#include "pch.h"
 
 module trview.app:Level;
 

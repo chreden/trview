@@ -1,3 +1,7 @@
+module;
+
+#include "pch.h"
+
 module trview.app:Floordata;
 
 import trview.common;

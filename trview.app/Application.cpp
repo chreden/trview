@@ -1,8 +1,6 @@
 module;
 
-#include <SimpleMath.h>
-#include <external/imgui/imgui.h>
-
+#include "pch.h"
 #include "Resources/resource.h"
 
 module trview.app:Application;

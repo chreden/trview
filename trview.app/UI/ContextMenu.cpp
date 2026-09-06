@@ -1,6 +1,6 @@
 module;
 
-#include <external/imgui/imgui.h>
+#include "pch.h"
 
 module trview.app:ContextMenu;
 

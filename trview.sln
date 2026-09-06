@@ -144,6 +144,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nlohmann.json", "external\n
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.app.mocks", "trview.app.mocks\trview.app.mocks.vcxproj", "{2A8CB51C-D210-4179-A10B-E1E6304B74A7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.common.mocks", "trview.common.mocks\trview.common.mocks.vcxproj", "{D5861E08-C11F-45FB-BFF6-80F49916D317}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -258,6 +260,10 @@ Global
 		{2A8CB51C-D210-4179-A10B-E1E6304B74A7}.Debug|x64.Build.0 = Debug|x64
 		{2A8CB51C-D210-4179-A10B-E1E6304B74A7}.Release|x64.ActiveCfg = Release|x64
 		{2A8CB51C-D210-4179-A10B-E1E6304B74A7}.Release|x64.Build.0 = Release|x64
+		{D5861E08-C11F-45FB-BFF6-80F49916D317}.Debug|x64.ActiveCfg = Debug|x64
+		{D5861E08-C11F-45FB-BFF6-80F49916D317}.Debug|x64.Build.0 = Debug|x64
+		{D5861E08-C11F-45FB-BFF6-80F49916D317}.Release|x64.ActiveCfg = Release|x64
+		{D5861E08-C11F-45FB-BFF6-80F49916D317}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,9 +2,9 @@ module;
 
 #include <gmock/gmock.h>
 
-export module trview.common:MockShell;
+export module trview.common.mocks:MockShell;
 
-import :IShell;
+import trview.common;
 
 namespace trview
 {

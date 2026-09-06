@@ -1,7 +1,6 @@
 module;
 
-#include <external/lua/src/lua.h>
-#include <SimpleMath.h>
+#include "pch.h"
 
 export module trview.app:LuaBoundingBox;
 

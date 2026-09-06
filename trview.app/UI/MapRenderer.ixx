@@ -1,8 +1,6 @@
 module;
 
-#include <SimpleMath.h>
-#include <external/imgui/imgui.h>
-#include <external/imgui/imgui_internal.h>
+#include "pch.h"
 
 export module trview.app:MapRenderer;
 

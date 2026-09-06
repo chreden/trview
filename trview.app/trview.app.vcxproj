@@ -87,11 +87,18 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Menus\FileMenu.cpp" />
     <ClCompile Include="Menus\ImGuiFileMenu.cpp" />
     <ClCompile Include="Messages\Messages.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Plugins\Plugin.cpp" />
     <ClCompile Include="Plugins\Plugins.cpp" />
     <ClCompile Include="Routing\RandomizerRoute.cpp" />
     <ClCompile Include="Settings\UserSettingsPatches.cpp" />
-    <ClCompile Include="Sound\Sound.cpp" />
+    <ClCompile Include="Sound\Sound.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Sound\SoundStorage.cpp" />
     <ClCompile Include="trview.app.ixx" />
     <ClCompile Include="Windows\AutoHider.cpp" />
@@ -282,6 +289,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Tools\IToolbar.ixx">
       <FileType>Document</FileType>
     </ClCompile>
+    <ClInclude Include="pch.h" />
     <ClInclude Include="Type.inl">
       <FileType>Document</FileType>
     </ClInclude>
@@ -755,6 +763,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <None Include="Resources\Generated\ui_vertex_shader.cso" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\external\DirectXTK\DirectXTK_Desktop.vcxproj">
+      <Project>{a11566d3-4081-42c9-94c5-f4057edd9d50}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\external\lua\lua.vcxproj">
       <Project>{2a4f1e89-71ac-46c3-a711-1a4d67accdf5}</Project>
     </ProjectReference>
@@ -829,7 +840,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -838,8 +849,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\imgui;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
@@ -861,15 +871,14 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc;$(ProjectDir);$(SolutionDir)external\imgui;$(SolutionDir)external\googlemock\include;$(SolutionDir)external\googletest\include</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>

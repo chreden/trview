@@ -1,8 +1,6 @@
 module;
 
-#include <Windows.h>
-#include <external/imgui/imgui.h>
-#include <SimpleMath.h>
+#include "pch.h"
 #include "../Resources/resource.h"
 
 module trview.app:Viewer;

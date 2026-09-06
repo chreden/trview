@@ -1,8 +1,6 @@
 module;
 
-#include <external/lua/src/lua.h>
-#include <external/lua/src/lauxlib.h>
-#include <SimpleMath.h>
+#include "pch.h"
 
 module trview.app:LuaCamera;
 

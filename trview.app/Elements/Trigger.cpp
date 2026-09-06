@@ -1,3 +1,7 @@
+module;
+
+#include "pch.h"
+
 module trview.app:Trigger;
 
 import std;

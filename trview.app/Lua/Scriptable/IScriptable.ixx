@@ -1,6 +1,6 @@
 module;
 
-#include <external/lua/src/lua.h>
+#include "pch.h"
 
 export module trview.app:IScriptable;
 

@@ -1,3 +1,7 @@
+module;
+
+#include "pch.h"
+
 export module trview.app:Forward;
 
 namespace trview

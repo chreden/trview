@@ -1,6 +1,6 @@
 module;
 
-#include <external/imgui/imgui.h>
+#include "pch.h"
 
 export module trview.app:Console;
 

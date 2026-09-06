@@ -1,7 +1,7 @@
 module;
 
+#include "pch.h"
 #include "resource.h"
-#include <d3d11.h>
 
 module trview.app:DefaultShaders;
 

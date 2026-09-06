@@ -1,7 +1,6 @@
 module;
 
-#include <external/lua/src/lualib.h>
-#include <external/lua/src/lauxlib.h>
+#include "pch.h"
 
 module trview.app:Lua;
 

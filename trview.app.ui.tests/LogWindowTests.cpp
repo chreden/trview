@@ -2,6 +2,7 @@
 #include "LogWindowTests.h"
 
 import trview.common;
+import trview.common.mocks;
 import trview.app;
 import trview.tests.common;
 

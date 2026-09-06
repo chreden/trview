@@ -1,8 +1,6 @@
 module;
 
-#include <external/imgui/imgui.h>
-#include <external/imgui/imgui_internal.h>
-#include <SimpleMath.h>
+#include "pch.h"
 
 module trview.app:CameraPosition;
 

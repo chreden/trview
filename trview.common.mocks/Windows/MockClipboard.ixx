@@ -2,9 +2,9 @@ module;
 
 #include <gmock/gmock.h>
 
-export module trview.common:MockClipboard;
+export module trview.common.mocks:MockClipboard;
 
-import :IClipboard;
+import trview.common;
 import std;
 
 namespace trview

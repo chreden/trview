@@ -2,9 +2,9 @@ module;
 
 #include <gmock/gmock.h>
 
-export module trview.common:MockLog;
+export module trview.common.mocks:MockLog;
 
-import :ILog;
+import trview.common;
 import std;
 
 namespace trview
