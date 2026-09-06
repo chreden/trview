@@ -11,11 +11,7 @@
   <ItemGroup>
     <ClCompile Include="src\trview.lua.imgui.cpp" Filter="src" />
     <ClCompile Include="src\trview.lua.imgui.input.cpp" Filter="src" />
-    <ClCompile Include="inc\trview.lua.imgui.ixx">
-      <Filter>inc</Filter>
-    </ClCompile>
-    <ClCompile Include="src\trview.lua.imgui.input.ixx">
-      <Filter>src</Filter>
-    </ClCompile>
+    <ClCompile Include="inc\trview.lua.imgui.ixx" Filter="inc" />
+    <ClCompile Include="src\trview.lua.imgui.input.ixx" Filter="src" />
   </ItemGroup>
 </Project>

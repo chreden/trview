@@ -2,27 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="MockFiles.ixx" />
-    <ClCompile Include="Logs\MockLog.ixx">
-      <Filter>Logs</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\MockClipboard.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\MockDialogs.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\MockShell.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\MockShortcuts.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Messages\MockMessageSystem.ixx">
-      <Filter>Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="Messages\MockRecipient.ixx">
-      <Filter>Messages</Filter>
-    </ClCompile>
+    <ClCompile Include="Logs\MockLog.ixx" Filter="Logs" />
+    <ClCompile Include="Windows\MockClipboard.ixx" Filter="Windows" />
+    <ClCompile Include="Windows\MockDialogs.ixx" Filter="Windows" />
+    <ClCompile Include="Windows\MockShell.ixx" Filter="Windows" />
+    <ClCompile Include="Windows\MockShortcuts.ixx" Filter="Windows" />
+    <ClCompile Include="Messages\MockMessageSystem.ixx" Filter="Messages" />
+    <ClCompile Include="Messages\MockRecipient.ixx" Filter="Messages" />
     <ClCompile Include="trview.common.mocks.ixx" />
   </ItemGroup>
   <ItemGroup>

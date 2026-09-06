@@ -11,13 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="inc\trview.lua.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="inc\trview.lua.ixx" />
     <ClInclude Include="src\framework.h" />
-    <ClCompile Include="inc\tables.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="inc\tables.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\tables.cpp" />

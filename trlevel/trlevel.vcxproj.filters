@@ -27,9 +27,7 @@
     <ClCompile Include="Level_tr1_saturn.ixx" Filter="Level\Saturn" />
     <ClCompile Include="TileMapper.cpp" Filter="Level\Saturn" />
     <ClCompile Include="Hasher.cpp" />
-    <ClCompile Include="ILevel.ixx">
-      <Filter>Level</Filter>
-    </ClCompile>
+    <ClCompile Include="ILevel.ixx" Filter="Level" />
     <ClCompile Include="IPack.ixx" />
     <ClCompile Include="IPack.cpp" />
     <ClCompile Include="LevelVersion.ixx" />
@@ -39,36 +37,20 @@
     <ClCompile Include="IDecrypter.cpp" />
     <ClCompile Include="trtypes.ixx" />
     <ClCompile Include="tr_rooms.ixx" />
-    <ClCompile Include="Level.ixx">
-      <Filter>Level</Filter>
-    </ClCompile>
+    <ClCompile Include="Level.ixx" Filter="Level" />
     <ClCompile Include="IHasher.cpp" />
     <ClCompile Include="IHasher.ixx" />
     <ClCompile Include="Hasher.ixx" />
     <ClCompile Include="LevelLoadException.ixx" />
     <ClCompile Include="LevelEncryptedException.ixx" />
-    <ClCompile Include="Level_common.ixx">
-      <Filter>Level\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Level_psx.ixx">
-      <Filter>Level\PSX</Filter>
-    </ClCompile>
-    <ClCompile Include="Level\ILevel.cpp">
-      <Filter>Level</Filter>
-    </ClCompile>
-    <ClCompile Include="Level_tr3.ixx">
-      <Filter>Level</Filter>
-    </ClCompile>
-    <ClCompile Include="Level_tr1.ixx">
-      <Filter>Level</Filter>
-    </ClCompile>
+    <ClCompile Include="Level_common.ixx" Filer="Level\Common" />
+    <ClCompile Include="Level_psx.ixx" Filter="Level\PSX" />
+    <ClCompile Include="Level\ILevel.cpp" Filter="Level" />
+    <ClCompile Include="Level_tr3.ixx" Filter="Level" />
+    <ClCompile Include="Level_tr1.ixx" Filter="Level" />
     <ClCompile Include="Pack.ixx" />
-    <ClCompile Include="Level_tr2.ixx">
-      <Filter>Level</Filter>
-    </ClCompile>
-    <ClCompile Include="TileMapper.ixx">
-      <Filter>Level\Saturn</Filter>
-    </ClCompile>
+    <ClCompile Include="Level_tr2.ixx" Filter="Level" />
+    <ClCompile Include="TileMapper.ixx" Filter="Level\Saturn" />
     <ClCompile Include="Decrypter.ixx" />
   </ItemGroup>
   <ItemGroup>

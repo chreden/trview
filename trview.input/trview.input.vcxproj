@@ -19,21 +19,11 @@
     <ClCompile Include="WindowTester.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IMouse.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="IWindowTester.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Keyboard.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mouse.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="WindowTester.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="IMouse.ixx" />
+    <ClCompile Include="IWindowTester.ixx" />
+    <ClCompile Include="Keyboard.ixx" />
+    <ClCompile Include="Mouse.ixx" />
+    <ClCompile Include="WindowTester.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\trview.common\trview.common.vcxproj">

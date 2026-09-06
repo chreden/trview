@@ -11,89 +11,39 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Buffer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Buffer.ixx" />
     <ClCompile Include="Buffer\IBuffer.cpp" />
-    <ClCompile Include="DepthStencil.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Device.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="DeviceWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="DepthStencil.ixx" />
+    <ClCompile Include="Device.ixx" />
+    <ClCompile Include="DeviceWindow.ixx" />
     <ClCompile Include="Device\IDevice.cpp" />
     <ClCompile Include="Device\IDeviceWindow.cpp" />
-    <ClCompile Include="IBuffer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="IDevice.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="IDeviceWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="IRenderTarget.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="IShader.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="IShaderStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="ISprite.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="PixelShader.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="PixelShaderStore.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="RasterizerStateStore.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="RenderTarget.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="RenderTargetStore.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="IBuffer.ixx" />
+    <ClCompile Include="IDevice.ixx" />
+    <ClCompile Include="IDeviceWindow.ixx" />
+    <ClCompile Include="IRenderTarget.ixx" />
+    <ClCompile Include="IShader.ixx" />
+    <ClCompile Include="IShaderStorage.ixx" />
+    <ClCompile Include="ISprite.ixx" />
+    <ClCompile Include="PixelShader.ixx" />
+    <ClCompile Include="PixelShaderStore.ixx" />
+    <ClCompile Include="RasterizerStateStore.ixx" />
+    <ClCompile Include="RenderTarget.ixx" />
+    <ClCompile Include="RenderTargetStore.ixx" />
     <ClCompile Include="RenderTarget\IRenderTarget.cpp" />
     <ClCompile Include="Sampler\ISamplerState.cpp" />
-    <ClCompile Include="Sampler\ISamplerState.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Sampler\SamplerState.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="ShaderStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Sampler\ISamplerState.ixx" />
+    <ClCompile Include="Sampler\SamplerState.ixx" />
+    <ClCompile Include="ShaderStorage.ixx" />
     <ClCompile Include="Shaders\IShader.cpp" />
     <ClCompile Include="Shaders\IShaderStorage.cpp" />
-    <ClCompile Include="Sprite.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="SpriteSizeStore.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Sprite.ixx" />
+    <ClCompile Include="SpriteSizeStore.ixx" />
     <ClCompile Include="Sprite\ISprite.cpp" />
-    <ClCompile Include="Texture.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="VertexShader.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="VertexShaderStore.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="ViewportStore.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Texture.ixx" />
+    <ClCompile Include="VertexShader.ixx" />
+    <ClCompile Include="VertexShaderStore.ixx" />
+    <ClCompile Include="ViewportStore.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Buffer.cpp" />

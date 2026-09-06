@@ -30,104 +30,42 @@
     <ClCompile Include="Window.ixx" />
     <ClCompile Include="JsonSerializers.ixx" />
     <ClCompile Include="Json.ixx" />
-    <ClCompile Include="Windows\Clipboard.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IClipboard.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IClipboard.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IDialogs.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Dialogs.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IDialogs.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="MessageHandler.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
+    <ClCompile Include="Windows\Clipboard.ixx" Filter="Windows" />
+    <ClCompile Include="Windows\IClipboard.cpp" Filter="Windows" />
+    <ClCompile Include="Windows\IClipboard.ixx" Filter="Windows" />
+    <ClCompile Include="Windows\IDialogs.ixx" Filter="Windows" />
+    <ClCompile Include="Windows\Dialogs.ixx" Filter="Windows" />
+    <ClCompile Include="Windows\IDialogs.cpp" Filter="Windows" />
+    <ClCompile Include="MessageHandler.ixx" Filter="Windows" />
     <ClCompile Include="Colour.ixx" />
     <ClCompile Include="Strings.ixx" />
-    <ClCompile Include="Windows\IFiles.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IShortcuts.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Shortcuts.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IShortcuts.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Event.ixx">
-      <Filter>Events</Filter>
-    </ClCompile>
-    <ClCompile Include="TokenStore.ixx">
-      <Filter>Events</Filter>
-    </ClCompile>
+    <ClCompile Include="Windows\IFiles.cpp" Filter="Windows" />
+    <ClCompile Include="Windows\IShortcuts.ixx" Filter="Windows" />
+    <ClCompile Include="Windows\Shortcuts.ixx" Filter="Windows" />
+    <ClCompile Include="Windows\IShortcuts.cpp" Filter="Windows" />
+    <ClCompile Include="Event.ixx" Filter="Events" />
+    <ClCompile Include="TokenStore.ixx" Filter="Events" />
     <ClCompile Include="Size.ixx" />
-    <ClCompile Include="Messages\IRecipient.cpp">
-      <Filter>Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="Messages\IRecipient.ixx">
-      <Filter>Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="Messages\IMessageSystem.ixx">
-      <Filter>Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="Messages\IMessageSystem.cpp">
-      <Filter>Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="Messages\Message.ixx">
-      <Filter>Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="Messages\Message.cpp">
-      <Filter>Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="Messages\MessageSystem.ixx">
-      <Filter>Messages</Filter>
-    </ClCompile>
+    <ClCompile Include="Messages\IRecipient.cpp" Filter="Messages" />
+    <ClCompile Include="Messages\IRecipient.ixx" Filter="Messages" />
+    <ClCompile Include="Messages\IMessageSystem.ixx" Filter="Messages" />
+    <ClCompile Include="Messages\IMessageSystem.cpp" Filter="Messages" />
+    <ClCompile Include="Messages\Message.ixx" Filter="Messages" />
+    <ClCompile Include="Messages\Message.cpp" Filter="Messages" />
+    <ClCompile Include="Messages\MessageSystem.ixx" Filter="Messages" />
     <ClCompile Include="Timer.ixx" />
-    <ClCompile Include="Windows\IShell.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Shell.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IShell.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Files.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\Files.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Windows\IFiles.ixx">
-      <Filter>Windows</Filter>
-    </ClCompile>
+    <ClCompile Include="Windows\IShell.ixx" Filter="Windows" />
+    <ClCompile Include="Windows\Shell.ixx" Filter="Windows" />
+    <ClCompile Include="Windows\IShell.cpp" Filter="Windows" />
+    <ClCompile Include="Windows\Files.cpp" Filter="Windows" />
+    <ClCompile Include="Windows\Files.ixx" Filter="Windows" />
+    <ClCompile Include="Windows\IFiles.ixx" Filter="Windows" />
     <ClCompile Include="Algorithms.ixx" />
-    <ClCompile Include="Logs\ILog.ixx">
-      <Filter>Logs</Filter>
-    </ClCompile>
-    <ClCompile Include="Logs\ILog.cpp">
-      <Filter>Logs</Filter>
-    </ClCompile>
-    <ClCompile Include="Logs\LogMessage.ixx">
-      <Filter>Logs</Filter>
-    </ClCompile>
-    <ClCompile Include="Logs\Log.ixx">
-      <Filter>Logs</Filter>
-    </ClCompile>
-    <ClCompile Include="Logs\Activity.ixx">
-      <Filter>Logs</Filter>
-    </ClCompile>
+    <ClCompile Include="Logs\ILog.ixx" Filter="Logs" />
+    <ClCompile Include="Logs\ILog.cpp" Filter="Logs" />
+    <ClCompile Include="Logs\LogMessage.ixx" Filter="Logs" />
+    <ClCompile Include="Logs\Log.ixx" Filter="Logs" />
+    <ClCompile Include="Logs\Activity.ixx" Filter="Logs" />
     <ClCompile Include="Resources.ixx" />
     <ClCompile Include="Resource.ixx" />
     <ClCompile Include="Version.ixx" />

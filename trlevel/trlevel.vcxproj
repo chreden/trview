@@ -102,71 +102,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Decrypter.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Hasher.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Decrypter.ixx" />
+    <ClCompile Include="Hasher.ixx" />
     <ClCompile Include="IDecrypter.cpp" />
-    <ClCompile Include="IDecrypter.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="IHasher.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="IDecrypter.ixx" />
+    <ClCompile Include="IHasher.ixx" />
     <ClCompile Include="IHasher.cpp" />
-    <ClCompile Include="ILevel.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="ILevel.ixx" />
     <ClCompile Include="IPack.cpp" />
-    <ClCompile Include="IPack.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Level.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="LevelEncryptedException.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="LevelLoadException.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="LevelVersion.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="IPack.ixx" />
+    <ClCompile Include="Level.ixx" />
+    <ClCompile Include="LevelEncryptedException.ixx" />
+    <ClCompile Include="LevelLoadException.ixx" />
+    <ClCompile Include="LevelVersion.ixx" />
     <ClInclude Include="LevelVersion.hpp" />
     <ClCompile Include="Level\ILevel.cpp" />
-    <ClCompile Include="Level_common.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Level_psx.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Level_tr1.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Level_tr2.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Level_tr3.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Pack.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="TileMapper.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="trtypes.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="tr_lights.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="tr_rooms.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Level_common.ixx" />
+    <ClCompile Include="Level_psx.ixx" />
+    <ClCompile Include="Level_tr1.ixx" />
+    <ClCompile Include="Level_tr2.ixx" />
+    <ClCompile Include="Level_tr3.ixx" />
+    <ClCompile Include="Pack.ixx" />
+    <ClCompile Include="TileMapper.ixx" />
+    <ClCompile Include="trtypes.ixx" />
+    <ClCompile Include="tr_lights.ixx" />
+    <ClCompile Include="tr_rooms.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Decrypter.cpp">

@@ -11,112 +11,50 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Algorithms.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Algorithms.ixx" />
     <ClInclude Include="Algorithms.hpp" />
-    <ClCompile Include="Colour.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Event.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="JsonSerializers.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Logs\Activity.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Logs\ILog.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Logs\Log.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Logs\LogMessage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Maths.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Json.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Colour.ixx" />
+    <ClCompile Include="Event.ixx" />
+    <ClCompile Include="JsonSerializers.ixx" />
+    <ClCompile Include="Logs\Activity.ixx" />
+    <ClCompile Include="Logs\ILog.ixx" />
+    <ClCompile Include="Logs\Log.ixx" />
+    <ClCompile Include="Logs\LogMessage.ixx" />
+    <ClCompile Include="Maths.ixx" />
+    <ClCompile Include="Json.ixx" />
     <ClInclude Include="Json.hpp" />
     <ClCompile Include="Logs\ILog.cpp" />
-    <ClCompile Include="MessageHandler.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="MessageHandler.ixx" />
     <ClCompile Include="Messages\IMessageSystem.cpp" />
-    <ClCompile Include="Messages\IMessageSystem.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Messages\IRecipient.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Messages\IMessageSystem.ixx" />
+    <ClCompile Include="Messages\IRecipient.ixx" />
     <ClCompile Include="Messages\Message.cpp" />
-    <ClCompile Include="Messages\Message.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Messages\MessageSystem.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Messages\Message.ixx" />
+    <ClCompile Include="Messages\MessageSystem.ixx" />
     <ClCompile Include="Messages\IRecipient.cpp" />
-    <ClCompile Include="Resources.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Size.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Resource.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Resources.ixx" />
+    <ClCompile Include="Size.ixx" />
+    <ClCompile Include="Resource.ixx" />
     <ClInclude Include="stdafx.h" />
-    <ClCompile Include="Strings.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Timer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="TokenStore.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Version.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Window.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Clipboard.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Dialogs.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Strings.ixx" />
+    <ClCompile Include="Timer.ixx" />
+    <ClCompile Include="TokenStore.ixx" />
+    <ClCompile Include="Version.ixx" />
+    <ClCompile Include="Window.ixx" />
+    <ClCompile Include="Windows\Clipboard.ixx" />
+    <ClCompile Include="Windows\Dialogs.ixx" />
     <ClCompile Include="Windows\Files.cpp" />
     <ClCompile Include="Windows\Files.ixx" />
-    <ClCompile Include="Windows\IClipboard.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Windows\IClipboard.ixx" />
     <ClCompile Include="Windows\IDialogs.cpp" />
-    <ClCompile Include="Windows\IDialogs.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Windows\IDialogs.ixx" />
     <ClCompile Include="Windows\IFiles.ixx" />
-    <ClCompile Include="Windows\IShell.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Windows\IShell.ixx" />
     <ClCompile Include="Windows\IShell.cpp" />
     <ClCompile Include="Windows\IShortcuts.cpp" />
-    <ClCompile Include="Windows\IShortcuts.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Shell.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Shortcuts.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Windows\IShortcuts.ixx" />
+    <ClCompile Include="Windows\Shell.ixx" />
+    <ClCompile Include="Windows\Shortcuts.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Colour.cpp" />

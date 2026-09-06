@@ -13,12 +13,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\tables.cpp" Filter="src" />
-    <ClCompile Include="inc\tables.ixx">
-      <Filter>inc</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\trview.lua.ixx">
-      <Filter>inc</Filter>
-    </ClCompile>
+    <ClCompile Include="inc\tables.ixx" Filter="inc" />
+    <ClCompile Include="inc\trview.lua.ixx" Filter="inc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="inc\tables.inl" Filter="inc" />

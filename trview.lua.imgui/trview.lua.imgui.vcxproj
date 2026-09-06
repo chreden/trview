@@ -11,12 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="inc\trview.lua.imgui.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="src\trview.lua.imgui.input.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="inc\trview.lua.imgui.ixx" />
+    <ClCompile Include="src\trview.lua.imgui.input.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\trview.lua.imgui.cpp" />

@@ -15,19 +15,11 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Event.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Messages.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Mocks.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Event.ixx" />
+    <ClCompile Include="Messages.ixx" />
+    <ClCompile Include="Mocks.ixx" />
     <ClInclude Include="Mocks.hpp" />
-    <ClCompile Include="Window.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Window.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\trview.common\trview.common.vcxproj">

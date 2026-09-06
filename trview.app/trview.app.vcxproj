@@ -100,90 +100,36 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\Pack\PackWindow.cpp" />
     <ClCompile Include="Windows\Sounds\SoundsWindow.cpp" />
     <ClCompile Include="Windows\Windows.cpp" />
-    <ClCompile Include="Elements\ElementFilters.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Level\ILevelNameLookup.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Level\LevelNameLookup.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Flyby\Flyby.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Flyby\FlybyNode.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Flyby\IFlyby.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Elements\ElementFilters.ixx" />
+    <ClCompile Include="Elements\Level\ILevelNameLookup.ixx" />
+    <ClCompile Include="Elements\Level\LevelNameLookup.ixx" />
+    <ClCompile Include="Elements\Flyby\Flyby.ixx" />
+    <ClCompile Include="Elements\Flyby\FlybyNode.ixx" />
+    <ClCompile Include="Elements\Flyby\IFlyby.ixx" />
     <ClCompile Include="Elements\Flyby\IFlybyNode.ixx" />
-    <ClCompile Include="Elements\Remastered\INgPlusSwitcher.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Remastered\NgPlusSwitcher.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\SoundSource\ISoundSource.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\SoundSource\SoundSource.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Filters\FilterStore.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Elements\Remastered\INgPlusSwitcher.ixx" />
+    <ClCompile Include="Elements\Remastered\NgPlusSwitcher.ixx" />
+    <ClCompile Include="Elements\SoundSource\ISoundSource.ixx" />
+    <ClCompile Include="Elements\SoundSource\SoundSource.ixx" />
+    <ClCompile Include="Filters\FilterStore.ixx" />
     <ClCompile Include="Filters\IFilterable.ixx" />
-    <ClCompile Include="Filters\IFilterStore.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\Model\IModel.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\Model\IModelStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\Model\Model.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\Model\ModelStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Camera\Lua_Camera.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Lua_Matrix.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Mesh\Lua_Mesh.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Scriptable\IScriptable.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Scriptable\Scriptable.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Triangle\Lua_Triangle.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Vector2.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Menus\ImGuiFileMenu.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Messages\Messages.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Menus\LevelSortingMode.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Filters\IFilterStore.ixx" />
+    <ClCompile Include="Geometry\Model\IModel.ixx" />
+    <ClCompile Include="Geometry\Model\IModelStorage.ixx" />
+    <ClCompile Include="Geometry\Model\Model.ixx" />
+    <ClCompile Include="Geometry\Model\ModelStorage.ixx" />
+    <ClCompile Include="Lua\Camera\Lua_Camera.ixx" />
+    <ClCompile Include="Lua\Lua_Matrix.ixx" />
+    <ClCompile Include="Lua\Mesh\Lua_Mesh.ixx" />
+    <ClCompile Include="Lua\Scriptable\IScriptable.ixx" />
+    <ClCompile Include="Lua\Scriptable\Scriptable.ixx" />
+    <ClCompile Include="Lua\Triangle\Lua_Triangle.ixx" />
+    <ClCompile Include="Lua\Vector2.ixx" />
+    <ClCompile Include="Menus\ImGuiFileMenu.ixx" />
+    <ClCompile Include="Messages\Messages.ixx" />
+    <ClCompile Include="Menus\LevelSortingMode.ixx" />
     <ClInclude Include="Menus\LevelSortingMode.hpp" />
-    <ClCompile Include="Settings\FontSetting.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Settings\FontSetting.ixx" />
     <ClCompile Include="trview_imgui.cpp" />
     <ClCompile Include="Lua\Lua.cpp" />
     <ClCompile Include="Menus\AlternateGroupToggler.cpp" />
@@ -205,86 +151,36 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Tools\Measure.cpp" />
     <ClCompile Include="Tools\Toolbar.cpp" />
     <ClInclude Include="Elements\ISector.hpp" />
-    <ClCompile Include="Elements\TypeInfo.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\BoundingBox.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Colour.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\CameraSink\Lua_CameraSink.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Item\Lua_Item.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Elements\TypeInfo.ixx" />
+    <ClCompile Include="Lua\BoundingBox.ixx" />
+    <ClCompile Include="Lua\Colour.ixx" />
+    <ClCompile Include="Lua\Elements\CameraSink\Lua_CameraSink.ixx" />
+    <ClCompile Include="Lua\Elements\Item\Lua_Item.ixx" />
     <ClCompile Include="Lua\Elements\Light\Lua_Light.ixx" />
-    <ClCompile Include="Lua\Elements\Room\Lua_Room.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Sector\Lua_Sector.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Lua\Elements\Room\Lua_Room.ixx" />
+    <ClCompile Include="Lua\Elements\Sector\Lua_Sector.ixx" />
     <ClCompile Include="Lua\Elements\StaticMesh\Lua_StaticMesh.ixx" />
-    <ClCompile Include="Lua\Elements\Trigger\Lua_Trigger.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\ILua.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Route\Lua_Route.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Route\Lua_Waypoint.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Lua\Elements\Trigger\Lua_Trigger.ixx" />
+    <ClCompile Include="Lua\ILua.ixx" />
+    <ClCompile Include="Lua\Route\Lua_Route.ixx" />
+    <ClCompile Include="Lua\Route\Lua_Waypoint.ixx" />
     <ClCompile Include="Lua\Vector3.ixx" />
     <ClCompile Include="UI\Fonts\Fonts.cpp" />
     <ClCompile Include="Windows\Console\Console.cpp" />
-    <ClCompile Include="Plugins\IPlugin.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Plugins\IPlugins.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Plugins\Plugin.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Plugins\Plugins.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Routing\IRandomizerRoute.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Routing\RandomizerRoute.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Settings\PluginSetting.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Settings\UserSettingsPatches.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Sound\ISound.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Sound\ISoundStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Sound\Sound.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Sound\SoundStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Tools\IToolbar.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClInclude Include="Type.inl">
-      <FileType>Document</FileType>
-    </ClInclude>
+    <ClCompile Include="Plugins\IPlugin.ixx" />
+    <ClCompile Include="Plugins\IPlugins.ixx" />
+    <ClCompile Include="Plugins\Plugin.ixx" />
+    <ClCompile Include="Plugins\Plugins.ixx" />
+    <ClCompile Include="Routing\IRandomizerRoute.ixx" />
+    <ClCompile Include="Routing\RandomizerRoute.ixx" />
+    <ClCompile Include="Settings\PluginSetting.ixx" />
+    <ClCompile Include="Settings\UserSettingsPatches.ixx" />
+    <ClCompile Include="Sound\ISound.ixx" />
+    <ClCompile Include="Sound\ISoundStorage.ixx" />
+    <ClCompile Include="Sound\Sound.ixx" />
+    <ClCompile Include="Sound\SoundStorage.ixx" />
+    <ClCompile Include="Tools\IToolbar.ixx" />
+    <ClInclude Include="Type.inl" />
     <ClCompile Include="UI\CameraControls.cpp" />
     <ClCompile Include="UI\CameraPosition.cpp" />
     <ClCompile Include="UI\ContextMenu.cpp" />
@@ -311,409 +207,145 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\TriggersWindow.cpp" />
     <ClCompile Include="Windows\Viewer.cpp" />
     <ClCompile Include="Windows\WindowResizer.cpp" />
-    <ClCompile Include="UI\Fonts\Fonts.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\Fonts\IFonts.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\ILevelInfo.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\Modal.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="UI\Fonts\Fonts.ixx" />
+    <ClCompile Include="UI\Fonts\IFonts.ixx" />
+    <ClCompile Include="UI\ILevelInfo.ixx" />
+    <ClCompile Include="UI\Modal.ixx" />
     <ClInclude Include="UI\Modal.hpp" />
-    <ClCompile Include="UserCancelledException.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\AutoHider.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\About\AboutWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Console\Console.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Diff\DiffWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\IWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Pack\PackWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Sounds\SoundsWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Windows.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="UserCancelledException.ixx" />
+    <ClCompile Include="Windows\AutoHider.ixx" />
+    <ClCompile Include="Windows\About\AboutWindow.ixx" />
+    <ClCompile Include="Windows\Console\Console.ixx" />
+    <ClCompile Include="Windows\Diff\DiffWindow.ixx" />
+    <ClCompile Include="Windows\IWindow.ixx" />
+    <ClCompile Include="Windows\Pack\PackWindow.ixx" />
+    <ClCompile Include="Windows\Sounds\SoundsWindow.ixx" />
+    <ClCompile Include="Windows\Windows.ixx" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Application.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Camera\Camera.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Camera\CameraInput.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Camera\ICamera.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Camera\ProjectionMode.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\CameraSink\CameraSink.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\CameraSink\ICameraSink.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Item.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Floordata.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\IItem.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\ILevel.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\ILight.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\IRoom.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\ISector.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\IStaticMesh.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\ITrigger.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\ITypeInfoLookup.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Level.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Light.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\PickFilter.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\RenderFilter.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Room.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\RoomInfo.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Sector.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\StaticMesh.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Trigger.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\TypeInfoLookup.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Elements\Types.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Filters\Filters.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Application.ixx" />
+    <ClCompile Include="Camera\Camera.ixx" />
+    <ClCompile Include="Camera\CameraInput.ixx" />
+    <ClCompile Include="Camera\ICamera.ixx" />
+    <ClCompile Include="Camera\ProjectionMode.ixx" />
+    <ClCompile Include="Elements\CameraSink\CameraSink.ixx" />
+    <ClCompile Include="Elements\CameraSink\ICameraSink.ixx" />
+    <ClCompile Include="Elements\Item.ixx" />
+    <ClCompile Include="Elements\Floordata.ixx" />
+    <ClCompile Include="Elements\IItem.ixx" />
+    <ClCompile Include="Elements\ILevel.ixx" />
+    <ClCompile Include="Elements\ILight.ixx" />
+    <ClCompile Include="Elements\IRoom.ixx" />
+    <ClCompile Include="Elements\ISector.ixx" />
+    <ClCompile Include="Elements\IStaticMesh.ixx" />
+    <ClCompile Include="Elements\ITrigger.ixx" />
+    <ClCompile Include="Elements\ITypeInfoLookup.ixx" />
+    <ClCompile Include="Elements\Level.ixx" />
+    <ClCompile Include="Elements\Light.ixx" />
+    <ClCompile Include="Elements\PickFilter.ixx" />
+    <ClCompile Include="Elements\RenderFilter.ixx" />
+    <ClCompile Include="Elements\Room.ixx" />
+    <ClCompile Include="Elements\RoomInfo.ixx" />
+    <ClCompile Include="Elements\Sector.ixx" />
+    <ClCompile Include="Elements\StaticMesh.ixx" />
+    <ClCompile Include="Elements\Trigger.ixx" />
+    <ClCompile Include="Elements\TypeInfoLookup.ixx" />
+    <ClCompile Include="Elements\Types.ixx" />
+    <ClCompile Include="Filters\Filters.ixx" />
     <ClInclude Include="Filters\Filters.hpp" />
-    <ClCompile Include="Geometry\IMesh.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\IPicking.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\IRenderable.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\ITransparencyBuffer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\Matrix.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\Mesh.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\MeshVertex.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\PickInfo.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\Picking.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\PickResult.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\TransparencyBuffer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Geometry\Triangle.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Graphics\ILevelTextureStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Graphics\IMeshStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Graphics\ISectorHighlight.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Graphics\ISelectionRenderer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Graphics\ITextureStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Graphics\LevelTextureStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Graphics\MeshStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Graphics\SectorHighlight.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Graphics\SelectionRenderer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Graphics\TextureStorage.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Elements\Level\Lua_Level.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\Lua.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Lua\trview\trview.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Menus\AlternateGroupToggler.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Menus\FileMenu.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Menus\IFileMenu.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Menus\IUpdateChecker.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Menus\MenuDetector.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Menus\UpdateChecker.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Menus\ViewMenu.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Resources\DefaultShaders.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Resources\DefaultTextures.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Geometry\IMesh.ixx" />
+    <ClCompile Include="Geometry\IPicking.ixx" />
+    <ClCompile Include="Geometry\IRenderable.ixx" />
+    <ClCompile Include="Geometry\ITransparencyBuffer.ixx" />
+    <ClCompile Include="Geometry\Matrix.ixx" />
+    <ClCompile Include="Geometry\Mesh.ixx" />
+    <ClCompile Include="Geometry\MeshVertex.ixx" />
+    <ClCompile Include="Geometry\PickInfo.ixx" />
+    <ClCompile Include="Geometry\Picking.ixx" />
+    <ClCompile Include="Geometry\PickResult.ixx" />
+    <ClCompile Include="Geometry\TransparencyBuffer.ixx" />
+    <ClCompile Include="Geometry\Triangle.ixx" />
+    <ClCompile Include="Graphics\ILevelTextureStorage.ixx" />
+    <ClCompile Include="Graphics\IMeshStorage.ixx" />
+    <ClCompile Include="Graphics\ISectorHighlight.ixx" />
+    <ClCompile Include="Graphics\ISelectionRenderer.ixx" />
+    <ClCompile Include="Graphics\ITextureStorage.ixx" />
+    <ClCompile Include="Graphics\LevelTextureStorage.ixx" />
+    <ClCompile Include="Graphics\MeshStorage.ixx" />
+    <ClCompile Include="Graphics\SectorHighlight.ixx" />
+    <ClCompile Include="Graphics\SelectionRenderer.ixx" />
+    <ClCompile Include="Graphics\TextureStorage.ixx" />
+    <ClCompile Include="Lua\Elements\Level\Lua_Level.ixx" />
+    <ClCompile Include="Lua\Lua.ixx" />
+    <ClCompile Include="Lua\trview\trview.ixx" />
+    <ClCompile Include="Menus\AlternateGroupToggler.ixx" />
+    <ClCompile Include="Menus\FileMenu.ixx" />
+    <ClCompile Include="Menus\IFileMenu.ixx" />
+    <ClCompile Include="Menus\IUpdateChecker.ixx" />
+    <ClCompile Include="Menus\MenuDetector.ixx" />
+    <ClCompile Include="Menus\UpdateChecker.ixx" />
+    <ClCompile Include="Menus\ViewMenu.ixx" />
+    <ClCompile Include="Resources\DefaultShaders.ixx" />
+    <ClCompile Include="Resources\DefaultTextures.ixx" />
     <ClInclude Include="Resources\resource.h" />
     <ClInclude Include="Resources\targetver.h" />
-    <ClCompile Include="Routing\Action.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Routing\Actions.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Routing\IActions.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Routing\IRoute.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Routing\IWaypoint.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Routing\Route.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Routing\Waypoint.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Settings\IStartupOptions.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Settings\ISettingsLoader.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Settings\RandomizerSettings.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Settings\SettingsLoader.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Settings\StartupOptions.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Settings\UserSettings.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Tools\Compass.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Tools\ICompass.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Tools\IMeasure.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Tools\Measure.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Tools\Toolbar.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Track\Track.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="trview_imgui.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Routing\Action.ixx" />
+    <ClCompile Include="Routing\Actions.ixx" />
+    <ClCompile Include="Routing\IActions.ixx" />
+    <ClCompile Include="Routing\IRoute.ixx" />
+    <ClCompile Include="Routing\IWaypoint.ixx" />
+    <ClCompile Include="Routing\Route.ixx" />
+    <ClCompile Include="Routing\Waypoint.ixx" />
+    <ClCompile Include="Settings\IStartupOptions.ixx" />
+    <ClCompile Include="Settings\ISettingsLoader.ixx" />
+    <ClCompile Include="Settings\RandomizerSettings.ixx" />
+    <ClCompile Include="Settings\SettingsLoader.ixx" />
+    <ClCompile Include="Settings\StartupOptions.ixx" />
+    <ClCompile Include="Settings\UserSettings.ixx" />
+    <ClCompile Include="Tools\Compass.ixx" />
+    <ClCompile Include="Tools\ICompass.ixx" />
+    <ClCompile Include="Tools\IMeasure.ixx" />
+    <ClCompile Include="Tools\Measure.ixx" />
+    <ClCompile Include="Tools\Toolbar.ixx" />
+    <ClCompile Include="Track\Track.ixx" />
+    <ClCompile Include="trview_imgui.ixx" />
     <ClInclude Include="trview_imgui.hpp" />
-    <ClCompile Include="Type.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\CameraControls.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\CameraPosition.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\ContextMenu.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\DX11ImGuiBackend.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\GoTo.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\ICameraControls.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\IContextMenu.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\IImGuiBackend.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\IMapRenderer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\ISettingsWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\IViewerUI.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\IViewOptions.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\LevelInfo.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\MapColours.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\MapRenderer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\RoomNavigator.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\SettingsWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\Tooltip.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\ViewerUI.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="UI\ViewOptions.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\CameraSink\CameraSinkWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\ItemsWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\IViewer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\IWindows.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\LightsWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Log\LogWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Plugins\PluginsWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\RoomsWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\RouteWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\RowCounter.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Statics\StaticsWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Textures\TexturesWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\TriggersWindow.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\Viewer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
-    <ClCompile Include="Windows\WindowResizer.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="Type.ixx" />
+    <ClCompile Include="UI\CameraControls.ixx" />
+    <ClCompile Include="UI\CameraPosition.ixx" />
+    <ClCompile Include="UI\ContextMenu.ixx" />
+    <ClCompile Include="UI\DX11ImGuiBackend.ixx" />
+    <ClCompile Include="UI\GoTo.ixx" />
+    <ClCompile Include="UI\ICameraControls.ixx" />
+    <ClCompile Include="UI\IContextMenu.ixx" />
+    <ClCompile Include="UI\IImGuiBackend.ixx" />
+    <ClCompile Include="UI\IMapRenderer.ixx" />
+    <ClCompile Include="UI\ISettingsWindow.ixx" />
+    <ClCompile Include="UI\IViewerUI.ixx" />
+    <ClCompile Include="UI\IViewOptions.ixx" />
+    <ClCompile Include="UI\LevelInfo.ixx" />
+    <ClCompile Include="UI\MapColours.ixx" />
+    <ClCompile Include="UI\MapRenderer.ixx" />
+    <ClCompile Include="UI\RoomNavigator.ixx" />
+    <ClCompile Include="UI\SettingsWindow.ixx" />
+    <ClCompile Include="UI\Tooltip.ixx" />
+    <ClCompile Include="UI\ViewerUI.ixx" />
+    <ClCompile Include="UI\ViewOptions.ixx" />
+    <ClCompile Include="Windows\CameraSink\CameraSinkWindow.ixx" />
+    <ClCompile Include="Windows\ItemsWindow.ixx" />
+    <ClCompile Include="Windows\IViewer.ixx" />
+    <ClCompile Include="Windows\IWindows.ixx" />
+    <ClCompile Include="Windows\LightsWindow.ixx" />
+    <ClCompile Include="Windows\Log\LogWindow.ixx" />
+    <ClCompile Include="Windows\Plugins\PluginsWindow.ixx" />
+    <ClCompile Include="Windows\RoomsWindow.ixx" />
+    <ClCompile Include="Windows\RouteWindow.ixx" />
+    <ClCompile Include="Windows\RowCounter.ixx" />
+    <ClCompile Include="Windows\Statics\StaticsWindow.ixx" />
+    <ClCompile Include="Windows\Textures\TexturesWindow.ixx" />
+    <ClCompile Include="Windows\TriggersWindow.ixx" />
+    <ClCompile Include="Windows\Viewer.ixx" />
+    <ClCompile Include="Windows\WindowResizer.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\trview.app.rc" />

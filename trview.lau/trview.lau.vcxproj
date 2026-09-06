@@ -96,9 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="drm.ixx">
-      <FileType>Document</FileType>
-    </ClCompile>
+    <ClCompile Include="drm.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="drm.cpp" />
