@@ -1,6 +1,11 @@
-#include "BoundingBox.h"
-#include "Lua.h"
-#include "Vector3.h"
+module;
+
+#include <external/lua/src/lua.h>
+#include <SimpleMath.h>
+
+module trview.app:LuaBoundingBox;
+
+import :LuaVector3;
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

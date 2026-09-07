@@ -1,6 +1,12 @@
-#include "JsonSerializers.h"
-#include <trview.common/Json.h>
-#include <trview.common/Strings.h>
+module;
+
+module trview.common:JsonSerializers;
+
+import :Json;
+import :Point;
+import :Strings;
+import :Colour;
+import :Size;
 
 namespace trview
 {

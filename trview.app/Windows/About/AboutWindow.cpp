@@ -1,5 +1,11 @@
-#include "AboutWindow.h"
-#include <trview.common/Version.h>
+module;
+
+#include <external/imgui/imgui.h>
+
+module trview.app:AboutWindow;
+
+import std;
+import trview.common;
 
 namespace trview
 {

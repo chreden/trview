@@ -1,4 +1,4 @@
-#include <trview.common/Timer.h>
+import trview.common;
 
 using namespace trview;
 

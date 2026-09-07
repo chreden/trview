@@ -1,5 +1,13 @@
-#include "Colour.h"
-#include "Lua.h"
+module;
+
+#include <SimpleMath.h>
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+
+module trview.app:LuaColour;
+
+import std;
+import :Lua;
 
 using namespace DirectX::SimpleMath;
 

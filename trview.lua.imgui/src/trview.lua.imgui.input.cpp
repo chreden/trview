@@ -1,6 +1,14 @@
-#include "pch.h"
-#include "trview.lua.imgui.input.h"
-#include <trview.lua/inc/tables.h>
+module;
+
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+
+module trview.lua.imgui:Input;
+
+import trview.lua;
 
 namespace trview
 {

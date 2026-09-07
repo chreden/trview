@@ -1,7 +1,15 @@
-#include "Scriptable.h"
-#include "../Lua.h"
-#include "../Vector3.h"
-#include "../../Camera/ICamera.h"
+module;
+
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+#include <SimpleMath.h>
+
+module trview.app:Scriptable;
+
+import trlevel;
+import :Lua;
+import :LuaVector3;
+import :ICamera;
 
 using namespace DirectX::SimpleMath;
 

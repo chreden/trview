@@ -1,6 +1,13 @@
-#include "stdafx.h"
-#include "tr_rooms.h"
-#include <ranges>
+module;
+
+#include <SimpleMath.h>
+
+module trlevel:Rooms;
+
+import std;
+import std.compat;
+
+import :Types;
 
 using namespace DirectX::SimpleMath;
 

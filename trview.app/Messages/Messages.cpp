@@ -1,40 +1,12 @@
-#include "Messages.h"
-#include "../Settings/UserSettings.h"
+module trview.app:Messages;
+
+import :UserSettings;
+import :IWaypoint;
 
 namespace trview
 {
     namespace messages
     {
-        namespace
-        {
-            void get_message(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to, const std::string& name)
-            {
-                if (auto ms = messaging.lock())
-                {
-                    ms->send_message(Message{ .type = name, .data = std::make_shared<MessageData<std::weak_ptr<IRecipient>>>(reply_to) });
-                }
-            }
-
-            template <typename T>
-            std::optional<T> read_message(const Message& message, const std::string& type)
-            {
-                if (message.type != type)
-                {
-                    return std::nullopt;
-                }
-                return std::static_pointer_cast<MessageData<T>>(message.data)->value;
-            }
-
-            template <typename T>
-            void send_message(const std::weak_ptr<IMessageSystem>& messaging, const T& value, const std::string& type)
-            {
-                if (auto ms = messaging.lock())
-                {
-                    ms->send_message({ .type = type, .data = std::make_shared<MessageData<T>>(value) });
-                }
-            }
-        }
-
         namespace commands
         {
             std::optional<bool> read_route_open(const Message& message)
@@ -266,21 +238,6 @@ namespace trview
         void send_select_item(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IItem>& item)
         {
             send_message(messaging, item, "select_item");
-        }
-
-        void get_selected_flyby_node(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)
-        {
-            get_message(messaging, reply_to, "get_selected_flyby_node");
-        }
-
-        std::optional<std::weak_ptr<IFlybyNode>> read_select_flyby_node(const Message& message)
-        {
-            return read_message<std::weak_ptr<IFlybyNode>>(message, "select_flyby_node");
-        }
-
-        void send_select_flyby_node(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IFlybyNode>& flyby_node)
-        {
-            send_message(messaging, flyby_node, "select_flyby_node");
         }
 
         void get_selected_light(const std::weak_ptr<IMessageSystem>& messaging, const std::weak_ptr<IRecipient>& reply_to)

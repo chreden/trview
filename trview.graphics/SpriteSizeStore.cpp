@@ -1,5 +1,4 @@
-#include "SpriteSizeStore.h"
-#include "Sprite.h"
+module trview.graphics:SpriteSizeStore;
 
 namespace trview
 {

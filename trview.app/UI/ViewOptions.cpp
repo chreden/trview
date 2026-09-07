@@ -1,9 +1,13 @@
-#include "ViewOptions.h"
-#include "../Windows/IViewer.h"
-#include "../Filters/Filters.h"
-#include "../Windows/IWindows.h"
-#include "../Windows/IWindow.h"
-#include <trview.common/Messages/Message.h>
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+
+module trview.app:ViewOptions;
+
+import :Filters;
+import :IWindows;
+import :IViewer;
 
 namespace trview
 {

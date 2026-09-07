@@ -1,4 +1,10 @@
-#include "CameraControls.h"
+module;
+
+#include <external/imgui/imgui.h>
+
+module trview.app:CameraControls;
+
+import std.compat;
 
 namespace trview
 {

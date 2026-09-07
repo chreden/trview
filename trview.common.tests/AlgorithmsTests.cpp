@@ -1,4 +1,4 @@
-#include <trview.common/Algorithms.h>
+import trview.common;
 
 using namespace trview;
 

@@ -1,8 +1,11 @@
-#include <trview.app/Lua/Lua_Matrix.h>
-#include <trview.app/lua/Lua.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 #include "Lua.h"
+
+#include <SimpleMath.h>
+
+import trview.app;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;

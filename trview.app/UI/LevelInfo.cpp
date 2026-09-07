@@ -1,6 +1,16 @@
-#include "LevelInfo.h"
-#include <trview.app/Graphics/ITextureStorage.h>
-#include "../Elements/ILevel.h"
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+#include <wrl/client.h>
+#include <d3d11.h>
+
+module trview.app:LevelInfo;
+
+import trlevel;
+
+import :ILevel;
 
 namespace trview
 {

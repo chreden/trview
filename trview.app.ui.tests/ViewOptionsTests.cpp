@@ -1,17 +1,12 @@
 #include "pch.h"
 #include "ViewOptionsTests.h"
-#include <format>
 
-#include <trview.app/UI/ViewOptions.h>
-#include <trview.app/Windows/IViewer.h>
-#include <trview.tests.common/Mocks.h>
+import std;
 
-#include <trview.app/Mocks/Windows/IWindows.h>
-#include <trview.app/Mocks/Windows/IWindow.h>
-
-#include <trview.app/Filters/Filters.h>
-#include <trview.common/Messages/Message.h>
-#include <trview.app/Messages/Messages.h>
+import trview.common;
+import trview.app;
+import trview.app.mocks;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;

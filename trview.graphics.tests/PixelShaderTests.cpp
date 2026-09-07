@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
-#include <trview.graphics/PixelShader.h>
+
+import trview.graphics;
 
 using namespace trview::graphics;
 

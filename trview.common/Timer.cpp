@@ -1,4 +1,8 @@
-#include "Timer.h"
+module;
+
+#include <Windows.h>
+
+module trview.common:Timer;
 
 namespace trview
 {

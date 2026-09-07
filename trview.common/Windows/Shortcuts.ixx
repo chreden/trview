@@ -1,0 +1,31 @@
+module;
+
+#include <Windows.h>
+
+export module trview.common:Shortcuts;
+
+import std;
+import :Event;
+import :IShortcuts;
+import :MessageHandler;
+
+namespace trview
+{
+    export class Shortcuts : public IShortcuts, public MessageHandler
+    {
+    public:
+        explicit Shortcuts(const Window& window);
+        virtual ~Shortcuts() = default;
+        virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
+
+        virtual Event<>& add_shortcut(bool control, uint16_t key) override;
+
+        virtual std::vector<Shortcut> shortcuts() const override;
+    private:
+        void create_accelerators();
+
+        HACCEL _accelerators;
+        std::vector<std::pair<Shortcut, Event<>>> _shortcuts;
+        static uint16_t _command_index;
+    };
+}

@@ -1,12 +1,12 @@
-#include "Shortcuts.h"
+module;
+
+#include <Windows.h>
+
+module trview.common:Shortcuts;
 
 namespace trview
 {
     uint16_t Shortcuts::_command_index{ 41000 };
-
-    IShortcuts::~IShortcuts()
-    {
-    }
 
     Shortcuts::Shortcuts(const Window& window)
         : MessageHandler(window), _accelerators(nullptr)

@@ -1,4 +1,8 @@
-#include "AlternateGroupToggler.h"
+module;
+
+#include <Windows.h>
+
+module trview.app:AlternateGroupToggler;
 
 namespace trview
 {

@@ -1,8 +1,11 @@
-#include "FileMenu.h"
+module;
+
 #include "../Resources/resource.h"
-#include <ranges>
-#include "../Messages/Messages.h"
-#include "../Settings/UserSettings.h"
+#include <Windows.h>
+
+module trview.app:FileMenu;
+
+import :Messages;
 
 namespace trview
 {

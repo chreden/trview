@@ -1,6 +1,9 @@
-#include "Trigger.h"
-#include <trview.app/Elements/Types.h>
-#include <ranges>
+module trview.app:Trigger;
+
+import std;
+import std.compat;
+import trview.common;
+import :PickResult;
 
 namespace trview
 {
@@ -125,7 +128,7 @@ namespace trview
             if (result.hit)
             {
                 result.type = PickResult::Type::Trigger;
-                result.trigger = std::const_pointer_cast<ITrigger>(shared_from_this());
+                result.element = std::const_pointer_cast<ITrigger>(shared_from_this());
                 return result;
             }
         }

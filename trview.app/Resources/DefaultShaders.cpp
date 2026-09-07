@@ -1,12 +1,15 @@
-#include "DefaultShaders.h"
-#include <trview.common/Resources.h>
-#include "resource.h"
-#include <trview.graphics/IDevice.h>
-#include <trview.graphics/IShaderStorage.h>
-#include <trview.graphics/VertexShader.h>
-#include <trview.graphics/PixelShader.h>
+module;
 
-using namespace Microsoft::WRL;
+#include "resource.h"
+#include <d3d11.h>
+
+module trview.app:DefaultShaders;
+
+import std;
+import std.compat;
+
+import trview.common;
+import trview.graphics;
 
 namespace trview
 {

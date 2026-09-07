@@ -1,7 +1,15 @@
-#include "IMesh.h"
-#include <random>
-#include <ranges>
-#include <trlevel/trtypes.h>
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:IMesh;
+
+import std;
+
+import trlevel;
+import trview.common;
+
+import :Triangle;
 
 using namespace DirectX::SimpleMath;
 
@@ -237,7 +245,7 @@ namespace trview
                 version.platform == trlevel::Platform::Saturn;
         }
 
-        constexpr float animated_texture_frame_time(trlevel::PlatformAndVersion version)
+        float animated_texture_frame_time(trlevel::PlatformAndVersion version)
         {
             switch (version.version)
             {

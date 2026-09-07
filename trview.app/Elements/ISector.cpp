@@ -1,5 +1,11 @@
-#include "ISector.h"
-#include "IRoom.h"
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:ISector;
+
+import trview.common;
+import :IRoom;
 
 using namespace DirectX::SimpleMath;
 

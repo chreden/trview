@@ -1,11 +1,10 @@
-#include <trview.app/Lua/Elements/StaticMesh/Lua_StaticMesh.h>
-#include <trview.app/Lua/Vector3.h>
-#include <trview.app/Mocks/Elements/IStaticMesh.h>
-#include <trview.app/Mocks/Elements/IRoom.h>
-#include <trview.tests.common/Mocks.h>
 #include <external/lua/src/lua.h>
 #include <external/lua/src/lauxlib.h>
 #include "../Lua.h"
+
+import trview.app;
+import trview.app.mocks;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::mocks;

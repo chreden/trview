@@ -1,5 +1,8 @@
-#include "Model.h"
-#include "../ITransparencyBuffer.h"
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:Model;
 
 namespace trview
 {

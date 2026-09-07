@@ -1,5 +1,5 @@
-#include "RenderTarget.h"
-#include "DepthStencil.h"
+module;
+module trview.graphics:RenderTarget;
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
@@ -18,10 +18,6 @@ namespace trview
                 }
                 return nullptr;
             }
-        }
-
-        IRenderTarget::~IRenderTarget()
-        {
         }
 
         // Create a render target of the specified dimensions. The new render target will

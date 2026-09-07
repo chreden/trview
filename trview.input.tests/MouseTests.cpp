@@ -1,8 +1,10 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include <trview.input/Mouse.h>
-#include <trview.tests.common/Window.h>
-#include <trview.tests.common/Mocks.h>
+
+#include <Windows.h>
+
+import trview.input;
+import trview.tests.common;
 
 using namespace trview::tests;
 using namespace trview::input;

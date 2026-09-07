@@ -1,7 +1,9 @@
-#include "Windows.h"
-#include "Settings/UserSettings.h"
+module;
+
+#include <Windows.h>
 #include "../Resources/resource.h"
-#include "IWindow.h"
+
+module trview.app:Windows;
 
 using namespace DirectX::SimpleMath;
 

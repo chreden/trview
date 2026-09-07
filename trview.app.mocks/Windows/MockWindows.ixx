@@ -1,0 +1,23 @@
+module;
+
+#include <gmock/gmock.h>
+
+export module trview.app.mocks:MockWindows;
+
+import trview.app;
+
+namespace trview
+{
+    namespace mocks
+    {
+        export struct MockWindows : public IWindows
+        {
+            MOCK_METHOD(std::weak_ptr<IWindow>, create, (const std::string&), (override));
+            MOCK_METHOD(void, update, (float), (override));
+            MOCK_METHOD(void, register_window, (const std::string&, const Creator&), (override));
+            MOCK_METHOD(void, render, (), (override));
+            MOCK_METHOD(void, setup, (const UserSettings&), (override));
+            MOCK_METHOD(std::vector<std::weak_ptr<IWindow>>, windows, (const std::string&), (const, override));
+        };
+    }
+}

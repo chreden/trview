@@ -1,13 +1,10 @@
-#include "ShaderStorage.h"
+module;
+module trview.graphics:ShaderStorage;
 
 namespace trview
 {
     namespace graphics
     {
-        IShaderStorage::~IShaderStorage()
-        {
-        }
-
         // Add the shader to the store.
         // name: The name of the shader.
         // shader: The shader.

@@ -1,5 +1,12 @@
-#include "ViewMenu.h"
+module;
+
+#include <Windows.h>
 #include "../Resources/resource.h"
+
+module trview.app:ViewMenu;
+
+import std;
+import trview.common;
 
 namespace trview
 {

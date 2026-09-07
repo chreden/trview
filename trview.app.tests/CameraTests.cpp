@@ -1,5 +1,5 @@
-#include <trview.app/Camera/Camera.h>
-#include <trview.tests.common/Event.h>
+import trview.app;
+import trview.tests.common;
 
 using namespace trview;
 using namespace DirectX::SimpleMath;

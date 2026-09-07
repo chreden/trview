@@ -1,5 +1,12 @@
-#include "Vector3.h"
-#include "Lua.h"
+module;
+
+#include <SimpleMath.h>
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+
+module trview.app:LuaVector3;
+
+import :Lua;
 
 using namespace DirectX::SimpleMath;
 

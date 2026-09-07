@@ -1,9 +1,18 @@
-#include "Waypoint.h"
-#include <trview.app/Camera/ICamera.h>
-#include <trview.common/Maths.h>
+module;
 
-#include "IRoute.h"
-#include "../Elements/ILevel.h"
+#include <SimpleMath.h>
+
+module trview.app:Waypoint;
+
+import trview.common;
+
+import :IRoute;
+import :IItem;
+import :ITrigger;
+import :ICameraSink;
+import :ILight;
+import :ILightFunctions;
+import :ILevel;
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

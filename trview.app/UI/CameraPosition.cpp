@@ -1,5 +1,12 @@
-#include "CameraPosition.h"
-#include <trlevel/ILevel.h>
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <SimpleMath.h>
+
+module trview.app:CameraPosition;
+
+import trlevel;
 
 using namespace DirectX::SimpleMath;
 

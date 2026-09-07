@@ -1,16 +1,17 @@
-// trview.lua.imgui.cpp : Defines the functions for the static library.
-//
+module;
 
-#include "pch.h"
-#include "framework.h"
-#include "../inc/trview.lua.imgui.h"
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
 
-#include <optional>
-#include <string>
-#include <vector>
+module trview.lua.imgui;
 
-#include "trview.lua.imgui.input.h"
-#include <trview.lua/inc/tables.h>
+import std;
+import trview.lua;
+
+import :Input;
 
 namespace trview
 {

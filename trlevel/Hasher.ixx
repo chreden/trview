@@ -1,0 +1,27 @@
+module;
+
+#include <Windows.h>
+#include <bcrypt.h>
+
+export module trlevel:Hasher;
+
+import std;
+import std.compat;
+import :IHasher;
+
+namespace trlevel
+{
+    export class Hasher final : public IHasher
+    {
+    public:
+        Hasher();
+        virtual ~Hasher();
+        std::string hash(const std::vector<uint8_t>& data) const;
+    private:
+        void create_hash() const;
+
+        mutable BCRYPT_HASH_HANDLE _hash{ nullptr };
+        mutable std::vector<uint8_t> hash_object;
+        mutable std::vector<uint8_t> hash_buffer;
+    };
+}

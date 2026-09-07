@@ -1,5 +1,11 @@
-#include "CameraSink.h"
-#include "../ILevel.h"
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:CameraSink;
+
+import :ILevel;
+import :PickResult;
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -73,7 +79,7 @@ namespace trview
         {
             result.distance = distance;
             result.hit = true;
-            result.camera_sink = std::const_pointer_cast<ICameraSink>(shared_from_this());
+            result.element = std::const_pointer_cast<ICameraSink>(shared_from_this());
             result.position = position + direction * distance;
             result.type = PickResult::Type::CameraSink;
         }

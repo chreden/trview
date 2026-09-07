@@ -1,5 +1,13 @@
-#include "Console.h"
+module;
+
+#include <Windows.h>
+#include <external/imgui/imgui.h>
 #include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+
+module trview.app:Console;
+
+import :imgui;
 
 namespace trview
 {

@@ -1,13 +1,15 @@
-#include "Lua_Sector.h"
-#include "../../../Elements/ILevel.h"
-#include "../Item/Lua_Item.h"
-#include "../Trigger/Lua_Trigger.h"
-#include "../Room/Lua_Room.h"
-#include "../../Lua.h"
-#include <trview.common/Algorithms.h>
-#include "../../../Elements/Floordata.h"
+module;
 
-#include <ranges>
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+
+module trview.app:LuaSector;
+
+import :Lua;
+import :ILevel;
+import :IRoom;
+import :LuaRoom;
+import :LuaTrigger;
 
 namespace trview
 {

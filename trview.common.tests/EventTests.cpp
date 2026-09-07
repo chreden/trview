@@ -1,5 +1,4 @@
-#include <string>
-#include <trview.common/Event.h>
+import trview.common;
 
 using namespace trview;
 

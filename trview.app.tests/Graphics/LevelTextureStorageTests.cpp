@@ -1,8 +1,10 @@
-#include <trlevel/Mocks/ILevel.h>
-#include <trview.app/Graphics/LevelTextureStorage.h>
-#include <trview.graphics/mocks/IDevice.h>
-#include <trview.app/Mocks/Graphics/ITextureStorage.h>
-#include <ranges>
+import trlevel;
+import trlevel.mocks;
+import trview.app;
+import trview.app.mocks;
+import trview.graphics;
+import trview.graphics.mocks;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trlevel;

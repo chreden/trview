@@ -1,5 +1,12 @@
-#include "Actions.h"
-#include <trview.common/Json.h>
+module;
+
+#include <external/nlohmann/json.hpp>
+
+module trview.app:Actions;
+
+import nlohmann.json;
+import trlevel;
+import trview.common;
 
 namespace trview
 {

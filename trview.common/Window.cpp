@@ -1,5 +1,10 @@
-#include "Window.h"
-#include "Strings.h"
+module;
+
+#include <Windows.h>
+
+module trview.common:Window;
+
+import :Strings;
 
 namespace trview
 {

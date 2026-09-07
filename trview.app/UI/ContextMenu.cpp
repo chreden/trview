@@ -1,6 +1,8 @@
-#include "ContextMenu.h"
-#include "../Windows/IWindows.h"
-#include "../Windows/IWindow.h"
+module;
+
+#include <external/imgui/imgui.h>
+
+module trview.app:ContextMenu;
 
 namespace trview
 {

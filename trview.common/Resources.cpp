@@ -1,4 +1,10 @@
-#include "Resources.h"
+module;
+
+#include <Windows.h>
+
+module trview.common:Resources;
+
+import std;
 
 namespace trview
 {

@@ -1,4 +1,4 @@
-#include "Action.h"
+module trview.app:Action;
 
 namespace trview
 {

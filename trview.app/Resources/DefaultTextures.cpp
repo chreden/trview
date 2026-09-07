@@ -1,10 +1,9 @@
-#include "DefaultTextures.h"
-#include <trview.common/Resources.h>
-#include <trview.graphics/IDevice.h>
-#include <trview.app/Graphics/ITextureStorage.h>
-#include <trview.common/Strings.h>
+module trview.app:DefaultTextures;
 
-using namespace Microsoft::WRL;
+import trview.common;
+import trview.graphics;
+
+import :ITextureStorage;
 
 namespace trview
 {

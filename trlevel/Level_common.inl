@@ -1,8 +1,5 @@
 #pragma once
 
-#include <bit>
-#include <span>
-
 namespace trlevel
 {
     template <typename T>

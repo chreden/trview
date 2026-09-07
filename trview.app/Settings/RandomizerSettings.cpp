@@ -1,5 +1,13 @@
-#include "RandomizerSettings.h"
-#include <trview.common/Json.h>
+module;
+
+#define NOMINMAX
+#include <Windows.h>
+#include <external/nlohmann/json.hpp>
+#include <SimpleMath.h>
+
+module trview.app:RandomizerSettings;
+
+import trview.common;
 
 using namespace nlohmann;
 

@@ -1,5 +1,11 @@
-#include "SoundSource.h"
-#include <trlevel/trtypes.h>
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:SoundSource;
+
+import trlevel;
+import trview.common;
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -79,7 +85,7 @@ namespace trview
             result.hit = true;
             result.position = position + direction * distance;
             result.type = PickResult::Type::SoundSource;
-            result.sound_source = std::const_pointer_cast<ISoundSource>(shared_from_this());
+            result.element = std::const_pointer_cast<ISoundSource>(shared_from_this());
         }
 
         return result;

@@ -1,6 +1,10 @@
-#include "LogWindow.h"
-#include <format>
-#include <sstream>
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+
+module trview.app:LogWindow;
 
 namespace trview
 {

@@ -1,6 +1,12 @@
-#include "Camera.h"
-#include <trview.common/Maths.h>
-#include "Settings/UserSettings.h"
+module;
+
+#define NOMINMAX
+#include <Windows.h>
+#include <SimpleMath.h>
+
+module trview.app:Camera;
+
+import trview.common;
 
 namespace trview
 {

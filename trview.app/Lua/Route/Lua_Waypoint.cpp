@@ -1,14 +1,24 @@
-#include "Lua_Waypoint.h"
-#include "../Lua.h"
-#include "../Colour.h"
-#include "../Vector3.h"
-#include "../Elements/Item/Lua_Item.h"
-#include "../Elements/Trigger/Lua_Trigger.h"
-#include "../Elements/Room/Lua_Room.h"
-#include "../../Elements/ITrigger.h"
-#include "../../Elements/IRoom.h"
-#include "../../Elements/ILevel.h"
-#include "../Elements/Sector/Lua_Sector.h"
+module;
+
+#include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
+#include <SimpleMath.h>
+
+module trview.app:LuaWaypoint;
+
+import std;
+
+import trlevel;
+
+import :LuaColour;
+import :LuaItem;
+import :LuaVector3;
+import :RandomizerSettings;
+import :LuaRoom;
+import :LuaTrigger;
+import :Lua;
+import :ILevel;
+import :LuaSector;
 
 using namespace DirectX::SimpleMath;
 

@@ -1,5 +1,9 @@
-#include "trview_imgui.h"
-#include <trview.common/Windows/IClipboard.h>
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+
+module trview.app:imgui;
 
 namespace trview
 {

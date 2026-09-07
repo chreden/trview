@@ -1,13 +1,11 @@
-#include "Log.h"
-#include <set>
-#include <format>
+module;
+
+#include <Windows.h>
+
+module trview.common:Log;
 
 namespace trview
 {
-    ILog::~ILog()
-    {
-    }
-
     void Log::log(LogMessage::Status status, const std::string& topic, const std::string& activity, const std::string& text)
     {
         log(status, topic, std::vector<std::string>{ activity }, text);

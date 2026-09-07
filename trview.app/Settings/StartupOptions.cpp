@@ -1,5 +1,12 @@
-#include "StartupOptions.h"
-#include <trview.common/Strings.h>
+module;
+
+#include <Windows.h>
+
+module trview.app:StartupOptions;
+
+import std;
+
+import trview.common;
 
 namespace trview
 {

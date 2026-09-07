@@ -1,4 +1,8 @@
-#include "Keyboard.h"
+module;
+
+#include <Windows.h>
+
+module trview.input:Keyboard;
 
 namespace trview
 {

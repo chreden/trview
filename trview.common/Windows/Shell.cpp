@@ -1,12 +1,14 @@
-#include "Shell.h"
+module;
+
+#include <Windows.h>
 #include <shellapi.h>
+
+module trview.common:Shell;
+
+import std;
 
 namespace trview
 {
-    IShell::~IShell()
-    {
-    }
-
     void Shell::open(const std::wstring& path)
     {
         ShellExecute(0, 0, path.c_str(), 0, 0, SW_SHOW);

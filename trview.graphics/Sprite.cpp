@@ -1,9 +1,12 @@
-#include "Sprite.h"
-#include "IShaderStorage.h"
-#include "IShader.h"
-#include "Texture.h"
-#include <trview.app/Geometry/IMesh.h>
-#include <array>
+module;
+
+#include <d3d11.h>
+#include <wrl/client.h>
+#include <SimpleMath.h>
+
+module trview.graphics:Sprite;
+
+import std;
 
 using namespace Microsoft::WRL;
 
@@ -18,10 +21,20 @@ namespace trview
                 DirectX::SimpleMath::Vector3 pos;
                 DirectX::SimpleMath::Vector2 uv;
             };
-        }
 
-        ISprite::~ISprite()
-        {
+            #pragma warning(push)
+            #pragma warning(disable : 4324)
+                __declspec(align(16)) struct MeshData
+                {
+                    DirectX::SimpleMath::Matrix matrix;
+                    DirectX::SimpleMath::Color colour;
+                    DirectX::SimpleMath::Vector4 light_dir;
+                    float light_intensity{ 1.0f };
+                    int light_enabled{ 0 };
+                    int colour_override_enabled{ 0 };
+                    DirectX::SimpleMath::Vector4 colour_override { 1, 1, 1, 1 };
+                };
+            #pragma warning(pop)
         }
 
         Sprite::Sprite(const std::shared_ptr<IDevice>& device, const std::shared_ptr<IShaderStorage>& shader_storage, const Size& host_size)

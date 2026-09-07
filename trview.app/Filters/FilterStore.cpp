@@ -1,11 +1,12 @@
-#include "FilterStore.h"
-#include "../Messages/Messages.h"
+module;
 
-#include <trview.common/Json.h>
-#include <trview.common/Strings.h>
-#include <trview.common/JsonSerializers.h>
+#include <external/nlohmann/json.hpp>
 
-#include <ranges>
+module trview.app:FilterStore;
+
+import nlohmann.json;
+import :Filters;
+import :Messages;
 
 namespace trview
 {

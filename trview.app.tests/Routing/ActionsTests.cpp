@@ -1,4 +1,5 @@
-#include <trview.app/Routing/Actions.h>
+import trview.app;
+import trlevel;
 
 using namespace trview;
 using namespace trlevel;

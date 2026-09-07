@@ -1,7 +1,9 @@
-#include "Sound.h"
+module;
 
 #define MINIAUDIO_IMPLEMENTATION
 #include <external/miniaudio/miniaudio.h>
+
+module trview.app:Sound;
 
 namespace trview
 {

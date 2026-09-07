@@ -1,7 +1,9 @@
-#include <trlevel/Decrypter.h>
-#include <trview.common/Resources.h>
+import trlevel;
+import trview.common;
+
+import std;
+
 #include "resource.h"
-#include <fstream>
 
 using namespace trlevel;
 

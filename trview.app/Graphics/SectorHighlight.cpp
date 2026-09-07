@@ -1,5 +1,8 @@
-#include "SectorHighlight.h"
-#include <ranges>
+module;
+
+#include <SimpleMath.h>
+
+module trview.app:SectorHighlight;
 
 using namespace DirectX::SimpleMath;
 

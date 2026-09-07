@@ -1,4 +1,9 @@
-#include <trview.app/Menus/ViewMenu.h>
+#include <Windows.h>
+
+import trview.app;
+import trview.common;
+import trview.tests.common;
+
 #include <trview.app/Resources/resource.h>
 
 using namespace trview;

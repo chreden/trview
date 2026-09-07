@@ -1,4 +1,7 @@
-#include <trview.app/Graphics/TextureStorage.h>
+import trview.app;
+import trview.graphics;
+import trview.graphics.mocks;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::graphics;

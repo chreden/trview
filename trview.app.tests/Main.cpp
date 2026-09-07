@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include <imgui.h>
 
 void ImGuiTrviewTestEngineHook_ItemText(ImGuiContext* ctx, ImGuiID id, const char* buf)
 {

@@ -1,4 +1,4 @@
-#include "UserSettings.h"
+module trview.app:UserSettings;
 
 namespace trview
 {

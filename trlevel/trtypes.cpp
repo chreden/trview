@@ -1,5 +1,6 @@
-#include "trtypes.h"
-#include <ranges>
+module trlevel:Types;
+
+import std;
 
 namespace trlevel
 {

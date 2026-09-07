@@ -1,15 +1,15 @@
-#include "Hasher.h"
+module;
+
+#include <Windows.h>
 #include <bcrypt.h>
-#include <format>
-#include <ranges>
 #include <versionhelpers.h>
+
+module trlevel:Hasher;
+
+import std;
 
 namespace trlevel
 {
-    IHasher::~IHasher()
-    {
-    }
-
     Hasher::Hasher()
     {
     }

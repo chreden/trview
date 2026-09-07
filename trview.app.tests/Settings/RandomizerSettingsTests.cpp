@@ -1,4 +1,6 @@
-#include <trview.app/Settings/RandomizerSettings.h>
+import trview.app;
+import trview.common;
+import trview.tests.common;
 
 using namespace trview;
 

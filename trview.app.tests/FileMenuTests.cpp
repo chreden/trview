@@ -1,9 +1,13 @@
-#include <trview.app/Menus/FileMenu.h>
-#include <trview.common/Mocks/Windows/IShortcuts.h>
-#include <trview.common/Mocks/Windows/IDialogs.h>
-#include <trview.common/Mocks/IFiles.h>
+#include <Windows.h>
+#include <shlobj.h>
 #include <trview.app/Resources/resource.h>
-#include <trview.common/Mocks/Messages/IMessageSystem.h>
+
+import trlevel;
+import trlevel.mocks;
+import trview.app;
+import trview.common;
+import trview.common.mocks;
+import trview.tests.common;
 
 using namespace trlevel::mocks;
 using namespace trview;

@@ -1,9 +1,17 @@
-#include "StaticsWindow.h"
-#include "../RowCounter.h"
-#include "../../trview_imgui.h"
-#include "../../Messages/Messages.h"
-#include "../../Elements/ILevel.h"
-#include "../../Elements/ElementFilters.h"
+module;
+
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <SimpleMath.h>
+
+module trview.app:StaticsWindow;
+
+import std;
+
+import :Filters;
+import :Messages;
+import :ILevel;
+import :ElementFilters;
 
 namespace trview
 {

@@ -1,12 +1,22 @@
-#include "RouteWindow.h"
-#include <trview.app/Routing/Route.h>
-#include <trview.common/Strings.h>
-#include <trview.common/Windows/IClipboard.h>
-#include "../trview_imgui.h"
-#include <format>
-#include "../Routing/IRandomizerRoute.h"
-#include "../Elements/ILevel.h"
-#include "../Messages/Messages.h"
+module;
+
+#include <Windows.h>
+#include <external/imgui/imgui.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+#include <SimpleMath.h>
+
+module trview.app:RouteWindow;
+
+import std;
+import std.compat;
+
+import trview.common;
+import trview.graphics;
+
+import :imgui;
+import :IRandomizerRoute;
+import :ILevel;
+import :Messages;
 
 namespace trview
 {

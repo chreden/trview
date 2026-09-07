@@ -1,4 +1,4 @@
-#include <trview.common/Logs/Log.h>
+import trview.common;
 
 using namespace trview;
 

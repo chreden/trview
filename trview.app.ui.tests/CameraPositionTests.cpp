@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CameraPositionTests.h"
 
-#include <trview.app/UI/CameraPosition.h>
+import trview.app;
 
 using namespace trview;
 using namespace DirectX::SimpleMath;

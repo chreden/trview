@@ -1,4 +1,12 @@
-#include "Level_common.h"
+module;
+
+#include <external/zlib/zlib.h>
+
+module trlevel:Common;
+
+import std;
+import std.compat;
+import trview.common;
 
 namespace trlevel
 {

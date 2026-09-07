@@ -1,4 +1,4 @@
-#include "IRenderable.h"
+module trview.app:IRenderable;
 
 namespace trview
 {

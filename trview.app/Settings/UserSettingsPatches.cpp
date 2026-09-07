@@ -1,5 +1,8 @@
-#include "UserSettingsPatches.h"
-#include "UserSettings.h"
+module trview.app:UserSettingsPatches;
+
+import std;
+
+import :UserSettings;
 
 namespace trview
 {

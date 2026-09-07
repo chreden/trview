@@ -1,6 +1,6 @@
 #pragma once
 
-#include <format>
+import std;
 
 namespace trview
 {

@@ -1,5 +1,8 @@
-#include "Floordata.h"
-#include "ITrigger.h"
+module trview.app:Floordata;
+
+import trview.common;
+
+import :ITrigger;
 
 namespace trview
 {

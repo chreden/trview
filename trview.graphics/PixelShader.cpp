@@ -1,4 +1,4 @@
-#include "PixelShader.h"
+module trview.graphics:PixelShader;
 
 namespace trview
 {

@@ -1,4 +1,8 @@
-#include "Window.h"
+module;
+
+#include <Windows.h>
+
+module trview.tests.common:Window;
 
 namespace trview
 {

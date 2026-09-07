@@ -1,6 +1,14 @@
-#include "Fonts.h"
-#include <format>
-#include <ranges>
+module;
+
+#include <Windows.h>
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
+#include <external/imgui/misc/cpp/imgui_stdlib.h>
+
+module trview.app:Fonts;
+
+import std;
+import std.compat;
 
 namespace trview
 {

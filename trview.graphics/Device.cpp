@@ -1,6 +1,12 @@
-#include "Device.h"
-#include "RenderTarget.h"
-#include "DeviceWindow.h"
+module;
+
+#include <d3d11.h>
+#include <wrl/client.h>
+
+module trview.graphics:Device;
+
+import :RenderTarget;
+import :DeviceWindow;
 
 using namespace Microsoft::WRL;
 
@@ -8,10 +14,6 @@ namespace trview
 {
     namespace graphics
     {
-        IDevice::~IDevice()
-        {
-        }
-
         Device::Device()
         {
             DWORD flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;

@@ -1,24 +1,21 @@
-#include "Level.h"
-#include "LevelLoadException.h"
-#include "LevelEncryptedException.h"
-#include <format>
-#include <ranges>
-#include <spanstream>
-#include <numeric>
-#include <span>
-#include <filesystem>
+module;
 
-#include "Level_common.h"
-#include "Level_psx.h"
-#include "Level_tr3.h"
-#include <trview.common/Version.h>
+#include <Windows.h>
+
+module trlevel:Level;
+
+import std;
+import trview.common;
+
+import :LevelLoadException;
+import :LevelEncryptedException;
+import :Common;
+import :PSX;
+import :TR3;
+import :Types;
 
 namespace trlevel
 {
-    ILevel::~ILevel()
-    {
-    }
-
     void ILevel::LoadCallbacks::on_progress(const std::string& message) const
     {
         if (on_progress_callback)

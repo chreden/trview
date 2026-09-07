@@ -1,4 +1,7 @@
-#include <trview.app/Menus/MenuDetector.h>
+#include <Windows.h>
+
+import trview.app;
+import trview.tests.common;
 
 using namespace trview;
 using namespace trview::tests;
