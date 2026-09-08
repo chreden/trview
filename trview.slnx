@@ -1,0 +1,110 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/external/">
+    <Project Path="external/DirectXTK/DirectXTK_Desktop.vcxproj" Id="a11566d3-4081-42c9-94c5-f4057edd9d50" />
+    <Project Path="external/freetype/builds/windows/vc2010/freetype.vcxproj" Id="78b079bd-9fc7-4b9e-b4a6-96da0f00248b" />
+    <Project Path="external/googlemock/googlemock.vcxproj" Id="6e37091e-954c-4654-9b42-5980410791f4" />
+    <Project Path="external/googletest/googletest.vcxproj" Id="eafd7489-57e3-4b6d-a704-f7c5ef640434" />
+    <Project Path="external/imgui/imgui.vcxproj" Id="6aabd08e-3361-4d84-88f0-851ee588162a" />
+    <Project Path="external/imgui_test_engine/imgui_test_engine.vcxproj" Id="e6fac6ef-4b54-45c4-9e76-3b063b51d4b9" />
+    <Project Path="external/lua/lua.vcxproj" Id="2a4f1e89-71ac-46c3-a711-1a4d67accdf5" />
+    <Project Path="external/nlohmann.json/nlohmann.json.vcxproj" Id="c37610ad-63e4-45a9-b9bd-417a9ed4fade" />
+    <Project Path="external/zlib/contrib/vstudio/vc14/zlibstat.vcxproj" Id="745dec58-ebb3-47a9-a9b8-4c6627c01bf8" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Solution Items/doc/">
+    <File Path="doc/camera_position.png" />
+    <File Path="doc/compass.png" />
+    <File Path="doc/console.png" />
+    <File Path="doc/context_menu.png" />
+    <File Path="doc/filters_1.png" />
+    <File Path="doc/filters_2.png" />
+    <File Path="doc/items.png" />
+    <File Path="doc/level_info.png" />
+    <File Path="doc/lights.png" />
+    <File Path="doc/measure.png" />
+    <File Path="doc/measure_usage.png" />
+    <File Path="doc/menu_file.png" />
+    <File Path="doc/menu_help.png" />
+    <File Path="doc/menu_view.png" />
+    <File Path="doc/menu_windows.png" />
+    <File Path="doc/minimap.png" />
+    <File Path="doc/rando.md" />
+    <File Path="doc/rando.png" />
+    <File Path="doc/rooms.png" />
+    <File Path="doc/room_navigator.png" />
+    <File Path="doc/route.png" />
+    <File Path="doc/settings_camera.png" />
+    <File Path="doc/settings_general.png" />
+    <File Path="doc/settings_minimap.png" />
+    <File Path="doc/triggers.png" />
+    <File Path="doc/trview.png" />
+  </Folder>
+  <Folder Name="/Solution Items/doc/camera/">
+    <File Path="doc/camera/camera_controls.png" />
+    <File Path="doc/camera/orthographic.png" />
+    <File Path="doc/camera/orthographic_topdown.png" />
+    <File Path="doc/camera/perspective.png" />
+  </Folder>
+  <Folder Name="/Solution Items/doc/formats/">
+    <File Path="doc/formats/index.md" />
+  </Folder>
+  <Folder Name="/Solution Items/doc/lua/">
+    <File Path="doc/lua/boundingbox.md" />
+    <File Path="doc/lua/camera.md" />
+    <File Path="doc/lua/camera_sink.md" />
+    <File Path="doc/lua/colour.md" />
+    <File Path="doc/lua/command.md" />
+    <File Path="doc/lua/imgui.md" />
+    <File Path="doc/lua/index.md" />
+    <File Path="doc/lua/item.md" />
+    <File Path="doc/lua/level.md" />
+    <File Path="doc/lua/light.md" />
+    <File Path="doc/lua/matrix.md" />
+    <File Path="doc/lua/mesh.md" />
+    <File Path="doc/lua/plugins.md" />
+    <File Path="doc/lua/room.md" />
+    <File Path="doc/lua/route.md" />
+    <File Path="doc/lua/sector.md" />
+    <File Path="doc/lua/staticmesh.md" />
+    <File Path="doc/lua/triangle.md" />
+    <File Path="doc/lua/trigger.md" />
+    <File Path="doc/lua/trview.md" />
+    <File Path="doc/lua/vector2.md" />
+    <File Path="doc/lua/vector3.md" />
+    <File Path="doc/lua/waypoint.md" />
+  </Folder>
+  <Folder Name="/Solution Items/doc/view_options/">
+    <File Path="doc/view_options/standard.png" />
+    <File Path="doc/view_options/tr1-3.png" />
+    <File Path="doc/view_options/tr4.png" />
+  </Folder>
+  <Project Path="trlevel.mocks/trlevel.mocks.vcxproj" Id="d9d76f17-70ad-41a7-b074-975fa4e8b08f" />
+  <Project Path="trlevel.tests/trlevel.tests.vcxproj" Id="49a67578-3b2c-4ae2-a2a1-fd00ef9148eb" />
+  <Project Path="trlevel/trlevel.vcxproj" Id="8ffb19fa-1c9d-4d9c-ab96-844bf695e79c" />
+  <Project Path="trview.app.mocks/trview.app.mocks.vcxproj" Id="2a8cb51c-d210-4179-a10b-e1e6304b74a7" />
+  <Project Path="trview.app.tests/trview.app.tests.vcxproj" Id="5305889d-8ccb-4a81-b77e-d46f03131114" />
+  <Project Path="trview.app.ui.tests/trview.app.ui.tests.vcxproj" Id="6c2653fe-19d4-4696-924f-c313ecbc69b2" />
+  <Project Path="trview.app/trview.app.vcxproj" Id="a087af08-5371-47de-a896-afa21dd9d383" />
+  <Project Path="trview.common.mocks/trview.common.mocks.vcxproj" Id="d56cf083-8786-40f8-9c19-d0bb3507dbdf" />
+  <Project Path="trview.common.tests/trview.common.tests.vcxproj" Id="9bbdfa49-4033-49b3-8ee2-e75c5950d5b0" />
+  <Project Path="trview.common/trview.common.vcxproj" Id="d0633291-23a6-4b3f-9a5e-e94d20f66a07" />
+  <Project Path="trview.graphics.mocks/trview.graphics.mocks.vcxproj" Id="b723e2b7-a715-40d7-b33c-2888578897b2" />
+  <Project Path="trview.graphics.tests/trview.graphics.tests.vcxproj" Id="6e6b151d-df48-4fe2-b7af-2d07fb3451d2" />
+  <Project Path="trview.graphics/trview.graphics.vcxproj" Id="3270fd29-edab-40be-8ca1-dabc5e261e4c" />
+  <Project Path="trview.input.mocks/trview.input.mocks.vcxproj" Id="c8eefff2-e908-4e7f-8990-1e7d786448d6" />
+  <Project Path="trview.input.tests/trview.input.tests.vcxproj" Id="1d81cef5-5705-4af8-a76a-b63d6ea53454" />
+  <Project Path="trview.input/trview.input.vcxproj" Id="0b28c3cd-d28a-4923-9577-50eb1ee29212" />
+  <Project Path="trview.lau/trview.lau.vcxproj" Id="2ac76373-f9a6-426d-b732-80e6bd6bfab4" />
+  <Project Path="trview.lua.imgui/trview.lua.imgui.vcxproj" Id="cdbc4705-e8e2-4c5c-a1a6-ea66fe4b699b" />
+  <Project Path="trview.lua/trview.lua.vcxproj" />
+  <Project Path="trview.shaders/trview.shaders.vcxproj" Id="9e86c96a-6192-462c-a2a2-263990a53c1f" />
+  <Project Path="trview.tests.common/trview.tests.common.vcxproj" Id="3ab44a93-dbba-405e-8164-e5b20866ee1d" />
+  <Project Path="trview/trview.vcxproj" Id="8406d3cd-8c08-45c2-af2c-844014a687a1">
+    <BuildDependency Project="trview.shaders/trview.shaders.vcxproj" />
+  </Project>
+</Solution>
