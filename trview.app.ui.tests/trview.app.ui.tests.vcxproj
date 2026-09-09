@@ -166,7 +166,10 @@
     <ClCompile Include="PluginsWindowTests.cpp" />
     <ClCompile Include="RoomNavigatorTests.cpp" />
     <ClCompile Include="RoomsWindowTests.cpp" />
-    <ClCompile Include="RouteWindowTests.cpp" />
+    <ClCompile Include="RouteWindowTests.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="SettingsWindowTests.cpp" />
     <ClCompile Include="StaticsWindowTests.cpp" />
     <ClCompile Include="TestHelpers.cpp" />
