@@ -29,6 +29,7 @@ import :LuaCameraSink;
 import :LuaItem;
 import :LuaLight;
 import :LuaStaticMesh;
+import :LuaTrigger;
 
 namespace trview
 {
@@ -191,6 +192,7 @@ namespace trview
             level_register(L);
             light_register(L);
             static_mesh_register(L);
+            trigger_register(L);
         }
 
         void set_settings(const UserSettings& settings)

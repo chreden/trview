@@ -19,6 +19,7 @@ TEST(Lua_Trigger, Commands)
     EXPECT_CALL(*trigger, commands).WillRepeatedly(Return(std::vector<Command>{ command }));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -49,6 +50,7 @@ TEST(Lua_Trigger, Flags)
     EXPECT_CALL(*trigger, flags).WillRepeatedly(Return(123));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -62,6 +64,7 @@ TEST(Lua_Trigger, Number)
     auto trigger = mock_shared<MockTrigger>()->with_number(123);
 
     LuaState L;
+    lua::trigger_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -76,6 +79,7 @@ TEST(Lua_Trigger, OnlyOnce)
     EXPECT_CALL(*trigger, only_once).WillRepeatedly(Return(true));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -90,6 +94,7 @@ TEST(Lua_Trigger, Position)
     EXPECT_CALL(*trigger, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::vector3_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
@@ -106,6 +111,7 @@ TEST(Lua_Trigger, Room)
     EXPECT_CALL(*trigger, room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::room_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
@@ -128,6 +134,7 @@ TEST(Lua_Trigger, Sector)
     EXPECT_CALL(*trigger, room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::sector_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
@@ -145,6 +152,7 @@ TEST(Lua_Trigger, Timer)
     EXPECT_CALL(*trigger, timer).WillRepeatedly(Return(123));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -159,6 +167,7 @@ TEST(Lua_Trigger, Type)
     EXPECT_CALL(*trigger, type).WillRepeatedly(Return(TriggerType::HeavyTrigger));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -173,6 +182,7 @@ TEST(Lua_Trigger, Visible)
     EXPECT_CALL(*trigger, visible).WillRepeatedly(Return(true));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -187,6 +197,7 @@ TEST(Lua_Trigger, SetVisible)
     EXPECT_CALL(*trigger, set_visible(true)).Times(1);
 
     LuaState L;
+    lua::trigger_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -199,6 +210,7 @@ TEST(Lua_Trigger, Colour)
     EXPECT_CALL(*trigger, colour).WillRepeatedly(Return(trview::Colour(1, 0.5f, 0.25f)));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::colour_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
@@ -215,6 +227,7 @@ TEST(Lua_Trigger, SetColourDefault)
     EXPECT_CALL(*trigger, set_colour).WillOnce(SaveArg<0>(&arg));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 
@@ -229,6 +242,7 @@ TEST(Lua_Trigger, SetColour)
     EXPECT_CALL(*trigger, set_colour).WillOnce(SaveArg<0>(&arg));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::colour_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");

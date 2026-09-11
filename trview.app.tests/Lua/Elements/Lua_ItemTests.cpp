@@ -218,6 +218,7 @@ TEST(Lua_Item, TriggeredBy)
     EXPECT_CALL(*item, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");

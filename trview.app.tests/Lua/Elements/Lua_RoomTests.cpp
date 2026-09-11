@@ -341,6 +341,7 @@ TEST(Lua_Room, Triggers)
     EXPECT_CALL(*room, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::room_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");

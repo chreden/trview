@@ -285,6 +285,7 @@ TEST(Lua_Level, SelectedTrigger)
     EXPECT_CALL(*level, selected_trigger).WillRepeatedly(Return(200));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
@@ -320,6 +321,7 @@ TEST(Lua_Level, Triggers)
     EXPECT_CALL(*level, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");

@@ -320,6 +320,7 @@ TEST(Lua_Sector, Trigger)
     auto sector = mock_shared<MockSector>()->with_trigger(trigger);
 
     LuaState L;
+    lua::trigger_register(L);
     lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");

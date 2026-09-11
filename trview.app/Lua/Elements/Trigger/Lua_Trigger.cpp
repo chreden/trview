@@ -1,6 +1,7 @@
 module;
 
 #include <external/lua/src/lua.h>
+#include <external/lua/src/lauxlib.h>
 #include <SimpleMath.h>
 
 module trview.app:LuaTrigger;
@@ -18,6 +19,8 @@ namespace trview
     {
         namespace
         {
+            int trigger_metatable = LUA_NOREF;
+
             void create_command(lua_State* L, const Command& command)
             {
                 lua_newtable(L);
@@ -41,7 +44,7 @@ namespace trview
 
             int trigger_index(lua_State* L)
             {
-                auto trigger = lua::get_self<ITrigger>(L);
+                auto trigger = get_userdata<std::shared_ptr<ITrigger>>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "colour")
@@ -109,7 +112,7 @@ namespace trview
 
             int trigger_newindex(lua_State* L)
             {
-                auto trigger = lua::get_self<ITrigger>(L);
+                auto trigger = get_userdata<std::shared_ptr<ITrigger>>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "colour")
@@ -130,14 +133,26 @@ namespace trview
             }
         }
 
+        void trigger_register(lua_State* L)
+        {
+            trigger_metatable = store_metatable(L,
+                {
+                    { "__index", trigger_index },
+                    { "__newindex", trigger_newindex },
+                    { "__gc", default_gc<std::shared_ptr<ITrigger>> },
+                });
+        }
+
         int create_trigger(lua_State* L, const std::shared_ptr<ITrigger>& trigger)
         {
-            return create(L, trigger, trigger_index, trigger_newindex);
+            create_userdata(L, trigger);
+            assign_metatable(L, trigger_metatable);
+            return 1;
         }
 
         std::shared_ptr<ITrigger> to_trigger(lua_State* L, int index)
         {
-            return get_self<ITrigger>(L, index);
+            return get_userdata<std::shared_ptr<ITrigger>>(L, index);
         }
     }
 }

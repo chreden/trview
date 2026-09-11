@@ -177,6 +177,7 @@ TEST(Lua_CameraSink, TriggeredBy)
     EXPECT_CALL(*cs, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
