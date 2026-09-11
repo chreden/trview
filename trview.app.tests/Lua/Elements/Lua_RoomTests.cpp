@@ -182,6 +182,7 @@ TEST(Lua_Room, Level)
     auto room = mock_shared<MockRoom>()->with_level(level);
 
     LuaState L;
+    lua::level_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 

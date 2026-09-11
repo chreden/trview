@@ -18,6 +18,7 @@ TEST(Lua_Level, AddScriptable)
     EXPECT_CALL(*level, add_scriptable).Times(1);
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
     lua::create_scriptable(L, scriptable);
@@ -32,6 +33,7 @@ TEST(Lua_Level, AlternateMode)
     EXPECT_CALL(*level, alternate_mode).WillRepeatedly(Return(true));
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -46,6 +48,7 @@ TEST(Lua_Level, SetAlternateMode)
     EXPECT_CALL(*level, set_alternate_mode(true));
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -61,6 +64,7 @@ TEST(Lua_Level, CamerasAndSinks)
     EXPECT_CALL(*level, camera_sinks).WillRepeatedly(Return(std::vector<std::weak_ptr<ICameraSink>>{ cs1, cs2 }));
 
     LuaState L;
+    lua::level_register(L);
     lua::camera_sink_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
@@ -84,6 +88,7 @@ TEST(Lua_Level, Filename)
     ON_CALL(*level, filename).WillByDefault(testing::Return("test filename"));
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l"); 
 
@@ -99,6 +104,7 @@ TEST(Lua_Level, Floordata)
     EXPECT_CALL(*level, floor_data).WillRepeatedly(Return(data));
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -121,6 +127,7 @@ TEST(Lua_Level, Items)
     EXPECT_CALL(*level, items).WillRepeatedly(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2 }));
 
     LuaState L;
+    lua::level_register(L);
     lua::item_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
@@ -147,6 +154,7 @@ TEST(Lua_Level, ItemsNg)
     EXPECT_CALL(*level, items).WillRepeatedly(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2, item3 }));
 
     LuaState L;
+    lua::level_register(L);
     lua::item_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
@@ -172,6 +180,7 @@ TEST(Lua_Level, Lights)
     EXPECT_CALL(*level, lights).WillRepeatedly(Return(std::vector<std::weak_ptr<ILight>>{ light1, light2 }));
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -195,6 +204,7 @@ TEST(Lua_Level, RemoveScriptable)
     EXPECT_CALL(*level, remove_scriptable).Times(1);
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
     lua::create_scriptable(L, scriptable);
@@ -211,6 +221,7 @@ TEST(Lua_Level, Rooms)
     EXPECT_CALL(*level, rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room1, room2 }));
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -234,6 +245,7 @@ TEST(Lua_Level, SelectedRoom)
     EXPECT_CALL(*level, selected_room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -252,6 +264,7 @@ TEST(Lua_Level, SetSelectedRoom)
     EXPECT_CALL(*level, set_selected_room).WillOnce(SaveArg<0>(&called_room));
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
     lua::create_room(L, room);
@@ -269,6 +282,7 @@ TEST(Lua_Level, SelectedTrigger)
     EXPECT_CALL(*level, selected_trigger).WillRepeatedly(Return(200));
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -286,6 +300,7 @@ TEST(Lua_Level, SetSelectedTrigger)
     EXPECT_CALL(*level, set_selected_trigger(200));
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
     lua::create_trigger(L, trigger);
@@ -302,6 +317,7 @@ TEST(Lua_Level, Triggers)
     EXPECT_CALL(*level, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -324,6 +340,7 @@ TEST(Lua_Level, Version)
     ON_CALL(*level, version).WillByDefault(testing::Return(trlevel::LevelVersion::Tomb4));
 
     LuaState L;
+    lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 

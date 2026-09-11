@@ -186,6 +186,7 @@ namespace trview
             mesh_register(L, mesh_source);
             camera_sink_register(L);
             item_register(L);
+            level_register(L);
         }
 
         void set_settings(const UserSettings& settings)
