@@ -19,6 +19,8 @@ namespace trview
     {
         namespace
         {
+            int route_metatable = LUA_NOREF;
+
             IRoute::Source route_source;
             IRandomizerRoute::Source randomizer_route_source;
             std::shared_ptr<IDialogs> dialogs;
@@ -317,16 +319,25 @@ namespace trview
 
         int create_route(lua_State* L, const std::shared_ptr<IRoute>& route)
         {
-            return create(L, route, route_index, route_newindex);
+            create_userdata(L, route);
+            assign_metatable(L, route_metatable);
+            return 1;
         }
 
         std::shared_ptr<IRoute> to_route(lua_State* L, int index)
         {
-            return get_self<IRoute>(L, index);
+            return get_userdata<std::shared_ptr<IRoute>>(L, index);
         }
 
         void route_register(lua_State* L, const IRoute::Source& source, const IRandomizerRoute::Source& randomizer_source, const std::shared_ptr<IDialogs>& dialogs_, const std::shared_ptr<IFiles>& files_)
         {
+            route_metatable = store_metatable(L,
+                {
+                    { "__index", route_index },
+                    { "__newindex", route_newindex },
+                    { "__gc", default_gc<std::shared_ptr<IRoute>> }
+                });
+
             route_source = source;
             randomizer_route_source = randomizer_source;
             dialogs = dialogs_;

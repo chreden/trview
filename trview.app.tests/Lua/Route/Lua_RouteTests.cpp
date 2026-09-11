@@ -19,6 +19,7 @@ TEST(Lua_Route, Add)
     EXPECT_CALL(*route, add(A<const std::shared_ptr<IWaypoint>&>())).Times(1);
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_waypoint(L, mock_shared<MockWaypoint>());
     lua_setglobal(L, "w");
     lua::create_route(L, route);
@@ -33,6 +34,7 @@ TEST(Lua_Route, Clear)
     EXPECT_CALL(*route, clear).Times(1);
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");
 
@@ -45,6 +47,7 @@ TEST(Lua_Route, Colour)
     EXPECT_CALL(*route, colour).Times(1).WillOnce(Return(Colour(1, 2, 3, 4)));
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::colour_register(L);
     lua::create_route(L, route);
     lua_setglobal(L, "r");
@@ -59,6 +62,7 @@ TEST(Lua_Route, IsRandomizer)
     auto rando_route = mock_shared<MockRandomizerRoute>();
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return mock_shared<MockRoute>(); }, [=](auto&&...){ return rando_route; }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, rando_route);
     lua_setglobal(L, "r");
 
@@ -83,6 +87,7 @@ TEST(Lua_Route, Level)
     EXPECT_CALL(*route, level).WillRepeatedly(Return(level));
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");
 
@@ -121,6 +126,7 @@ TEST(Lua_Route, Reload)
     EXPECT_CALL(*route, reload);
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");
 
@@ -133,6 +139,7 @@ TEST(Lua_Route, Remove)
     EXPECT_CALL(*route, remove(A<const std::shared_ptr<IWaypoint>&>())).Times(1);
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_waypoint(L, mock_shared<MockWaypoint>());
     lua_setglobal(L, "w");
     lua::create_route(L, route);
@@ -148,6 +155,7 @@ TEST(Lua_Route, Save)
     EXPECT_CALL(*route, save).Times(1);
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");
 
@@ -161,6 +169,7 @@ TEST(Lua_Route, SaveNoFilename)
     EXPECT_CALL(*route, set_filename).Times(0);
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");
 
@@ -246,6 +255,7 @@ TEST(Lua_Route, SelectedWaypoint)
     ON_CALL(*route, waypoint(2)).WillByDefault(Return(waypoint));
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");
 
@@ -261,6 +271,7 @@ TEST(Lua_Route, SetColour)
     EXPECT_CALL(*route, set_colour).Times(1).WillRepeatedly(SaveArg<0>(&called_colour));
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::colour_register(L);
     lua::create_route(L, route);
     lua_setglobal(L, "r");
@@ -282,6 +293,7 @@ TEST(Lua_Route, SetLevel)
     EXPECT_CALL(*route, set_level).WillRepeatedly(SaveArg<0>(&value));
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");
     lua::create_level(L, level);
@@ -304,6 +316,7 @@ TEST(Lua_Route, SetSelectedWaypoint)
     EXPECT_CALL(*route, select_waypoint).Times(1);
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");
     lua::create_waypoint(L, waypoint);
@@ -320,6 +333,7 @@ TEST(Lua_Route, SetWaypointColour)
     EXPECT_CALL(*route, set_waypoint_colour).Times(1).WillRepeatedly(SaveArg<0>(&called_colour));
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::colour_register(L);
     lua::create_route(L, route);
     lua_setglobal(L, "r");
@@ -342,6 +356,7 @@ TEST(Lua_Route, SetWaypoints)
     EXPECT_CALL(*route, add(Eq(waypoint2)));
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");
     lua::create_waypoint(L, waypoint1);
@@ -358,6 +373,7 @@ TEST(Lua_Route, SetShowRouteLine)
     EXPECT_CALL(*route, set_show_route_line(true));
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");
 
@@ -370,6 +386,7 @@ TEST(Lua_Route, ShowRouteLine)
     EXPECT_CALL(*route, show_route_line).WillOnce(Return(true));
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");
 
@@ -384,6 +401,7 @@ TEST(Lua_Route, WaypointColour)
     EXPECT_CALL(*route, waypoint_colour).Times(1).WillOnce(Return(Colour(1, 2, 3, 4)));
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::colour_register(L);
     lua::create_route(L, route);
     lua_setglobal(L, "r");
@@ -406,6 +424,7 @@ TEST(Lua_Route, Waypoints)
     ON_CALL(*route, waypoint(1)).WillByDefault(Return(waypoint2));
 
     LuaState L;
+    lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");
 
