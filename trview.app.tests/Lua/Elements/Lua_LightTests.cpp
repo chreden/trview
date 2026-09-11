@@ -20,6 +20,7 @@ TEST(Lua_Light, Colour)
     EXPECT_CALL(*light, colour).WillRepeatedly(Return(Color(1, 0.5f, 0.25f)));
 
     LuaState L;
+    lua::light_register(L);
     lua::colour_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
@@ -35,6 +36,7 @@ TEST(Lua_Light, Cutoff)
     EXPECT_CALL(*light, cutoff).WillOnce(Return(123.0f));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -49,6 +51,7 @@ TEST(Lua_Light, Density)
     EXPECT_CALL(*light, density).WillOnce(Return(123.0f));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -63,6 +66,7 @@ TEST(Lua_Light, Direction)
     EXPECT_CALL(*light, direction).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::light_register(L);
     lua::vector3_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
@@ -78,6 +82,7 @@ TEST(Lua_Light, Fade)
     EXPECT_CALL(*light, fade).WillOnce(Return(123));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -92,6 +97,7 @@ TEST(Lua_Light, Falloff)
     ON_CALL(*light, out).WillByDefault(Return(123.0f));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -117,6 +123,7 @@ TEST(Lua_Light, FalloffAngle)
     EXPECT_CALL(*light, out).WillOnce(Return(1.0f));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -137,6 +144,7 @@ TEST(Lua_Light, Hotspot)
     ON_CALL(*light, in).WillByDefault(Return(1.0f));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -167,6 +175,7 @@ TEST(Lua_Light, Intensity)
     EXPECT_CALL(*light, intensity).WillOnce(Return(123));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -181,6 +190,7 @@ TEST(Lua_Light, Length)
     EXPECT_CALL(*light, length).WillOnce(Return(123.0f));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -195,6 +205,7 @@ TEST(Lua_Light, Number)
     EXPECT_CALL(*light, number).WillOnce(Return(123));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -209,6 +220,7 @@ TEST(Lua_Light, Position)
     EXPECT_CALL(*light, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::light_register(L);
     lua::vector3_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
@@ -224,6 +236,7 @@ TEST(Lua_Light, Radius)
     EXPECT_CALL(*light, cutoff).WillOnce(Return(123.0f));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -238,6 +251,7 @@ TEST(Lua_Light, RadIn)
     EXPECT_CALL(*light, rad_in).WillOnce(Return(1.0f));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -252,6 +266,7 @@ TEST(Lua_Light, RadOut)
     EXPECT_CALL(*light, rad_out).WillOnce(Return(1.0f));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -266,6 +281,7 @@ TEST(Lua_Light, Range)
     EXPECT_CALL(*light, range).WillOnce(Return(123.0f));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -281,6 +297,7 @@ TEST(Lua_Light, Room)
     EXPECT_CALL(*light, room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -297,6 +314,7 @@ TEST(Lua_Light, Type)
     EXPECT_CALL(*light, type).WillOnce(Return(trlevel::LightType::Point));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -311,6 +329,7 @@ TEST(Lua_Light, Visible)
     EXPECT_CALL(*light, visible).WillOnce(Return(true));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 
@@ -325,6 +344,7 @@ TEST(Lua_Light, SetVisible)
     EXPECT_CALL(*light, set_visible(true)).Times(1);
 
     LuaState L;
+    lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");
 

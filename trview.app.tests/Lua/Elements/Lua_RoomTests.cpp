@@ -202,6 +202,7 @@ TEST(Lua_Room, Lights)
     EXPECT_CALL(*room, lights).WillRepeatedly(Return(std::vector<std::weak_ptr<ILight>>{ light1, light2 }));
 
     LuaState L;
+    lua::light_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 

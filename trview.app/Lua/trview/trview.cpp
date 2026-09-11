@@ -27,6 +27,7 @@ import :Application;
 import :LuaSector;
 import :LuaCameraSink;
 import :LuaItem;
+import :LuaLight;
 
 namespace trview
 {
@@ -187,6 +188,7 @@ namespace trview
             camera_sink_register(L);
             item_register(L);
             level_register(L);
+            light_register(L);
         }
 
         void set_settings(const UserSettings& settings)

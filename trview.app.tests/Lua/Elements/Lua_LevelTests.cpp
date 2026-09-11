@@ -180,6 +180,7 @@ TEST(Lua_Level, Lights)
     EXPECT_CALL(*level, lights).WillRepeatedly(Return(std::vector<std::weak_ptr<ILight>>{ light1, light2 }));
 
     LuaState L;
+    lua::light_register(L);
     lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");

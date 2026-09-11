@@ -20,9 +20,11 @@ namespace trview
     {
         namespace
         {
+            int light_metatable = LUA_NOREF;
+
             int light_index(lua_State* L)
             {
-                auto light = lua::get_self<ILight>(L);
+                auto light = lua::get_userdata<std::shared_ptr<ILight>>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "colour")
@@ -122,7 +124,7 @@ namespace trview
 
             int light_newindex(lua_State* L)
             {
-                auto light = lua::get_self<ILight>(L);
+                auto light = lua::get_userdata<std::shared_ptr<ILight>>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "visible")
@@ -135,9 +137,21 @@ namespace trview
             }
         }
 
+        void light_register(lua_State* L)
+        {
+            light_metatable = store_metatable(L,
+                {
+                    { "__index", light_index },
+                    { "__newindex", light_newindex },
+                    { "__gc", default_gc<std::shared_ptr<ILight>> }
+                });
+        }
+
         int create_light(lua_State* L, const std::shared_ptr<ILight>& light)
         {
-            return create(L, light, light_index, light_newindex);
+            create_userdata(L, light);
+            assign_metatable(L, light_metatable);
+            return 1;
         }
     }
 }
