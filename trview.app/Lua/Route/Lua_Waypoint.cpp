@@ -28,6 +28,7 @@ namespace trview
     {
         namespace
         {
+            int waypoint_metatable = LUA_NOREF;
             IWaypoint::Source waypoint_source;
             UserSettings user_settings;
 
@@ -47,7 +48,7 @@ namespace trview
 
             int waypoint_index(lua_State* L)
             {
-                auto waypoint = get_self<IWaypoint>(L);
+                auto waypoint = get_userdata<std::shared_ptr<IWaypoint>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
 
                 if (key == "colour")
@@ -140,7 +141,7 @@ namespace trview
 
             int waypoint_newindex(lua_State* L)
             {
-                auto waypoint = get_self<IWaypoint>(L);
+                auto waypoint = get_userdata<std::shared_ptr<IWaypoint>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
 
                 if (key == "colour")
@@ -380,6 +381,13 @@ namespace trview
 
         void waypoint_register(lua_State* L, IWaypoint::Source source)
         {
+            waypoint_metatable = store_metatable(L,
+                {
+                    { "__index", waypoint_index },
+                    { "__newindex", waypoint_newindex },
+                    { "__gc", default_gc<std::shared_ptr<IWaypoint>> },
+                });
+
             waypoint_source = source;
 
             lua_newtable(L);
@@ -390,12 +398,14 @@ namespace trview
 
         std::shared_ptr<IWaypoint> to_waypoint(lua_State* L, int index)
         {
-            return get_self<IWaypoint>(L, index);
+            return get_userdata<std::shared_ptr<IWaypoint>>(L, index);
         }
 
         int create_waypoint(lua_State* L, const std::shared_ptr<IWaypoint>& waypoint)
         {
-            return create(L, waypoint, waypoint_index, waypoint_newindex);
+            create_userdata(L, waypoint);
+            assign_metatable(L, waypoint_metatable);
+            return 1;
         }
 
         void waypoint_set_settings(const UserSettings& new_settings)

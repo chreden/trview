@@ -424,6 +424,7 @@ TEST(Lua_Route, Waypoints)
     ON_CALL(*route, waypoint(1)).WillByDefault(Return(waypoint2));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint1; });
     lua::route_register(L, [=](auto&&...) { return route; }, [](auto&&...){ return mock_shared<MockRandomizerRoute>(); }, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");

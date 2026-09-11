@@ -19,6 +19,7 @@ TEST(Lua_Waypoint, Colour)
     EXPECT_CALL(*waypoint, route_colour).WillRepeatedly(Return(Colour(1, 0.5f, 0.25f)));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::colour_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -36,6 +37,7 @@ TEST(Lua_Waypoint, Item)
     EXPECT_CALL(*waypoint, item).WillOnce(Return(item));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -49,6 +51,7 @@ TEST(Lua_Waypoint, Normal)
     EXPECT_CALL(*waypoint, normal).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::vector3_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -145,6 +148,7 @@ TEST(Lua_Waypoint, Notes)
     EXPECT_CALL(*waypoint, notes).WillOnce(Return("These are the notes"));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -159,6 +163,7 @@ TEST(Lua_Waypoint, Position)
     EXPECT_CALL(*waypoint, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::vector3_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -188,6 +193,7 @@ TEST(Lua_Waypoint, RandomizerSettings)
     EXPECT_CALL(*waypoint, randomizer_settings).WillRepeatedly(Return(waypoint_settings));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
     
@@ -217,6 +223,7 @@ TEST(Lua_Waypoint, Room)
     EXPECT_CALL(*waypoint, room).WillOnce(Return(123));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::room_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -232,6 +239,7 @@ TEST(Lua_Waypoint, RoomNumber)
     EXPECT_CALL(*waypoint, room).WillOnce(Return(123));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -246,6 +254,7 @@ TEST(Lua_Waypoint, SetColour)
     EXPECT_CALL(*waypoint, set_route_colour(Colour(1, 2, 3)));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::colour_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -261,6 +270,7 @@ TEST(Lua_Waypoint, SetItem)
     EXPECT_CALL(*waypoint, set_item).Times(1);
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
     lua::create_item(L, item);
@@ -275,6 +285,7 @@ TEST(Lua_Waypoint, SetNormal)
     EXPECT_CALL(*waypoint, set_normal(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::vector3_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -288,6 +299,7 @@ TEST(Lua_Waypoint, SetNotes)
     EXPECT_CALL(*waypoint, set_notes("New notes"));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -300,6 +312,7 @@ TEST(Lua_Waypoint, SetPosition)
     EXPECT_CALL(*waypoint, set_position(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::vector3_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -326,6 +339,7 @@ TEST(Lua_Waypoint, SetRandomizerSettings)
     EXPECT_CALL(*waypoint, set_randomizer_settings).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -344,6 +358,7 @@ TEST(Lua_Waypoint, SetRoom)
     EXPECT_CALL(*waypoint, set_room_number(123)).Times(1);
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
     lua::create_room(L, room);
@@ -358,6 +373,7 @@ TEST(Lua_Waypoint, SetRoomNumber)
     EXPECT_CALL(*waypoint, set_room_number(100));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -372,6 +388,7 @@ TEST(Lua_Waypoint, SetTrigger)
     EXPECT_CALL(*waypoint, set_trigger).Times(1);
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
     lua::create_trigger(L, trigger);
@@ -386,6 +403,7 @@ TEST(Lua_Waypoint, SetWaypointColour)
     EXPECT_CALL(*waypoint, set_waypoint_colour(Colour(1, 2, 3)));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::colour_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -401,6 +419,7 @@ TEST(Lua_Waypoint, Trigger)
     EXPECT_CALL(*waypoint, trigger).WillOnce(Return(trigger));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -414,6 +433,7 @@ TEST(Lua_Waypoint, Type)
     EXPECT_CALL(*waypoint, type).WillOnce(Return(IWaypoint::Type::Trigger));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -428,6 +448,7 @@ TEST(Lua_Waypoint, WaypointColour)
     EXPECT_CALL(*waypoint, waypoint_colour).WillRepeatedly(Return(Colour(1, 0.5f, 0.25f)));
 
     LuaState L;
+    lua::waypoint_register(L, [=](auto&&...) { return waypoint; });
     lua::colour_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
