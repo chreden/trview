@@ -205,7 +205,7 @@ TEST(Lua_Waypoint, Room)
 {
     auto room = mock_shared<MockRoom>();
     EXPECT_CALL(*room, number).WillRepeatedly(Return(123));
-    
+
     auto level = mock_shared<MockLevel>();
     EXPECT_CALL(*level, room(123)).WillRepeatedly(Return(room));
 
@@ -217,6 +217,7 @@ TEST(Lua_Waypoint, Room)
     EXPECT_CALL(*waypoint, room).WillOnce(Return(123));
 
     LuaState L;
+    lua::room_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 

@@ -197,6 +197,7 @@ TEST(Lua_Item, Room)
     EXPECT_CALL(*item, room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::room_register(L);
     lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");

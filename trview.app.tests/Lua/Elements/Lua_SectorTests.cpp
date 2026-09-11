@@ -21,6 +21,7 @@ TEST(Lua_Sector, Above)
     auto sector = mock_shared<MockSector>()->with_room(room)->with_room_above(10);
 
     LuaState L;
+    lua::room_register(L);
     lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
@@ -41,6 +42,7 @@ TEST(Lua_Sector, Below)
     auto sector = mock_shared<MockSector>()->with_room(room)->with_room_below(10);
 
     LuaState L;
+    lua::room_register(L);
     lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
@@ -207,6 +209,7 @@ TEST(Lua_Sector, Portal)
     ON_CALL(*sector, is_portal).WillByDefault(Return(true));
 
     LuaState L;
+    lua::room_register(L);
     lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
@@ -230,6 +233,7 @@ TEST(Lua_Sector, Portals)
     ON_CALL(*sector, is_portal).WillByDefault(Return(true));
 
     LuaState L;
+    lua::room_register(L);
     lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
@@ -250,6 +254,7 @@ TEST(Lua_Sector, Room)
     auto sector = mock_shared<MockSector>()->with_room(room);
 
     LuaState L;
+    lua::room_register(L);
     lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");

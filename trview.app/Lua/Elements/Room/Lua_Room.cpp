@@ -24,9 +24,11 @@ namespace trview
     {
         namespace
         {
+            int room_metatable = LUA_NOREF;
+
             int get_sector(lua_State* L)
             {
-                const auto room = lua::get_self<IRoom>(L);
+                const auto room = lua::get_userdata<std::shared_ptr<IRoom>>(L, 1);
                 const auto x = static_cast<int32_t>(lua_tointeger(L, 2) - 1);
                 const auto z = static_cast<int32_t>(lua_tointeger(L, 3) - 1);
                 return create_sector(L, room->sector(x, z).lock());
@@ -34,7 +36,7 @@ namespace trview
 
             int room_hasflag(lua_State* L)
             {
-                auto room = lua::get_self<IRoom>(L);
+                auto room = lua::get_userdata<std::shared_ptr<IRoom>>(L, 1);
 
                 luaL_checktype(L, -1, LUA_TNUMBER);
                 long long flags = lua_tointeger(L, -1);
@@ -45,7 +47,7 @@ namespace trview
 
             int room_index(lua_State* L)
             {
-                auto room = lua::get_self<IRoom>(L);
+                auto room = lua::get_userdata<std::shared_ptr<IRoom>>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "alternate_mode")
@@ -164,7 +166,7 @@ namespace trview
 
             int room_newindex(lua_State* L)
             {
-                auto room = lua::get_self<IRoom>(L);
+                auto room = lua::get_userdata<std::shared_ptr<IRoom>>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "visible")
@@ -178,11 +180,20 @@ namespace trview
 
         int create_room(lua_State* L, std::shared_ptr<IRoom> room)
         {
-            return create(L, room, room_index, room_newindex);
+            create_userdata(L, room);
+            assign_metatable(L, room_metatable);
+            return 1;
         }
 
         void room_register(lua_State* L)
         {
+            room_metatable = store_metatable(L,
+                {
+                    { "__index", room_index },
+                    { "__newindex", room_newindex },
+                    { "__gc", default_gc<std::shared_ptr<IRoom>> }
+                });
+
             lua_newtable(L);
             create_enum<IRoom::Flag>(L, "Flags",
                 {
@@ -210,7 +221,7 @@ namespace trview
 
         std::shared_ptr<IRoom> to_room(lua_State* L, int index)
         {
-            return get_self<IRoom>(L, index);
+            return get_userdata<std::shared_ptr<IRoom>>(L, index);
         }
 
         std::shared_ptr<IRoom> to_room(lua_State* L, int index, const std::string& field_name)

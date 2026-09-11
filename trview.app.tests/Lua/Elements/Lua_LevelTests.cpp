@@ -222,6 +222,7 @@ TEST(Lua_Level, Rooms)
     EXPECT_CALL(*level, rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room1, room2 }));
 
     LuaState L;
+    lua::room_register(L);
     lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
@@ -246,6 +247,7 @@ TEST(Lua_Level, SelectedRoom)
     EXPECT_CALL(*level, selected_room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::room_register(L);
     lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");

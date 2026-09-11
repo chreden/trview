@@ -106,6 +106,7 @@ TEST(Lua_Trigger, Room)
     EXPECT_CALL(*trigger, room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::room_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 

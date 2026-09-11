@@ -101,6 +101,7 @@ TEST(Lua_StaticMesh, Room)
     EXPECT_CALL(*static_mesh, room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::room_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 

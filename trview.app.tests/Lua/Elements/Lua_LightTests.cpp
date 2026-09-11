@@ -297,6 +297,7 @@ TEST(Lua_Light, Room)
     EXPECT_CALL(*light, room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::room_register(L);
     lua::light_register(L);
     lua::create_light(L, light);
     lua_setglobal(L, "l");

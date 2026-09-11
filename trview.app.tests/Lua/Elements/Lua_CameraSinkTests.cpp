@@ -50,6 +50,7 @@ TEST(Lua_CameraSink, InferredRooms)
     EXPECT_CALL(*cs, inferred_rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room1, room2 }));
 
     LuaState L;
+    lua::room_register(L);
     lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
@@ -120,6 +121,7 @@ TEST(Lua_CameraSink, Room)
     EXPECT_CALL(*cs, room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::room_register(L);
     lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");

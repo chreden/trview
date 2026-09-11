@@ -17,6 +17,7 @@ TEST(Lua_Room, AlternateMode)
     auto room = mock_shared<MockRoom>();
 
     LuaState L;
+    lua::room_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -41,6 +42,7 @@ TEST(Lua_Room, AlternateGroup)
     auto room = mock_shared<MockRoom>()->with_alternate_group(5);
 
     LuaState L;
+    lua::room_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -60,6 +62,7 @@ TEST(Lua_Room, AlternateRoom)
     ON_CALL(*room, level).WillByDefault(Return(level));
 
     LuaState L;
+    lua::room_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -79,6 +82,7 @@ TEST(Lua_Room, CamerasAndSinks)
     EXPECT_CALL(*room, camera_sinks).WillRepeatedly(Return(std::vector<std::weak_ptr<ICameraSink>>{ cs1, cs2 }));
 
     LuaState L;
+    lua::room_register(L);
     lua::camera_sink_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
@@ -101,6 +105,7 @@ TEST(Lua_Room, Flags)
     auto room = mock_shared<MockRoom>()->with_flags(static_cast<uint16_t>(IRoom::Flag::Water));
 
     LuaState L;
+    lua::room_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -114,6 +119,7 @@ TEST(Lua_Room, HasFlag)
     auto room = mock_shared<MockRoom>()->with_flags(static_cast<uint16_t>(IRoom::Flag::Water));
 
     LuaState L;
+    lua::room_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
     lua::room_register(L);
@@ -132,6 +138,7 @@ TEST(Lua_Room, Items)
     EXPECT_CALL(*room, items).WillRepeatedly(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2 }));
 
     LuaState L;
+    lua::room_register(L);
     lua::item_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
@@ -159,6 +166,7 @@ TEST(Lua_Room, ItemsNg)
     EXPECT_CALL(*room, items).WillRepeatedly(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2, item3 }));
 
     LuaState L;
+    lua::room_register(L);
     lua::item_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
@@ -182,6 +190,7 @@ TEST(Lua_Room, Level)
     auto room = mock_shared<MockRoom>()->with_level(level);
 
     LuaState L;
+    lua::room_register(L);
     lua::level_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
@@ -202,6 +211,7 @@ TEST(Lua_Room, Lights)
     EXPECT_CALL(*room, lights).WillRepeatedly(Return(std::vector<std::weak_ptr<ILight>>{ light1, light2 }));
 
     LuaState L;
+    lua::room_register(L);
     lua::light_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
@@ -224,6 +234,7 @@ TEST(Lua_Room, Number)
     auto room = mock_shared<MockRoom>()->with_number(123);
 
     LuaState L;
+    lua::room_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -237,6 +248,7 @@ TEST(Lua_Room, NumXSectors)
     auto room = mock_shared<MockRoom>()->with_num_x_sectors(123);
 
     LuaState L;
+    lua::room_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -250,6 +262,7 @@ TEST(Lua_Room, NumZSectors)
     auto room = mock_shared<MockRoom>()->with_num_z_sectors(123);
 
     LuaState L;
+    lua::room_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -264,6 +277,7 @@ TEST(Lua_Room, Position)
     auto room = mock_shared<MockRoom>()->with_room_info(info);
 
     LuaState L;
+    lua::room_register(L);
     lua::vector3_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
@@ -280,6 +294,7 @@ TEST(Lua_Room, Sector)
     EXPECT_CALL(*room, sector(0, 1)).WillRepeatedly(Return(sector));
 
     LuaState L;
+    lua::room_register(L);
     lua::sector_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
@@ -299,6 +314,7 @@ TEST(Lua_Room, Sectors)
     EXPECT_CALL(*room, sectors).WillRepeatedly(Return(std::vector<std::shared_ptr<ISector>>{ sector1, sector2 }));
 
     LuaState L;
+    lua::room_register(L);
     lua::sector_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
@@ -325,6 +341,7 @@ TEST(Lua_Room, Triggers)
     EXPECT_CALL(*room, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
 
     LuaState L;
+    lua::room_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -347,6 +364,7 @@ TEST(Lua_Room, Visible)
     EXPECT_CALL(*room, visible).WillOnce(Return(true));
 
     LuaState L;
+    lua::room_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -361,6 +379,7 @@ TEST(Lua_Room, SetVisible)
     EXPECT_CALL(*room, set_visible(true)).Times(1);
 
     LuaState L;
+    lua::room_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -372,6 +391,7 @@ TEST(Lua_Room, WaterScheme)
     auto room = mock_shared<MockRoom>()->with_water_scheme(9);
 
     LuaState L;
+    lua::room_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
