@@ -18,6 +18,8 @@ namespace trview
     {
         namespace
         {
+            int camera_metatable = LUA_NOREF;
+
             const std::unordered_map<std::string, ICamera::Mode> modes
             {
                 { "free", ICamera::Mode::Free },
@@ -56,7 +58,7 @@ namespace trview
 
             int camera_index(lua_State* L)
             {
-                auto camera = get_self<ICamera>(L);
+                auto camera = get_userdata<std::shared_ptr<ICamera>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
 
                 if (key == "mode")
@@ -74,7 +76,7 @@ namespace trview
 
             int camera_newindex(lua_State* L)
             {
-                auto camera = get_self<ICamera>(L);
+                auto camera = get_userdata<std::shared_ptr<ICamera>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
 
                 if (key == "mode")
@@ -113,18 +115,26 @@ namespace trview
             }
         }
 
-        void camera_register(lua_State*)
+        void camera_register(lua_State* L)
         {
+            camera_metatable = store_metatable(L,
+                {
+                    { "__index", camera_index },
+                    { "__newindex", camera_newindex },
+                    { "__gc", default_gc<std::shared_ptr<ICamera>> }
+                });
         }
 
         int create_camera(lua_State* L, const std::shared_ptr<ICamera>& camera)
         {
-            return create(L, camera, camera_index, camera_newindex);
+            create_userdata(L, camera);
+            assign_metatable(L, camera_metatable);
+            return 1;
         }
 
         std::shared_ptr<ICamera> to_camera(lua_State* L, int index)
         {
-            return get_self<ICamera>(L, index);
+            return get_userdata<std::shared_ptr<ICamera>>(L, index);
         }
     }
 }

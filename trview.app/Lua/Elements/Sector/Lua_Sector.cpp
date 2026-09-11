@@ -17,6 +17,8 @@ namespace trview
     {
         namespace
         {
+            int sector_metatable = LUA_NOREF;
+
             std::array<int, 4> to_corner_clicks(const std::shared_ptr<ISector>& sector, const std::array<float, 4>& corners)
             {
                 float base = 0;
@@ -51,7 +53,7 @@ namespace trview
 
             int sector_hasflag(lua_State* L)
             {
-                auto sector = lua::get_self<ISector>(L);
+                auto sector = get_userdata<std::shared_ptr<ISector>>(L, 1);
 
                 luaL_checktype(L, -1, LUA_TNUMBER);
                 long long flags = lua_tointeger(L, -1);
@@ -62,7 +64,7 @@ namespace trview
 
             int sector_index(lua_State* L)
             {
-                auto sector = lua::get_self<ISector>(L);
+                auto sector = get_userdata<std::shared_ptr<ISector>>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "above")
@@ -244,7 +246,7 @@ namespace trview
 
             int sector_newindex(lua_State* L)
             {
-                auto sector = lua::get_self<ISector>(L);
+                auto sector = get_userdata<std::shared_ptr<ISector>>(L, 1);
                 sector;
                 return 0;
             }
@@ -258,21 +260,20 @@ namespace trview
                 return 1;
             }
 
-            set_self(L, sector);
-
-            lua_newtable(L);
-            lua_pushcfunction(L, sector_index);
-            lua_setfield(L, -2, "__index");
-            lua_pushcfunction(L, sector_newindex);
-            lua_setfield(L, -2, "__newindex");
-            lua_pushcfunction(L, gc<ISector>);
-            lua_setfield(L, -2, "__gc");
-            lua_setmetatable(L, -2);
+            create_userdata(L, sector);
+            assign_metatable(L, sector_metatable);
             return 1;
         }
 
         void sector_register(lua_State* L)
         {
+            sector_metatable = store_metatable(L,
+                {
+                    { "__index", sector_index },
+                    { "__newindex", sector_newindex },
+                    { "__gc", default_gc<std::shared_ptr<ISector>> }
+                });
+
             lua_newtable(L);
             create_enum<SectorFlag>(L, "Flags", 
             {
@@ -300,9 +301,7 @@ namespace trview
 
         std::shared_ptr<ISector> to_sector(lua_State* L, int index)
         {
-            luaL_checktype(L, index, LUA_TUSERDATA);
-            std::shared_ptr<ISector>* userdata = static_cast<std::shared_ptr<ISector>*>(lua_touserdata(L, index));
-            return *userdata;
+            return get_userdata<std::shared_ptr<ISector>>(L, index);
         }
     }
 }

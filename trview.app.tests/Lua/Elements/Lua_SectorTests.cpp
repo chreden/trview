@@ -21,6 +21,7 @@ TEST(Lua_Sector, Above)
     auto sector = mock_shared<MockSector>()->with_room(room)->with_room_above(10);
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -40,6 +41,7 @@ TEST(Lua_Sector, Below)
     auto sector = mock_shared<MockSector>()->with_room(room)->with_room_below(10);
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -62,6 +64,7 @@ TEST(Lua_Sector, CeilingCorners)
     ON_CALL(*sector, ceiling_corners).WillByDefault(Return(corners));
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -86,6 +89,7 @@ TEST(Lua_Sector, CeilingTriangulation)
     auto sector = mock_shared<MockSector>()->with_ceiling_triangulation(TriangulationDirection::NeSw);
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -106,6 +110,7 @@ TEST(Lua_Sector, Corners)
     ON_CALL(*sector, corners).WillByDefault(Return(corners));
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -130,6 +135,7 @@ TEST(Lua_Sector, Flags)
     auto sector = mock_shared<MockSector>()->with_flags(SectorFlag::Portal);
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -148,6 +154,7 @@ TEST(Lua_Sector, Floordata)
     EXPECT_CALL(*sector, floordata_index).WillRepeatedly(Return(1));
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -167,9 +174,9 @@ TEST(Lua_Sector, HasFlag)
     auto sector = mock_shared<MockSector>()->with_flags(SectorFlag::Portal);
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
-    lua::sector_register(L);
 
     ASSERT_EQ(0, luaL_dostring(L, "return s:has_flag(Sector.Flags.Portal)"));
     ASSERT_EQ(LUA_TBOOLEAN, lua_type(L, -1));
@@ -181,6 +188,7 @@ TEST(Lua_Sector, Number)
     auto sector = mock_shared<MockSector>()->with_id(123);
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -199,6 +207,7 @@ TEST(Lua_Sector, Portal)
     ON_CALL(*sector, is_portal).WillByDefault(Return(true));
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -221,6 +230,7 @@ TEST(Lua_Sector, Portals)
     ON_CALL(*sector, is_portal).WillByDefault(Return(true));
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -240,6 +250,7 @@ TEST(Lua_Sector, Room)
     auto sector = mock_shared<MockSector>()->with_room(room);
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -263,6 +274,7 @@ TEST(Lua_Sector, SectorAbove)
     auto sector = mock_shared<MockSector>()->with_room(room)->with_room_above(10);
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -286,6 +298,7 @@ TEST(Lua_Sector, SectorBelow)
     auto sector = mock_shared<MockSector>()->with_room(room)->with_room_below(10);
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -302,6 +315,7 @@ TEST(Lua_Sector, Trigger)
     auto sector = mock_shared<MockSector>()->with_trigger(trigger);
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -317,6 +331,7 @@ TEST(Lua_Sector, X)
     auto sector = mock_shared<MockSector>()->with_x(123);
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -330,6 +345,7 @@ TEST(Lua_Sector, Z)
     auto sector = mock_shared<MockSector>()->with_z(123);
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -343,6 +359,7 @@ TEST(Lua_Sector, Triangulation)
     auto sector = mock_shared<MockSector>()->with_triangulation(TriangulationDirection::NeSw);
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -357,6 +374,7 @@ TEST(Lua_Sector, TiltX)
     EXPECT_CALL(*sector, tilt_x).WillRepeatedly(Return(-3));
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 
@@ -371,6 +389,7 @@ TEST(Lua_Sector, TiltZ)
     EXPECT_CALL(*sector, tilt_z).WillRepeatedly(Return(-3));
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_sector(L, sector);
     lua_setglobal(L, "s");
 

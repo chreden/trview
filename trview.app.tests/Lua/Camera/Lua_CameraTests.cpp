@@ -18,6 +18,7 @@ TEST(Lua_Camera, Mode)
     EXPECT_CALL(*camera, mode).WillOnce(Return(ICamera::Mode::Axis));
 
     LuaState L;
+    lua::camera_register(L);
     lua::create_camera(L, camera);
     lua_setglobal(L, "c");
 
@@ -32,6 +33,7 @@ TEST(Lua_Camera, Target)
     EXPECT_CALL(*camera, target).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::camera_register(L);
     lua::vector3_register(L);
     lua::create_camera(L, camera);
     lua_setglobal(L, "c");
@@ -47,6 +49,7 @@ TEST(Lua_Camera, SetMode)
     EXPECT_CALL(*camera, set_mode(ICamera::Mode::Free)).Times(1);
 
     LuaState L;
+    lua::camera_register(L);
     lua::create_camera(L, camera);
     lua_setglobal(L, "c");
 
@@ -59,6 +62,7 @@ TEST(Lua_Camera, SetTargetVector3)
     EXPECT_CALL(*camera, set_target(Vector3(1, 2, 3))).Times(1);
 
     LuaState L;
+    lua::camera_register(L);
     lua::vector3_register(L);
     lua::create_camera(L, camera);
     lua_setglobal(L, "c");
@@ -72,6 +76,7 @@ TEST(Lua_Camera, SetTargetPositionField)
     EXPECT_CALL(*camera, set_target(Vector3(1, 2, 3))).Times(1);
 
     LuaState L;
+    lua::camera_register(L);
     lua::vector3_register(L);
     lua::create_camera(L, camera);
     lua_setglobal(L, "c");

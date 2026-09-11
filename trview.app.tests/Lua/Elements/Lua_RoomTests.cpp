@@ -79,6 +79,7 @@ TEST(Lua_Room, CamerasAndSinks)
     EXPECT_CALL(*room, camera_sinks).WillRepeatedly(Return(std::vector<std::weak_ptr<ICameraSink>>{ cs1, cs2 }));
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -131,6 +132,7 @@ TEST(Lua_Room, Items)
     EXPECT_CALL(*room, items).WillRepeatedly(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2 }));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -157,6 +159,7 @@ TEST(Lua_Room, ItemsNg)
     EXPECT_CALL(*room, items).WillRepeatedly(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2, item3 }));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -275,6 +278,7 @@ TEST(Lua_Room, Sector)
     EXPECT_CALL(*room, sector(0, 1)).WillRepeatedly(Return(sector));
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 
@@ -293,6 +297,7 @@ TEST(Lua_Room, Sectors)
     EXPECT_CALL(*room, sectors).WillRepeatedly(Return(std::vector<std::shared_ptr<ISector>>{ sector1, sector2 }));
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_room(L, room);
     lua_setglobal(L, "r");
 

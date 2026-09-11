@@ -127,6 +127,7 @@ TEST(Lua_Trigger, Sector)
     EXPECT_CALL(*trigger, room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::sector_register(L);
     lua::create_trigger(L, trigger);
     lua_setglobal(L, "t");
 

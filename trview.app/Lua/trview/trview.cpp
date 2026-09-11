@@ -25,6 +25,8 @@ import :LuaWaypoint;
 import :IScriptable;
 import :Application;
 import :LuaSector;
+import :LuaCameraSink;
+import :LuaItem;
 
 namespace trview
 {
@@ -182,6 +184,8 @@ namespace trview
             camera_register(L);
             triangle_register(L);
             mesh_register(L, mesh_source);
+            camera_sink_register(L);
+            item_register(L);
         }
 
         void set_settings(const UserSettings& settings)

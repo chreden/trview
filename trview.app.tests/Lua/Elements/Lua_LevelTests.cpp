@@ -61,6 +61,7 @@ TEST(Lua_Level, CamerasAndSinks)
     EXPECT_CALL(*level, camera_sinks).WillRepeatedly(Return(std::vector<std::weak_ptr<ICameraSink>>{ cs1, cs2 }));
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -120,6 +121,7 @@ TEST(Lua_Level, Items)
     EXPECT_CALL(*level, items).WillRepeatedly(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2 }));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 
@@ -145,6 +147,7 @@ TEST(Lua_Level, ItemsNg)
     EXPECT_CALL(*level, items).WillRepeatedly(Return(std::vector<std::weak_ptr<IItem>>{ item1, item2, item3 }));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
 

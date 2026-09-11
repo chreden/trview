@@ -18,6 +18,7 @@ TEST(Lua_CameraSink, BoxIndex)
     EXPECT_CALL(*cs, box_index).WillOnce(Return(123));
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -32,6 +33,7 @@ TEST(Lua_CameraSink, Flag)
     EXPECT_CALL(*cs, flag).WillOnce(Return(123));
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -48,6 +50,7 @@ TEST(Lua_CameraSink, InferredRooms)
     EXPECT_CALL(*cs, inferred_rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room1, room2 }));
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -70,6 +73,7 @@ TEST(Lua_CameraSink, Number)
     EXPECT_CALL(*cs, number).WillOnce(Return(123));
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -84,6 +88,7 @@ TEST(Lua_CameraSink, Persistent)
     EXPECT_CALL(*cs, persistent).WillOnce(Return(true));
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -98,6 +103,7 @@ TEST(Lua_CameraSink, Position)
     EXPECT_CALL(*cs, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::vector3_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
@@ -114,6 +120,7 @@ TEST(Lua_CameraSink, Room)
     EXPECT_CALL(*cs, room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -130,6 +137,7 @@ TEST(Lua_CameraSink, Strength)
     EXPECT_CALL(*cs, strength).WillOnce(Return(123));
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -144,6 +152,7 @@ TEST(Lua_CameraSink, Type)
     EXPECT_CALL(*cs, type).WillOnce(Return(ICameraSink::Type::Camera));
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -166,6 +175,7 @@ TEST(Lua_CameraSink, TriggeredBy)
     EXPECT_CALL(*cs, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -188,6 +198,7 @@ TEST(Lua_CameraSink, Visible)
     EXPECT_CALL(*cs, visible).WillOnce(Return(true));
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -204,6 +215,7 @@ TEST(Lua_CameraSink, SetType)
     EXPECT_CALL(*cs, set_type(ICameraSink::Type::Sink)).Times(1);
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
@@ -220,6 +232,7 @@ TEST(Lua_CameraSink, SetVisible)
     EXPECT_CALL(*cs, set_visible(true)).Times(1);
 
     LuaState L;
+    lua::camera_sink_register(L);
     lua::create_camera_sink(L, cs);
     lua_setglobal(L, "c");
 
