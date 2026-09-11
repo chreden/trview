@@ -28,7 +28,7 @@ namespace trview
             int level_addscriptable(lua_State* L)
             {
                 auto level = lua::get_userdata<std::shared_ptr<ILevel>>(L, 1);
-                auto scriptable = lua::get_self<IScriptable>(L, -1);
+                auto scriptable = lua::get_userdata<std::shared_ptr<IScriptable>>(L, -1);
                 level->add_scriptable(scriptable);
                 return 0;
             }
@@ -36,7 +36,7 @@ namespace trview
             int level_removescriptable(lua_State* L)
             {
                 auto level = lua::get_userdata<std::shared_ptr<ILevel>>(L, 1);
-                auto scriptable = lua::get_self<IScriptable>(L, -1);
+                auto scriptable = lua::get_userdata<std::shared_ptr<IScriptable>>(L, -1);
                 level->remove_scriptable(scriptable);
                 return 0;
             }

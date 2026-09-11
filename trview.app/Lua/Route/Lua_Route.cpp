@@ -29,20 +29,20 @@ namespace trview
 
             int route_add(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 return create_waypoint(L, route->add(to_waypoint(L, 2)));
             }
 
             int route_remove(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 route->remove(to_waypoint(L, 2));
                 return 0;
             }
 
             int route_clear(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 route->clear();
                 return 0;
             }
@@ -85,7 +85,7 @@ namespace trview
 
             int route_save_as(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
 
                 std::string filename;
 
@@ -103,7 +103,7 @@ namespace trview
 
             int route_save(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 if (route->filename())
                 {
                     route->save(files, user_settings);
@@ -117,7 +117,7 @@ namespace trview
 
             int route_reload(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 route->reload(files, user_settings);
                 return 0;
             }
@@ -177,7 +177,7 @@ namespace trview
 
             int route_index(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
 
                 if (key == "add")
@@ -251,7 +251,7 @@ namespace trview
 
             int route_newindex(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
 
                 if (key == "colour")
