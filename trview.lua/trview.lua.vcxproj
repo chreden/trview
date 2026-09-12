@@ -11,15 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="inc\trview.lua.ixx" />
-    <ClInclude Include="src\framework.h" />
-    <ClCompile Include="inc\tables.ixx" />
+    <ClCompile Include="Tables\tables.ixx" />
+    <ClCompile Include="trview.lua.ixx" />
+    <ClCompile Include="Tables\tables.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\tables.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="inc\tables.inl" />
+    <None Include="Tables\tables.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

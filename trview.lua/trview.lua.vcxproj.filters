@@ -1,22 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="inc">
-      <UniqueIdentifier>{8aacbe93-2872-4cfc-971e-a8c5a115cff7}</UniqueIdentifier>
+    <ClCompile Include="src\tables.cpp" Filter="Tables" />
+    <ClCompile Include="inc\tables.ixx" Filter="Tables" />
+    <ClCompile Include="Tables\tables.cpp" Filter="Tables" />
+    <ClCompile Include="Tables\tables.ixx" Filter="Tables" />
+    <ClCompile Include="Tables\trview.lua.ixx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Tables">
+      <UniqueIdentifier>{38102920-1f3f-407b-9376-485eb4b854f7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src">
-      <UniqueIdentifier>{d3ea2f90-537a-4737-9f03-db0b54fda540}</UniqueIdentifier>
+    <Filter Include="Userdata">
+      <UniqueIdentifier>{6394aadc-ad26-4c8c-9f61-1dd4afaa1b50}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\framework.h" Filter="src" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\tables.cpp" Filter="src" />
-    <ClCompile Include="inc\tables.ixx" Filter="inc" />
-    <ClCompile Include="inc\trview.lua.ixx" Filter="inc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="inc\tables.inl" Filter="inc" />
+    <None Include="inc\tables.inl">
+      <Filter>Tables</Filter>
+    </None>
+    <None Include="Tables\tables.inl">
+      <Filter>Tables</Filter>
+    </None>
   </ItemGroup>
 </Project>
