@@ -102,7 +102,7 @@ TEST(Lua_Route, Level)
     EXPECT_CALL(*route, level).WillRepeatedly(Return(level));
 
     LuaState L;
-    const reg_scope<lua::level_register, lua::level_unregister> level_scope(L);
+    lua::level_register(L);
     const reg_scope<lua::route_register, lua::route_unregister> route_scope(L, default_route, default_rando_route, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
     lua::create_route(L, route);
     lua_setglobal(L, "r");
@@ -308,7 +308,7 @@ TEST(Lua_Route, SetLevel)
 
     LuaState L;
     const reg_scope<lua::route_register, lua::route_unregister> route_scope(L, default_route, default_rando_route, mock_shared<MockDialogs>(), mock_shared<MockFiles>());
-    const reg_scope<lua::level_register, lua::level_unregister> level_scope(L);
+    lua::level_register(L);
     lua::create_route(L, route);
     lua_setglobal(L, "r");
     lua::create_level(L, level);
