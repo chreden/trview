@@ -37,6 +37,7 @@ TEST(Lua_Waypoint, Item)
     EXPECT_CALL(*waypoint, item).WillOnce(Return(item));
 
     LuaState L;
+    lua::item_register(L);
     lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -70,6 +71,7 @@ TEST(Lua_Waypoint, NewItem)
     auto item = mock_shared<MockItem>();
 
     LuaState L;
+    lua::item_register(L);
     lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
     lua::create_item(L, item);
     lua_setglobal(L, "i");
@@ -88,20 +90,19 @@ TEST(Lua_Waypoint, NewPosition)
 
     std::optional<Vector3> position;
 
-    {
-        LuaState L;
-        lua::vector3_register(L);
-        lua::create_room(L, room);
-        lua_setglobal(L, "r");
-        lua::waypoint_register(L, [&](auto&& pos, auto&&...) { position = pos; return weak_waypoint.lock(); });
+    LuaState L;
+    lua::vector3_register(L);
+    lua::room_register(L);
+    lua::create_room(L, room);
+    lua_setglobal(L, "r");
+    lua::waypoint_register(L, [&](auto&& pos, auto&&...) { position = pos; return weak_waypoint.lock(); });
 
-        ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({position=Vector3.new(1024, 2048, 3072), room=r})"));
-        ASSERT_EQ(0, luaL_dostring(L, "return w"));
-        ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({position=Vector3.new(1024, 2048, 3072), room=r})"));
+    ASSERT_EQ(0, luaL_dostring(L, "return w"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
 
-        ASSERT_TRUE(position);
-        ASSERT_EQ(position.value(), Vector3(1, 2, 3));
-    }
+    ASSERT_TRUE(position);
+    ASSERT_EQ(position.value(), Vector3(1, 2, 3));
 }
 
 TEST(Lua_Waypoint, NewSector)
@@ -116,20 +117,19 @@ TEST(Lua_Waypoint, NewSector)
 
     std::optional<Vector3> position;
 
-    {
-        LuaState L;
-        lua::vector3_register(L);
-        lua::create_sector(L, sector);
-        lua_setglobal(L, "s");
-        lua::waypoint_register(L, [&](auto&& pos, auto&&...) { position = pos; return weak_waypoint.lock(); });
+    LuaState L;
+    lua::sector_register(L);
+    lua::vector3_register(L);
+    lua::create_sector(L, sector);
+    lua_setglobal(L, "s");
+    lua::waypoint_register(L, [&](auto&& pos, auto&&...) { position = pos; return weak_waypoint.lock(); });
 
-        ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({sector=s})"));
-        ASSERT_EQ(0, luaL_dostring(L, "return w"));
-        ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
+    ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({sector=s})"));
+    ASSERT_EQ(0, luaL_dostring(L, "return w"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
 
-        ASSERT_TRUE(position);
-        ASSERT_EQ(position.value(), Vector3(1, 2, 3));
-    }
+    ASSERT_TRUE(position);
+    ASSERT_EQ(position.value(), Vector3(1, 2, 3));
 }
 
 TEST(Lua_Waypoint, NewTrigger)
@@ -140,16 +140,15 @@ TEST(Lua_Waypoint, NewTrigger)
 
     auto trigger = mock_shared<MockTrigger>();
 
-    {
-        LuaState L;
-        lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
-        lua::create_trigger(L, trigger);
-        lua_setglobal(L, "t");
+    LuaState L;
+    lua::trigger_register(L);
+    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::create_trigger(L, trigger);
+    lua_setglobal(L, "t");
 
-        ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({trigger=t})"));
-        ASSERT_EQ(0, luaL_dostring(L, "return w"));
-        ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
-    }
+    ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({trigger=t})"));
+    ASSERT_EQ(0, luaL_dostring(L, "return w"));
+    ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));
 }
 
 TEST(Lua_Waypoint, Notes)
@@ -206,7 +205,7 @@ TEST(Lua_Waypoint, RandomizerSettings)
     lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
-    
+
     ASSERT_EQ(0, luaL_dostring(L, "return w.randomizer_settings"));
     ASSERT_EQ(LUA_TTABLE, lua_type(L, -1));
     ASSERT_EQ(0, luaL_dostring(L, "return w.randomizer_settings.test"));
@@ -280,6 +279,7 @@ TEST(Lua_Waypoint, SetItem)
     EXPECT_CALL(*waypoint, set_item).Times(1);
 
     LuaState L;
+    lua::item_register(L);
     lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -369,6 +369,7 @@ TEST(Lua_Waypoint, SetRoom)
 
     {
         LuaState L;
+        lua::room_register(L);
         lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
         lua::create_waypoint(L, waypoint);
         lua_setglobal(L, "w");
@@ -400,6 +401,7 @@ TEST(Lua_Waypoint, SetTrigger)
     EXPECT_CALL(*waypoint, set_trigger).Times(1);
 
     LuaState L;
+    lua::trigger_register(L);
     lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -431,6 +433,7 @@ TEST(Lua_Waypoint, Trigger)
     EXPECT_CALL(*waypoint, trigger).WillOnce(Return(trigger));
 
     LuaState L;
+    lua::trigger_register(L);
     lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");

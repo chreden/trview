@@ -13,6 +13,10 @@ namespace trview
     {
         void assign_metatable(lua_State* L, int ref_index)
         {
+            if (ref_index == LUA_NOREF)
+            {
+                throw std::exception("Metatable not a registry index");
+            }
             lua_rawgeti(L, LUA_REGISTRYINDEX, ref_index);
             lua_setmetatable(L, -2);
         }
