@@ -6,6 +6,8 @@ module;
 
 module trview.app:LuaLight;
 
+import trview.lua;
+
 import trlevel;
 import :Lua;
 import :LuaRoom;

@@ -8,6 +8,8 @@ module trview.app:LuaRoom;
 import std;
 import std.compat;
 
+import trview.lua;
+
 import :Lua;
 import :LuaSector;
 import :LuaItem;

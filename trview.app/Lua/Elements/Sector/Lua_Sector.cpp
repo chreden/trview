@@ -5,6 +5,8 @@ module;
 
 module trview.app:LuaSector;
 
+import trview.lua;
+
 import :Lua;
 import :ILevel;
 import :IRoom;

@@ -11,9 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Metatables\metatables.ixx" />
     <ClCompile Include="Tables\tables.ixx" />
     <ClCompile Include="trview.lua.ixx" />
     <ClCompile Include="Tables\tables.cpp" />
+    <ClCompile Include="Userdata\userdata.ixx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Tables\tables.inl" />

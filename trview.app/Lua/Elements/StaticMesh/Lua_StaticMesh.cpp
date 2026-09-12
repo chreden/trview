@@ -7,6 +7,7 @@ module;
 module trview.app:LuaStaticMesh;
 
 import trlevel;
+import trview.lua;
 import :Lua;
 import :LuaRoom;
 import :LuaVector3;

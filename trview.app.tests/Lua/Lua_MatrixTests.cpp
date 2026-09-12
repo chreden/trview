@@ -5,6 +5,7 @@
 #include <SimpleMath.h>
 
 import trview.app;
+import trview.lua;
 import trview.tests.common;
 
 using namespace trview;

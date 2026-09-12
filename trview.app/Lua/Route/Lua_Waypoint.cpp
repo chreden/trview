@@ -9,6 +9,7 @@ module trview.app:LuaWaypoint;
 import std;
 
 import trlevel;
+import trview.lua;
 
 import :LuaColour;
 import :LuaItem;

@@ -8,6 +8,7 @@ module trview.app:LuaColour;
 
 import std;
 import :Lua;
+import trview.lua;
 
 using namespace DirectX::SimpleMath;
 

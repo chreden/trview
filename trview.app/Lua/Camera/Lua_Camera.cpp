@@ -8,6 +8,7 @@ module trview.app:LuaCamera;
 
 import trlevel;
 import trview.common;
+import trview.lua;
 
 import :Lua;
 import :LuaVector3;

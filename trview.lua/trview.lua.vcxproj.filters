@@ -1,11 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\tables.cpp" Filter="Tables" />
-    <ClCompile Include="inc\tables.ixx" Filter="Tables" />
     <ClCompile Include="Tables\tables.cpp" Filter="Tables" />
     <ClCompile Include="Tables\tables.ixx" Filter="Tables" />
-    <ClCompile Include="Tables\trview.lua.ixx" />
+    <ClCompile Include="trview.lua.ixx" />
+    <ClCompile Include="Userdata\userdata.ixx">
+      <Filter>Userdata</Filter>
+    </ClCompile>
+    <ClCompile Include="Metatables\metatables.ixx">
+      <Filter>Metatables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tables">
@@ -14,11 +18,11 @@
     <Filter Include="Userdata">
       <UniqueIdentifier>{6394aadc-ad26-4c8c-9f61-1dd4afaa1b50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Metatables">
+      <UniqueIdentifier>{cc5eb46d-0040-44a1-bb17-7f3da1c9682e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="inc\tables.inl">
-      <Filter>Tables</Filter>
-    </None>
     <None Include="Tables\tables.inl">
       <Filter>Tables</Filter>
     </None>

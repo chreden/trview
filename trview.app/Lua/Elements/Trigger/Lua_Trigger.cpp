@@ -7,6 +7,7 @@ module;
 module trview.app:LuaTrigger;
 
 import trlevel;
+import trview.lua;
 import :Lua;
 import :LuaColour;
 import :LuaVector3;

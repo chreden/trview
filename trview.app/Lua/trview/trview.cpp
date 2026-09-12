@@ -6,6 +6,7 @@ module;
 module trview.app:trview;
 
 import trlevel;
+import trview.lua;
 
 import std;
 

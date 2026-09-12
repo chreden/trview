@@ -6,6 +6,8 @@ module;
 
 module trview.app:LuaCameraSink;
 
+import trview.lua;
+
 import :Lua;
 import :LuaRoom;
 import :LuaVector3;

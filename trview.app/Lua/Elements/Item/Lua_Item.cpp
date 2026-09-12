@@ -6,6 +6,8 @@ module;
 
 module trview.app:LuaItem;
 
+import trview.lua;
+
 import :Lua;
 import :LuaVector3;
 import :LuaTrigger;

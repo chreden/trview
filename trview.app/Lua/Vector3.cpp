@@ -6,6 +6,7 @@ module;
 
 module trview.app:LuaVector3;
 
+import trview.lua;
 import :Lua;
 
 using namespace DirectX::SimpleMath;

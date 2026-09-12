@@ -6,6 +6,7 @@ module;
 
 module trview.app:LuaRoute;
 
+import trview.lua;
 import :Lua;
 import :LuaWaypoint;
 import :LuaColour;

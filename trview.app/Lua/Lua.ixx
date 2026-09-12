@@ -72,20 +72,6 @@ namespace trview
         template <typename T>
         void create_enum(lua_State* L, const std::string& name, const std::vector<EnumValue<T>>& values);
 
-        template <typename T>
-        void create_userdata(lua_State* L, const T& value);
-
-        template <typename T>
-        T& get_userdata(lua_State* L, int index);
-
-        template <typename T>
-        int default_gc(lua_State* L);
-
-        void assign_metatable(lua_State* L, int ref_index);
-        int store_metatable(lua_State* L, const std::unordered_map<std::string, lua_CFunction>& map);
-        void create_metatable(lua_State* L, const std::unordered_map<std::string, lua_CFunction>& map);
-        bool equal_metatable(lua_State* L, int index, int metatable);
-
         using FunctionMap = const std::unordered_map<std::string, lua_CFunction>&;
 
         template <FunctionMap T>

@@ -7,6 +7,7 @@ module;
 module trview.app:Scriptable;
 
 import trlevel;
+import trview.lua;
 import :Lua;
 import :LuaVector3;
 import :ICamera;

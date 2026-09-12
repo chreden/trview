@@ -5,6 +5,8 @@ module;
 
 module trview.app:LuaLevel;
 
+import trview.lua;
+
 import :Lua;
 import :ILevel;
 import :IScriptable;
