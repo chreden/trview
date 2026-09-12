@@ -4,18 +4,10 @@
     <ClCompile Include="Tables\tables.cpp" Filter="Tables" />
     <ClCompile Include="Tables\tables.ixx" Filter="Tables" />
     <ClCompile Include="trview.lua.ixx" />
-    <ClCompile Include="Userdata\userdata.ixx">
-      <Filter>Userdata</Filter>
-    </ClCompile>
-    <ClCompile Include="Metatables\metatables.ixx">
-      <Filter>Metatables</Filter>
-    </ClCompile>
-    <ClCompile Include="Enums\enums.ixx">
-      <Filter>Enums</Filter>
-    </ClCompile>
-    <ClCompile Include="Lists\lists.ixx">
-      <Filter>Lists</Filter>
-    </ClCompile>
+    <ClCompile Include="Userdata\userdata.ixx" Filter="Userdata" />
+    <ClCompile Include="Metatables\metatables.ixx" Filter="Metatables" />
+    <ClCompile Include="Enums\enums.ixx" Filter="Enums" />
+    <ClCompile Include="Lists\lists.ixx" Filter="Lists" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tables">
@@ -35,8 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Tables\tables.inl">
-      <Filter>Tables</Filter>
-    </None>
+    <None Include="Tables\tables.inl" Filter="Tables" />
   </ItemGroup>
 </Project>
