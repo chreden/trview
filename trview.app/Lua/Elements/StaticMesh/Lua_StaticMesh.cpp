@@ -7,6 +7,7 @@ module;
 module trview.app:LuaStaticMesh;
 
 import trlevel;
+import trview.lua;
 import :Lua;
 import :LuaRoom;
 import :LuaVector3;
@@ -21,9 +22,11 @@ namespace trview
     {
         namespace
         {
+            int static_mesh_metatable = LUA_NOREF;
+
             int static_mesh_index(lua_State* L)
             {
-                auto static_mesh = lua::get_self<IStaticMesh>(L);
+                auto static_mesh = lua::get_userdata<std::shared_ptr<IStaticMesh>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
                 if (key == "breakable")
                 {
@@ -76,7 +79,7 @@ namespace trview
 
             int static_mesh_newindex(lua_State* L)
             {
-                auto static_mesh = lua::get_self<IStaticMesh>(L);
+                auto static_mesh = lua::get_userdata<std::shared_ptr<IStaticMesh>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
 
                 if (key == "visible")
@@ -87,9 +90,19 @@ namespace trview
             }
         }
 
+        void static_mesh_register(lua_State* L)
+        {
+            static_mesh_metatable = store_metatable(L,
+                {
+                    { "__index", static_mesh_index },
+                    { "__newindex", static_mesh_newindex },
+                    { "__gc", default_gc<std::shared_ptr<IStaticMesh>> },
+                });
+        }
+
         int create_static_mesh(lua_State* L, const std::shared_ptr<IStaticMesh>& mesh)
         {
-            return create(L, mesh, static_mesh_index, static_mesh_newindex);
+            return create_userdata(L, mesh, static_mesh_metatable);
         }
     }
 }

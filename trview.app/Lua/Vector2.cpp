@@ -7,6 +7,7 @@ module;
 module trview.app:LuaVector2;
 
 import std;
+import trview.lua;
 import :Lua;
 
 using namespace DirectX::SimpleMath;
@@ -45,9 +46,7 @@ namespace trview
 
         int create_vector2(lua_State* L, const Vector2& value)
         {
-            create_userdata(L, value);
-            assign_metatable(L, vector2_metatable);
-            return 1;
+            return create_userdata(L, value, vector2_metatable);
         }
 
         void vector2_register(lua_State* L)

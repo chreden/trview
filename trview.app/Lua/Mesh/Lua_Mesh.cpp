@@ -36,9 +36,7 @@ namespace trview
 
         int create_mesh(lua_State* L, const std::shared_ptr<IMesh>& mesh)
         {
-            create_userdata<std::shared_ptr<IMesh>>(L, mesh);
-            assign_metatable(L, mesh_metatable);
-            return 1;
+            return create_userdata(L, mesh, mesh_metatable);
         }
 
         void mesh_register(lua_State* L, const IMesh::Source& source)

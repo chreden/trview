@@ -18,6 +18,7 @@ TEST(Lua_Item, ActivationFlags)
     EXPECT_CALL(*item, activation_flags).WillOnce(Return(123));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -32,6 +33,7 @@ TEST(Lua_Item, Ai)
     EXPECT_CALL(*item, is_ai).WillOnce(Return(true));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -46,6 +48,7 @@ TEST(Lua_Item, Angle)
     EXPECT_CALL(*item, angle).WillOnce(Return(123));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -60,6 +63,7 @@ TEST(Lua_Item, Categories)
     EXPECT_CALL(*item, categories).WillRepeatedly(Return<std::unordered_set<std::string>>({ "One", "Two" }));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -79,6 +83,7 @@ TEST(Lua_Item, ClearBody)
     EXPECT_CALL(*item, clear_body_flag).WillOnce(Return(true));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -93,6 +98,7 @@ TEST(Lua_Item, Invisible)
     EXPECT_CALL(*item, invisible_flag).WillOnce(Return(true));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -106,6 +112,7 @@ TEST(Lua_Item, Ng)
     auto item = mock_shared<MockItem>()->with_ng_plus(true);
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -128,6 +135,7 @@ TEST(Lua_Item, Number)
     auto item = mock_shared<MockItem>()->with_number(123);
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -142,6 +150,7 @@ TEST(Lua_Item, Ocb)
     EXPECT_CALL(*item, ocb).WillOnce(Return(123));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -156,6 +165,7 @@ TEST(Lua_Item, Position)
     EXPECT_CALL(*item, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::item_register(L);
     lua::vector3_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
@@ -171,6 +181,7 @@ TEST(Lua_Item, RemasteredExtra)
     EXPECT_CALL(*item, is_remastered_extra).WillOnce(Return(true));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -186,6 +197,8 @@ TEST(Lua_Item, Room)
     EXPECT_CALL(*item, room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::room_register(L);
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -205,6 +218,8 @@ TEST(Lua_Item, TriggeredBy)
     EXPECT_CALL(*item, triggers).WillRepeatedly(Return(std::vector<std::weak_ptr<ITrigger>>{ trigger1, trigger2 }));
 
     LuaState L;
+    lua::trigger_register(L);
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -227,6 +242,7 @@ TEST(Lua_Item, Type)
     EXPECT_CALL(*item, type).WillOnce(Return("Lara"));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -241,6 +257,7 @@ TEST(Lua_Item, TypeId)
     EXPECT_CALL(*item, type_id).WillOnce(Return(123));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -255,6 +272,7 @@ TEST(Lua_Item, Visible)
     EXPECT_CALL(*item, visible).WillOnce(Return(true));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -270,6 +288,7 @@ TEST(Lua_Item, SetCategories)
     EXPECT_CALL(*item, set_categories).WillOnce(SaveArg<0>(&categories));
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 
@@ -284,6 +303,7 @@ TEST(Lua_Item, SetVisible)
     EXPECT_CALL(*item, set_visible(true)).Times(1);
 
     LuaState L;
+    lua::item_register(L);
     lua::create_item(L, item);
     lua_setglobal(L, "i");
 

@@ -152,9 +152,7 @@ namespace trview
 
         int create_triangle(lua_State* L, const Triangle& triangle)
         {
-            create_userdata(L, triangle);
-            assign_metatable(L, triangle_metatable);
-            return 1;
+            return create_userdata(L, triangle, triangle_metatable);
         }
 
         void triangle_register(lua_State* L)

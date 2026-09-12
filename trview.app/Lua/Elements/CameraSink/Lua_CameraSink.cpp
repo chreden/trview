@@ -6,6 +6,8 @@ module;
 
 module trview.app:LuaCameraSink;
 
+import trview.lua;
+
 import :Lua;
 import :LuaRoom;
 import :LuaVector3;
@@ -17,9 +19,11 @@ namespace trview
     {
         namespace
         {
+            int camera_sink_metatable = LUA_NOREF;
+
             int camera_sink_index(lua_State* L)
             {
-                auto camera_sink = lua::get_self<ICameraSink>(L);
+                auto camera_sink = lua::get_userdata<std::shared_ptr<ICameraSink>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
                 if (key == "box_index")
                 {
@@ -78,7 +82,7 @@ namespace trview
 
             int camera_sink_newindex(lua_State* L)
             {
-                auto camera_sink = lua::get_self<ICameraSink>(L);
+                auto camera_sink = lua::get_userdata<std::shared_ptr<ICameraSink>>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "type")
@@ -117,9 +121,19 @@ namespace trview
             }
         }
 
+        void camera_sink_register(lua_State* L)
+        {
+            camera_sink_metatable = store_metatable(L,
+                {
+                    { "__index", camera_sink_index },
+                    { "__newindex", camera_sink_newindex },
+                    { "__gc", default_gc<std::shared_ptr<ICameraSink>> }
+                });
+        }
+
         int create_camera_sink(lua_State* L, std::shared_ptr<ICameraSink> camera_sink)
         {
-            return create(L, camera_sink, camera_sink_index, camera_sink_newindex);
+            return create_userdata(L, camera_sink, camera_sink_metatable);
         }
     }
 }

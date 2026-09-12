@@ -7,6 +7,7 @@ module;
 module trview.app:Scriptable;
 
 import trlevel;
+import trview.lua;
 import :Lua;
 import :LuaVector3;
 import :ICamera;
@@ -19,11 +20,12 @@ namespace trview
     {
         namespace
         {
+            int scriptable_metatable = LUA_NOREF;
             IScriptable::Source scriptable_source;
 
             int scriptable_index(lua_State* L)
             {
-                auto scriptable = get_self<IScriptable>(L);
+                auto scriptable = get_userdata<std::shared_ptr<IScriptable>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
 
                 if (key == "data")
@@ -47,7 +49,7 @@ namespace trview
 
             int scriptable_newindex(lua_State* L)
             {
-                auto scriptable = get_self<IScriptable>(L);
+                auto scriptable = get_userdata<std::shared_ptr<IScriptable>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
 
                 if (key == "colour")
@@ -94,11 +96,18 @@ namespace trview
 
         int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable)
         {
-            return create(L, scriptable, scriptable_index, scriptable_newindex);
+            return create_userdata(L, scriptable, scriptable_metatable);
         }
 
         void scriptable_register(lua_State* L, const IScriptable::Source& source)
         {
+            scriptable_metatable = store_metatable(L,
+                {
+                    { "__index", scriptable_index },
+                    { "__newindex", scriptable_newindex },
+                    { "__gc", default_gc<std::shared_ptr<IScriptable>> }
+                });
+
             scriptable_source = source;
             lua_newtable(L);
             lua_pushcfunction(L, scriptable_new);
@@ -108,7 +117,7 @@ namespace trview
 
         std::shared_ptr<IScriptable> to_scriptable(lua_State* L, int index)
         {
-            return get_self<IScriptable>(L, index);
+            return get_userdata<std::shared_ptr<IScriptable>>(L, index);
         }
     }
 

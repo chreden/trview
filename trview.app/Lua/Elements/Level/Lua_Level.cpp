@@ -5,6 +5,8 @@ module;
 
 module trview.app:LuaLevel;
 
+import trview.lua;
+
 import :Lua;
 import :ILevel;
 import :IScriptable;
@@ -23,25 +25,31 @@ namespace trview
     {
         namespace
         {
+            int level_metatable = LUA_NOREF;
+
             int level_addscriptable(lua_State* L)
             {
-                auto level = lua::get_self<ILevel>(L);
-                auto scriptable = lua::get_self<IScriptable>(L, -1);
+                auto level = lua::get_userdata<std::shared_ptr<ILevel>>(L, 1);
+                auto scriptable = lua::get_userdata<std::shared_ptr<IScriptable>>(L, -1);
                 level->add_scriptable(scriptable);
                 return 0;
             }
 
             int level_removescriptable(lua_State* L)
             {
-                auto level = lua::get_self<ILevel>(L);
-                auto scriptable = lua::get_self<IScriptable>(L, -1);
+                auto level = lua::get_userdata<std::shared_ptr<ILevel>>(L, 1);
+                auto scriptable = lua::get_userdata<std::shared_ptr<IScriptable>>(L, -1);
                 level->remove_scriptable(scriptable);
                 return 0;
             }
 
             int level_index(lua_State* L)
             {
-                auto level = lua::get_self<ILevel>(L);
+                auto level = lua::get_userdata<std::shared_ptr<ILevel>>(L, 1);
+                if (!level)
+                {
+                    return luaL_error(L, "self nil in level __index");
+                }
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "add_scriptable")
@@ -152,7 +160,7 @@ namespace trview
 
             int level_newindex(lua_State* L)
             {
-                auto level = lua::get_self<ILevel>(L);
+                auto level = lua::get_userdata<std::shared_ptr<ILevel>>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "alternate_mode")
@@ -186,14 +194,24 @@ namespace trview
             }
         }
 
+        void level_register(lua_State* L)
+        {
+            level_metatable = store_metatable(L,
+                {
+                    { "__index", level_index },
+                    { "__newindex", level_newindex },
+                    { "__gc", default_gc<std::shared_ptr<ILevel>> }
+                });
+        }
+
         int create_level(lua_State* L, const std::shared_ptr<ILevel>& level)
         {
-            return create(L, level, level_index, level_newindex);
+            return create_userdata(L, level, level_metatable);
         }
 
         std::shared_ptr<ILevel> to_level(lua_State* L, int index)
         {
-            return get_self<ILevel>(L, index);
+            return lua::get_userdata<std::shared_ptr<ILevel>>(L, index);
         }
     }
 }

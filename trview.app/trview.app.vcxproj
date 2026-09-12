@@ -371,7 +371,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
   <ItemGroup>
     <None Include="Elements\IStaticMesh.inl" />
     <None Include="Elements\Level.inl" />
-    <None Include="Lua\Lua.inl" />
     <None Include="Messages\Messages.inl" />
     <None Include="Track\Track.inl" />
     <None Include="Windows\AutoHider.inl" />

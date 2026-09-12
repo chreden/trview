@@ -6,6 +6,8 @@ module;
 
 module trview.app:LuaItem;
 
+import trview.lua;
+
 import :Lua;
 import :LuaVector3;
 import :LuaTrigger;
@@ -17,9 +19,11 @@ namespace trview
     {
         namespace
         {
+            int item_metatable = LUA_NOREF;
+
             int item_index(lua_State* L)
             {
-                auto item = lua::get_self<IItem>(L);
+                auto item = lua::get_userdata<std::shared_ptr<IItem>>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "activation_flags")
@@ -111,7 +115,7 @@ namespace trview
 
             int item_newindex(lua_State* L)
             {
-                auto item = lua::get_self<IItem>(L);
+                auto item = lua::get_userdata<std::shared_ptr<IItem>>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "categories")
@@ -137,14 +141,24 @@ namespace trview
             }
         }
 
+        void item_register(lua_State* L)
+        {
+            item_metatable = store_metatable(L,
+                {
+                    { "__index", item_index },
+                    { "__newindex", item_newindex },
+                    { "__gc", default_gc<std::shared_ptr<IItem>> }
+                });
+        }
+
         int create_item(lua_State* L, const std::shared_ptr<IItem>& item)
         {
-            return create(L, item, item_index, item_newindex);
+            return create_userdata(L, item, item_metatable);
         }
 
         std::shared_ptr<IItem> to_item(lua_State* L, int index)
         {
-            return get_self<IItem>(L, index);
+            return get_userdata<std::shared_ptr<IItem>>(L, index);
         }
     }
 }

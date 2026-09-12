@@ -18,6 +18,7 @@ TEST(Lua_StaticMesh, Breakable)
     EXPECT_CALL(*mesh, breakable).WillOnce(Return(true));
 
     LuaState L;
+    lua::static_mesh_register(L);
     lua::create_static_mesh(L, mesh);
     lua_setglobal(L, "s");
 
@@ -37,6 +38,7 @@ TEST(Lua_StaticMesh, Collision)
     EXPECT_CALL(*static_mesh, collision).WillRepeatedly(Return(box));
 
     LuaState L;
+    lua::static_mesh_register(L);
     lua::vector3_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
@@ -57,6 +59,7 @@ TEST(Lua_StaticMesh, HasCollision)
     EXPECT_CALL(*static_mesh, has_collision).WillRepeatedly(Return(true));
 
     LuaState L;
+    lua::static_mesh_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
@@ -71,6 +74,7 @@ TEST(Lua_StaticMesh, Id)
     EXPECT_CALL(*static_mesh, id).WillRepeatedly(Return(123));
 
     LuaState L;
+    lua::static_mesh_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
@@ -85,6 +89,7 @@ TEST(Lua_StaticMesh, Position)
     EXPECT_CALL(*static_mesh, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
+    lua::static_mesh_register(L);
     lua::vector3_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
@@ -101,6 +106,8 @@ TEST(Lua_StaticMesh, Room)
     EXPECT_CALL(*static_mesh, room).WillRepeatedly(Return(room));
 
     LuaState L;
+    lua::static_mesh_register(L);
+    lua::room_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
@@ -117,6 +124,7 @@ TEST(Lua_StaticMesh, Rotation)
     EXPECT_CALL(*static_mesh, rotation).WillRepeatedly(Return(123.0f));
 
     LuaState L;
+    lua::static_mesh_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
@@ -131,6 +139,7 @@ TEST(Lua_StaticMesh, SetVisible)
     EXPECT_CALL(*static_mesh, set_visible(true)).Times(1);
 
     LuaState L;
+    lua::static_mesh_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
@@ -143,6 +152,7 @@ TEST(Lua_StaticMesh, Type)
     ON_CALL(*static_mesh, type).WillByDefault(Return(IStaticMesh::Type::Mesh));
 
     LuaState L;
+    lua::static_mesh_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
@@ -162,6 +172,7 @@ TEST(Lua_StaticMesh, Visible)
     EXPECT_CALL(*static_mesh, visible).WillOnce(Return(true));
 
     LuaState L;
+    lua::static_mesh_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");
 
@@ -181,6 +192,7 @@ TEST(Lua_StaticMesh, Visibility)
     EXPECT_CALL(*static_mesh, visibility).WillRepeatedly(Return(box));
 
     LuaState L;
+    lua::static_mesh_register(L);
     lua::vector3_register(L);
     lua::create_static_mesh(L, static_mesh);
     lua_setglobal(L, "s");

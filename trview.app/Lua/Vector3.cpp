@@ -6,6 +6,7 @@ module;
 
 module trview.app:LuaVector3;
 
+import trview.lua;
 import :Lua;
 
 using namespace DirectX::SimpleMath;
@@ -74,9 +75,7 @@ namespace trview
 
         int create_vector3(lua_State* L, const Vector3& value)
         {
-            create_userdata(L, value);
-            assign_metatable(L, vector3_metatable);
-            return 1;
+            return create_userdata(L, value, vector3_metatable);
         }
 
         bool is_vector3(lua_State* L, int index)

@@ -6,6 +6,7 @@ module;
 
 module trview.app:LuaRoute;
 
+import trview.lua;
 import :Lua;
 import :LuaWaypoint;
 import :LuaColour;
@@ -19,6 +20,8 @@ namespace trview
     {
         namespace
         {
+            int route_metatable = LUA_NOREF;
+
             IRoute::Source route_source;
             IRandomizerRoute::Source randomizer_route_source;
             std::shared_ptr<IDialogs> dialogs;
@@ -27,20 +30,20 @@ namespace trview
 
             int route_add(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 return create_waypoint(L, route->add(to_waypoint(L, 2)));
             }
 
             int route_remove(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 route->remove(to_waypoint(L, 2));
                 return 0;
             }
 
             int route_clear(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 route->clear();
                 return 0;
             }
@@ -83,7 +86,7 @@ namespace trview
 
             int route_save_as(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
 
                 std::string filename;
 
@@ -101,7 +104,7 @@ namespace trview
 
             int route_save(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 if (route->filename())
                 {
                     route->save(files, user_settings);
@@ -115,7 +118,7 @@ namespace trview
 
             int route_reload(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 route->reload(files, user_settings);
                 return 0;
             }
@@ -175,7 +178,7 @@ namespace trview
 
             int route_index(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
 
                 if (key == "add")
@@ -249,7 +252,7 @@ namespace trview
 
             int route_newindex(lua_State* L)
             {
-                auto route = get_self<IRoute>(L);
+                auto route = lua::get_userdata<std::shared_ptr<IRoute>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
 
                 if (key == "colour")
@@ -317,16 +320,23 @@ namespace trview
 
         int create_route(lua_State* L, const std::shared_ptr<IRoute>& route)
         {
-            return create(L, route, route_index, route_newindex);
+            return create_userdata(L, route, route_metatable);
         }
 
         std::shared_ptr<IRoute> to_route(lua_State* L, int index)
         {
-            return get_self<IRoute>(L, index);
+            return get_userdata<std::shared_ptr<IRoute>>(L, index);
         }
 
         void route_register(lua_State* L, const IRoute::Source& source, const IRandomizerRoute::Source& randomizer_source, const std::shared_ptr<IDialogs>& dialogs_, const std::shared_ptr<IFiles>& files_)
         {
+            route_metatable = store_metatable(L,
+                {
+                    { "__index", route_index },
+                    { "__newindex", route_newindex },
+                    { "__gc", default_gc<std::shared_ptr<IRoute>> }
+                });
+
             route_source = source;
             randomizer_route_source = randomizer_source;
             dialogs = dialogs_;

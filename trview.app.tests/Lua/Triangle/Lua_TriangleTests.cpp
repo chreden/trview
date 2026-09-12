@@ -6,6 +6,7 @@
 
 import trview.app;
 import trview.app.mocks;
+import trview.lua;
 import trview.tests.common;
 
 using namespace trview;

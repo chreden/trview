@@ -6,6 +6,7 @@ module;
 module trview.app:trview;
 
 import trlevel;
+import trview.lua;
 
 import std;
 
@@ -25,6 +26,11 @@ import :LuaWaypoint;
 import :IScriptable;
 import :Application;
 import :LuaSector;
+import :LuaCameraSink;
+import :LuaItem;
+import :LuaLight;
+import :LuaStaticMesh;
+import :LuaTrigger;
 
 namespace trview
 {
@@ -56,7 +62,7 @@ namespace trview
 
             int trview_load(lua_State* L)
             {
-                auto application = lua::get_self_raw<IApplication>(L);
+                auto application = lua::get_userdata<IApplication*>(L, 1);
 
                 luaL_checktype(L, -1, LUA_TSTRING);
                 const char* filename = lua_tostring(L, -1);
@@ -85,7 +91,7 @@ namespace trview
 
             int trview_index(lua_State* L)
             {
-                auto application = lua::get_self_raw<IApplication>(L);
+                auto application = lua::get_userdata<IApplication*>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "camera")
@@ -121,7 +127,7 @@ namespace trview
 
             int trview_newindex(lua_State* L)
             {
-                auto application = lua::get_self_raw<IApplication>(L);
+                auto application = lua::get_userdata<IApplication*>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "level")
@@ -182,6 +188,12 @@ namespace trview
             camera_register(L);
             triangle_register(L);
             mesh_register(L, mesh_source);
+            camera_sink_register(L);
+            item_register(L);
+            level_register(L);
+            light_register(L);
+            static_mesh_register(L);
+            trigger_register(L);
         }
 
         void set_settings(const UserSettings& settings)
