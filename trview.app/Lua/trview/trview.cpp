@@ -196,6 +196,14 @@ namespace trview
             trigger_register(L);
         }
 
+        void trview_unregister()
+        {
+            route_unregister();
+            waypoint_unregister();
+            scriptable_unregister();
+            mesh_unregister();
+        }
+
         void set_settings(const UserSettings& settings)
         {
             waypoint_set_settings(settings);

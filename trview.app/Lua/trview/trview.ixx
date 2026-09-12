@@ -15,9 +15,9 @@ import :Forward;
 
 namespace trview
 {
-    namespace lua
+    export namespace lua
     {
-        export void trview_register(lua_State* L,
+        void trview_register(lua_State* L,
             IApplication* application,
             const IRoute::Source& route_source,
             const IRandomizerRoute::Source& randomizer_route_source,
@@ -26,6 +26,7 @@ namespace trview
             const std::shared_ptr<IDialogs>& dialogs,
             const std::shared_ptr<IFiles>& files,
             const IMesh::Source& mesh_source);
-        export void set_settings(const UserSettings& settings);
+        void trview_unregister();
+        void set_settings(const UserSettings& settings);
     }
 }

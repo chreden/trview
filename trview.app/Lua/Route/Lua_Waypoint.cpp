@@ -397,6 +397,11 @@ namespace trview
             lua_setglobal(L, "Waypoint");
         }
 
+        void waypoint_unregister()
+        {
+            waypoint_source = nullptr;
+        }
+
         std::shared_ptr<IWaypoint> to_waypoint(lua_State* L, int index)
         {
             return get_userdata<std::shared_ptr<IWaypoint>>(L, index);

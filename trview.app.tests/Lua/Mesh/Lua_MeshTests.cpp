@@ -19,7 +19,7 @@ TEST(Lua_Mesh, Constructor)
 
     LuaState L;
     lua::triangle_register(L);
-    lua::mesh_register(L, mesh_source);
+    const reg_scope<lua::mesh_register, lua::mesh_unregister> mesh_scope(L, mesh_source);
 
     ASSERT_EQ(0, luaL_dostring(L, "x = Mesh({triangles = {}}) return x"));
     ASSERT_EQ(LUA_TUSERDATA, lua_type(L, -1));

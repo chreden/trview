@@ -18,7 +18,7 @@ TEST(Lua_Level, AddScriptable)
     EXPECT_CALL(*level, add_scriptable).Times(1);
 
     LuaState L;
-    lua::scriptable_register(L, [](auto&&) { return mock_shared<MockScriptable>(); });
+    const reg_scope<lua::scriptable_register, lua::scriptable_unregister> scriptable_scope(L, [](auto&&) { return mock_shared<MockScriptable>(); });
     lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
@@ -206,7 +206,7 @@ TEST(Lua_Level, RemoveScriptable)
     EXPECT_CALL(*level, remove_scriptable).Times(1);
 
     LuaState L;
-    lua::scriptable_register(L, [](auto&&) { return mock_shared<MockScriptable>(); });
+    const reg_scope<lua::scriptable_register, lua::scriptable_unregister> scriptable_scope(L, [](auto&&) { return mock_shared<MockScriptable>(); });
     lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");

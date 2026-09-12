@@ -11,12 +11,13 @@ import :UserSettings;
 
 namespace trview
 {
-    namespace lua
+    export namespace lua
     {
-        export int create_waypoint(lua_State* L, const std::shared_ptr<IWaypoint>& waypoint);
-        export void waypoint_register(lua_State* L, IWaypoint::Source source);
-        export std::shared_ptr<IWaypoint> to_waypoint(lua_State* L, int index);
-        export void waypoint_set_settings(const UserSettings& settings);
+        int create_waypoint(lua_State* L, const std::shared_ptr<IWaypoint>& waypoint);
+        void waypoint_register(lua_State* L, IWaypoint::Source source);
+        void waypoint_unregister();
+        std::shared_ptr<IWaypoint> to_waypoint(lua_State* L, int index);
+        void waypoint_set_settings(const UserSettings& settings);
     }
 }
 

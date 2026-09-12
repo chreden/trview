@@ -56,5 +56,10 @@ namespace trview
                 });
             lua_setglobal(L, "Mesh");
         }
+
+        void mesh_unregister()
+        {
+            mesh_source = nullptr;
+        }
     }
 }
