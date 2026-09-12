@@ -16,11 +16,10 @@ using namespace DirectX::SimpleMath;
 TEST(Lua_Waypoint, Colour)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, route_colour).WillRepeatedly(Return(Colour(1, 0.5f, 0.25f)));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::colour_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -35,11 +34,10 @@ TEST(Lua_Waypoint, Item)
     auto item = mock_shared<MockItem>();
 
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, item).WillOnce(Return(item));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -50,11 +48,10 @@ TEST(Lua_Waypoint, Item)
 TEST(Lua_Waypoint, Normal)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, normal).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::vector3_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -152,11 +149,10 @@ TEST(Lua_Waypoint, NewTrigger)
 TEST(Lua_Waypoint, Notes)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, notes).WillOnce(Return("These are the notes"));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -168,11 +164,10 @@ TEST(Lua_Waypoint, Notes)
 TEST(Lua_Waypoint, Position)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, position).WillRepeatedly(Return(Vector3(1, 2, 3)));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::vector3_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -199,11 +194,10 @@ TEST(Lua_Waypoint, RandomizerSettings)
     IWaypoint::WaypointRandomizerSettings waypoint_settings;
     waypoint_settings["test"] = "Test Setting";
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, randomizer_settings).WillRepeatedly(Return(waypoint_settings));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
     
@@ -229,12 +223,11 @@ TEST(Lua_Waypoint, Room)
     EXPECT_CALL(*route, level).WillOnce(Return(level));
 
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, route).WillOnce(Return(route));
     EXPECT_CALL(*waypoint, room).WillOnce(Return(123));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::room_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -247,11 +240,10 @@ TEST(Lua_Waypoint, Room)
 TEST(Lua_Waypoint, RoomNumber)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, room).WillOnce(Return(123));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -263,11 +255,10 @@ TEST(Lua_Waypoint, RoomNumber)
 TEST(Lua_Waypoint, SetColour)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, set_route_colour(Colour(1, 2, 3)));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::colour_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -278,13 +269,12 @@ TEST(Lua_Waypoint, SetColour)
 TEST(Lua_Waypoint, SetItem)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     auto item = mock_shared<MockItem>();
 
     EXPECT_CALL(*waypoint, set_item).Times(1);
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
     lua::create_item(L, item);
@@ -296,11 +286,10 @@ TEST(Lua_Waypoint, SetItem)
 TEST(Lua_Waypoint, SetNormal)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, set_normal(Vector3(1, 2, 3)));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::vector3_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -311,11 +300,10 @@ TEST(Lua_Waypoint, SetNormal)
 TEST(Lua_Waypoint, SetNotes)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, set_notes("New notes"));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -325,11 +313,10 @@ TEST(Lua_Waypoint, SetNotes)
 TEST(Lua_Waypoint, SetPosition)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, set_position(Vector3(1, 2, 3)));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::vector3_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -353,11 +340,10 @@ TEST(Lua_Waypoint, SetRandomizerSettings)
 
     IWaypoint::WaypointRandomizerSettings called_settings;
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, set_randomizer_settings).Times(AtLeast(1)).WillRepeatedly(SaveArg<0>(&called_settings));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -373,11 +359,10 @@ TEST(Lua_Waypoint, SetRoom)
     EXPECT_CALL(*room, number).WillRepeatedly(Return(123));
 
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, set_room_number(123)).Times(1);
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
     lua::create_room(L, room);
@@ -389,11 +374,10 @@ TEST(Lua_Waypoint, SetRoom)
 TEST(Lua_Waypoint, SetRoomNumber)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, set_room_number(100));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -403,13 +387,12 @@ TEST(Lua_Waypoint, SetRoomNumber)
 TEST(Lua_Waypoint, SetTrigger)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     auto trigger = mock_shared<MockTrigger>();
 
     EXPECT_CALL(*waypoint, set_trigger).Times(1);
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
     lua::create_trigger(L, trigger);
@@ -421,11 +404,10 @@ TEST(Lua_Waypoint, SetTrigger)
 TEST(Lua_Waypoint, SetWaypointColour)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, set_waypoint_colour(Colour(1, 2, 3)));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::colour_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
@@ -438,11 +420,10 @@ TEST(Lua_Waypoint, Trigger)
     auto trigger = mock_shared<MockTrigger>();
 
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, trigger).WillOnce(Return(trigger));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -453,11 +434,10 @@ TEST(Lua_Waypoint, Trigger)
 TEST(Lua_Waypoint, Type)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, type).WillOnce(Return(IWaypoint::Type::Trigger));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
 
@@ -469,11 +449,10 @@ TEST(Lua_Waypoint, Type)
 TEST(Lua_Waypoint, WaypointColour)
 {
     auto waypoint = mock_shared<MockWaypoint>();
-    std::weak_ptr<IWaypoint> weak_waypoint = waypoint;
     EXPECT_CALL(*waypoint, waypoint_colour).WillRepeatedly(Return(Colour(1, 0.5f, 0.25f)));
 
     LuaState L;
-    lua::waypoint_register(L, [=](auto&&...) { return weak_waypoint.lock(); });
+    lua::waypoint_register(L, [=](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::colour_register(L);
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
