@@ -133,9 +133,7 @@ namespace trview
 
         int create_camera_sink(lua_State* L, std::shared_ptr<ICameraSink> camera_sink)
         {
-            create_userdata(L, camera_sink);
-            assign_metatable(L, camera_sink_metatable);
-            return 1;
+            return create_userdata(L, camera_sink, camera_sink_metatable);
         }
     }
 }

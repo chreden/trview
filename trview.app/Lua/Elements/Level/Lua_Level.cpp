@@ -46,6 +46,10 @@ namespace trview
             int level_index(lua_State* L)
             {
                 auto level = lua::get_userdata<std::shared_ptr<ILevel>>(L, 1);
+                if (!level)
+                {
+                    return luaL_error(L, "self nil in level __index");
+                }
 
                 const std::string key = lua_tostring(L, 2);
                 if (key == "add_scriptable")
@@ -202,9 +206,7 @@ namespace trview
 
         int create_level(lua_State* L, const std::shared_ptr<ILevel>& level)
         {
-            create_userdata(L, level);
-            assign_metatable(L, level_metatable);
-            return 1;
+            return create_userdata(L, level, level_metatable);
         }
 
         std::shared_ptr<ILevel> to_level(lua_State* L, int index)

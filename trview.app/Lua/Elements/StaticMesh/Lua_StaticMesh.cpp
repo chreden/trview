@@ -102,9 +102,7 @@ namespace trview
 
         int create_static_mesh(lua_State* L, const std::shared_ptr<IStaticMesh>& mesh)
         {
-            create_userdata(L, mesh);
-            assign_metatable(L, static_mesh_metatable);
-            return 1;
+            return create_userdata(L, mesh, static_mesh_metatable);
         }
     }
 }

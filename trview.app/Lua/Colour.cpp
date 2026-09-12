@@ -90,9 +90,7 @@ namespace trview
 
         int create_colour(lua_State* L, const Colour& value)
         {
-            create_userdata(L, value);
-            assign_metatable(L, colour_metatable);
-            return 1;
+            return create_userdata(L, value, colour_metatable);
         }
 
         bool is_colour(lua_State* L, int index)

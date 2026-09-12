@@ -153,9 +153,7 @@ namespace trview
 
         int create_item(lua_State* L, const std::shared_ptr<IItem>& item)
         {
-            create_userdata(L, item);
-            assign_metatable(L, item_metatable);
-            return 1;
+            return create_userdata(L, item, item_metatable);
         }
 
         std::shared_ptr<IItem> to_item(lua_State* L, int index)

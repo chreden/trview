@@ -96,9 +96,7 @@ namespace trview
 
         int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable)
         {
-            create_userdata(L, scriptable);
-            assign_metatable(L, scriptable_metatable);
-            return 1;
+            return create_userdata(L, scriptable, scriptable_metatable);
         }
 
         void scriptable_register(lua_State* L, const IScriptable::Source& source)

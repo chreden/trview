@@ -320,9 +320,7 @@ namespace trview
 
         int create_route(lua_State* L, const std::shared_ptr<IRoute>& route)
         {
-            create_userdata(L, route);
-            assign_metatable(L, route_metatable);
-            return 1;
+            return create_userdata(L, route, route_metatable);
         }
 
         std::shared_ptr<IRoute> to_route(lua_State* L, int index)

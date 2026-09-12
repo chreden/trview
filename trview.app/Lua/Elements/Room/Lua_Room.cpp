@@ -182,9 +182,7 @@ namespace trview
 
         int create_room(lua_State* L, std::shared_ptr<IRoom> room)
         {
-            create_userdata(L, room);
-            assign_metatable(L, room_metatable);
-            return 1;
+            return create_userdata(L, room, room_metatable);
         }
 
         void room_register(lua_State* L)

@@ -83,9 +83,7 @@ namespace trview
 
         int create_matrix(lua_State* L, const Matrix& value)
         {
-            create_userdata(L, value);
-            assign_metatable(L, matrix_metatable);
-            return 1;
+            return create_userdata(L, value, matrix_metatable);
         }
 
         bool is_matrix(lua_State* L, int index)

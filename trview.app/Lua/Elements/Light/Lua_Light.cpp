@@ -151,9 +151,7 @@ namespace trview
 
         int create_light(lua_State* L, const std::shared_ptr<ILight>& light)
         {
-            create_userdata(L, light);
-            assign_metatable(L, light_metatable);
-            return 1;
+            return create_userdata(L, light, light_metatable);
         }
     }
 }

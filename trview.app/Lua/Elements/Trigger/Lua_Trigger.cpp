@@ -146,9 +146,7 @@ namespace trview
 
         int create_trigger(lua_State* L, const std::shared_ptr<ITrigger>& trigger)
         {
-            create_userdata(L, trigger);
-            assign_metatable(L, trigger_metatable);
-            return 1;
+            return create_userdata(L, trigger, trigger_metatable);
         }
 
         std::shared_ptr<ITrigger> to_trigger(lua_State* L, int index)

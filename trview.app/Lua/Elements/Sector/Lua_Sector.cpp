@@ -256,15 +256,7 @@ namespace trview
 
         int create_sector(lua_State* L, std::shared_ptr<ISector> sector)
         {
-            if (!sector)
-            {
-                lua_pushnil(L);
-                return 1;
-            }
-
-            create_userdata(L, sector);
-            assign_metatable(L, sector_metatable);
-            return 1;
+            return create_userdata(L, sector, sector_metatable);
         }
 
         void sector_register(lua_State* L)

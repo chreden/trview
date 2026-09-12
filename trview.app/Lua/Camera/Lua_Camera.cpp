@@ -128,9 +128,7 @@ namespace trview
 
         int create_camera(lua_State* L, const std::shared_ptr<ICamera>& camera)
         {
-            create_userdata(L, camera);
-            assign_metatable(L, camera_metatable);
-            return 1;
+            return create_userdata(L, camera, camera_metatable);
         }
 
         std::shared_ptr<ICamera> to_camera(lua_State* L, int index)

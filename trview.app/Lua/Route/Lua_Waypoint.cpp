@@ -404,9 +404,7 @@ namespace trview
 
         int create_waypoint(lua_State* L, const std::shared_ptr<IWaypoint>& waypoint)
         {
-            create_userdata(L, waypoint);
-            assign_metatable(L, waypoint_metatable);
-            return 1;
+            return create_userdata(L, waypoint, waypoint_metatable);
         }
 
         void waypoint_set_settings(const UserSettings& new_settings)
