@@ -50,5 +50,35 @@ namespace trview
             lua_pop(L, 2);
             return equal;
         }
+
+        using FunctionMap = const std::unordered_map<std::string, lua_CFunction>&;
+
+        template <FunctionMap T>
+        int default_index(lua_State* L)
+        {
+            const std::string key = lua_tostring(L, 2);
+            const auto found = T.find(key);
+            if (found != T.end())
+            {
+                return found->second(L);
+            }
+            return 0;
+        }
+
+        template <typename T, auto Prop>
+        int prop_getter(lua_State* L)
+        {
+            const auto& self = get_userdata<T>(L, 1);
+            if constexpr (std::is_member_function_pointer_v<decltype(Prop)>)
+            {
+                const float result = (self.*Prop)();
+                lua_pushnumber(L, result);
+            }
+            else
+            {
+                lua_pushnumber(L, self.*Prop);
+            }
+            return 1;
+        }
     }
 }

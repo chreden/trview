@@ -1,7 +1,6 @@
 module;
 
 #include <external/lua/src/lua.h>
-#include <external/lua/src/lauxlib.h>
 
 export module trview.app:Lua;
 
@@ -48,38 +47,4 @@ namespace trview
         std::shared_ptr<IFiles> _files;
         std::string _directory;
     };
-
-    export namespace lua
-    {
-        int push_string(lua_State* L, const std::string& text);
-
-        template <typename Func>
-        int push_list_p(lua_State* L, std::ranges::input_range auto&& range, Func&& func);
-
-        template <typename Func>
-        int push_list(lua_State* L, std::ranges::input_range auto&& range, Func&& func);
-
-        template <typename T>
-        struct EnumValue
-        {
-            std::string name;
-            T value;
-        };
-
-        template <typename T>
-        void set_enum_value(lua_State* L, const EnumValue<T>& value);
-
-        template <typename T>
-        void create_enum(lua_State* L, const std::string& name, const std::vector<EnumValue<T>>& values);
-
-        using FunctionMap = const std::unordered_map<std::string, lua_CFunction>&;
-
-        template <FunctionMap T>
-        int default_index(lua_State* L);
-
-        template <typename T, auto Prop>
-        int prop_getter(lua_State* L);
-    }
 }
-
-#include "Lua.inl"

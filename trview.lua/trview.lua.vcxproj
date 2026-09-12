@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Enums\enums.ixx" />
+    <ClCompile Include="Lists\lists.ixx" />
     <ClCompile Include="Metatables\metatables.ixx" />
     <ClCompile Include="Tables\tables.ixx" />
     <ClCompile Include="trview.lua.ixx" />

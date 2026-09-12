@@ -187,13 +187,4 @@ namespace trview
         trview_luaL_openlibs(L);
         nil_functions(L, LUA_OSLIBNAME, { "execute", "exit", "remove", "rename", "setlocale" });
     }
-
-    namespace lua
-    {
-        int push_string(lua_State* L, const std::string& text)
-        {
-            lua_pushstring(L, text.c_str());
-            return 1;
-        }
-    }
 }

@@ -10,6 +10,12 @@
     <ClCompile Include="Metatables\metatables.ixx">
       <Filter>Metatables</Filter>
     </ClCompile>
+    <ClCompile Include="Enums\enums.ixx">
+      <Filter>Enums</Filter>
+    </ClCompile>
+    <ClCompile Include="Lists\lists.ixx">
+      <Filter>Lists</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tables">
@@ -20,6 +26,12 @@
     </Filter>
     <Filter Include="Metatables">
       <UniqueIdentifier>{cc5eb46d-0040-44a1-bb17-7f3da1c9682e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enums">
+      <UniqueIdentifier>{03c4e402-73f6-4702-9835-e50636d2e3c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lists">
+      <UniqueIdentifier>{5f693485-494c-4764-97fd-76521b26a3a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
