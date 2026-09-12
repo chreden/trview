@@ -24,7 +24,7 @@ TEST(Lua_trview, Camera)
     ON_CALL(*application, viewer).WillByDefault(Return(viewer));
 
     LuaState L;
-    lua::trview_register(L, application.get(),
+    const reg_scope<lua::trview_register, lua::trview_unregister> trview_scope(L, application.get(),
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
@@ -46,7 +46,7 @@ TEST(Lua_trview, Level)
     EXPECT_CALL(*application, current_level).WillRepeatedly(Return(level));
 
     LuaState L;
-    lua::trview_register(L, application.get(), 
+    const reg_scope<lua::trview_register, lua::trview_unregister> trview_scope(L, application.get(),
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
@@ -71,7 +71,7 @@ TEST(Lua_trview, RecentFiles)
     EXPECT_CALL(*application, settings).WillRepeatedly(Return(settings));
 
     LuaState L;
-    lua::trview_register(L, application.get(),
+    const reg_scope<lua::trview_register, lua::trview_unregister> trview_scope(L, application.get(),
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
@@ -96,7 +96,7 @@ TEST(Lua_trview, SetLevel)
     EXPECT_CALL(*application, set_current_level).Times(1);
 
     LuaState L;
-    lua::trview_register(L, application.get(),
+    const reg_scope<lua::trview_register, lua::trview_unregister> trview_scope(L, application.get(),
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
@@ -119,7 +119,7 @@ TEST(Lua_trview, Route)
     EXPECT_CALL(*application, route).Times(1).WillRepeatedly(Return(route));
 
     LuaState L;
-    lua::trview_register(L, application.get(),
+    const reg_scope<lua::trview_register, lua::trview_unregister> trview_scope(L, application.get(),
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },
@@ -138,7 +138,7 @@ TEST(Lua_trview, SetRoute)
     EXPECT_CALL(*application, set_route).Times(1);
 
     LuaState L;
-    lua::trview_register(L, application.get(),
+    const reg_scope<lua::trview_register, lua::trview_unregister> trview_scope(L, application.get(),
         [](auto&&) { return mock_shared<MockRoute>(); },
         [](auto&&) { return mock_shared<MockRandomizerRoute>(); },
         [](auto&&...) { return mock_shared<MockWaypoint>(); },

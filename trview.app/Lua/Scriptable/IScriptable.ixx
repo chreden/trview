@@ -40,10 +40,11 @@ namespace trview
         Event<> on_changed;
     };
 
-    namespace lua
+    export namespace lua
     {
-        export int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable);
-        export void scriptable_register(lua_State* L, const IScriptable::Source& source);
-        export std::shared_ptr<IScriptable> to_scriptable(lua_State* L, int index);
+        int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable);
+        void scriptable_register(lua_State* L, const IScriptable::Source& source);
+        void scriptable_unregister();
+        std::shared_ptr<IScriptable> to_scriptable(lua_State* L, int index);
     }
 }

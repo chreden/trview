@@ -115,6 +115,11 @@ namespace trview
             lua_setglobal(L, "Scriptable");
         }
 
+        void scriptable_unregister()
+        {
+            scriptable_source = nullptr;
+        }
+
         std::shared_ptr<IScriptable> to_scriptable(lua_State* L, int index)
         {
             return get_userdata<std::shared_ptr<IScriptable>>(L, index);

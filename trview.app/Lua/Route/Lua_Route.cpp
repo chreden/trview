@@ -350,6 +350,14 @@ namespace trview
             lua_setglobal(L, "Route");
         }
 
+        void route_unregister()
+        {
+            route_source = nullptr;
+            randomizer_route_source = nullptr;
+            dialogs.reset();
+            files.reset();
+        }
+
         void route_set_settings(const UserSettings& new_settings)
         {
             user_settings = new_settings;
