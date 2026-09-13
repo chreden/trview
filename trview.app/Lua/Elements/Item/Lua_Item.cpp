@@ -146,16 +146,16 @@ namespace trview
                 { "ai", prop_getter<std::shared_ptr<IItem>, &IItem::is_ai> },
                 { "angle", prop_getter<std::shared_ptr<IItem>, &IItem::angle> },
                 // { "categories", prop_getter<std::shared_ptr<IItem>, &IItem::categories> },
-                // { "clear_body", prop_getter<std::shared_ptr<IItem>, &IItem::clear_body> },
-                // { "invisible", prop_getter<std::shared_ptr<IItem>, &IItem::invisible> },
+                { "clear_body", prop_getter<std::shared_ptr<IItem>, &IItem::clear_body_flag> },
+                { "invisible", prop_getter<std::shared_ptr<IItem>, &IItem::invisible_flag> },
                 { "ng", prop_getter<std::shared_ptr<IItem>, &IItem::ng_plus> },
                 { "number", prop_getter<std::shared_ptr<IItem>, &IItem::number> },
                 { "ocb", prop_getter<std::shared_ptr<IItem>, &IItem::ocb> },
                 { "position", prop_getter<std::shared_ptr<IItem>, &IItem::position> },
-                // { "remastered_extra", prop_getter<std::shared_ptr<IItem>, &IItem::remastered_extra> },
-                // else if (key == "room")
+                { "remastered_extra", prop_getter<std::shared_ptr<IItem>, &IItem::is_remastered_extra> },
+                { "room", prop_getter<std::shared_ptr<IItem>, &IItem::room> },
                 // else if (equals_any(key, "triggered_by", "trigger_references"))
-                // { "type", prop_getter<std::shared_ptr<IItem>, &IItem::type> },
+                { "type", prop_getter<std::shared_ptr<IItem>, &IItem::type> },
                 { "type_id", prop_getter<std::shared_ptr<IItem>, &IItem::type_id> },
                 { "visible", prop_getter<std::shared_ptr<IItem>, &IItem::visible> },
             };

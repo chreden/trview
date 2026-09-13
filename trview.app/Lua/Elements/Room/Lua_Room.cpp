@@ -231,5 +231,10 @@ namespace trview
             lua_pop(L, 1);
             return room;
         }
+
+        int to_lua(lua_State* L, const std::weak_ptr<IRoom>& room)
+        {
+            return lua::create_room(L, room.lock());
+        }
     }
 }

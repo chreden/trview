@@ -14,6 +14,51 @@ namespace
 
     template <typename T>
     constexpr bool is_shared_ptr_v<std::shared_ptr<T>> = true;
+
+    template <typename T>
+    constexpr bool is_optional_v = false;
+
+    template <typename T>
+    constexpr bool is_optional_v<std::optional<T>> = true;
+
+    template <typename T>
+    int return_result(lua_State* L, T&& result)
+    {
+        using ResultType = typename std::remove_cvref<decltype(result)>::type;
+        if constexpr (is_optional_v<ResultType>)
+        {
+            if (!result.has_value())
+            {
+                lua_pushnil(L);
+                return 1;
+            }
+            return return_result(L, result.value());
+        }
+        else if constexpr (std::is_same_v<ResultType, float>)
+        {
+            lua_pushnumber(L, result);
+            return 1;
+        }
+        else if constexpr (std::is_same_v<ResultType, bool>)
+        {
+            lua_pushboolean(L, result);
+            return 1;
+        }
+        else if constexpr (std::is_integral_v<ResultType>)
+        {
+            lua_pushinteger(L, result);
+            return 1;
+        }
+        else if constexpr (std::is_same_v<ResultType, std::string>)
+        {
+            lua_pushstring(L, result.c_str());
+            return 1;
+        }
+        else
+        {
+            return to_lua(L, result);
+        }
+    }
 }
 
 namespace trview
@@ -86,39 +131,24 @@ namespace trview
             {
                 if constexpr (is_shared_ptr_v<T>)
                 {
-                    const auto result = (self.get()->*Prop)();
-                    using ResultType = typename std::remove_const<decltype(result)>::type;
-                    if constexpr (std::is_same_v<ResultType, float>)
-                    {
-                        lua_pushnumber(L, result);
-                    }
-                    else if constexpr (std::is_same_v<ResultType, int>)
-                    {
-                        lua_pushinteger(L, result);
-                    }
-                    else if constexpr (std::is_same_v<ResultType, bool>)
-                    {
-                        lua_pushboolean(L, result);
-                    }
+                    return return_result(L, (self.get()->*Prop)());
                 }
                 else
                 {
-                    const auto result = (self.*Prop)();
-                    if constexpr (std::is_same_v<decltype(result), float>)
-                    {
-                        lua_pushnumber(L, result);
-                    }
-                    else if constexpr (std::is_same_v<decltype(result), int>)
-                    {
-                        lua_pushinteger(L, result);
-                    }
+                    return return_result(L, (self.*Prop)());
                 }
             }
             else
             {
-                lua_pushnumber(L, self.*Prop);
+                if constexpr (is_shared_ptr_v<T>)
+                {
+                    return return_result(L, self.get()->*Prop);
+                }
+                else
+                {
+                    return return_result(L, self.*Prop);
+                }
             }
-            return 1;
         }
     }
 }
