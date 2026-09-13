@@ -14,5 +14,8 @@ namespace trview
         export bool is_colour(lua_State* L, int index);
         export Colour to_colour(lua_State* L, int index);
         export void colour_register(lua_State* L);
+        export int to_lua(lua_State* L, const Colour& value);
     }
+
+    export using lua::to_lua;
 }

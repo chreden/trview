@@ -58,6 +58,12 @@ namespace trview
                 return shared_from_this();
             }
 
+            std::shared_ptr<MockTrigger> with_sector(std::shared_ptr<ISector> sector)
+            {
+                ON_CALL(*this, sector).WillByDefault(testing::Return(sector));
+                return shared_from_this();
+            }
+
             std::shared_ptr<MockTrigger> with_visible(bool visible)
             {
                 ON_CALL(*this, visible).WillByDefault(testing::Return(visible));
