@@ -7,6 +7,15 @@ export module trview.lua:Metatables;
 
 import std;
 
+namespace
+{
+    template <typename T>
+    constexpr bool is_shared_ptr_v = false;
+
+    template <typename T>
+    constexpr bool is_shared_ptr_v<std::shared_ptr<T>> = true;
+}
+
 namespace trview
 {
     export namespace lua
@@ -75,8 +84,35 @@ namespace trview
             const auto& self = get_userdata<T>(L, 1);
             if constexpr (std::is_member_function_pointer_v<decltype(Prop)>)
             {
-                const float result = (self.*Prop)();
-                lua_pushnumber(L, result);
+                if constexpr (is_shared_ptr_v<T>)
+                {
+                    const auto result = (self.get()->*Prop)();
+                    using ResultType = typename std::remove_const<decltype(result)>::type;
+                    if constexpr (std::is_same_v<ResultType, float>)
+                    {
+                        lua_pushnumber(L, result);
+                    }
+                    else if constexpr (std::is_same_v<ResultType, int>)
+                    {
+                        lua_pushinteger(L, result);
+                    }
+                    else if constexpr (std::is_same_v<ResultType, bool>)
+                    {
+                        lua_pushboolean(L, result);
+                    }
+                }
+                else
+                {
+                    const auto result = (self.*Prop)();
+                    if constexpr (std::is_same_v<decltype(result), float>)
+                    {
+                        lua_pushnumber(L, result);
+                    }
+                    else if constexpr (std::is_same_v<decltype(result), int>)
+                    {
+                        lua_pushinteger(L, result);
+                    }
+                }
             }
             else
             {

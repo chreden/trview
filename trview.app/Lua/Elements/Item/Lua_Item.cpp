@@ -139,13 +139,34 @@ namespace trview
 
                 return 0;
             }
+
+            const std::unordered_map<std::string, lua_CFunction> Functions
+            {
+                { "activation_flags", prop_getter<std::shared_ptr<IItem>, &IItem::activation_flags> },
+                { "ai", prop_getter<std::shared_ptr<IItem>, &IItem::is_ai> },
+                { "angle", prop_getter<std::shared_ptr<IItem>, &IItem::angle> },
+                // { "categories", prop_getter<std::shared_ptr<IItem>, &IItem::categories> },
+                // { "clear_body", prop_getter<std::shared_ptr<IItem>, &IItem::clear_body> },
+                // { "invisible", prop_getter<std::shared_ptr<IItem>, &IItem::invisible> },
+                { "ng", prop_getter<std::shared_ptr<IItem>, &IItem::ng_plus> },
+                { "number", prop_getter<std::shared_ptr<IItem>, &IItem::number> },
+                { "ocb", prop_getter<std::shared_ptr<IItem>, &IItem::ocb> },
+                { "position", prop_getter<std::shared_ptr<IItem>, &IItem::position> },
+                // { "remastered_extra", prop_getter<std::shared_ptr<IItem>, &IItem::remastered_extra> },
+                // else if (key == "room")
+                // else if (equals_any(key, "triggered_by", "trigger_references"))
+                // { "type", prop_getter<std::shared_ptr<IItem>, &IItem::type> },
+                { "type_id", prop_getter<std::shared_ptr<IItem>, &IItem::type_id> },
+                { "visible", prop_getter<std::shared_ptr<IItem>, &IItem::visible> },
+            };
         }
 
         void item_register(lua_State* L)
         {
             item_metatable = store_metatable(L,
                 {
-                    { "__index", item_index },
+                    // { "__index", item_index },
+                    { "__index", default_index<Functions> },
                     { "__newindex", item_newindex },
                     { "__gc", default_gc<std::shared_ptr<IItem>> }
                 });
