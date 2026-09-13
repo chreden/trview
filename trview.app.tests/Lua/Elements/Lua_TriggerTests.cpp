@@ -126,12 +126,7 @@ TEST(Lua_Trigger, Room)
 TEST(Lua_Trigger, Sector)
 {
     auto sector = mock_shared<MockSector>()->with_id(123);
-
-    auto room = mock_shared<MockRoom>()->with_number(100);
-    EXPECT_CALL(*room, sectors).WillRepeatedly(Return(std::vector<std::shared_ptr<ISector>>{ sector }));
-
-    auto trigger = mock_shared<MockTrigger>()->with_number(100);
-    EXPECT_CALL(*trigger, room).WillRepeatedly(Return(room));
+    auto trigger = mock_shared<MockTrigger>()->with_sector(sector);
 
     LuaState L;
     lua::trigger_register(L);

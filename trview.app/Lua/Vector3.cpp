@@ -121,5 +121,10 @@ namespace trview
                 });
             lua_setglobal(L, "Vector3");
         }
+
+        int to_lua(lua_State* L, const DirectX::SimpleMath::Vector3& value)
+        {
+            return trview::lua::create_vector3(L, value);
+        }
     }
 }

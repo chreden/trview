@@ -259,6 +259,11 @@ namespace trview
             return create_userdata(L, sector, sector_metatable);
         }
 
+        int to_lua(lua_State* L, const std::weak_ptr<ISector>& sector)
+        {
+            return create_sector(L, sector.lock());
+        }
+
         void sector_register(lua_State* L)
         {
             sector_metatable = store_metatable(L,

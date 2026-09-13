@@ -13,7 +13,10 @@ namespace trview
     {
         export void room_register(lua_State* L);
         export int create_room(lua_State* L, std::shared_ptr<IRoom> room);
+        export int to_lua(lua_State* L, const std::weak_ptr<IRoom>& room);
         export std::shared_ptr<IRoom> to_room(lua_State* L, int index);
         export std::shared_ptr<IRoom> to_room(lua_State* L, int index, const std::string& field_name);
     }
+
+    export using lua::to_lua;
 }
