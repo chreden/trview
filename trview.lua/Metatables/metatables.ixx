@@ -22,6 +22,13 @@ namespace
     constexpr bool is_optional_v<std::optional<T>> = true;
 
     template <typename T>
+    concept is_container = requires (T v)
+    {
+        v.begin();
+        v.end();
+    };
+
+    template <typename T>
     int return_result(lua_State* L, T&& result)
     {
         using ResultType = typename std::remove_cvref<decltype(result)>::type;
@@ -33,6 +40,24 @@ namespace
                 return 1;
             }
             return return_result(L, result.value());
+        }
+        else if constexpr (std::is_same_v<ResultType, std::string>)
+        {
+            lua_pushstring(L, result.c_str());
+            return 1;
+        }
+        else if constexpr (is_container<ResultType>)
+        {
+            lua_newtable(L);
+            int index = 1;
+            for (const auto& item : result)
+            {
+                lua_pushnumber(L, index);
+                return_result(L, item);
+                lua_settable(L, -3);
+                ++index;
+            }
+            return 1;
         }
         else if constexpr (std::is_same_v<ResultType, float>)
         {
@@ -49,15 +74,16 @@ namespace
             lua_pushinteger(L, result);
             return 1;
         }
-        else if constexpr (std::is_same_v<ResultType, std::string>)
-        {
-            lua_pushstring(L, result.c_str());
-            return 1;
-        }
         else
         {
             return to_lua(L, result);
         }
+    }
+
+    template <typename T>
+    constexpr T&& no_transform(T&& V)
+    {
+        return V;
     }
 }
 
@@ -123,32 +149,50 @@ namespace trview
             return 0;
         }
 
-        template <typename T, auto Prop>
-        int prop_getter(lua_State* L)
+        template <typename T, auto Prop, auto Transform>
+        int prop_getter_with_transform(lua_State* L)
         {
+            constexpr auto apply_transform = [&](auto&& value)
+            {
+                if constexpr (Transform != nullptr)
+                {
+                    return Transform(value);
+                }
+                else
+                {
+                    return value;
+                }
+            };
+
             const auto& self = get_userdata<T>(L, 1);
             if constexpr (std::is_member_function_pointer_v<decltype(Prop)>)
             {
                 if constexpr (is_shared_ptr_v<T>)
                 {
-                    return return_result(L, (self.get()->*Prop)());
+                    return return_result(L, apply_transform((self.get()->*Prop)()));
                 }
                 else
                 {
-                    return return_result(L, (self.*Prop)());
+                    return return_result(L, apply_transform((self.*Prop)()));
                 }
             }
             else
             {
                 if constexpr (is_shared_ptr_v<T>)
                 {
-                    return return_result(L, self.get()->*Prop);
+                    return return_result(L, apply_transform(self.get()->*Prop));
                 }
                 else
                 {
-                    return return_result(L, self.*Prop);
+                    return return_result(L, apply_transform(self.*Prop));
                 }
             }
+        }
+
+        template <typename T, auto Prop>
+        int prop_getter(lua_State* L)
+        {
+            return prop_getter_with_transform<T, Prop, nullptr>(L);
         }
     }
 }

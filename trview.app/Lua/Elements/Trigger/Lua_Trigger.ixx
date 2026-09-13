@@ -13,6 +13,9 @@ namespace trview
     {
         export void trigger_register(lua_State* L);
         export int create_trigger(lua_State* L, const std::shared_ptr<ITrigger>& trigger);
+        export int to_lua(lua_State* L, const std::weak_ptr<ITrigger>& trigger);
         export std::shared_ptr<ITrigger> to_trigger(lua_State* L, int index);
     }
+
+    export using lua::to_lua;
 }

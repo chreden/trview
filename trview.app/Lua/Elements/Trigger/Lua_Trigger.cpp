@@ -153,5 +153,10 @@ namespace trview
         {
             return get_userdata<std::shared_ptr<ITrigger>>(L, index);
         }
+
+        int to_lua(lua_State* L, const std::weak_ptr<ITrigger>& trigger)
+        {
+            return create_trigger(L, trigger.lock());
+        }
     }
 }
