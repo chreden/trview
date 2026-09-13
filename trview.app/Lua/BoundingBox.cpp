@@ -23,6 +23,11 @@ namespace trview
             lua_setfield(L, -2, "max");
             return 1;
         }
+
+        int to_lua(lua_State* L, const DirectX::BoundingBox& box)
+        {
+            return create_bounding_box(L, box);
+        }
     }
 }
 
