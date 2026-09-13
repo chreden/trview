@@ -117,6 +117,11 @@ namespace trview
             return create_colour(L, value);
         }
 
+        int to_lua(lua_State* L, const DirectX::SimpleMath::Color& value)
+        {
+            return create_colour(L, value);
+        }
+
         void colour_register(lua_State* L)
         {
             colour_metatable = store_metatable(L,

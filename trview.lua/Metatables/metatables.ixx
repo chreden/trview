@@ -137,7 +137,7 @@ namespace trview
 
         using FunctionMap = const std::unordered_map<std::string, lua_CFunction>&;
 
-        template <FunctionMap T>
+        template <FunctionMap T, lua_CFunction Fallback = nullptr>
         int default_index(lua_State* L)
         {
             const std::string key = lua_tostring(L, 2);
@@ -146,7 +146,15 @@ namespace trview
             {
                 return found->second(L);
             }
-            return 0;
+
+            if constexpr (Fallback != nullptr)
+            {
+                return Fallback(L);
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         template <typename T, auto Prop, auto Transform>
