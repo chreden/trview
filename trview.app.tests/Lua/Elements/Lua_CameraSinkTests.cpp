@@ -19,7 +19,7 @@ TEST(Lua_CameraSink, BoxIndex)
 
     LuaState L;
     lua::camera_sink_register(L);
-    lua::create_camera_sink(L, cs);
+    lua::to_lua(L, cs);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "return c.box_index"));
@@ -34,7 +34,7 @@ TEST(Lua_CameraSink, Flag)
 
     LuaState L;
     lua::camera_sink_register(L);
-    lua::create_camera_sink(L, cs);
+    lua::to_lua(L, cs);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "return c.flag"));
@@ -52,7 +52,7 @@ TEST(Lua_CameraSink, InferredRooms)
     LuaState L;
     lua::room_register(L);
     lua::camera_sink_register(L);
-    lua::create_camera_sink(L, cs);
+    lua::to_lua(L, cs);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "return c.inferred_rooms"));
@@ -75,7 +75,7 @@ TEST(Lua_CameraSink, Number)
 
     LuaState L;
     lua::camera_sink_register(L);
-    lua::create_camera_sink(L, cs);
+    lua::to_lua(L, cs);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "return c.number"));
@@ -90,7 +90,7 @@ TEST(Lua_CameraSink, Persistent)
 
     LuaState L;
     lua::camera_sink_register(L);
-    lua::create_camera_sink(L, cs);
+    lua::to_lua(L, cs);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "return c.persistent"));
@@ -106,7 +106,7 @@ TEST(Lua_CameraSink, Position)
     LuaState L;
     lua::camera_sink_register(L);
     lua::vector3_register(L);
-    lua::create_camera_sink(L, cs);
+    lua::to_lua(L, cs);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "return c.position"));
@@ -123,7 +123,7 @@ TEST(Lua_CameraSink, Room)
     LuaState L;
     lua::room_register(L);
     lua::camera_sink_register(L);
-    lua::create_camera_sink(L, cs);
+    lua::to_lua(L, cs);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "return c.room"));
@@ -140,7 +140,7 @@ TEST(Lua_CameraSink, Strength)
 
     LuaState L;
     lua::camera_sink_register(L);
-    lua::create_camera_sink(L, cs);
+    lua::to_lua(L, cs);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "return c.strength"));
@@ -155,7 +155,7 @@ TEST(Lua_CameraSink, Type)
 
     LuaState L;
     lua::camera_sink_register(L);
-    lua::create_camera_sink(L, cs);
+    lua::to_lua(L, cs);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "return c.type"));
@@ -179,7 +179,7 @@ TEST(Lua_CameraSink, TriggeredBy)
     LuaState L;
     lua::trigger_register(L);
     lua::camera_sink_register(L);
-    lua::create_camera_sink(L, cs);
+    lua::to_lua(L, cs);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "return c.trigger_references"));
@@ -202,7 +202,7 @@ TEST(Lua_CameraSink, Visible)
 
     LuaState L;
     lua::camera_sink_register(L);
-    lua::create_camera_sink(L, cs);
+    lua::to_lua(L, cs);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "return c.visible"));
@@ -219,7 +219,7 @@ TEST(Lua_CameraSink, SetType)
 
     LuaState L;
     lua::camera_sink_register(L);
-    lua::create_camera_sink(L, cs);
+    lua::to_lua(L, cs);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "return c.type"));
@@ -236,7 +236,7 @@ TEST(Lua_CameraSink, SetVisible)
 
     LuaState L;
     lua::camera_sink_register(L);
-    lua::create_camera_sink(L, cs);
+    lua::to_lua(L, cs);
     lua_setglobal(L, "c");
 
     ASSERT_EQ(0, luaL_dostring(L, "c.visible = true"));

@@ -93,14 +93,9 @@ namespace trview
                 });
         }
 
-        int create_camera_sink(lua_State* L, std::shared_ptr<ICameraSink> camera_sink)
-        {
-            return create_userdata(L, camera_sink, camera_sink_metatable);
-        }
-
         int to_lua(lua_State* L, const std::weak_ptr<ICameraSink>& camera_sink)
         {
-            return create_camera_sink(L, camera_sink.lock());
+            return create_userdata(L, camera_sink, camera_sink_metatable);
         }
 
         int to_lua(lua_State* L, ICameraSink::Type type)
