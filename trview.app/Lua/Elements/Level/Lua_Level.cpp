@@ -177,6 +177,11 @@ namespace trview
             return create_userdata(L, level, level_metatable);
         }
 
+        int to_lua(lua_State* L, const std::weak_ptr<ILevel>& level)
+        {
+            return create_level(L, level.lock());
+        }
+
         std::shared_ptr<ILevel> to_level(lua_State* L, int index)
         {
             return lua::get_userdata<std::shared_ptr<ILevel>>(L, index);

@@ -91,7 +91,6 @@ namespace trview
                 { "colours", prop_getter<Triangle, &Triangle::colours> },
                 { "current_frame", prop_getter<Triangle, &Triangle::current_frame> },
                 { "current_time", prop_getter<Triangle, &Triangle::current_time> },
-                // { "frames", prop_getter<Triangle, &Triangle::frames> },
                 { "frame_time", prop_getter<Triangle, &Triangle::frame_time> },
                 { "normal", prop_getter<Triangle, &Triangle::normal> },
                 { "normals", prop_getter<Triangle, &Triangle::normals> },
@@ -99,9 +98,7 @@ namespace trview
                 { "side_mode", prop_getter<Triangle, &Triangle::side_mode> },
                 { "texture", prop_getter<Triangle, &Triangle::texture> },
                 { "texture_mode", prop_getter<Triangle, &Triangle::texture_mode> },
-                // { "transform", prop_getter<Triangle, &Triangle::transform> },
                 { "transparency_mode", prop_getter<Triangle, &Triangle::transparency_mode> },
-                // { "uv", prop_getter<Triangle, &Triangle::uv> },
                 { "vertices", prop_getter<Triangle, &Triangle::vertices> }
             };
         }

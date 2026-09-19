@@ -14,5 +14,8 @@ namespace trview
         void level_register(lua_State* L);
         int create_level(lua_State* L, const std::shared_ptr<ILevel>& level);
         std::shared_ptr<ILevel> to_level(lua_State* L, int index);
+        int to_lua(lua_State* L, const std::weak_ptr<ILevel>& level);
     }
+
+    export using lua::to_lua;
 }
