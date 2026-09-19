@@ -77,7 +77,7 @@ namespace trview
                         {
                             if (auto level = room->level().lock())
                             {
-                                return create_room(L, level->room(sector->room_above()).lock());
+                                return to_lua(L, level->room(sector->room_above()).lock());
                             }
                         }
                     }
@@ -92,7 +92,7 @@ namespace trview
                         {
                             if (auto level = room->level().lock())
                             {
-                                return create_room(L, level->room(sector->room_below()).lock());
+                                return to_lua(L, level->room(sector->room_below()).lock());
                             }
                         }
                     }
@@ -164,11 +164,6 @@ namespace trview
                     lua_pushcfunction(L, sector_hasflag);
                     return 1;
                 }
-                else if (key == "number")
-                {
-                    lua_pushinteger(L, sector->id());
-                    return 1;
-                }
                 else if (key == "portal")
                 {
                     if (sector->is_portal())
@@ -177,7 +172,7 @@ namespace trview
                         {
                             if (auto level = room->level().lock())
                             {
-                                return create_room(L, level->room(sector->portals()[0]).lock());
+                                return to_lua(L, level->room(sector->portals()[0]).lock());
                             }
                         }
                     }
@@ -194,52 +189,24 @@ namespace trview
                                 lua_newtable(L);
                                 push_list(L,
                                     sector->portals(),
-                                    [&](auto L, auto f) { create_room(L, level->room(f).lock()); });
+                                    [&](auto L, auto f) { to_lua(L, level->room(f).lock()); });
                                 return 1;
                             }
                         }
                     }
                     lua_pushnil(L);
                 }
-                else if (key == "room")
-                {
-                    return create_room(L, sector->room().lock());
-                }
                 else if (key == "sector_above")
                 {
-                    return create_sector(L, sector_above(sector).value_or({}).sector);
+                    return to_lua(L, sector_above(sector).value_or({}).sector);
                 }
                 else if (key == "sector_below")
                 {
-                    return create_sector(L, sector_below(sector).value_or({}).sector);
-                }
-                else if (key == "tilt_x")
-                {
-                    lua_pushnumber(L, sector->tilt_x());
-                    return 1;
-                }
-                else if (key == "tilt_z")
-                {
-                    lua_pushnumber(L, sector->tilt_z());
-                    return 1;
+                    return to_lua(L, sector_below(sector).value_or({}).sector);
                 }
                 else if (key == "triangulation")
                 {
                     lua_pushstring(L, to_string(sector->triangulation()).c_str());
-                    return 1;
-                }
-                else if (key == "trigger")
-                {
-                    return create_trigger(L, sector->trigger().lock());
-                }
-                else if (key == "x")
-                {
-                    lua_pushinteger(L, sector->x());
-                    return 1;
-                }
-                else if (key == "z")
-                {
-                    lua_pushinteger(L, sector->z());
                     return 1;
                 }
 
@@ -252,18 +219,29 @@ namespace trview
                 sector;
                 return 0;
             }
+
+            const std::unordered_map<std::string, lua_CFunction> Functions
+            {
+                { "number", prop_getter<std::shared_ptr<ISector>, &ISector::id> },
+                { "room", prop_getter<std::shared_ptr<ISector>, &ISector::room> },
+                { "tilt_x", prop_getter<std::shared_ptr<ISector>, &ISector::tilt_x> },
+                { "tilt_z", prop_getter<std::shared_ptr<ISector>, &ISector::tilt_z> },
+                { "trigger", prop_getter<std::shared_ptr<ISector>, &ISector::trigger> },
+                { "x", prop_getter<std::shared_ptr<ISector>, &ISector::x> },
+                { "z", prop_getter<std::shared_ptr<ISector>, &ISector::z> }
+            };
         }
 
-        int create_sector(lua_State* L, std::shared_ptr<ISector> sector)
+        int to_lua(lua_State* L, const std::weak_ptr<ISector>& sector)
         {
-            return create_userdata(L, sector, sector_metatable);
+            return create_userdata(L, sector.lock(), sector_metatable);
         }
 
         void sector_register(lua_State* L)
         {
             sector_metatable = store_metatable(L,
                 {
-                    { "__index", sector_index },
+                    { "__index", default_index<Functions, sector_index> },
                     { "__newindex", sector_newindex },
                     { "__gc", default_gc<std::shared_ptr<ISector>> }
                 });

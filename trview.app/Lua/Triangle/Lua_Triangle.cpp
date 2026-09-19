@@ -27,83 +27,18 @@ namespace trview
                 const auto& self = get_userdata<Triangle>(L, 1);
                 const std::string key = lua_tostring(L, 2);
 
-                if (key == "animation_mode")
-                {
-                    lua_pushinteger(L, static_cast<int>(self.animation_mode));
-                    return 1;
-                }
-                else if (key == "collision_mode")
-                {
-                    lua_pushinteger(L, static_cast<int>(self.collision_mode));
-                    return 1;
-                }
-                else if (key == "colours")
-                {
-                    return push_list(L, self.colours, create_colour);
-                }
-                else if (key == "current_frame")
-                {
-                    lua_pushinteger(L, self.current_frame);
-                    return 1;
-                }
-                else if (key == "current_time")
-                {
-                    lua_pushnumber(L, self.current_time);
-                    return 1;
-                }
-                else if (key == "frames")
+                self;
+
+                if (key == "frames")
                 {
                     lua_pushnil(L);
                     return 1;
                 }
-                else if (key == "frame_time")
-                {
-                    lua_pushnumber(L, self.frame_time);
-                    return 1;
-                }
-                else if (key == "normal")
-                {
-                    return create_vector3(L, self.normal());
-                }
-                else if (key == "normals")
-                {
-                    return push_list(L, self.normals, create_vector3);
-                }
-                else if (key == "position")
-                {
-                    return create_vector3(L, self.position());
-                }
-                else if (key == "side_mode")
-                {
-                    lua_pushinteger(L, static_cast<int>(self.side_mode));
-                    return 1;
-                }
-                else if (key == "texture")
-                {
-                    lua_pushinteger(L, self.texture());
-                    return 1;
-                }
-                else if (key == "texture_mode")
-                {
-                    lua_pushinteger(L, static_cast<int>(self.texture_mode));
-                    return 1;
-                }
                 else if (key == "transform")
                 {
-
-                }
-                else if (key == "transparency_mode")
-                {
-                    lua_pushinteger(L, static_cast<int>(self.transparency_mode));
-                    return 1;
                 }
                 else if (key == "uv")
                 {
-                    
-                }
-                else if (key == "vertices")
-                {
-                    return push_list(L, self.vertices, create_vector3);
                 }
 
                 return 0;
@@ -148,6 +83,24 @@ namespace trview
                         .vertices = { vertices[0], vertices[1], vertices[2] }
                     });
             }
+
+            const std::unordered_map<std::string, lua_CFunction> Functions
+            {
+                { "animation_mode", prop_getter<Triangle, &Triangle::animation_mode> },
+                { "collision_mode", prop_getter<Triangle, &Triangle::collision_mode> },
+                { "colours", prop_getter<Triangle, &Triangle::colours> },
+                { "current_frame", prop_getter<Triangle, &Triangle::current_frame> },
+                { "current_time", prop_getter<Triangle, &Triangle::current_time> },
+                { "frame_time", prop_getter<Triangle, &Triangle::frame_time> },
+                { "normal", prop_getter<Triangle, &Triangle::normal> },
+                { "normals", prop_getter<Triangle, &Triangle::normals> },
+                { "position", prop_getter<Triangle, &Triangle::position> },
+                { "side_mode", prop_getter<Triangle, &Triangle::side_mode> },
+                { "texture", prop_getter<Triangle, &Triangle::texture> },
+                { "texture_mode", prop_getter<Triangle, &Triangle::texture_mode> },
+                { "transparency_mode", prop_getter<Triangle, &Triangle::transparency_mode> },
+                { "vertices", prop_getter<Triangle, &Triangle::vertices> }
+            };
         }
 
         int create_triangle(lua_State* L, const Triangle& triangle)
@@ -155,11 +108,41 @@ namespace trview
             return create_userdata(L, triangle, triangle_metatable);
         }
 
+        int to_lua(lua_State* L, Triangle::AnimationMode mode)
+        {
+            lua_pushnumber(L, static_cast<int>(mode));
+            return 1;
+        }
+
+        int to_lua(lua_State* L, Triangle::CollisionMode mode)
+        {
+            lua_pushnumber(L, static_cast<int>(mode));
+            return 1;
+        }
+
+        int to_lua(lua_State* L, Triangle::TextureMode mode)
+        {
+            lua_pushnumber(L, static_cast<int>(mode));
+            return 1;
+        }
+
+        int to_lua(lua_State* L, Triangle::TransparencyMode mode)
+        {
+            lua_pushnumber(L, static_cast<int>(mode));
+            return 1;
+        }
+
+        int to_lua(lua_State* L, Triangle::SideMode mode)
+        {
+            lua_pushnumber(L, static_cast<int>(mode));
+            return 1;
+        }
+
         void triangle_register(lua_State* L)
         {
             triangle_metatable = store_metatable(L,
                 {
-                    { "__index", triangle_index },
+                    { "__index", default_index<Functions, triangle_index> },
                     { "__newindex", triangle_newindex },
                     { "__gc", default_gc<Triangle> }
                 });

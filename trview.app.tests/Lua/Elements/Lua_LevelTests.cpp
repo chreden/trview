@@ -20,7 +20,7 @@ TEST(Lua_Level, AddScriptable)
     LuaState L;
     const reg_scope<lua::scriptable_register, lua::scriptable_unregister> scriptable_scope(L, [](auto&&) { return mock_shared<MockScriptable>(); });
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
     lua::create_scriptable(L, scriptable);
     lua_setglobal(L, "s");
@@ -35,7 +35,7 @@ TEST(Lua_Level, AlternateMode)
 
     LuaState L;
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.alternate_mode"));
@@ -50,7 +50,7 @@ TEST(Lua_Level, SetAlternateMode)
 
     LuaState L;
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "l.alternate_mode = true"));
@@ -67,7 +67,7 @@ TEST(Lua_Level, CamerasAndSinks)
     LuaState L;
     lua::level_register(L);
     lua::camera_sink_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.cameras_and_sinks"));
@@ -90,7 +90,7 @@ TEST(Lua_Level, Filename)
 
     LuaState L;
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l"); 
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.filename"));
@@ -106,7 +106,7 @@ TEST(Lua_Level, Floordata)
 
     LuaState L;
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.floordata"));
@@ -130,7 +130,7 @@ TEST(Lua_Level, Items)
     LuaState L;
     lua::level_register(L);
     lua::item_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.items"));
@@ -157,7 +157,7 @@ TEST(Lua_Level, ItemsNg)
     LuaState L;
     lua::level_register(L);
     lua::item_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.items_ng"));
@@ -183,7 +183,7 @@ TEST(Lua_Level, Lights)
     LuaState L;
     lua::light_register(L);
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.lights"));
@@ -208,7 +208,7 @@ TEST(Lua_Level, RemoveScriptable)
     LuaState L;
     const reg_scope<lua::scriptable_register, lua::scriptable_unregister> scriptable_scope(L, [](auto&&) { return mock_shared<MockScriptable>(); });
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
     lua::create_scriptable(L, scriptable);
     lua_setglobal(L, "s");
@@ -226,7 +226,7 @@ TEST(Lua_Level, Rooms)
     LuaState L;
     lua::room_register(L);
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.rooms"));
@@ -251,7 +251,7 @@ TEST(Lua_Level, SelectedRoom)
     LuaState L;
     lua::room_register(L);
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.selected_room"));
@@ -270,9 +270,9 @@ TEST(Lua_Level, SetSelectedRoom)
 
     LuaState L;
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "l.selected_room = r"));
@@ -289,7 +289,7 @@ TEST(Lua_Level, SelectedTrigger)
     LuaState L;
     lua::trigger_register(L);
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.selected_trigger"));
@@ -307,9 +307,9 @@ TEST(Lua_Level, SetSelectedTrigger)
 
     LuaState L;
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "l.selected_trigger = t"));
@@ -325,7 +325,7 @@ TEST(Lua_Level, Triggers)
     LuaState L;
     lua::trigger_register(L);
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.triggers"));
@@ -348,7 +348,7 @@ TEST(Lua_Level, Version)
 
     LuaState L;
     lua::level_register(L);
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.version"));

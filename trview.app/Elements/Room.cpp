@@ -453,7 +453,7 @@ namespace trview
         /// Check if the triangle points appear in the position source.
         /// @param tri The triangle points.
         /// @param source The point list.
-        bool triangle_contained(const std::vector<Vector3>& tri, const std::vector<Vector3>& source)
+        bool triangle_contained(std::ranges::input_range auto&& tri, const std::vector<Vector3>& source)
         {
             auto v0 = std::find(source.begin(), source.end(), tri[0]);
             auto v1 = std::find(source.begin(), source.end(), tri[1]);
@@ -890,8 +890,7 @@ namespace trview
                 const float z = sector->z() + 0.5f;
                 const auto corners = sector->corners();
 
-                if (triangle_contained(
-                    { triangle.vertices, triangle.vertices + 3 },
+                if (triangle_contained(triangle.vertices,
                     { { x + 0.5f, corners[2], z - 0.5f },
                       { x - 0.5f, corners[1], z + 0.5f },
                       { x + 0.5f, corners[3], z + 0.5f },

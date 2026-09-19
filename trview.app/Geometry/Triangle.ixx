@@ -52,16 +52,16 @@ namespace trview
 
         AnimationMode animation_mode{ AnimationMode::None };
         CollisionMode collision_mode{ CollisionMode::Enabled };
-        DirectX::SimpleMath::Color colours[3];
+        std::array<DirectX::SimpleMath::Color, 3> colours;
         uint32_t current_frame{ 0u };
         float current_time{ 0.0f };
         std::vector<Frame> frames;
         float frame_time{ 0.0f };
-        DirectX::SimpleMath::Vector3 normals[3];
+        std::array<DirectX::SimpleMath::Vector3, 3> normals;
         SideMode side_mode{ SideMode::Single };
         TextureMode texture_mode{ TextureMode::Textured };
         TransparencyMode transparency_mode{ TransparencyMode::None };
-        DirectX::SimpleMath::Vector3 vertices[3];
+        std::array<DirectX::SimpleMath::Vector3, 3> vertices;
 
         DirectX::SimpleMath::Vector3 normal() const;
         DirectX::SimpleMath::Vector3 position() const;

@@ -33,7 +33,7 @@ namespace trview
                 const auto room = lua::get_userdata<std::shared_ptr<IRoom>>(L, 1);
                 const auto x = static_cast<int32_t>(lua_tointeger(L, 2) - 1);
                 const auto z = static_cast<int32_t>(lua_tointeger(L, 3) - 1);
-                return create_sector(L, room->sector(x, z).lock());
+                return to_lua(L, room->sector(x, z).lock());
             }
 
             int room_hasflag(lua_State* L)
@@ -52,32 +52,13 @@ namespace trview
                 auto room = lua::get_userdata<std::shared_ptr<IRoom>>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
-                if (key == "alternate_mode")
-                {
-                    lua_pushstring(L, to_string(room->alternate_mode()).c_str());
-                    return 1;
-                }
-                else if (key == "alternate_group")
-                {
-                    lua_pushinteger(L, room->alternate_group());
-                    return 1;
-                }
-                else if (key == "alternate_room")
+                if (key == "alternate_room")
                 {
                     if (auto level = room->level().lock())
                     {
-                        return create_room(L, level->room(room->alternate_room()).lock());
+                        return to_lua(L, level->room(room->alternate_room()).lock());
                     }
                     lua_pushnil(L);
-                    return 1;
-                }
-                else if (key == "cameras_and_sinks")
-                {
-                    return push_list_p(L, room->camera_sinks(), create_camera_sink);
-                }
-                else if (key == "flags")
-                {
-                    lua_pushinteger(L, room->flags());
                     return 1;
                 }
                 else if (key == "has_flag")
@@ -107,59 +88,14 @@ namespace trview
                             }) |
                         std::ranges::to<std::vector>(), create_item);
                 }
-                else if (key == "level")
-                {
-                    return create_level(L, room->level().lock());
-                }
-                else if (key == "lights")
-                {
-                    return push_list_p(L, room->lights(), create_light);
-                }
-                else if (key == "number")
-                {
-                    lua_pushinteger(L, room->number());
-                    return 1;
-                }
-                else if (key == "num_x_sectors")
-                {
-                    lua_pushinteger(L, room->num_x_sectors());
-                    return 1;
-                }
-                else if (key == "num_z_sectors")
-                {
-                    lua_pushinteger(L, room->num_z_sectors());
-                    return 1;
-                }
                 else if (key == "position")
                 {
                     const auto info = room->info();
-                    return create_vector3(L, DirectX::SimpleMath::Vector3(static_cast<float>(info.x), static_cast<float>(info.yBottom), static_cast<float>(info.z)));
+                    return to_lua(L, DirectX::SimpleMath::Vector3(static_cast<float>(info.x), static_cast<float>(info.yBottom), static_cast<float>(info.z)));
                 }
                 else if (key == "sector")
                 {
                     lua_pushcfunction(L, get_sector);
-                    return 1;
-                }
-                else if (key == "sectors")
-                {
-                    return push_list(L, room->sectors(), create_sector);
-                }
-                else if (key == "static_meshes")
-                {
-                    return push_list_p(L, room->static_meshes(), create_static_mesh);
-                }
-                else if (key == "triggers")
-                {
-                    return push_list_p(L, room->triggers(), create_trigger);
-                }
-                else if (key == "visible")
-                {
-                    lua_pushboolean(L, room->visible());
-                    return 1;
-                }
-                else if (key == "water_scheme")
-                {
-                    lua_pushnumber(L, room->water_scheme());
                     return 1;
                 }
 
@@ -178,18 +114,31 @@ namespace trview
 
                 return 0;
             }
-        }
 
-        int create_room(lua_State* L, std::shared_ptr<IRoom> room)
-        {
-            return create_userdata(L, room, room_metatable);
+            const std::unordered_map<std::string, lua_CFunction> Functions
+            {
+                { "alternate_mode", prop_getter<std::shared_ptr<IRoom>, &IRoom::alternate_mode> },
+                { "alternate_group", prop_getter<std::shared_ptr<IRoom>, &IRoom::alternate_group> },
+                { "cameras_and_sinks", prop_getter<std::shared_ptr<IRoom>, &IRoom::camera_sinks> },
+                { "flags", prop_getter<std::shared_ptr<IRoom>, &IRoom::flags> },
+                { "level", prop_getter<std::shared_ptr<IRoom>, &IRoom::level> },
+                { "lights", prop_getter<std::shared_ptr<IRoom>, &IRoom::lights> },
+                { "number", prop_getter<std::shared_ptr<IRoom>, &IRoom::number> },
+                { "num_x_sectors", prop_getter<std::shared_ptr<IRoom>, &IRoom::num_x_sectors> },
+                { "num_z_sectors", prop_getter<std::shared_ptr<IRoom>, &IRoom::num_z_sectors> },
+                { "sectors", prop_getter<std::shared_ptr<IRoom>, &IRoom::sectors> },
+                { "static_meshes", prop_getter<std::shared_ptr<IRoom>, &IRoom::static_meshes> },
+                { "triggers", prop_getter<std::shared_ptr<IRoom>, &IRoom::triggers> },
+                { "visible", prop_getter<std::shared_ptr<IRoom>, &IRoom::visible> },
+                { "water_scheme", prop_getter<std::shared_ptr<IRoom>, &IRoom::water_scheme> }
+            };
         }
 
         void room_register(lua_State* L)
         {
             room_metatable = store_metatable(L,
                 {
-                    { "__index", room_index },
+                    { "__index", default_index<Functions, room_index> },
                     { "__newindex", room_newindex },
                     { "__gc", default_gc<std::shared_ptr<IRoom>> }
                 });
@@ -230,6 +179,17 @@ namespace trview
             auto room = to_room(L, -1);
             lua_pop(L, 1);
             return room;
+        }
+
+        int to_lua(lua_State* L, const std::weak_ptr<IRoom>& room)
+        {
+            return create_userdata(L, room.lock(), room_metatable);
+        }
+
+        int to_lua(lua_State* L, IRoom::AlternateMode mode)
+        {
+            lua_pushstring(L, to_string(mode).c_str());
+            return 1;
         }
     }
 }

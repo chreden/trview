@@ -52,28 +52,7 @@ namespace trview
                 auto waypoint = get_userdata<std::shared_ptr<IWaypoint>>(L, 1);
                 const std::string key = lua_tostring(L, 2);
 
-                if (key == "colour")
-                {
-                    return create_colour(L, waypoint->route_colour());
-                }
-                else if (key == "item")
-                {
-                    return create_item(L, waypoint->item().lock());
-                }
-                else if (key == "normal")
-                {
-                    return create_vector3(L, waypoint->normal());
-                }
-                else if (key == "notes")
-                {
-                    lua_pushstring(L, waypoint->notes().c_str());
-                    return 1;
-                }
-                else if (key == "position")
-                {
-                    return create_vector3(L, waypoint->position() * trlevel::Scale);
-                }
-                else if (key == "randomizer_settings")
+                if (key == "randomizer_settings")
                 {
                     auto settings = waypoint->randomizer_settings();
                     lua_newtable(L);
@@ -112,29 +91,11 @@ namespace trview
                     {
                         if (auto level = route->level().lock())
                         {
-                            return create_room(L, level->room(waypoint->room()).lock());
+                            return to_lua(L, level->room(waypoint->room()));
                         }
                     }
                     lua_pushnil(L);
                     return 1;
-                }
-                else if (key == "room_number")
-                {
-                    lua_pushinteger(L, waypoint->room());
-                    return 1;
-                }
-                else if (key == "trigger")
-                {
-                    return create_trigger(L, waypoint->trigger().lock());
-                }
-                else if (key == "type")
-                {
-                    lua_pushstring(L, waypoint_type_to_string_lua(waypoint->type()).c_str());
-                    return 1;
-                }
-                else if (key == "waypoint_colour")
-                {
-                    return create_colour(L, waypoint->waypoint_colour());
                 }
 
                 return 0;
@@ -378,13 +339,31 @@ namespace trview
 
                 return luaL_error(L, "One of item, trigger or position must be specified for Waypoint.new");
             }
+
+            DirectX::SimpleMath::Vector3 scale_vector(const DirectX::SimpleMath::Vector3& v)
+            {
+                return v * trlevel::Scale;
+            }
+
+            const std::unordered_map<std::string, lua_CFunction> Functions
+            {
+                { "colour", prop_getter<std::shared_ptr<IWaypoint>, &IWaypoint::route_colour> },
+                { "item", prop_getter<std::shared_ptr<IWaypoint>, &IWaypoint::item> },
+                { "normal", prop_getter<std::shared_ptr<IWaypoint>, &IWaypoint::normal> },
+                { "notes", prop_getter<std::shared_ptr<IWaypoint>, &IWaypoint::notes> },
+                { "position", prop_getter_with_transform<std::shared_ptr<IWaypoint>, &IWaypoint::position, scale_vector> },
+                { "room_number", prop_getter<std::shared_ptr<IWaypoint>, &IWaypoint::room> },
+                { "trigger", prop_getter<std::shared_ptr<IWaypoint>, &IWaypoint::trigger> },
+                { "type", prop_getter<std::shared_ptr<IWaypoint>, &IWaypoint::type> },
+                { "waypoint_colour", prop_getter<std::shared_ptr<IWaypoint>, &IWaypoint::waypoint_colour> },
+            };
         }
 
         void waypoint_register(lua_State* L, IWaypoint::Source source)
         {
             waypoint_metatable = store_metatable(L,
                 {
-                    { "__index", waypoint_index },
+                    { "__index", default_index<Functions, waypoint_index> },
                     { "__newindex", waypoint_newindex },
                     { "__gc", default_gc<std::shared_ptr<IWaypoint>> },
                 });
@@ -415,6 +394,12 @@ namespace trview
         void waypoint_set_settings(const UserSettings& new_settings)
         {
             user_settings = new_settings;
+        }
+
+        int to_lua(lua_State* L, IWaypoint::Type type)
+        {
+            lua_pushstring(L, waypoint_type_to_string_lua(type).c_str());
+            return 1;
         }
     }
 }

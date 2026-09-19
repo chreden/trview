@@ -69,7 +69,7 @@ namespace trview
                 }
                 else if (key == "target")
                 {
-                    return create_vector3(L, camera->target() * trlevel::Scale);
+                    return to_lua(L, camera->target() * trlevel::Scale);
                 }
 
                 return 0;

@@ -186,10 +186,6 @@ namespace trview
                     lua_pushcfunction(L, route_add);
                     return 1;
                 }
-                else if (key == "colour")
-                {
-                    return create_colour(L, route->colour());
-                }
                 else if (key == "clear")
                 {
                     lua_pushcfunction(L, route_clear);
@@ -199,10 +195,6 @@ namespace trview
                 {
                     lua_pushboolean(L, std::dynamic_pointer_cast<IRandomizerRoute>(route) != nullptr);
                     return 1;
-                }
-                else if (key == "level")
-                {
-                    return create_level(L, route->level().lock());
                 }
                 else if (key == "reload")
                 {
@@ -227,15 +219,6 @@ namespace trview
                 else if (key == "selected_waypoint")
                 {
                     return create_waypoint(L, route->waypoint(route->selected_waypoint()).lock());
-                }
-                else if (key == "show_route_line")
-                {
-                    lua_pushboolean(L, route->show_route_line());
-                    return 1;
-                }
-                else if (key == "waypoint_colour")
-                {
-                    return create_colour(L, route->waypoint_colour());
                 }
                 else if (key == "waypoints")
                 {
@@ -316,6 +299,14 @@ namespace trview
                 }
                 return create_route(L, route_source(std::nullopt));
             }
+
+            const std::unordered_map<std::string, lua_CFunction> Functions
+            {
+                { "colour", prop_getter<std::shared_ptr<IRoute>, &IRoute::colour> },
+                { "level", prop_getter<std::shared_ptr<IRoute>, &IRoute::level> },
+                { "show_route_line", prop_getter<std::shared_ptr<IRoute>, &IRoute::show_route_line> },
+                { "waypoint_colour", prop_getter<std::shared_ptr<IRoute>, &IRoute::waypoint_colour> },
+            };
         }
 
         int create_route(lua_State* L, const std::shared_ptr<IRoute>& route)
@@ -332,7 +323,7 @@ namespace trview
         {
             route_metatable = store_metatable(L,
                 {
-                    { "__index", route_index },
+                    { "__index", default_index<Functions, route_index> },
                     { "__newindex", route_newindex },
                     { "__gc", default_gc<std::shared_ptr<IRoute>> }
                 });

@@ -11,10 +11,18 @@ namespace trview
 {
     namespace lua
     {
-        export int create_vector3(lua_State* L, const DirectX::SimpleMath::Vector3& value);
         export bool is_vector3(lua_State* L, int index);
         export DirectX::SimpleMath::Vector3 to_vector3(lua_State* L, int index);
         export DirectX::SimpleMath::Vector3 to_vector3(lua_State* L, int index, const std::string& name, const DirectX::SimpleMath::Vector3& default_value);
         export void vector3_register(lua_State* L);
+        export int to_lua(lua_State* L, const DirectX::SimpleMath::Vector3& value);
+    }
+}
+
+namespace DirectX
+{
+    namespace SimpleMath
+    {
+        export using trview::lua::to_lua;
     }
 }

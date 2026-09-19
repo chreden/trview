@@ -311,7 +311,7 @@ TEST(Lua_Route, SetLevel)
     lua::level_register(L);
     lua::create_route(L, route);
     lua_setglobal(L, "r");
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "r.level = l"));

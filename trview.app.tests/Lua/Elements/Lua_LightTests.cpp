@@ -22,7 +22,7 @@ TEST(Lua_Light, Colour)
     LuaState L;
     lua::light_register(L);
     lua::colour_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.colour"));
@@ -37,7 +37,7 @@ TEST(Lua_Light, Cutoff)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.cutoff"));
@@ -52,7 +52,7 @@ TEST(Lua_Light, Density)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.density"));
@@ -68,7 +68,7 @@ TEST(Lua_Light, Direction)
     LuaState L;
     lua::light_register(L);
     lua::vector3_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.direction"));
@@ -83,7 +83,7 @@ TEST(Lua_Light, Fade)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.fade"));
@@ -98,7 +98,7 @@ TEST(Lua_Light, Falloff)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ON_CALL(*light, type).WillByDefault(Return(trlevel::LightType::Point));
@@ -124,7 +124,7 @@ TEST(Lua_Light, FalloffAngle)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ON_CALL(*light, type).WillByDefault(Return(trlevel::LightType::Spot));
@@ -145,7 +145,7 @@ TEST(Lua_Light, Hotspot)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ON_CALL(*light, type).WillByDefault(Return(trlevel::LightType::Spot));
@@ -176,7 +176,7 @@ TEST(Lua_Light, Intensity)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.intensity"));
@@ -191,7 +191,7 @@ TEST(Lua_Light, Length)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.length"));
@@ -206,7 +206,7 @@ TEST(Lua_Light, Number)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.number"));
@@ -222,7 +222,7 @@ TEST(Lua_Light, Position)
     LuaState L;
     lua::light_register(L);
     lua::vector3_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.position"));
@@ -237,7 +237,7 @@ TEST(Lua_Light, Radius)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.cutoff"));
@@ -252,7 +252,7 @@ TEST(Lua_Light, RadIn)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.rad_in"));
@@ -267,7 +267,7 @@ TEST(Lua_Light, RadOut)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.rad_out"));
@@ -282,7 +282,7 @@ TEST(Lua_Light, Range)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.range"));
@@ -299,7 +299,7 @@ TEST(Lua_Light, Room)
     LuaState L;
     lua::room_register(L);
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.room"));
@@ -316,7 +316,7 @@ TEST(Lua_Light, Type)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.type"));
@@ -331,7 +331,7 @@ TEST(Lua_Light, Visible)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "return l.visible"));
@@ -346,7 +346,7 @@ TEST(Lua_Light, SetVisible)
 
     LuaState L;
     lua::light_register(L);
-    lua::create_light(L, light);
+    lua::to_lua(L, light);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "l.visible = true"));

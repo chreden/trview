@@ -19,7 +19,7 @@ TEST(Lua_Item, ActivationFlags)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.activation_flags"));
@@ -34,7 +34,7 @@ TEST(Lua_Item, Ai)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.ai"));
@@ -49,7 +49,7 @@ TEST(Lua_Item, Angle)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.angle"));
@@ -64,7 +64,7 @@ TEST(Lua_Item, Categories)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.categories"));
@@ -84,7 +84,7 @@ TEST(Lua_Item, ClearBody)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.clear_body"));
@@ -99,7 +99,7 @@ TEST(Lua_Item, Invisible)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.invisible"));
@@ -113,7 +113,7 @@ TEST(Lua_Item, Ng)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.ng"));
@@ -136,7 +136,7 @@ TEST(Lua_Item, Number)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.number"));
@@ -151,7 +151,7 @@ TEST(Lua_Item, Ocb)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.ocb"));
@@ -167,7 +167,7 @@ TEST(Lua_Item, Position)
     LuaState L;
     lua::item_register(L);
     lua::vector3_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.position"));
@@ -182,7 +182,7 @@ TEST(Lua_Item, RemasteredExtra)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.remastered_extra"));
@@ -199,7 +199,7 @@ TEST(Lua_Item, Room)
     LuaState L;
     lua::room_register(L);
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.room"));
@@ -220,7 +220,7 @@ TEST(Lua_Item, TriggeredBy)
     LuaState L;
     lua::trigger_register(L);
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.trigger_references"));
@@ -243,7 +243,7 @@ TEST(Lua_Item, Type)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.type"));
@@ -258,7 +258,7 @@ TEST(Lua_Item, TypeId)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.type_id"));
@@ -273,7 +273,7 @@ TEST(Lua_Item, Visible)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "return i.visible"));
@@ -289,7 +289,7 @@ TEST(Lua_Item, SetCategories)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "i.categories = { \"One\", \"Two\" }"));
@@ -304,7 +304,7 @@ TEST(Lua_Item, SetVisible)
 
     LuaState L;
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "i.visible = true"));

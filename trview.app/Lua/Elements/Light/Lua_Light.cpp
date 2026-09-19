@@ -29,11 +29,7 @@ namespace trview
                 auto light = lua::get_userdata<std::shared_ptr<ILight>>(L, 1);
 
                 const std::string key = lua_tostring(L, 2);
-                if (key == "colour")
-                {
-                    return create_colour(L, light->colour());
-                }
-                else if (key == "cutoff")
+                if (key == "cutoff")
                 {
                     lua_pushnumber(L, cutoff(*light));
                     return 1;
@@ -42,10 +38,6 @@ namespace trview
                 {
                     lua_pushnumber(L, density(*light));
                     return 1;
-                }
-                else if (key == "direction")
-                {
-                    return create_vector3(L, light->direction());
                 }
                 else if (key == "fade")
                 {
@@ -77,15 +69,6 @@ namespace trview
                     lua_pushnumber(L, length(*light));
                     return 1;
                 }
-                else if (key == "number")
-                {
-                    lua_pushinteger(L, light->number());
-                    return 1;
-                }
-                else if (key == "position")
-                {
-                    return create_vector3(L, light->position() * trlevel::Scale);
-                }
                 else if (key == "radius")
                 {
                     lua_pushnumber(L, radius(*light));
@@ -106,18 +89,9 @@ namespace trview
                     lua_pushnumber(L, range(*light));
                     return 1;
                 }
-                else if (key == "room")
-                {
-                    return create_room(L, light->room().lock());
-                }
                 else if (key == "type")
                 {
                     lua_pushstring(L, trlevel::to_string(light->type()).c_str());
-                    return 1;
-                }
-                else if (key == "visible")
-                {
-                    lua_pushboolean(L, light->visible());
                     return 1;
                 }
 
@@ -137,21 +111,36 @@ namespace trview
 
                 return 0;
             }
+
+            DirectX::SimpleMath::Vector3 scale_vector(const DirectX::SimpleMath::Vector3& v)
+            {
+                return v * trlevel::Scale;
+            }
+
+            const std::unordered_map<std::string, lua_CFunction> Functions
+            {
+                { "colour", prop_getter<std::shared_ptr<ILight>, &ILight::colour> },
+                { "direction", prop_getter<std::shared_ptr<ILight>, &ILight::direction> },
+                { "number", prop_getter<std::shared_ptr<ILight>, &ILight::number> },
+                { "position", prop_getter_with_transform<std::shared_ptr<ILight>, &ILight::position, scale_vector> },
+                { "room", prop_getter<std::shared_ptr<ILight>, &ILight::room> },
+                { "visible", prop_getter<std::shared_ptr<ILight>, &ILight::visible> },
+            };
         }
 
         void light_register(lua_State* L)
         {
             light_metatable = store_metatable(L,
                 {
-                    { "__index", light_index },
+                    { "__index", default_index<Functions, light_index> },
                     { "__newindex", light_newindex },
                     { "__gc", default_gc<std::shared_ptr<ILight>> }
                 });
         }
 
-        int create_light(lua_State* L, const std::shared_ptr<ILight>& light)
+        int to_lua(lua_State* L, const std::weak_ptr<ILight>& light)
         {
-            return create_userdata(L, light, light_metatable);
+            return create_userdata(L, light.lock(), light_metatable);
         }
     }
 }

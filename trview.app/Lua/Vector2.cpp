@@ -26,9 +26,9 @@ namespace trview
                 switch (args)
                 {
                 case 1:
-                    return create_vector2(L, Vector2());
+                    return to_lua(L, Vector2());
                 case 3:
-                    return create_vector2(L,
+                    return to_lua(L,
                         Vector2(
                             static_cast<float>(lua_tonumber(L, 2)),
                             static_cast<float>(lua_tonumber(L, 3))));
@@ -44,7 +44,7 @@ namespace trview
             };
         }
 
-        int create_vector2(lua_State* L, const Vector2& value)
+        int to_lua(lua_State* L, const Vector2& value)
         {
             return create_userdata(L, value, vector2_metatable);
         }

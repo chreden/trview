@@ -24,59 +24,6 @@ namespace trview
         {
             int static_mesh_metatable = LUA_NOREF;
 
-            int static_mesh_index(lua_State* L)
-            {
-                auto static_mesh = lua::get_userdata<std::shared_ptr<IStaticMesh>>(L, 1);
-                const std::string key = lua_tostring(L, 2);
-                if (key == "breakable")
-                {
-                    lua_pushboolean(L, static_mesh->breakable());
-                    return 1;
-                }
-                else if (key == "collision")
-                {
-                    return create_bounding_box(L, static_mesh->collision());
-                }
-                else if (key == "has_collision")
-                {
-                    lua_pushboolean(L, static_mesh->has_collision());
-                    return 1;
-                }
-                else if (key == "id")
-                {
-                    lua_pushinteger(L, static_mesh->id());
-                    return 1;
-                }
-                else if (key == "position")
-                {
-                    return create_vector3(L, static_mesh->position() * trlevel::Scale);
-                }
-                else if (key == "room")
-                {
-                    return create_room(L, static_mesh->room().lock());
-                }
-                else if (key == "rotation")
-                {
-                    lua_pushnumber(L, static_mesh->rotation());
-                    return 1;
-                }
-                else if (key == "type")
-                {
-                    lua_pushstring(L, to_string(static_mesh->type()).c_str());
-                    return 1;
-                }
-                else if (key == "visible")
-                {
-                    lua_pushboolean(L, static_mesh->visible());
-                    return 1;
-                }
-                else if (key == "visibility")
-                {
-                    return create_bounding_box(L, static_mesh->visibility());
-                }
-                return 0;
-            }
-
             int static_mesh_newindex(lua_State* L)
             {
                 auto static_mesh = lua::get_userdata<std::shared_ptr<IStaticMesh>>(L, 1);
@@ -88,21 +35,46 @@ namespace trview
                 }
                 return 0;
             }
+
+            DirectX::SimpleMath::Vector3 scale_vector(const DirectX::SimpleMath::Vector3& v)
+            {
+                return v * trlevel::Scale;
+            }
+
+            const std::unordered_map<std::string, lua_CFunction> Functions
+            {
+                { "breakable", prop_getter<std::shared_ptr<IStaticMesh>, &IStaticMesh::breakable> },
+                { "collision", prop_getter<std::shared_ptr<IStaticMesh>, &IStaticMesh::collision> },
+                { "has_collision", prop_getter<std::shared_ptr<IStaticMesh>, &IStaticMesh::has_collision> },
+                { "id", prop_getter<std::shared_ptr<IStaticMesh>, &IStaticMesh::id> },
+                { "position", prop_getter_with_transform<std::shared_ptr<IStaticMesh>, &IStaticMesh::position, scale_vector> },
+                { "room", prop_getter<std::shared_ptr<IStaticMesh>, &IStaticMesh::room> },
+                { "rotation", prop_getter<std::shared_ptr<IStaticMesh>, &IStaticMesh::rotation> },
+                { "type", prop_getter<std::shared_ptr<IStaticMesh>, &IStaticMesh::type> },
+                { "visible", prop_getter<std::shared_ptr<IStaticMesh>, &IStaticMesh::visible> },
+                { "visibility", prop_getter<std::shared_ptr<IStaticMesh>, &IStaticMesh::visibility> },
+            };
         }
 
         void static_mesh_register(lua_State* L)
         {
             static_mesh_metatable = store_metatable(L,
                 {
-                    { "__index", static_mesh_index },
+                    { "__index", default_index<Functions> },
                     { "__newindex", static_mesh_newindex },
                     { "__gc", default_gc<std::shared_ptr<IStaticMesh>> },
                 });
         }
 
-        int create_static_mesh(lua_State* L, const std::shared_ptr<IStaticMesh>& mesh)
+        int to_lua(lua_State* L, const std::weak_ptr<IStaticMesh>& mesh)
         {
-            return create_userdata(L, mesh, static_mesh_metatable);
+            return create_userdata(L, mesh.lock(), static_mesh_metatable);
+        }
+
+        int to_lua(lua_State* L, IStaticMesh::Type type)
+        {
+            lua_pushstring(L, to_string(type).c_str());
+            return 1;
         }
     }
 }

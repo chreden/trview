@@ -72,7 +72,7 @@ TEST(Lua_Waypoint, NewItem)
     LuaState L;
     const reg_scope<lua::waypoint_register, lua::waypoint_unregister> waypoint_scope(L, [=](auto&&...) { return waypoint; });
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({item=i})"));
@@ -91,7 +91,7 @@ TEST(Lua_Waypoint, NewPosition)
     LuaState L;
     lua::vector3_register(L);
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
     const reg_scope<lua::waypoint_register, lua::waypoint_unregister> waypoint_scope(L, [&](auto&& pos, auto&&...) { position = pos; return waypoint; });
 
@@ -117,7 +117,7 @@ TEST(Lua_Waypoint, NewSector)
     LuaState L;
     lua::sector_register(L);
     lua::vector3_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
     const reg_scope<lua::waypoint_register, lua::waypoint_unregister> waypoint_scope(L, [&](auto&& pos, auto&&...) { position = pos; return waypoint; });
 
@@ -139,7 +139,7 @@ TEST(Lua_Waypoint, NewTrigger)
     LuaState L;
     lua::trigger_register(L);
     const reg_scope<lua::waypoint_register, lua::waypoint_unregister> waypoint_scope(L, [=](auto&&...) { return waypoint; });
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({trigger=t})"));
@@ -279,7 +279,7 @@ TEST(Lua_Waypoint, SetItem)
     const reg_scope<lua::waypoint_register, lua::waypoint_unregister> waypoint_scope(L, [](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "w.item = i"));
@@ -368,7 +368,7 @@ TEST(Lua_Waypoint, SetRoom)
     const reg_scope<lua::waypoint_register, lua::waypoint_unregister> waypoint_scope(L, [](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "w.room = r"));
@@ -399,7 +399,7 @@ TEST(Lua_Waypoint, SetTrigger)
     const reg_scope<lua::waypoint_register, lua::waypoint_unregister> waypoint_scope(L, [](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "w.trigger = t"));

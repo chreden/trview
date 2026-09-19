@@ -43,74 +43,6 @@ namespace trview
                 lua_setfield(L, -2, "data");
             }
 
-            int trigger_index(lua_State* L)
-            {
-                auto trigger = get_userdata<std::shared_ptr<ITrigger>>(L, 1);
-
-                const std::string key = lua_tostring(L, 2);
-                if (key == "colour")
-                {
-                    return create_colour(L, trigger->colour());
-                }
-                else if (key == "commands")
-                {
-                    return push_list(L, trigger->commands(), create_command);
-                }
-                else if (key == "flags")
-                {
-                    lua_pushinteger(L, trigger->flags());
-                    return 1;
-                }
-                else if (key == "number")
-                {
-                    lua_pushinteger(L, trigger->number());
-                    return 1;
-                }
-                else if (key == "only_once")
-                {
-                    lua_pushboolean(L, trigger->only_once());
-                    return 1;
-                }
-                else if (key == "position")
-                {
-                    return create_vector3(L, trigger->position() * trlevel::Scale);
-                }
-                else if (key == "room")
-                {
-                    return create_room(L, trigger->room().lock());
-                }
-                else if (key == "sector")
-                {
-                    if (auto room = trigger->room().lock())
-                    {
-                        const auto sectors = room->sectors();
-                        if (trigger->sector_id() < sectors.size())
-                        {
-                            return create_sector(L, sectors[trigger->sector_id()]);
-                        }
-                    }
-                    lua_pushnil(L);
-                    return 1;
-                }
-                else if (key == "timer")
-                {
-                    lua_pushinteger(L, trigger->timer());
-                    return 1;
-                }
-                else if (key == "type")
-                {
-                    lua_pushstring(L, to_string(trigger->type()).c_str());
-                    return 1;
-                }
-                else if (key == "visible")
-                {
-                    lua_pushboolean(L, trigger->visible());
-                    return 1;
-                }
-
-                return 0;
-            }
-
             int trigger_newindex(lua_State* L)
             {
                 auto trigger = get_userdata<std::shared_ptr<ITrigger>>(L, 1);
@@ -132,26 +64,58 @@ namespace trview
 
                 return 0;
             }
+
+            DirectX::SimpleMath::Vector3 scale_vector(const DirectX::SimpleMath::Vector3& v)
+            {
+                return v * trlevel::Scale;
+            }
+
+            const std::unordered_map<std::string, lua_CFunction> Functions
+            {
+                { "colour", prop_getter<std::shared_ptr<ITrigger>, &ITrigger::colour> },
+                { "commands", prop_getter<std::shared_ptr<ITrigger>, &ITrigger::commands> },
+                { "flags", prop_getter<std::shared_ptr<ITrigger>, &ITrigger::flags> },
+                { "number", prop_getter<std::shared_ptr<ITrigger>, &ITrigger::number> },
+                { "only_once", prop_getter<std::shared_ptr<ITrigger>, &ITrigger::only_once> },
+                { "position", prop_getter_with_transform<std::shared_ptr<ITrigger>, &ITrigger::position, scale_vector> },
+                { "room", prop_getter<std::shared_ptr<ITrigger>, &ITrigger::room> },
+                { "sector", prop_getter<std::shared_ptr<ITrigger>, &ITrigger::sector> },
+                { "timer", prop_getter<std::shared_ptr<ITrigger>, &ITrigger::timer> },
+                { "type", prop_getter<std::shared_ptr<ITrigger>, &ITrigger::type> },
+                { "visible", prop_getter<std::shared_ptr<ITrigger>, &ITrigger::visible> },
+            };
         }
 
         void trigger_register(lua_State* L)
         {
             trigger_metatable = store_metatable(L,
                 {
-                    { "__index", trigger_index },
+                    { "__index", default_index<Functions> },
                     { "__newindex", trigger_newindex },
                     { "__gc", default_gc<std::shared_ptr<ITrigger>> },
                 });
         }
 
-        int create_trigger(lua_State* L, const std::shared_ptr<ITrigger>& trigger)
-        {
-            return create_userdata(L, trigger, trigger_metatable);
-        }
-
         std::shared_ptr<ITrigger> to_trigger(lua_State* L, int index)
         {
             return get_userdata<std::shared_ptr<ITrigger>>(L, index);
+        }
+
+        int to_lua(lua_State* L, const std::weak_ptr<ITrigger>& trigger)
+        {
+            return create_userdata(L, trigger.lock(), trigger_metatable);
+        }
+
+        int to_lua(lua_State* L, TriggerType type)
+        {
+            lua_pushstring(L, to_string(type).c_str());
+            return 1;
+        }
+
+        int to_lua(lua_State* L, Command command)
+        {
+            create_command(L, command);
+            return 1;
         }
     }
 }
