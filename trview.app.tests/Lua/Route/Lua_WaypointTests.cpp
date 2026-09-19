@@ -91,7 +91,7 @@ TEST(Lua_Waypoint, NewPosition)
     LuaState L;
     lua::vector3_register(L);
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
     const reg_scope<lua::waypoint_register, lua::waypoint_unregister> waypoint_scope(L, [&](auto&& pos, auto&&...) { position = pos; return waypoint; });
 
@@ -368,7 +368,7 @@ TEST(Lua_Waypoint, SetRoom)
     const reg_scope<lua::waypoint_register, lua::waypoint_unregister> waypoint_scope(L, [](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "w.room = r"));

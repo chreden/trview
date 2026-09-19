@@ -56,7 +56,7 @@ namespace trview
                 {
                     if (auto level = room->level().lock())
                     {
-                        return create_room(L, level->room(room->alternate_room()).lock());
+                        return to_lua(L, level->room(room->alternate_room()).lock());
                     }
                     lua_pushnil(L);
                     return 1;
@@ -134,11 +134,6 @@ namespace trview
             };
         }
 
-        int create_room(lua_State* L, std::shared_ptr<IRoom> room)
-        {
-            return create_userdata(L, room, room_metatable);
-        }
-
         void room_register(lua_State* L)
         {
             room_metatable = store_metatable(L,
@@ -188,7 +183,7 @@ namespace trview
 
         int to_lua(lua_State* L, const std::weak_ptr<IRoom>& room)
         {
-            return lua::create_room(L, room.lock());
+            return create_userdata(L, room, room_metatable);
         }
 
         int to_lua(lua_State* L, IRoom::AlternateMode mode)

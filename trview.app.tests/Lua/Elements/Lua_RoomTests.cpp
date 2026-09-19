@@ -18,7 +18,7 @@ TEST(Lua_Room, AlternateMode)
 
     LuaState L;
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     EXPECT_CALL(*room, alternate_mode).WillOnce(Return(IRoom::AlternateMode::None));
@@ -43,7 +43,7 @@ TEST(Lua_Room, AlternateGroup)
 
     LuaState L;
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.alternate_group"));
@@ -63,7 +63,7 @@ TEST(Lua_Room, AlternateRoom)
 
     LuaState L;
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.alternate_room"));
@@ -84,7 +84,7 @@ TEST(Lua_Room, CamerasAndSinks)
     LuaState L;
     lua::room_register(L);
     lua::camera_sink_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.cameras_and_sinks"));
@@ -106,7 +106,7 @@ TEST(Lua_Room, Flags)
 
     LuaState L;
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.flags"));
@@ -120,7 +120,7 @@ TEST(Lua_Room, HasFlag)
 
     LuaState L;
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
     lua::room_register(L);
 
@@ -140,7 +140,7 @@ TEST(Lua_Room, Items)
     LuaState L;
     lua::room_register(L);
     lua::item_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.items"));
@@ -168,7 +168,7 @@ TEST(Lua_Room, ItemsNg)
     LuaState L;
     lua::room_register(L);
     lua::item_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.items_ng"));
@@ -192,7 +192,7 @@ TEST(Lua_Room, Level)
     LuaState L;
     lua::room_register(L);
     lua::level_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.level"));
@@ -213,7 +213,7 @@ TEST(Lua_Room, Lights)
     LuaState L;
     lua::room_register(L);
     lua::light_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.lights"));
@@ -235,7 +235,7 @@ TEST(Lua_Room, Number)
 
     LuaState L;
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.number"));
@@ -249,7 +249,7 @@ TEST(Lua_Room, NumXSectors)
 
     LuaState L;
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.num_x_sectors"));
@@ -263,7 +263,7 @@ TEST(Lua_Room, NumZSectors)
 
     LuaState L;
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.num_z_sectors"));
@@ -279,7 +279,7 @@ TEST(Lua_Room, Position)
     LuaState L;
     lua::room_register(L);
     lua::vector3_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.position"));
@@ -296,7 +296,7 @@ TEST(Lua_Room, Sector)
     LuaState L;
     lua::room_register(L);
     lua::sector_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r:sector(1, 2)"));
@@ -316,7 +316,7 @@ TEST(Lua_Room, Sectors)
     LuaState L;
     lua::room_register(L);
     lua::sector_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.sectors"));
@@ -343,7 +343,7 @@ TEST(Lua_Room, Triggers)
     LuaState L;
     lua::trigger_register(L);
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.triggers"));
@@ -366,7 +366,7 @@ TEST(Lua_Room, Visible)
 
     LuaState L;
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.visible"));
@@ -381,7 +381,7 @@ TEST(Lua_Room, SetVisible)
 
     LuaState L;
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "r.visible = true"));
@@ -393,7 +393,7 @@ TEST(Lua_Room, WaterScheme)
 
     LuaState L;
     lua::room_register(L);
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "return r.water_scheme"));

@@ -112,7 +112,7 @@ namespace trview
                     {
                         if (auto level = route->level().lock())
                         {
-                            return create_room(L, level->room(waypoint->room()).lock());
+                            return to_lua(L, level->room(waypoint->room()).lock());
                         }
                     }
                     lua_pushnil(L);

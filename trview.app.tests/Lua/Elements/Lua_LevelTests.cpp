@@ -272,7 +272,7 @@ TEST(Lua_Level, SetSelectedRoom)
     lua::level_register(L);
     lua::create_level(L, level);
     lua_setglobal(L, "l");
-    lua::create_room(L, room);
+    lua::to_lua(L, room);
     lua_setglobal(L, "r");
 
     ASSERT_EQ(0, luaL_dostring(L, "l.selected_room = r"));

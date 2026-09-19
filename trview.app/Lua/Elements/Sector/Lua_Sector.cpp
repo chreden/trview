@@ -77,7 +77,7 @@ namespace trview
                         {
                             if (auto level = room->level().lock())
                             {
-                                return create_room(L, level->room(sector->room_above()).lock());
+                                return to_lua(L, level->room(sector->room_above()).lock());
                             }
                         }
                     }
@@ -92,7 +92,7 @@ namespace trview
                         {
                             if (auto level = room->level().lock())
                             {
-                                return create_room(L, level->room(sector->room_below()).lock());
+                                return to_lua(L, level->room(sector->room_below()).lock());
                             }
                         }
                     }
@@ -172,7 +172,7 @@ namespace trview
                         {
                             if (auto level = room->level().lock())
                             {
-                                return create_room(L, level->room(sector->portals()[0]).lock());
+                                return to_lua(L, level->room(sector->portals()[0]).lock());
                             }
                         }
                     }
@@ -189,7 +189,7 @@ namespace trview
                                 lua_newtable(L);
                                 push_list(L,
                                     sector->portals(),
-                                    [&](auto L, auto f) { create_room(L, level->room(f).lock()); });
+                                    [&](auto L, auto f) { to_lua(L, level->room(f).lock()); });
                                 return 1;
                             }
                         }
