@@ -89,7 +89,7 @@ namespace trview
                     auto item = level->selected_item();
                     if (item)
                     {
-                        return create_item(L, level->item(item.value()).lock());
+                        return to_lua(L, level->item(item.value()));
                     }
                     lua_pushnil(L);
                     return 1;

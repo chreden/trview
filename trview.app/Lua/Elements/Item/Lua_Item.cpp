@@ -90,6 +90,11 @@ namespace trview
             return create_userdata(L, item, item_metatable);
         }
 
+        int to_lua(lua_State* L, const std::weak_ptr<IItem>& item)
+        {
+            return create_item(L, item.lock());
+        }
+
         std::shared_ptr<IItem> to_item(lua_State* L, int index)
         {
             return get_userdata<std::shared_ptr<IItem>>(L, index);

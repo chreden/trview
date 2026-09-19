@@ -18,6 +18,9 @@ namespace trview
         void waypoint_unregister();
         std::shared_ptr<IWaypoint> to_waypoint(lua_State* L, int index);
         void waypoint_set_settings(const UserSettings& settings);
+        int to_lua(lua_State* L, IWaypoint::Type type);
     }
+
+    export using lua::to_lua;
 }
 

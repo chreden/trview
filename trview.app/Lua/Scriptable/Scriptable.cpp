@@ -34,15 +34,6 @@ namespace trview
                     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
                     return 1;
                 }
-                else if (key == "notes")
-                {
-                    lua_pushstring(L, scriptable->notes().c_str());
-                    return 1;
-                }
-                else if (key == "position")
-                {
-                    return to_lua(L, scriptable->position() * trlevel::Scale);
-                }
 
                 return 0;
             }
@@ -92,6 +83,17 @@ namespace trview
             {
                 return lua::create_scriptable(L, scriptable_source(L));
             }
+
+            DirectX::SimpleMath::Vector3 scale_vector(const DirectX::SimpleMath::Vector3& v)
+            {
+                return v * trlevel::Scale;
+            }
+
+            const std::unordered_map<std::string, lua_CFunction> Functions
+            {
+                { "notes", prop_getter<std::shared_ptr<IScriptable>, &IScriptable::notes> },
+                { "position", prop_getter_with_transform<std::shared_ptr<IScriptable>, &IScriptable::position, scale_vector> },
+            };
         }
 
         int create_scriptable(lua_State* L, const std::shared_ptr<IScriptable>& scriptable)
@@ -103,7 +105,7 @@ namespace trview
         {
             scriptable_metatable = store_metatable(L,
                 {
-                    { "__index", scriptable_index },
+                    { "__index", default_index<Functions, scriptable_index> },
                     { "__newindex", scriptable_newindex },
                     { "__gc", default_gc<std::shared_ptr<IScriptable>> }
                 });

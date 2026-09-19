@@ -72,7 +72,7 @@ TEST(Lua_Waypoint, NewItem)
     LuaState L;
     const reg_scope<lua::waypoint_register, lua::waypoint_unregister> waypoint_scope(L, [=](auto&&...) { return waypoint; });
     lua::item_register(L);
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "w = Waypoint.new({item=i})"));
@@ -279,7 +279,7 @@ TEST(Lua_Waypoint, SetItem)
     const reg_scope<lua::waypoint_register, lua::waypoint_unregister> waypoint_scope(L, [](auto&&...) { return mock_shared<MockWaypoint>(); });
     lua::create_waypoint(L, waypoint);
     lua_setglobal(L, "w");
-    lua::create_item(L, item);
+    lua::to_lua(L, item);
     lua_setglobal(L, "i");
 
     ASSERT_EQ(0, luaL_dostring(L, "w.item = i"));
