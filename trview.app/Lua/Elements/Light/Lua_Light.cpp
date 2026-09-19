@@ -153,5 +153,10 @@ namespace trview
         {
             return create_userdata(L, light, light_metatable);
         }
+
+        int to_lua(lua_State* L, const std::weak_ptr<ILight>& light)
+        {
+            return create_light(L, light.lock());
+        }
     }
 }

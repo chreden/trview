@@ -14,6 +14,7 @@ namespace trview
         export void camera_sink_register(lua_State* L);
         export int create_camera_sink(lua_State* L, std::shared_ptr<ICameraSink> camera_sink);
         export int to_lua(lua_State* L, ICameraSink::Type type);
+        export int to_lua(lua_State* L, const std::weak_ptr<ICameraSink>& camera_sink);
     }
 
     export using lua::to_lua;

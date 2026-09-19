@@ -98,6 +98,11 @@ namespace trview
             return create_userdata(L, camera_sink, camera_sink_metatable);
         }
 
+        int to_lua(lua_State* L, const std::weak_ptr<ICameraSink>& camera_sink)
+        {
+            return create_camera_sink(L, camera_sink.lock());
+        }
+
         int to_lua(lua_State* L, ICameraSink::Type type)
         {
             lua_pushstring(L, to_string(type).c_str());

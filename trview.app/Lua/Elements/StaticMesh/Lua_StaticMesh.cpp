@@ -71,6 +71,11 @@ namespace trview
             return create_userdata(L, mesh, static_mesh_metatable);
         }
 
+        int to_lua(lua_State* L, const std::weak_ptr<IStaticMesh>& mesh)
+        {
+            return create_static_mesh(L, mesh.lock());
+        }
+
         int to_lua(lua_State* L, IStaticMesh::Type type)
         {
             lua_pushstring(L, to_string(type).c_str());
