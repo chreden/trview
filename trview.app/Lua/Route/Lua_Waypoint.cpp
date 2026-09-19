@@ -112,7 +112,7 @@ namespace trview
                     {
                         if (auto level = route->level().lock())
                         {
-                            return to_lua(L, level->room(waypoint->room()).lock());
+                            return to_lua(L, level->room(waypoint->room()));
                         }
                     }
                     lua_pushnil(L);
@@ -125,7 +125,7 @@ namespace trview
                 }
                 else if (key == "trigger")
                 {
-                    return create_trigger(L, waypoint->trigger().lock());
+                    return to_lua(L, waypoint->trigger());
                 }
                 else if (key == "type")
                 {

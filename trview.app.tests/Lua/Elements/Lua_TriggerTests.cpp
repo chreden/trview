@@ -20,7 +20,7 @@ TEST(Lua_Trigger, Commands)
 
     LuaState L;
     lua::trigger_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "return t.commands"));
@@ -51,7 +51,7 @@ TEST(Lua_Trigger, Flags)
 
     LuaState L;
     lua::trigger_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "return t.flags"));
@@ -65,7 +65,7 @@ TEST(Lua_Trigger, Number)
 
     LuaState L;
     lua::trigger_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "return t.number"));
@@ -80,7 +80,7 @@ TEST(Lua_Trigger, OnlyOnce)
 
     LuaState L;
     lua::trigger_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "return t.only_once"));
@@ -96,7 +96,7 @@ TEST(Lua_Trigger, Position)
     LuaState L;
     lua::trigger_register(L);
     lua::vector3_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "return t.position"));
@@ -113,7 +113,7 @@ TEST(Lua_Trigger, Room)
     LuaState L;
     lua::trigger_register(L);
     lua::room_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "return t.room"));
@@ -131,7 +131,7 @@ TEST(Lua_Trigger, Sector)
     LuaState L;
     lua::trigger_register(L);
     lua::sector_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "return t.sector"));
@@ -148,7 +148,7 @@ TEST(Lua_Trigger, Timer)
 
     LuaState L;
     lua::trigger_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "return t.timer"));
@@ -163,7 +163,7 @@ TEST(Lua_Trigger, Type)
 
     LuaState L;
     lua::trigger_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "return t.type"));
@@ -178,7 +178,7 @@ TEST(Lua_Trigger, Visible)
 
     LuaState L;
     lua::trigger_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "return t.visible"));
@@ -193,7 +193,7 @@ TEST(Lua_Trigger, SetVisible)
 
     LuaState L;
     lua::trigger_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "t.visible = true"));
@@ -207,7 +207,7 @@ TEST(Lua_Trigger, Colour)
     LuaState L;
     lua::trigger_register(L);
     lua::colour_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "return t.colour"));
@@ -223,7 +223,7 @@ TEST(Lua_Trigger, SetColourDefault)
 
     LuaState L;
     lua::trigger_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "t.colour = nil"));
@@ -239,7 +239,7 @@ TEST(Lua_Trigger, SetColour)
     LuaState L;
     lua::trigger_register(L);
     lua::colour_register(L);
-    lua::create_trigger(L, trigger);
+    lua::to_lua(L, trigger);
     lua_setglobal(L, "t");
 
     ASSERT_EQ(0, luaL_dostring(L, "t.colour = Colour.new(1.0, 2.0, 3.0, 4.0)"));

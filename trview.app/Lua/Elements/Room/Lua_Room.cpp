@@ -33,7 +33,7 @@ namespace trview
                 const auto room = lua::get_userdata<std::shared_ptr<IRoom>>(L, 1);
                 const auto x = static_cast<int32_t>(lua_tointeger(L, 2) - 1);
                 const auto z = static_cast<int32_t>(lua_tointeger(L, 3) - 1);
-                return create_sector(L, room->sector(x, z).lock());
+                return to_lua(L, room->sector(x, z).lock());
             }
 
             int room_hasflag(lua_State* L)
@@ -183,7 +183,7 @@ namespace trview
 
         int to_lua(lua_State* L, const std::weak_ptr<IRoom>& room)
         {
-            return create_userdata(L, room, room_metatable);
+            return create_userdata(L, room.lock(), room_metatable);
         }
 
         int to_lua(lua_State* L, IRoom::AlternateMode mode)

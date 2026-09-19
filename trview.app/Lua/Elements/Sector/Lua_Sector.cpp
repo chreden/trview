@@ -198,11 +198,11 @@ namespace trview
                 }
                 else if (key == "sector_above")
                 {
-                    return create_sector(L, sector_above(sector).value_or({}).sector);
+                    return to_lua(L, sector_above(sector).value_or({}).sector);
                 }
                 else if (key == "sector_below")
                 {
-                    return create_sector(L, sector_below(sector).value_or({}).sector);
+                    return to_lua(L, sector_below(sector).value_or({}).sector);
                 }
                 else if (key == "triangulation")
                 {
@@ -232,14 +232,9 @@ namespace trview
             };
         }
 
-        int create_sector(lua_State* L, std::shared_ptr<ISector> sector)
-        {
-            return create_userdata(L, sector, sector_metatable);
-        }
-
         int to_lua(lua_State* L, const std::weak_ptr<ISector>& sector)
         {
-            return create_sector(L, sector.lock());
+            return create_userdata(L, sector.lock(), sector_metatable);
         }
 
         void sector_register(lua_State* L)

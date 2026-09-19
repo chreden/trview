@@ -106,7 +106,7 @@ TEST(Lua_trview, SetLevel)
         [](auto&&...) { return mock_shared<MockMesh>(); });
 
     auto level = mock_shared<MockLevel>();
-    lua::create_level(L, level);
+    lua::to_lua(L, level);
     lua_setglobal(L, "l");
 
     ASSERT_EQ(0, luaL_dostring(L, "trview.level = l"));

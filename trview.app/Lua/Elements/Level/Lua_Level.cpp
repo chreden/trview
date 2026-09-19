@@ -99,7 +99,7 @@ namespace trview
                     auto trigger = level->selected_trigger();
                     if (trigger)
                     {
-                        return create_trigger(L, level->trigger(trigger.value()).lock());
+                        return to_lua(L, level->trigger(trigger.value()));
                     }
                     lua_pushnil(L);
                     return 1;
@@ -172,14 +172,9 @@ namespace trview
                 });
         }
 
-        int create_level(lua_State* L, const std::shared_ptr<ILevel>& level)
-        {
-            return create_userdata(L, level, level_metatable);
-        }
-
         int to_lua(lua_State* L, const std::weak_ptr<ILevel>& level)
         {
-            return create_level(L, level.lock());
+            return create_userdata(L, level.lock(), level_metatable);
         }
 
         std::shared_ptr<ILevel> to_level(lua_State* L, int index)

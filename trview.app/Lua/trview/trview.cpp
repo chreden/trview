@@ -55,7 +55,7 @@ namespace trview
                         std::lock_guard lock{ request_mutex };
                         std::erase_if(active_requests, [=](const auto& r) { return r.get() == request; });
                     }
-                    return create_level(L, level);
+                    return to_lua(L, level);
                 }
                 return lua_yieldk(L, 0, context, trview_yield_load);
             }
@@ -103,7 +103,7 @@ namespace trview
                 }
                 else if (key == "level")
                 {
-                    return create_level(L, application->current_level().lock());
+                    return to_lua(L, application->current_level().lock());
                 }
                 else if (key == "load")
                 {

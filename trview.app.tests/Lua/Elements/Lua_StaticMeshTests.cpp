@@ -19,7 +19,7 @@ TEST(Lua_StaticMesh, Breakable)
 
     LuaState L;
     lua::static_mesh_register(L);
-    lua::create_static_mesh(L, mesh);
+    lua::to_lua(L, mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.breakable"));
@@ -40,7 +40,7 @@ TEST(Lua_StaticMesh, Collision)
     LuaState L;
     lua::static_mesh_register(L);
     lua::vector3_register(L);
-    lua::create_static_mesh(L, static_mesh);
+    lua::to_lua(L, static_mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.collision"));
@@ -60,7 +60,7 @@ TEST(Lua_StaticMesh, HasCollision)
 
     LuaState L;
     lua::static_mesh_register(L);
-    lua::create_static_mesh(L, static_mesh);
+    lua::to_lua(L, static_mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.has_collision"));
@@ -75,7 +75,7 @@ TEST(Lua_StaticMesh, Id)
 
     LuaState L;
     lua::static_mesh_register(L);
-    lua::create_static_mesh(L, static_mesh);
+    lua::to_lua(L, static_mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.id"));
@@ -91,7 +91,7 @@ TEST(Lua_StaticMesh, Position)
     LuaState L;
     lua::static_mesh_register(L);
     lua::vector3_register(L);
-    lua::create_static_mesh(L, static_mesh);
+    lua::to_lua(L, static_mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.position"));
@@ -108,7 +108,7 @@ TEST(Lua_StaticMesh, Room)
     LuaState L;
     lua::static_mesh_register(L);
     lua::room_register(L);
-    lua::create_static_mesh(L, static_mesh);
+    lua::to_lua(L, static_mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.room"));
@@ -125,7 +125,7 @@ TEST(Lua_StaticMesh, Rotation)
 
     LuaState L;
     lua::static_mesh_register(L);
-    lua::create_static_mesh(L, static_mesh);
+    lua::to_lua(L, static_mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.rotation"));
@@ -140,7 +140,7 @@ TEST(Lua_StaticMesh, SetVisible)
 
     LuaState L;
     lua::static_mesh_register(L);
-    lua::create_static_mesh(L, static_mesh);
+    lua::to_lua(L, static_mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "s.visible = true"));
@@ -153,7 +153,7 @@ TEST(Lua_StaticMesh, Type)
 
     LuaState L;
     lua::static_mesh_register(L);
-    lua::create_static_mesh(L, static_mesh);
+    lua::to_lua(L, static_mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.type"));
@@ -173,7 +173,7 @@ TEST(Lua_StaticMesh, Visible)
 
     LuaState L;
     lua::static_mesh_register(L);
-    lua::create_static_mesh(L, static_mesh);
+    lua::to_lua(L, static_mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.visible"));
@@ -194,7 +194,7 @@ TEST(Lua_StaticMesh, Visibility)
     LuaState L;
     lua::static_mesh_register(L);
     lua::vector3_register(L);
-    lua::create_static_mesh(L, static_mesh);
+    lua::to_lua(L, static_mesh);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.visibility"));

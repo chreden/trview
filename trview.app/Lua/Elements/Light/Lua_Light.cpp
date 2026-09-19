@@ -138,14 +138,9 @@ namespace trview
                 });
         }
 
-        int create_light(lua_State* L, const std::shared_ptr<ILight>& light)
-        {
-            return create_userdata(L, light, light_metatable);
-        }
-
         int to_lua(lua_State* L, const std::weak_ptr<ILight>& light)
         {
-            return create_light(L, light.lock());
+            return create_userdata(L, light.lock(), light_metatable);
         }
     }
 }

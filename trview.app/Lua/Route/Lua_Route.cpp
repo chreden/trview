@@ -202,7 +202,7 @@ namespace trview
                 }
                 else if (key == "level")
                 {
-                    return create_level(L, route->level().lock());
+                    return to_lua(L, route->level().lock());
                 }
                 else if (key == "reload")
                 {

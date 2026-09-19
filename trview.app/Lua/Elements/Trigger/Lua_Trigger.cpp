@@ -96,11 +96,6 @@ namespace trview
                 });
         }
 
-        int create_trigger(lua_State* L, const std::shared_ptr<ITrigger>& trigger)
-        {
-            return create_userdata(L, trigger, trigger_metatable);
-        }
-
         std::shared_ptr<ITrigger> to_trigger(lua_State* L, int index)
         {
             return get_userdata<std::shared_ptr<ITrigger>>(L, index);
@@ -108,7 +103,7 @@ namespace trview
 
         int to_lua(lua_State* L, const std::weak_ptr<ITrigger>& trigger)
         {
-            return create_trigger(L, trigger.lock());
+            return create_userdata(L, trigger.lock(), trigger_metatable);
         }
 
         int to_lua(lua_State* L, TriggerType type)

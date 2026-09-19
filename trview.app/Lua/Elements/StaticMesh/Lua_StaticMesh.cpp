@@ -66,14 +66,9 @@ namespace trview
                 });
         }
 
-        int create_static_mesh(lua_State* L, const std::shared_ptr<IStaticMesh>& mesh)
-        {
-            return create_userdata(L, mesh, static_mesh_metatable);
-        }
-
         int to_lua(lua_State* L, const std::weak_ptr<IStaticMesh>& mesh)
         {
-            return create_static_mesh(L, mesh.lock());
+            return create_userdata(L, mesh.lock(), static_mesh_metatable);
         }
 
         int to_lua(lua_State* L, IStaticMesh::Type type)

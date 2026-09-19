@@ -23,7 +23,7 @@ TEST(Lua_Sector, Above)
     LuaState L;
     lua::room_register(L);
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.above"));
@@ -44,7 +44,7 @@ TEST(Lua_Sector, Below)
     LuaState L;
     lua::room_register(L);
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.below"));
@@ -67,7 +67,7 @@ TEST(Lua_Sector, CeilingCorners)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.ceiling_corners"));
@@ -92,7 +92,7 @@ TEST(Lua_Sector, CeilingTriangulation)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.ceiling_triangulation"));
@@ -113,7 +113,7 @@ TEST(Lua_Sector, Corners)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.corners"));
@@ -138,7 +138,7 @@ TEST(Lua_Sector, Flags)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.flags"));
@@ -157,7 +157,7 @@ TEST(Lua_Sector, Floordata)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.floordata"));
@@ -177,7 +177,7 @@ TEST(Lua_Sector, HasFlag)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s:has_flag(Sector.Flags.Portal)"));
@@ -191,7 +191,7 @@ TEST(Lua_Sector, Number)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.number"));
@@ -211,7 +211,7 @@ TEST(Lua_Sector, Portal)
     LuaState L;
     lua::room_register(L);
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.portal"));
@@ -235,7 +235,7 @@ TEST(Lua_Sector, Portals)
     LuaState L;
     lua::room_register(L);
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.portals"));
@@ -256,7 +256,7 @@ TEST(Lua_Sector, Room)
     LuaState L;
     lua::room_register(L);
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.room"));
@@ -280,7 +280,7 @@ TEST(Lua_Sector, SectorAbove)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.sector_above"));
@@ -304,7 +304,7 @@ TEST(Lua_Sector, SectorBelow)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.sector_below"));
@@ -322,7 +322,7 @@ TEST(Lua_Sector, Trigger)
     LuaState L;
     lua::trigger_register(L);
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.trigger"));
@@ -338,7 +338,7 @@ TEST(Lua_Sector, X)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.x"));
@@ -352,7 +352,7 @@ TEST(Lua_Sector, Z)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.z"));
@@ -366,7 +366,7 @@ TEST(Lua_Sector, Triangulation)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.triangulation"));
@@ -381,7 +381,7 @@ TEST(Lua_Sector, TiltX)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.tilt_x"));
@@ -396,7 +396,7 @@ TEST(Lua_Sector, TiltZ)
 
     LuaState L;
     lua::sector_register(L);
-    lua::create_sector(L, sector);
+    lua::to_lua(L, sector);
     lua_setglobal(L, "s");
 
     ASSERT_EQ(0, luaL_dostring(L, "return s.tilt_z"));

@@ -11,7 +11,6 @@ namespace trview
 {
     namespace lua
     {
-        export int create_sector(lua_State* L, std::shared_ptr<ISector> sector);
         export void sector_register(lua_State* L);
         export std::shared_ptr<ISector> to_sector(lua_State* L, int index);
         export int to_lua(lua_State* L, const std::weak_ptr<ISector>& sector);
