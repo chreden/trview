@@ -25,9 +25,9 @@ namespace trview
                 switch (args)
                 {
                 case 0:
-                    return create_vector3(L, Vector3());
+                    return to_lua(L, Vector3());
                 case 3:
-                    return create_vector3(L,
+                    return to_lua(L,
                         Vector3(
                             static_cast<float>(lua_tonumber(L, 1)),
                             static_cast<float>(lua_tonumber(L, 2)),
@@ -42,9 +42,9 @@ namespace trview
                 switch (args)
                 {
                 case 1:
-                    return create_vector3(L, Vector3());
+                    return to_lua(L, Vector3());
                 case 4:
-                    return create_vector3(L,
+                    return to_lua(L,
                         Vector3(
                             static_cast<float>(lua_tonumber(L, 2)),
                             static_cast<float>(lua_tonumber(L, 3)),
@@ -71,11 +71,6 @@ namespace trview
                 { "z", prop_getter<Vector3, &Vector3::z> },
                 { "length", prop_getter<Vector3, &Vector3::Length> }
             };
-        }
-
-        int create_vector3(lua_State* L, const Vector3& value)
-        {
-            return create_userdata(L, value, vector3_metatable);
         }
 
         bool is_vector3(lua_State* L, int index)
@@ -124,7 +119,7 @@ namespace trview
 
         int to_lua(lua_State* L, const DirectX::SimpleMath::Vector3& value)
         {
-            return trview::lua::create_vector3(L, value);
+            return create_userdata(L, value, vector3_metatable);
         }
     }
 }

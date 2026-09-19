@@ -41,7 +41,7 @@ namespace trview
                 }
                 else if (key == "position")
                 {
-                    return create_vector3(L, scriptable->position() * trlevel::Scale);
+                    return to_lua(L, scriptable->position() * trlevel::Scale);
                 }
 
                 return 0;

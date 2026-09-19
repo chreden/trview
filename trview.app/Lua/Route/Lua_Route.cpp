@@ -188,7 +188,7 @@ namespace trview
                 }
                 else if (key == "colour")
                 {
-                    return create_colour(L, route->colour());
+                    return to_lua(L, route->colour());
                 }
                 else if (key == "clear")
                 {
@@ -235,7 +235,7 @@ namespace trview
                 }
                 else if (key == "waypoint_colour")
                 {
-                    return create_colour(L, route->waypoint_colour());
+                    return to_lua(L, route->waypoint_colour());
                 }
                 else if (key == "waypoints")
                 {

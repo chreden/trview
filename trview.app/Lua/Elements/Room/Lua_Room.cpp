@@ -91,7 +91,7 @@ namespace trview
                 else if (key == "position")
                 {
                     const auto info = room->info();
-                    return create_vector3(L, DirectX::SimpleMath::Vector3(static_cast<float>(info.x), static_cast<float>(info.yBottom), static_cast<float>(info.z)));
+                    return to_lua(L, DirectX::SimpleMath::Vector3(static_cast<float>(info.x), static_cast<float>(info.yBottom), static_cast<float>(info.z)));
                 }
                 else if (key == "sector")
                 {

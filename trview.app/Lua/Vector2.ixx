@@ -9,7 +9,16 @@ namespace trview
 {
     namespace lua
     {
-        export int create_vector2(lua_State* L, const DirectX::SimpleMath::Vector2& value);
+        export int to_lua(lua_State* L, const DirectX::SimpleMath::Vector2& value);
         export void vector2_register(lua_State* L);
     }
 }
+
+namespace DirectX
+{
+    namespace SimpleMath
+    {
+        export using trview::lua::to_lua;
+    }
+}
+

@@ -26,15 +26,15 @@ namespace trview
                 switch (args)
                 {
                 case 0:
-                    return create_colour(L, Colour());
+                    return to_lua(L, Colour());
                 case 3:
-                    return create_colour(L,
+                    return to_lua(L,
                         Colour(
                             static_cast<float>(lua_tonumber(L, 1)),
                             static_cast<float>(lua_tonumber(L, 2)),
                             static_cast<float>(lua_tonumber(L, 3))));
                 case 4:
-                    return create_colour(L,
+                    return to_lua(L,
                         Colour(
                             static_cast<float>(lua_tonumber(L, 4)),
                             static_cast<float>(lua_tonumber(L, 1)),
@@ -50,15 +50,15 @@ namespace trview
                 switch (args)
                 {
                 case 1:
-                    return create_colour(L, Colour());
+                    return to_lua(L, Colour());
                 case 4:
-                    return create_colour(L,
+                    return to_lua(L,
                         Colour(
                             static_cast<float>(lua_tonumber(L, 2)),
                             static_cast<float>(lua_tonumber(L, 3)),
                             static_cast<float>(lua_tonumber(L, 4))));
                 case 5:
-                    return create_colour(L,
+                    return to_lua(L,
                         Colour(
                             static_cast<float>(lua_tonumber(L, 5)),
                             static_cast<float>(lua_tonumber(L, 2)),
@@ -88,11 +88,6 @@ namespace trview
             };
         }
 
-        int create_colour(lua_State* L, const Colour& value)
-        {
-            return create_userdata(L, value, colour_metatable);
-        }
-
         bool is_colour(lua_State* L, int index)
         {
             return equal_metatable(L, index, colour_metatable);
@@ -109,17 +104,17 @@ namespace trview
             float g = static_cast<float>(lua_tonumber(L, 2));
             float b = static_cast<float>(lua_tonumber(L, 3));
             float a = lua_gettop(L) >= 4 ? static_cast<float>(lua_tonumber(L, 4)) : 1.0f;
-            return create_colour(L, Colour(a, r, g, b));
+            return to_lua(L, Colour(a, r, g, b));
         }
 
         int to_lua(lua_State* L, const Colour& value)
         {
-            return create_colour(L, value);
+            return create_userdata(L, value, colour_metatable);
         }
 
         int to_lua(lua_State* L, const DirectX::SimpleMath::Color& value)
         {
-            return create_colour(L, value);
+            return to_lua(L, value);
         }
 
         void colour_register(lua_State* L)

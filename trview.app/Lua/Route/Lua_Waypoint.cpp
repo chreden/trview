@@ -54,7 +54,7 @@ namespace trview
 
                 if (key == "colour")
                 {
-                    return create_colour(L, waypoint->route_colour());
+                    return to_lua(L, waypoint->route_colour());
                 }
                 else if (key == "item")
                 {
@@ -62,7 +62,7 @@ namespace trview
                 }
                 else if (key == "normal")
                 {
-                    return create_vector3(L, waypoint->normal());
+                    return to_lua(L, waypoint->normal());
                 }
                 else if (key == "notes")
                 {
@@ -71,7 +71,7 @@ namespace trview
                 }
                 else if (key == "position")
                 {
-                    return create_vector3(L, waypoint->position() * trlevel::Scale);
+                    return to_lua(L, waypoint->position() * trlevel::Scale);
                 }
                 else if (key == "randomizer_settings")
                 {
@@ -134,7 +134,7 @@ namespace trview
                 }
                 else if (key == "waypoint_colour")
                 {
-                    return create_colour(L, waypoint->waypoint_colour());
+                    return to_lua(L, waypoint->waypoint_colour());
                 }
 
                 return 0;
