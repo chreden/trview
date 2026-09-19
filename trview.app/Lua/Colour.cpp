@@ -114,7 +114,7 @@ namespace trview
 
         int to_lua(lua_State* L, const DirectX::SimpleMath::Color& value)
         {
-            return to_lua(L, value);
+            return to_lua(L, static_cast<Colour>(value));
         }
 
         void colour_register(lua_State* L)
