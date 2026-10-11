@@ -251,7 +251,6 @@ namespace trview
 
             save_window_placement();
             render();
-            Sleep(1);
         }
 
         return (int)msg.wParam;
