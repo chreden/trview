@@ -585,9 +585,4 @@ namespace trview
         messaging->add_recipient(application);
         return application;
     }
-
-    export void poop()
-    {
-
-    }
 }
