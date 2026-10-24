@@ -126,6 +126,11 @@ namespace trview
         {
             return {};
         }
+
+        if (type == "Route" && !_windows["Route"].empty())
+        {
+            return _windows["Route"].begin()->second;
+        }
         return add_window(creator->second());
     }
 
